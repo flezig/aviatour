@@ -46,3 +46,10 @@ pnpm-debug.log*
 *.swp
 *.swo
 *~
+
+# Xcode / SwiftPM
+DerivedData/
+.build/
+.swiftpm/
+*.xcuserstate
+xcuserdata/
