@@ -1,0 +1,57 @@
+import Foundation
+
+protocol SearchService { func search(_ query: SearchQuery) async throws -> SearchResult }
+enum SearchFailure: Error, LocalizedError {
+    case unsupportedAirport, offline, configuration, source(String), invalidData
+    var errorDescription: String? {
+        switch self {
+        case .unsupportedAirport: return "Для этого аэропорта нет демонстрационных данных. Выберите Москва · SVO."
+        case .offline: return "Нет доступа к backend. Проверьте сеть и адрес сервера."
+        case .configuration: return "LIVE не настроен. Проверьте адрес backend и его конфигурацию."
+        case .source(let message): return message
+        case .invalidData: return "Получены некорректные данные. Попробуйте ещё раз."
+        }
+    }
+}
+
+enum Catalog {
+    static func load(bundle: Bundle = .main) throws -> [Airport] {
+        guard let url = bundle.url(forResource: "airports", withExtension: "json") else { throw SearchFailure.invalidData }
+        let decoder = JSONDecoder(); decoder.keyDecodingStrategy = .convertFromSnakeCase
+        return try decoder.decode([Airport].self, from: Data(contentsOf: url))
+    }
+}
+
+struct MockSearchService: SearchService {
+    let airports: [Airport]
+    let clock: any AppClock
+    func search(_ query: SearchQuery) async throws -> SearchResult {
+        guard query.origin == "SVO" else { throw SearchFailure.unsupportedAirport }
+        try Task.checkCancellation()
+        let cal = TravelDates.calendar("Europe/Moscow")
+        let parts = query.month.split(separator: "-").compactMap { Int($0) }
+        guard parts.count == 2, let start = cal.date(from: DateComponents(year: parts[0], month: parts[1], day: 1, hour: 10)), let range = cal.range(of: .day, in: .month, for: start) else { throw SearchFailure.invalidData }
+        // Find a future Friday OR Saturday; return can fall in the next month/year.
+        let departure = range.compactMap { cal.date(byAdding: .day, value: $0 - 1, to: start) }.first {
+            [6, 7].contains(cal.component(.weekday, from: $0)) && $0 > clock.now
+        }
+        guard let dep = departure else { return SearchResult(offers: [], incomplete: false, warnings: []) }
+        let offset = 2
+        let returnDate = cal.date(byAdding: .day, value: offset, to: dep)!
+        let fixtures: [(String, Int, Int?, Int?)] = [("LED",850000,0,0),("KZN",1050000,0,0),("KGD",1400000,0,0),("AER",1800000,0,0),("MRV",1550000,0,0),("EVN",2400000,0,0),("TBS",2850000,1,1),("IST",3100000,0,0),("GYD",2600000,0,1),("MSQ",2300000,0,0)]
+        guard let origin = airports.first(where: { $0.iata == "SVO" }) else { throw SearchFailure.invalidData }
+        let offers = try fixtures.map { code, price, out, back -> Offer in
+            guard let airport = airports.first(where: { $0.iata == code }), let zone = airport.timezone else { throw SearchFailure.invalidData }
+            let local = cal.dateComponents([.year, .month, .day], from: returnDate)
+            let ret = TravelDates.calendar(zone).date(from: DateComponents(year: local.year, month: local.month, day: local.day, hour: 18))!
+            let id = "MOCK-SVO-\(code)-\(Int(dep.timeIntervalSince1970))-\(Int(ret.timeIntervalSince1970))"
+            let url = LinkBuilder.ordinary(origin: "SVO", destination: code, departure: dep, returnDate: ret, originZone: "Europe/Moscow", destinationZone: zone)
+            return Offer(id: id, cityCode: airport.cityCode, city: airport.city, countryCode: airport.countryCode, country: airport.country,
+                         originAirport: "SVO", destinationAirport: code, originCity: origin.city, originName: origin.name, destinationName: airport.name,
+                         departureAt: dep, returnAt: ret, originTimezone: "Europe/Moscow", destinationTimezone: zone,
+                         transfers: out, returnTransfers: back, durationTo: nil, durationBack: nil, priceMinor: price, currency: "RUB", searchURL: url.absoluteString,
+                         partnerURL: nil, source: "MOCK", receivedAt: clock.now)
+        }
+        return SearchResult(offers: offers.filter { SearchRules.accepts($0, query: query, now: clock.now) }, incomplete: false, warnings: [])
+    }
+}

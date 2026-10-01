@@ -1,0 +1,215 @@
+import asyncio
+from datetime import datetime, timezone
+from decimal import Decimal
+import json
+import httpx
+import pytest
+from fastapi.testclient import TestClient
+from app.models import SearchRequest
+from app.rules import normalize, rubles_to_minor, safe_search_url
+from app.runtime import TTLCache, RateLimiter
+from app.settings import Settings
+from app.errors import SearchError
+from app.main import create_app
+from app.upstream import Travelpayouts
+
+NOW = datetime(2026, 10, 1, 9, tzinfo=timezone.utc)
+QUERY = SearchRequest(origin='SVO', month='2026-10')
+
+def record(**overrides):
+    return dict(origin='MOW', destination='LED', origin_airport='SVO', destination_airport='LED',
+        price=Decimal('8500'), departure_at='2026-10-02T10:00:00+03:00', return_at='2026-10-04T18:00:00+03:00',
+        transfers=0, return_transfers=0, link='/search/SVO0210LED04101', **overrides)
+
+@pytest.mark.parametrize('price,accepted', [('24999.99',True),('25000',True),('25000.01',False)])
+def test_inclusive_budget(price, accepted):
+    row=record();row['price']=Decimal(price)
+    assert (normalize(row, QUERY, NOW) is not None) == accepted
+
+@pytest.mark.parametrize('rub,minor', [('8500',850000),('0.01',1),('1.001',101),('25000.0001',2500001)])
+def test_decimal_currency(rub,minor): assert rubles_to_minor(Decimal(rub)) == minor
+
+@pytest.mark.parametrize('value,currency',[(Decimal('2'),'eur'),(float('2.1'),'rub'),(True,'rub'),(Decimal('NaN'),'rub'),(Decimal('-1'),'rub')])
+def test_invalid_money(value,currency):
+    with pytest.raises(ValueError): rubles_to_minor(value,currency)
+
+@pytest.mark.parametrize('dep,ret,accepted',[
+    ('2026-10-02','2026-10-04',True),('2026-10-02','2026-10-05',True),('2026-10-03','2026-10-05',True),
+    ('2026-10-02','2026-10-11',False),('2026-10-01','2026-10-04',False),('2026-10-31','2026-11-02',True)])
+def test_weekends(dep,ret,accepted):
+    row=record();row.update(departure_at=dep+'T10:00:00+03:00',return_at=ret+'T18:00:00+03:00')
+    assert (normalize(row,QUERY,NOW) is not None) == accepted
+
+def test_year_boundary():
+    row=record();row.update(departure_at='2027-12-31T10:00:00+03:00',return_at='2028-01-02T18:00:00+03:00')
+    assert normalize(row,QUERY.model_copy(update={'month':'2027-12'}),NOW)
+
+@pytest.mark.parametrize('back',[None,1])
+def test_both_legs_direct(back):
+    row=record();row['return_transfers']=back
+    assert normalize(row,QUERY.model_copy(update={'direct_only':True}),NOW) is None
+    assert normalize(row,QUERY,NOW).return_transfers == back
+
+def test_past_and_exact_airport():
+    assert normalize(record(),QUERY,datetime(2026,10,2,8,tzinfo=timezone.utc)) is None
+    row=record();row['origin_airport']='DME'
+    assert normalize(row,QUERY,NOW) is None
+    row.pop('origin_airport')
+    with pytest.raises(ValueError): normalize(row,QUERY,NOW)
+
+def test_missing_optional_fields_and_identity():
+    row=record();row.pop('transfers');row.pop('return_transfers')
+    offer=normalize(row,QUERY,NOW)
+    assert offer.transfers is None and offer.duration_to is None
+    row['price']=Decimal('9000'); assert normalize(row,QUERY,NOW).id == offer.id
+
+@pytest.mark.parametrize('url',['http://aviasales.com/search/a','https://aviasales.com.evil/search/a','//evil/search/a','https://u:p@aviasales.com/search/a','https://aviasales.com:444/search/a'])
+def test_unsafe_url(url):
+    with pytest.raises(ValueError): safe_search_url(url)
+
+def test_health_no_token_and_validation():
+    with TestClient(create_app(Settings(),now=lambda:NOW)) as client:
+        assert client.get('/health').json() == {'status':'ok','live_configured':False}
+        assert client.post('/api/v1/search',json=QUERY.model_dump()).status_code == 503
+        for updates in [{'origin':'MOW'},{'month':'2026-09'},{'month':'2027-04'},{'max_budget_minor':499999},{'max_budget_minor':True}]:
+            assert client.post('/api/v1/search',json=QUERY.model_dump()|updates).status_code == 422
+        airports=client.get('/api/v1/airports').json()
+        assert next(x for x in airports if x['iata']=='SVO')['name']=='Шереметьево'
+
+@pytest.mark.asyncio
+async def test_cache_ttl_capacity_singleflight_and_failures():
+    time=[0];cache=TTLCache(10,2,lambda:time[0]);calls=0
+    async def load():
+        nonlocal calls;calls+=1; await asyncio.sleep(.01); return []
+    result=await asyncio.gather(*(cache.get_or_create('a',load) for _ in range(5)))
+    assert calls==1 and result==[[]]*5
+    await cache.get_or_create('a',load);assert calls==1
+    await cache.get_or_create('b',load);await cache.get_or_create('c',load);assert list(cache.entries)==['b','c']
+    time[0]=11;await cache.get_or_create('c',load);assert calls==4
+    async def fail(): raise SearchError('x','failure')
+    for _ in range(2):
+        with pytest.raises(SearchError): await cache.get_or_create('bad',fail)
+    assert 'bad' not in cache.entries
+
+
+def test_rate_limit():
+    time=[0];limiter=RateLimiter(2,lambda:time[0]);limiter.check();limiter.check()
+    with pytest.raises(SearchError) as err: limiter.check()
+    assert err.value.status==429
+    time[0]=60;limiter.check()
+
+async def run_upstream(handler,settings=None):
+    async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as client:
+        return await Travelpayouts(client,settings or Settings(token='fixture'),now=lambda:NOW,sleep=lambda _:asyncio.sleep(0)).search(QUERY)
+
+@pytest.mark.asyncio
+async def test_empty_success():
+    result=await run_upstream(lambda req:httpx.Response(200,json={'success':True,'data':[]}))
+    assert result.offers==[] and not result.incomplete
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize('status,body,code',[(401,{},'upstream_auth'),(403,{},'upstream_auth'),(400,{},'upstream_http'),(200,{'success':False,'data':None},'upstream_failure'),(200,{'success':True,'data':{}},'upstream_json'),(200,{'success':True,'data':[],'currency':'eur'},'upstream_json')])
+async def test_upstream_errors_no_retry(status,body,code):
+    count=0
+    def handler(req):
+        nonlocal count;count+=1;return httpx.Response(status,json=body)
+    with pytest.raises(SearchError) as error:await run_upstream(handler)
+    assert error.value.code==code and count==1
+
+@pytest.mark.asyncio
+async def test_timeout_and_json():
+    def timeout(req): raise httpx.ReadTimeout('fixture')
+    with pytest.raises(SearchError) as error: await run_upstream(timeout)
+    assert error.value.code=='timeout'
+    with pytest.raises(SearchError) as error: await run_upstream(lambda req:httpx.Response(200,text='{bad'))
+    assert error.value.code=='upstream_json'
+
+@pytest.mark.asyncio
+async def test_retry_after_and_temporary_errors():
+    calls=0
+    def handler(req):
+        nonlocal calls;calls+=1
+        if calls==1:return httpx.Response(429,headers={'Retry-After':'0'})
+        return httpx.Response(200,json={'success':True,'data':[]})
+    assert not (await run_upstream(handler)).incomplete and calls==2
+    with pytest.raises(SearchError): await run_upstream(lambda req:httpx.Response(429,headers={'Retry-After':'60'}))
+
+@pytest.mark.asyncio
+async def test_pagination_duplicates_and_partial():
+    row=record();row['price']=8500
+    calls=[]
+    def handler(req):
+        assert req.headers['X-Access-Token']=='fixture'
+        assert req.url.params['origin']=='SVO' and req.url.params['currency']=='rub' and req.url.params['one_way']=='false'
+        page=int(req.url.params['page']);calls.append(page)
+        return httpx.Response(200,json={'success':True,'data':[row]*1000 if page==1 else [row]})
+    result=await run_upstream(handler)
+    assert calls==[1,2] and len(result.offers)==1 and not result.incomplete
+    result=await run_upstream(handler,Settings(token='fixture',pages=1))
+    assert result.incomplete and len(result.offers)==1
+    def partial(req):
+        if req.url.params['page']=='1':return httpx.Response(200,json={'success':True,'data':[row]*1000})
+        return httpx.Response(401)
+    assert (await run_upstream(partial)).incomplete
+
+@pytest.mark.asyncio
+async def test_bad_records_and_currency_mismatch():
+    row=record();row['price']=8500
+    bad=row|{'currency':'EUR'}
+    result=await run_upstream(lambda req:httpx.Response(200,json={'success':True,'data':[{},bad,row]}))
+    assert result.incomplete and len(result.offers)==1
+
+
+def test_http_rate_limit_and_contract():
+    row=record();row['price']=8500
+    transport=httpx.MockTransport(lambda req:httpx.Response(200,json={'success':True,'data':[row]}))
+    with TestClient(create_app(Settings(token='fixture',rate=1),transport=transport,now=lambda:NOW)) as client:
+        response=client.post('/api/v1/search',json=QUERY.model_dump())
+        assert response.status_code==200 and response.json()['offers'][0]['price_minor']==850000
+        response=client.post('/api/v1/search',json=QUERY.model_dump());assert response.status_code==429 and response.headers['Retry-After']
+
+@pytest.mark.parametrize('value',['not-a-price','', 'NaN', 'Infinity'])
+def test_invalid_decimal_strings(value):
+    with pytest.raises(ValueError): rubles_to_minor(value)
+
+@pytest.mark.asyncio
+async def test_total_time_budget_and_partial_timeout():
+    row=record();row['price']=8500
+    async def slow(req):
+        await asyncio.sleep(.1)
+        return httpx.Response(200,json={'success':True,'data':[]})
+    with pytest.raises(SearchError) as error:
+        await run_upstream(slow,Settings(token='fixture',timeout=.02))
+    assert error.value.code=='timeout'
+    async def partial(req):
+        if req.url.params['page']=='1':
+            return httpx.Response(200,json={'success':True,'data':[row]*1000})
+        await asyncio.sleep(.2)
+        return httpx.Response(200,json={'success':True,'data':[]})
+    result=await run_upstream(partial,Settings(token='fixture',timeout=.08))
+    assert result.incomplete and len(result.offers)==1
+
+@pytest.mark.asyncio
+async def test_cancelled_consumer_does_not_duplicate_inflight():
+    cache=TTLCache();calls=0
+    async def load():
+        nonlocal calls;calls+=1;await asyncio.sleep(.02);return 'ok'
+    task=asyncio.create_task(cache.get_or_create('a',load));await asyncio.sleep(.001);task.cancel()
+    with pytest.raises(asyncio.CancelledError):await task
+    assert await cache.get_or_create('a',load)=='ok' and calls==1
+
+
+def test_partner_links_only_generated_exact_urls(tmp_path):
+    path=tmp_path/'links.json'
+    path.write_text(json.dumps({'https://www.aviasales.com/search/SVO0210LED04101':'https://tp.media/generated','https://www.aviasales.com/search/bad':'https://tp.media.evil.test/generated'}))
+    adapter=Travelpayouts(None,Settings(partner_links_file=str(path),marker='12345'))
+    assert adapter.partner('https://www.aviasales.com/search/SVO0210LED04101')=='https://tp.media/generated'
+    assert adapter.partner('https://www.aviasales.com/search/bad') is None
+    assert adapter.partner('https://www.aviasales.com/search/unmapped') is None
+
+
+def test_contract_fixture_stays_in_sync():
+    from pathlib import Path
+    from app.models import SearchResponse
+    response=SearchResponse.model_validate_json(Path(__file__).with_name('contract-response.json').read_text())
+    assert response.offers[0].price_minor==850001 and response.offers[0].return_transfers is None

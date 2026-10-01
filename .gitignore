@@ -46,3 +46,13 @@ pnpm-debug.log*
 *.swp
 *.swo
 *~
+
+# Xcode / SwiftPM
+DerivedData/
+.build/
+.swiftpm/
+*.xcuserstate
+xcuserdata/
+
+# Local token files (including token.env)
+*.env
