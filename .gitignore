@@ -1,0 +1,48 @@
+# macOS and Windows
+.DS_Store
+._*
+Thumbs.db
+Desktop.ini
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.pem
+*.key
+
+# Dependencies
+node_modules/
+.pnp.*
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+
+# Build output and caches
+dist/
+build/
+out/
+.next/
+.nuxt/
+.output/
+.cache/
+.turbo/
+*.tsbuildinfo
+
+# Tests and logs
+coverage/
+.pytest_cache/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Local editor settings and temporary files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~

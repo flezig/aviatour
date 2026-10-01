@@ -1,0 +1,55 @@
+name: Задача
+description: Задача с контекстом для человека и Codex
+title: "[Задача] "
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: Цель
+      description: Какой результат нужен и зачем?
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Контекст
+      description: Текущее состояние, ограничения, ссылки и связанные задачи.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Критерии готовности
+      description: Проверяемые условия завершения.
+      placeholder: "- [ ] Результат проверен"
+    validations:
+      required: true
+  - type: textarea
+    id: plan
+    attributes:
+      label: План и следующий шаг
+      description: С чего начать; план можно уточнять в комментариях.
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options:
+        - Medium
+        - High
+        - Low
+  - type: dropdown
+    id: effort
+    attributes:
+      label: Effort
+      options:
+        - Small
+        - Medium
+        - Large
+  - type: dropdown
+    id: type
+    attributes:
+      label: Type
+      options:
+        - Feature
+        - Bug
+        - Research
