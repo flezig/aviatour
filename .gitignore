@@ -53,3 +53,6 @@ DerivedData/
 .swiftpm/
 *.xcuserstate
 xcuserdata/
+
+# Local token files (including token.env)
+*.env
