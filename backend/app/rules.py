@@ -59,7 +59,10 @@ def normalize(row, request, received_at, envelope_currency='rub'):
     if not origin or not destination or not origin['timezone'] or not destination['timezone']:
         raise ValueError('airport or timezone unavailable')
     # Do not reinterpret city codes as specific airports.
-    if origin['iata'] != request.origin:
+    if request.origin_city_code:
+        if origin['city_code'] != request.origin_city_code:
+            return None
+    elif origin['iata'] != request.origin:
         return None
     dep = aware(row.get('departure_at')).astimezone(ZoneInfo(origin['timezone']))
     ret = aware(row.get('return_at')).astimezone(ZoneInfo(destination['timezone']))
@@ -74,7 +77,7 @@ def normalize(row, request, received_at, envelope_currency='rub'):
     identity = [origin['iata'], destination['iata'], dep.isoformat(), ret.isoformat(), row.get('airline'), str(row.get('flight_number', '')), 'LIVE']
     return Offer(id=hashlib.sha256(json.dumps(identity).encode()).hexdigest()[:32],
         city_code=destination['city_code'], city=destination['city'], country_code=destination['country_code'], country=destination['country'],
-        origin_airport=origin['iata'], destination_airport=destination['iata'], origin_city=origin['city'], origin_name=origin['name'], destination_name=destination['name'],
+        origin_airport=origin['iata'], origin_city_code=origin['city_code'], destination_airport=destination['iata'], origin_city=origin['city'], origin_name=origin['name'], destination_name=destination['name'],
         departure_at=dep, return_at=ret, origin_timezone=origin['timezone'], destination_timezone=destination['timezone'],
         transfers=transfers, return_transfers=back, duration_to=count(row.get('duration_to')), duration_back=count(row.get('duration_back')),
         price_minor=price, search_url=safe_search_url(row.get('link')), received_at=received_at)

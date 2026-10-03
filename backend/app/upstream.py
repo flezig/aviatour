@@ -98,7 +98,7 @@ class Travelpayouts:
             nonlocal pages_read
             for page in range(1, self.settings.pages + 1):
                 try:
-                    payload = await self.page(dict(origin=request.origin, departure_at=request.month, one_way='false', currency='rub', market=self.settings.market,
+                    payload = await self.page(dict(origin=request.origin_city_code or request.origin, departure_at=request.month, one_way='false', currency='rub', market=self.settings.market,
                         direct=str(request.direct_only).lower(), unique='false', sorting='price', limit=1000, page=page), deadline)
                 except SearchError as error:
                     if not pages_read:

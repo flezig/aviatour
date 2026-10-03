@@ -1,10 +1,11 @@
 # Контракт Aviator v1
 
 POST /api/v1/search: JSON `{ "origin": "SVO", "month": "2026-10", "max_budget_minor": 2500000, "direct_only": false }`.
+Для всех аэропортов города добавьте `"origin_city_code": "MOW"`; `origin` остаётся аэропортом этого города для проверки справочника и локального месяца. Несовпадение города и аэропорта — 422. Без поля или при null поиск ограничен указанным аэропортом.
 Аэропорт из GET /api/v1/airports; месяц вылета — текущий и следующие пять в зоне аэропорта. Бюджет 500000…10000000 копеек, целое; граница включительна. Валюта только RUB, один взрослый, эконом, туда-обратно.
 
 Ответ: `{ "offers": [...], "received_at": "ISO8601 UTC", "incomplete": false, "warnings": [] }`.
-Предложение: `id` (стабильный маршрут/даты/рейс/источник, без цены), `city_code`, `city`, `country_code`, `country`, `origin_airport`, `destination_airport`, `origin_city`, `origin_name`, `destination_name`, `departure_at`, `return_at` (ISO8601 с offset), `origin_timezone`, `destination_timezone`, `transfers`, `return_transfers`, `duration_to`, `duration_back` (минуты), `price_minor` (целые копейки), `currency` = RUB, `search_url`, `partner_url`, `source` = LIVE/MOCK, `received_at`.
+Предложение: `id` (стабильный маршрут/даты/рейс/источник, без цены), `city_code`, `city`, `country_code`, `country`, `origin_airport`, `origin_city_code` (код города вылета), `destination_airport`, `origin_city`, `origin_name`, `destination_name`, `departure_at`, `return_at` (ISO8601 с offset), `origin_timezone`, `destination_timezone`, `transfers`, `return_transfers`, `duration_to`, `duration_back` (минуты), `price_minor` (целые копейки), `currency` = RUB, `search_url`, `partner_url`, `source` = LIVE/MOCK, `received_at`.
 Неизвестные необязательные значения — null. Отправления отображаются в зоне соответствующего аэропорта. Получение ответа не является временем обнаружения цены. Нет вымышленных found_at/expires_at. Клиент применяет дополнительные фильтры перед выбором минимального предложения города.
 
 GET /health: `{ "status": "ok", "live_configured": false }`.

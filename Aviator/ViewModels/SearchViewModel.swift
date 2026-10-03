@@ -20,6 +20,19 @@ import Combine
     var offers: [Offer] {
         SearchRules.destinations(result.offers, query: performedQuery ?? query, now: clock.now, filters: filters)
     }
+    var emptyMessage: String {
+        if !filters.isEmpty { return "Дополнительные фильтры скрыли найденные варианты. Сбросьте их, чтобы увидеть результаты исходного поиска." }
+        let direct = (performedQuery ?? query).directOnly ? " Попробуйте разрешить пересадки." : ""
+        return "В кеше цен нет подходящих поездок на выходные для выбранного месяца и бюджета. Это не означает, что билетов нет. Увеличьте бюджет или выберите другой месяц." + direct
+    }
+    func retryWithBudget() {
+        query = performedQuery ?? query
+        query.maxBudgetMinor = min(10_000_000, query.maxBudgetMinor + 1_000_000)
+        start()
+    }
+    func retryWithTransfers() {
+        query = performedQuery ?? query; query.directOnly = false; start()
+    }
     func start() {
         task?.cancel(); generation = UUID(); let ticket = generation; let parameters = query
         performedQuery = parameters; filters = ExtraFilters(); result = SearchResult(offers: [], incomplete: false, warnings: []); state = .loading
