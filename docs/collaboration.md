@@ -4,7 +4,7 @@
 
 Владелец: `flezig`. Репозиторий: `flezig/aviatour`.
 Название доски: `Aviatour — Tasks`.
-Номер и URL: пока не настроены; после создания добавить сюда фактические значения.
+Номер: **1**. URL: https://github.com/users/flezig/projects/1.
 
 GitHub Issues хранят содержание задачи, комментарии — решения и точки продолжения, Project — статус, приоритет, объём и тип. На одну задачу создаётся один issue. Участники работают под собственными GitHub-аккаунтами.
 
@@ -41,7 +41,7 @@ GitHub Issues хранят содержание задачи, комментар
 | Review | Результат готов, PR ожидает проверки/слияния |
 | Done | Результат принят, issue закрыт |
 
-Поля: Priority — High / Medium / Low; Effort — Small / Medium / Large; Type — Feature / Bug / Research. Представления: Board (по Status), Quick wins (High + Small, незавершённые), Research backlog (Research + Backlog).
+Поля: Priority — High / Medium / Low; Effort — Small / Medium / Large; Task Type — Feature / Bug / Research (название Type зарезервировано GitHub). Представления: Board (по Status), Quick wins (High + Small, незавершённые), Research backlog (Research + Backlog).
 
 Для автоматического Done включить встроенный workflow Project «Item closed» → Done. Новые issues агент добавляет в Project при создании; закрытие issue с кодом происходит после слияния PR с `Closes #N`.
 
