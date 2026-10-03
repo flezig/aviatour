@@ -49,6 +49,21 @@ final class FixtureURLProtocol: URLProtocol {
         let service = MockSearchService(airports: airports, clock: FixedClock(now: now))
         let query = SearchQuery(month: "2026-10")
         let all = try await service.search(SearchQuery(month: "2026-10", maxBudgetMinor: 10_000_000)).offers
+        let cityQuery = SearchQuery(origin: "DME", originCityCode: "MOW", month: "2026-10")
+        check(try await service.search(cityQuery).offers.count == 7, "MOCK city includes SVO fixtures")
+        let dmeOffer = try modify(all[0], ["originAirport": "DME", "originCityCode": "MOW"])
+        check(SearchRules.accepts(dmeOffer, query: cityQuery, now: now), "city accepts another airport")
+        check(!SearchRules.accepts(dmeOffer, query: query, now: now), "single airport remains exact")
+        check(!SearchRules.accepts(try modify(dmeOffer, ["originCityCode":"LED"]), query: cityQuery, now: now), "city rejects another city")
+        let emptyVM = SearchViewModel(service: Stub(result: .success(SearchResult(offers: [], incomplete: false, warnings: []))), clock: FixedClock(now: now), analytics: QuietAnalytics())
+        emptyVM.query = cityQuery; emptyVM.query.directOnly = true; emptyVM.start()
+        emptyVM.query.origin = "OVB"
+        emptyVM.retryWithBudget()
+        check(emptyVM.query.origin == "DME" && emptyVM.query.originCityCode == "MOW" && emptyVM.query.maxBudgetMinor == 3_500_000 && emptyVM.query.directOnly, "budget retry preserves performed query")
+        emptyVM.retryWithTransfers()
+        check(!emptyVM.query.directOnly && emptyVM.query.maxBudgetMinor == 3_500_000, "transfer retry preserves budget")
+        emptyVM.filters.cheap = true
+        check(emptyVM.emptyMessage.contains("Сбросьте"), "filtered empty explanation")
         check(query.origin == "SVO" && query.maxBudgetMinor == 2_500_000, "defaults")
         check(all.count == 10, "ten fixtures")
         check(SearchRules.destinations(all, query: query, now: now, filters: ExtraFilters()).count == 7, "seven defaults")

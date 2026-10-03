@@ -26,7 +26,7 @@ struct MockSearchService: SearchService {
     let airports: [Airport]
     let clock: any AppClock
     func search(_ query: SearchQuery) async throws -> SearchResult {
-        guard query.origin == "SVO" else { throw SearchFailure.unsupportedAirport }
+        guard query.originCityCode.map({ $0 == "MOW" }) ?? (query.origin == "SVO") else { throw SearchFailure.unsupportedAirport }
         try Task.checkCancellation()
         let cal = TravelDates.calendar("Europe/Moscow")
         let parts = query.month.split(separator: "-").compactMap { Int($0) }
@@ -50,7 +50,7 @@ struct MockSearchService: SearchService {
                          originAirport: "SVO", destinationAirport: code, originCity: origin.city, originName: origin.name, destinationName: airport.name,
                          departureAt: dep, returnAt: ret, originTimezone: "Europe/Moscow", destinationTimezone: zone,
                          transfers: out, returnTransfers: back, durationTo: nil, durationBack: nil, priceMinor: price, currency: "RUB", searchURL: url.absoluteString,
-                         partnerURL: nil, source: "MOCK", receivedAt: clock.now)
+                         partnerURL: nil, source: "MOCK", receivedAt: clock.now, originCityCode: "MOW")
         }
         return SearchResult(offers: offers.filter { SearchRules.accepts($0, query: query, now: clock.now) }, incomplete: false, warnings: [])
     }

@@ -213,3 +213,36 @@ def test_contract_fixture_stays_in_sync():
     from app.models import SearchResponse
     response=SearchResponse.model_validate_json(Path(__file__).with_name('contract-response.json').read_text())
     assert response.offers[0].price_minor==850001 and response.offers[0].return_transfers is None
+
+@pytest.mark.parametrize('airport',['SVO','DME','VKO'])
+def test_city_search_accepts_each_moscow_airport(airport):
+    query=QUERY.model_copy(update={'origin_city_code':'MOW'})
+    row=record(); row['origin_airport']=airport
+    offer=normalize(row,query,NOW)
+    assert offer.origin_airport==airport and offer.origin_city_code=='MOW'
+    row['origin_airport']='LED'
+    assert normalize(row,query,NOW) is None
+
+
+def test_city_validation_and_cache_separation():
+    calls=[]
+    def handler(req):
+        calls.append(req.url.params['origin'])
+        row=record();row['price']=8500;row['origin_airport']='DME'
+        return httpx.Response(200,json={'success':True,'data':[row]})
+    with TestClient(create_app(Settings(token='test'),transport=httpx.MockTransport(handler),now=lambda:NOW)) as client:
+        query=QUERY.model_dump()
+        assert client.post('/api/v1/search',json=query|{'origin_city_code':'LED'}).status_code==422
+        assert client.post('/api/v1/search',json=query).json()['offers']==[]
+        result=client.post('/api/v1/search',json=query|{'origin_city_code':'MOW'}).json()
+        assert result['offers'][0]['origin_airport']=='DME'
+        client.post('/api/v1/search',json=query|{'origin_city_code':'MOW'})
+        assert calls==['SVO','MOW']
+
+
+@pytest.mark.parametrize('origin,zone',[('LED','+03:00'),('KZN','+03:00'),('OVB','+07:00')])
+def test_other_city_local_weekend(origin,zone):
+    row=record();row.update(origin_airport=origin,destination_airport='SVO',
+        departure_at='2026-10-02T01:00:00'+zone,return_at='2026-10-04T18:00:00+03:00')
+    offer=normalize(row,QUERY.model_copy(update={'origin':origin}),NOW)
+    assert offer and offer.origin_airport==origin

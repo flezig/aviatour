@@ -29,7 +29,7 @@ import SwiftUI
                         Button { chooseAirport = true } label: {
                             HStack {
                                 Image(systemName: "airplane.departure")
-                                VStack(alignment: .leading, spacing: 4) { Text("Откуда").font(.caption).foregroundStyle(.secondary); Text(airport?.label ?? model.query.origin).font(.headline) }
+                                VStack(alignment: .leading, spacing: 4) { Text("Откуда").font(.caption).foregroundStyle(.secondary); Text(model.query.originCityCode == nil ? (airport?.label ?? model.query.origin) : "\(airport?.city ?? model.query.origin) · все аэропорты").font(.headline) }
                                 Spacer(); Image(systemName: "chevron.down")
                             }.foregroundStyle(.primary).frame(minHeight: 44)
                         }.accessibilityIdentifier("originPicker")
@@ -56,7 +56,7 @@ import SwiftUI
                 }
             }.background(Color(.systemGroupedBackground)).toolbar(.hidden, for: .navigationBar)
                 .navigationDestination(isPresented: $showResults) { ResultsView(model: model, favorites: favorites, analytics: analytics) }
-                .sheet(isPresented: $chooseAirport) { AirportPicker(airports: airports, selection: $model.query.origin) }
+                .sheet(isPresented: $chooseAirport) { AirportPicker(airports: airports, selection: $model.query.origin, citySelection: $model.query.originCityCode) }
                 .sheet(isPresented: $showCredits) { CreditsView() }
                 .onChange(of: model.query.origin) { _, _ in
                     let months = TravelDates.months(now: model.clock.now, zone: airport?.timezone ?? "Europe/Moscow")
@@ -69,20 +69,46 @@ import SwiftUI
 struct AirportPicker: View {
     let airports: [Airport]
     @Binding var selection: String
+    @Binding var citySelection: String?
     @Environment(\.dismiss) private var dismiss
     @State private var text = ""
-    private var matches: [Airport] { airports.filter { text.isEmpty || $0.city.localizedCaseInsensitiveContains(text) || $0.iata.localizedCaseInsensitiveContains(text) || $0.name.localizedCaseInsensitiveContains(text) } }
+    private var matches: [Airport] { airports.filter { text.isEmpty || $0.city.localizedCaseInsensitiveContains(text) || $0.cityCode.localizedCaseInsensitiveContains(text) || $0.iata.localizedCaseInsensitiveContains(text) || $0.name.localizedCaseInsensitiveContains(text) } }
+    private var groups: [[Airport]] {
+        Dictionary(grouping: matches, by: \.cityCode).values.sorted {
+            ($0.first?.city ?? "").localizedStandardCompare($1.first?.city ?? "") == .orderedAscending
+        }
+    }
     var body: some View {
         NavigationStack {
-            List(matches) { airport in
-                Button { selection = airport.iata; dismiss() } label: {
-                    VStack(alignment: .leading, spacing: 4) { Text(airport.label).font(.headline); Text(airport.name).font(.subheadline).foregroundStyle(.secondary) }.foregroundStyle(.primary).padding(.vertical, 4)
+            List {
+                ForEach(groups, id: \.self) { group in
+                    if let representative = group.first {
+                        Section(representative.city) {
+                            Button {
+                                selection = representative.iata; citySelection = representative.cityCode; dismiss()
+                            } label: {
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text("Все аэропорты города").font(.headline)
+                                    Text(airports.filter { $0.cityCode == representative.cityCode }.map(\.iata).joined(separator: ", ")).font(.caption).foregroundStyle(.secondary)
+                                }.foregroundStyle(.primary)
+                            }.accessibilityIdentifier("originCity.\(representative.cityCode)")
+                            ForEach(group) { airport in
+                                Button { selection = airport.iata; citySelection = nil; dismiss() } label: {
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text(airport.label).font(.headline)
+                                        Text(airport.name).font(.subheadline).foregroundStyle(.secondary)
+                                    }.foregroundStyle(.primary).padding(.vertical, 4)
+                                }
+                            }
+                        }
+                    }
                 }
-            }.searchable(text: $text, prompt: "Город или IATA-код").navigationTitle("Аэропорт вылета")
+            }.searchable(text: $text, prompt: "Город или IATA-код").navigationTitle("Откуда летим")
                 .toolbar { Button("Готово") { dismiss() } }
         }
     }
 }
+
 struct CreditsView: View {
     @Environment(\.dismiss) private var dismiss
     var body: some View {

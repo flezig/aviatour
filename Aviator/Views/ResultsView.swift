@@ -4,12 +4,13 @@ import SwiftUI
     @ObservedObject var model: SearchViewModel
     @ObservedObject var favorites: FavoritesViewModel
     let analytics: any AnalyticsService
+    @Environment(\.dismiss) private var dismiss
     @Environment(\.dynamicTypeSize) private var textSize
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
                 if let query = model.performedQuery {
-                    Text("\(query.origin) · \(TravelDates.monthLabel(query.month)) · до \(Money.format(query.maxBudgetMinor))").font(.subheadline).foregroundStyle(.secondary)
+                    Text("\(query.originCityCode.map { "\($0) · все аэропорты" } ?? query.origin) · \(TravelDates.monthLabel(query.month)) · до \(Money.format(query.maxBudgetMinor))").font(.subheadline).foregroundStyle(.secondary)
                 }
                 switch model.state {
                 case .loading:
@@ -28,7 +29,18 @@ import SwiftUI
                         ForEach(model.result.warnings, id: \.self) { Text($0).font(.caption).foregroundStyle(.secondary) }
                     }
                     if model.offers.isEmpty {
-                        StatusPanel(symbol: "paperplane", title: "Пока без вариантов", message: model.filters.isEmpty ? "В полученной выборке нет подходящих предложений. Попробуйте следующий месяц или другой бюджет." : "Нет результатов после фильтров. Сбросьте их кнопкой «Все».")
+                        StatusPanel(symbol: "paperplane", title: "Пока без вариантов", message: model.emptyMessage)
+                        if !model.filters.isEmpty {
+                            PrimaryButton(title: "Сбросить фильтры") { model.filters = ExtraFilters() }
+                        } else {
+                            if (model.performedQuery ?? model.query).maxBudgetMinor < 10_000_000 {
+                                PrimaryButton(title: "Искать до \(Money.format(min(10_000_000, (model.performedQuery ?? model.query).maxBudgetMinor + 1_000_000)))") { model.retryWithBudget() }
+                            }
+                            if (model.performedQuery ?? model.query).directOnly {
+                                PrimaryButton(title: "Разрешить пересадки") { model.retryWithTransfers() }
+                            }
+                            Button("Изменить месяц и условия поиска") { dismiss() }.frame(minHeight: 44)
+                        }
                     } else {
                         LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 16), count: textSize.isAccessibilitySize ? 1 : 2), spacing: 20) {
                             ForEach(model.offers) { offer in

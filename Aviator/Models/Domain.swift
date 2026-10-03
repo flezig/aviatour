@@ -14,6 +14,7 @@ struct Airport: Codable, Identifiable, Hashable {
 
 struct SearchQuery: Codable, Equatable {
     var origin = "SVO"
+    var originCityCode: String? = nil
     var month: String
     var maxBudgetMinor = 2_500_000
     var directOnly = false
@@ -44,6 +45,7 @@ struct Offer: Codable, Identifiable, Hashable {
     let partnerURL: String?
     let source: String
     let receivedAt: Date
+    var originCityCode: String? = nil
     var isDemo: Bool { source == "MOCK" }
     var isDirect: Bool { transfers == 0 && returnTransfers == 0 }
     var imageName: String { destinationAirport }

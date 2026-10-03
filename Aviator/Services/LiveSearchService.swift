@@ -7,6 +7,7 @@ private struct OfferDTO: Decodable {
     let originAirport, destinationAirport, originCity, originName, destinationName: String
     let departureAt, returnAt: Date
     let originTimezone, destinationTimezone: String
+    let originCityCode: String?
     let transfers, returnTransfers, durationTo, durationBack: Int?
     let priceMinor: Int
     let currency, searchUrl: String
@@ -18,7 +19,7 @@ private struct OfferDTO: Decodable {
         return Offer(id: id, cityCode: cityCode, city: city, countryCode: countryCode, country: country, originAirport: originAirport, destinationAirport: destinationAirport,
                      originCity: originCity, originName: originName, destinationName: destinationName, departureAt: departureAt, returnAt: returnAt,
                      originTimezone: originTimezone, destinationTimezone: destinationTimezone, transfers: transfers, returnTransfers: returnTransfers,
-                     durationTo: durationTo, durationBack: durationBack, priceMinor: priceMinor, currency: currency, searchURL: searchUrl, partnerURL: partnerUrl, source: source, receivedAt: receivedAt)
+                     durationTo: durationTo, durationBack: durationBack, priceMinor: priceMinor, currency: currency, searchURL: searchUrl, partnerURL: partnerUrl, source: source, receivedAt: receivedAt, originCityCode: originCityCode)
     }
 }
 private struct SearchResponseDTO: Decodable {

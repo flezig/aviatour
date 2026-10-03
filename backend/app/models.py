@@ -5,6 +5,7 @@ from pydantic import BaseModel, ConfigDict, Field
 class SearchRequest(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True)
     origin: str = Field(pattern=r'^[A-Z]{3}$')
+    origin_city_code: str | None = Field(default=None, pattern=r'^[A-Z]{3}$')
     month: str = Field(pattern=r'^\d{4}-(0[1-9]|1[0-2])$')
     max_budget_minor: int = Field(default=2500000, ge=500000, le=10000000)
     direct_only: bool = False
@@ -16,6 +17,7 @@ class Offer(BaseModel):
     country_code: str | None
     country: str | None
     origin_airport: str
+    origin_city_code: str | None = None
     destination_airport: str
     origin_city: str
     origin_name: str

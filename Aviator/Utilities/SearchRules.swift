@@ -39,7 +39,7 @@ enum TravelDates {
 
 enum SearchRules {
     static func accepts(_ offer: Offer, query: SearchQuery, now: Date, filters: ExtraFilters = ExtraFilters()) -> Bool {
-        guard offer.currency == "RUB", offer.originAirport == query.origin, offer.departureAt > now,
+        guard offer.currency == "RUB", (query.originCityCode.map { offer.originCityCode == $0 } ?? (offer.originAirport == query.origin)), offer.departureAt > now,
               offer.returnAt > offer.departureAt, offer.priceMinor <= query.maxBudgetMinor,
               TravelDates.month(offer.departureAt, zone: offer.originTimezone) == query.month else { return false }
         let outbound = TravelDates.calendar(offer.originTimezone).component(.weekday, from: offer.departureAt)
