@@ -31,12 +31,20 @@ struct AirportIndex {
         let codes: String
         let airports: [Airport]
     }
+    struct Row: Identifiable {
+        enum Kind { case header(City), city(City), airport(Airport) }
+        let id: String
+        let kind: Kind
+    }
     let cities: [City]
+    let rows: [Row]
+    let byIATA: [String: Airport]
     private let searchable: [String: [String]]
     private let locale: Locale
 
     init(airports: [Airport], locale: Locale = .current) {
         self.locale = locale
+        byIATA = Dictionary(uniqueKeysWithValues: airports.map { ($0.iata, $0) })
         searchable = Dictionary(uniqueKeysWithValues: airports.map { airport in
             (airport.iata, [airport.city, airport.cityCode, airport.iata, airport.name].map {
                 $0.folding(options: [.caseInsensitive], locale: locale)
@@ -49,6 +57,14 @@ struct AirportIndex {
         }.sorted {
             let order = $0.name.localizedStandardCompare($1.name)
             return order == .orderedSame ? $0.id < $1.id : order == .orderedAscending
+        }
+        rows = Self.rows(for: cities)
+    }
+
+    static func rows(for cities: [City]) -> [Row] {
+        cities.flatMap { city in
+            [Row(id: "header." + city.id, kind: .header(city)), Row(id: "city." + city.id, kind: .city(city))]
+                + city.airports.map { Row(id: "airport." + $0.iata, kind: .airport($0)) }
         }
     }
 
@@ -75,29 +91,45 @@ struct MockSearchService: SearchService {
         guard query.originCityCode.map({ $0 == "MOW" }) ?? (query.origin == "SVO") else { throw SearchFailure.unsupportedAirport }
         try Task.checkCancellation()
         let cal = TravelDates.calendar("Europe/Moscow")
-        let parts = query.month.split(separator: "-").compactMap { Int($0) }
-        guard parts.count == 2, let start = cal.date(from: DateComponents(year: parts[0], month: parts[1], day: 1, hour: 10)), let range = cal.range(of: .day, in: .month, for: start) else { throw SearchFailure.invalidData }
-        // Find a future Friday OR Saturday; return can fall in the next month/year.
-        let departure = range.compactMap { cal.date(byAdding: .day, value: $0 - 1, to: start) }.first {
-            [6, 7].contains(cal.component(.weekday, from: $0)) && $0 > clock.now
+        let lookup = Dictionary(uniqueKeysWithValues: airports.map { ($0.iata, $0) })
+        guard let origin = lookup["SVO"] else { throw SearchFailure.invalidData }
+        let initial: Date
+        if let day = query.departureDate, let parsed = TravelDates.parseDay(day, zone: "Europe/Moscow") {
+            initial = cal.date(bySettingHour: 10, minute: 0, second: 0, of: parsed)!
+        } else {
+            guard let start = TravelDates.parseDay(query.month + "-01", zone: "Europe/Moscow"),
+                  let range = cal.range(of: .day, in: .month, for: start) else { throw SearchFailure.invalidData }
+            let candidates = range.compactMap { cal.date(byAdding: .day, value: $0 - 1, to: start) }
+                .compactMap { cal.date(bySettingHour: 10, minute: 0, second: 0, of: $0) }
+            guard let date = candidates.first(where: { [6, 7].contains(cal.component(.weekday, from: $0)) && $0 > clock.now }) else {
+                return SearchResult(offers: [], incomplete: false, warnings: [])
+            }
+            initial = date
         }
-        guard let dep = departure else { return SearchResult(offers: [], incomplete: false, warnings: []) }
-        let offset = 2
-        let returnDate = cal.date(byAdding: .day, value: offset, to: dep)!
         let fixtures: [(String, Int, Int?, Int?)] = [("LED",850000,0,0),("KZN",1050000,0,0),("KGD",1400000,0,0),("AER",1800000,0,0),("MRV",1550000,0,0),("EVN",2400000,0,0),("TBS",2850000,1,1),("IST",3100000,0,0),("GYD",2600000,0,1),("MSQ",2300000,0,0)]
-        guard let origin = airports.first(where: { $0.iata == "SVO" }) else { throw SearchFailure.invalidData }
-        let offers = try fixtures.map { code, price, out, back -> Offer in
-            guard let airport = airports.first(where: { $0.iata == code }), let zone = airport.timezone else { throw SearchFailure.invalidData }
-            let local = cal.dateComponents([.year, .month, .day], from: returnDate)
-            let ret = TravelDates.calendar(zone).date(from: DateComponents(year: local.year, month: local.month, day: local.day, hour: 18))!
-            let id = "MOCK-SVO-\(code)-\(Int(dep.timeIntervalSince1970))-\(Int(ret.timeIntervalSince1970))"
-            let url = LinkBuilder.ordinary(origin: "SVO", destination: code, departure: dep, returnDate: ret, originZone: "Europe/Moscow", destinationZone: zone)
-            return Offer(id: id, cityCode: airport.cityCode, city: airport.city, countryCode: airport.countryCode, country: airport.country,
-                         originAirport: "SVO", destinationAirport: code, originCity: origin.city, originName: origin.name, destinationName: airport.name,
-                         departureAt: dep, returnAt: ret, originTimezone: "Europe/Moscow", destinationTimezone: zone,
-                         transfers: out, returnTransfers: back, durationTo: nil, durationBack: nil, priceMinor: price, currency: "RUB", searchURL: url.absoluteString,
-                         partnerURL: nil, source: "MOCK", receivedAt: clock.now, originCityCode: "MOW")
+        var offers: [Offer] = []
+        for (position, fixture) in fixtures.enumerated() {
+            let (code, price, out, back) = fixture
+            guard let airport = lookup[code], let zone = airport.timezone else { throw SearchFailure.invalidData }
+            for variant in 0..<3 {
+                let day = query.usesExactDates ? initial : cal.date(byAdding: .day, value: variant * 7, to: initial)!
+                let dep = cal.date(bySettingHour: variant == 0 ? 10 : 19, minute: variant * 15, second: 0, of: day)!
+                let returning = query.returnDate.flatMap { TravelDates.parseDay($0, zone: zone) }
+                    ?? TravelDates.parseDay(TravelDates.dateKey(cal.date(byAdding: .day, value: 2, to: dep)!, zone: "Europe/Moscow"), zone: zone)!
+                let ret = TravelDates.calendar(zone).date(bySettingHour: variant == 2 ? 20 : 18, minute: variant * 10, second: 0, of: returning)!
+                let id = "MOCK-SVO-\(code)-\(Int(dep.timeIntervalSince1970))-\(Int(ret.timeIntervalSince1970))"
+                let url = LinkBuilder.ordinary(origin: "SVO", destination: code, departure: dep, returnDate: ret, originZone: "Europe/Moscow", destinationZone: zone)
+                let minutes = 90 + position * 20 + variant * 15
+                let offer = Offer(id: id, cityCode: airport.cityCode, city: airport.city, countryCode: airport.countryCode, country: airport.country,
+                    originAirport: "SVO", destinationAirport: code, originCity: origin.city, originName: origin.name, destinationName: airport.name,
+                    departureAt: dep, returnAt: ret, originTimezone: "Europe/Moscow", destinationTimezone: zone,
+                    transfers: out, returnTransfers: back, durationTo: minutes, durationBack: minutes + 10,
+                    priceMinor: price + variant * 50000, currency: "RUB", searchURL: url.absoluteString,
+                    partnerURL: nil, source: "MOCK", receivedAt: clock.now, originCityCode: "MOW",
+                    airline: ["SU", "S7", "DP"][variant], airlineName: ["Aeroflot", "S7 Airlines", "Pobeda"][variant], flightNumber: "\(700 + position)")
+                if SearchRules.accepts(offer, query: query, now: clock.now) { offers.append(offer) }
+            }
         }
-        return SearchResult(offers: offers.filter { SearchRules.accepts($0, query: query, now: clock.now) }, incomplete: false, warnings: [])
+        return SearchResult(offers: SearchRules.sorted(offers), incomplete: false, warnings: [])
     }
 }

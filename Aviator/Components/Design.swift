@@ -1,18 +1,45 @@
 import SwiftUI
 
 extension Color { static let aviatorBlue = Color(red: 22/255, green: 119/255, blue: 242/255) }
-struct DestinationPhoto: View {
+@MainActor private enum PhotoCache {
+    static let images: NSCache<NSString, UIImage> = {
+        let cache = NSCache<NSString, UIImage>(); cache.totalCostLimit = 32 * 1024 * 1024
+        return cache
+    }()
+    static var inflight: [String: Task<UIImage?, Never>] = [:]
+    static func load(_ name: String) async -> UIImage? {
+        if let cached = images.object(forKey: name as NSString) { return cached }
+        if let running = inflight[name] { return await running.value }
+        let task = Task<UIImage?, Never> {
+            guard let source = UIImage(named: name) else { return nil }
+            return await source.byPreparingThumbnail(ofSize: CGSize(width: 1200, height: 900))
+        }
+        inflight[name] = task
+        let image = await task.value
+        inflight[name] = nil
+        if let image { images.setObject(image, forKey: name as NSString, cost: Int(image.size.width * image.size.height * image.scale * image.scale * 4)) }
+        return image
+    }
+}
+
+@MainActor struct DestinationPhoto: View {
     let name: String
+    @State private var photo: UIImage?
     var body: some View {
         GeometryReader { proxy in
-            if let image = UIImage(named: name) {
-                Image(uiImage: image).resizable().scaledToFill().frame(width: proxy.size.width, height: proxy.size.height).clipped()
+            if let photo {
+                Image(uiImage: photo).resizable().scaledToFill().frame(width: proxy.size.width, height: proxy.size.height).clipped()
             } else {
                 ZStack {
                     LinearGradient(colors: [.aviatorBlue.opacity(0.25), .cyan.opacity(0.12)], startPoint: .topLeading, endPoint: .bottomTrailing)
                     Image(systemName: "airplane.circle").font(.system(size: 56)).foregroundStyle(Color.aviatorBlue)
                 }
             }
+        }.task(id: name) {
+            photo = nil
+            let loaded = await PhotoCache.load(name)
+            guard !Task.isCancelled else { return }
+            photo = loaded
         }.accessibilityHidden(true)
     }
 }
@@ -59,7 +86,14 @@ struct StatusPanel: View {
                 Text(TravelDates.display(offer.departureAt, zone: offer.originTimezone) + " — " + TravelDates.display(offer.returnAt, zone: offer.destinationTimezone)).font(.caption).fixedSize(horizontal: false, vertical: true)
                 Text(offer.isDemo ? "DEMO · условная цена" : "LIVE · кешированная цена").font(.caption.bold()).foregroundStyle(.secondary)
                 Text(offer.isDirect ? "Прямые туда и обратно" : "Условия пересадок — в карточке").font(.caption).foregroundStyle(.secondary)
-                if let duration = offer.durationTo { Text("Туда: \(duration) мин").font(.caption) }
+                Text(offer.airlineLabel).font(.caption)
+                Text("Туда \(TravelDates.time(offer.departureAt, zone: offer.originTimezone)) → \(offer.arrivalAt.map { TravelDates.time($0, zone: offer.destinationTimezone) } ?? "—")*").font(.caption)
+                Text("Обратно \(TravelDates.time(offer.returnAt, zone: offer.destinationTimezone)) → \(offer.returnArrivalAt.map { TravelDates.time($0, zone: offer.originTimezone) } ?? "—")*").font(.caption)
+                Text("* Прилёт расчётный · местное время").font(.caption2).foregroundStyle(.secondary)
+                if let hours = offer.stayHours {
+                    Label("≈ \(Int(hours)) ч на месте", systemImage: "sun.max").font(.caption.bold()).foregroundStyle(Color.aviatorBlue)
+                    if let cost = offer.costPerStayHourMinor { Text("\(Money.format(cost)) / час поездки").font(.caption) }
+                }
             }.padding([.horizontal, .bottom], 12)
         }.background(.white).clipShape(RoundedRectangle(cornerRadius: 20)).shadow(color: .black.opacity(0.06), radius: 12, y: 4)
     }

@@ -246,3 +246,75 @@ def test_other_city_local_weekend(origin,zone):
         departure_at='2026-10-02T01:00:00'+zone,return_at='2026-10-04T18:00:00+03:00')
     offer=normalize(row,QUERY.model_copy(update={'origin':origin}),NOW)
     assert offer and offer.origin_airport==origin
+
+# Exact date search is independent of the weekend-only discovery mode.
+def test_exact_dates_accept_weekdays_and_cross_month_returns():
+    exact = SearchRequest(origin='SVO', month='2026-10', departure_date='2026-10-06', return_date='2026-11-01')
+    row = record(); row.update(departure_at='2026-10-06T23:30:00+03:00', return_at='2026-11-01T01:30:00+03:00', airline='SU', flight_number=123)
+    offer = normalize(row, exact, NOW)
+    assert offer and offer.airline == 'SU' and offer.flight_number == '123'
+    row['return_at'] = '2026-11-02T01:30:00+03:00'
+    assert normalize(row, exact, NOW) is None
+
+@pytest.mark.parametrize('updates', [
+    {'departure_date': '2026-10-06'},
+    {'departure_date': '2026-10-06', 'return_date': '2026-10-05'},
+    {'departure_date': '2026-10-06', 'return_date': '2026-10-06'},
+    {'departure_date': '2026-10-06', 'return_date': '2027-01-01'},
+    {'departure_date': '2026-10-32', 'return_date': '2026-11-01'},
+    {'departure_date': '2026-11-01', 'return_date': '2026-11-03'},
+    {'destination_city_code': 'LED'},
+])
+def test_invalid_exact_date_contract(updates):
+    from pydantic import ValidationError
+    with pytest.raises(ValidationError): SearchRequest.model_validate(QUERY.model_dump() | updates)
+
+
+def test_month_all_trips_and_destination_filter():
+    row = record(); row['return_at'] = '2026-10-10T18:00:00+03:00'
+    assert normalize(row, QUERY, NOW) is None
+    broad = QUERY.model_copy(update={'weekend_only': False, 'destination': 'LED'})
+    assert normalize(row, broad, NOW)
+    assert normalize(row, broad.model_copy(update={'destination': 'KZN'}), NOW) is None
+    assert normalize(row, broad.model_copy(update={'destination': 'LED', 'destination_city_code': 'LED'}), NOW)
+
+
+def test_unknown_airline_and_zero_duration_are_not_invented():
+    row = record(); row.update(airline={'bad': True}, flight_number=True, duration_to=0)
+    offer = normalize(row, QUERY, NOW)
+    assert offer.airline is None and offer.flight_number is None and offer.duration_to == 0
+
+
+def test_source_cache_reused_across_budget_direct_and_weekend_filters():
+    calls = []
+    def handler(req):
+        calls.append(dict(req.url.params))
+        row = record(); row['price'] = 9000
+        stopped = row | {'flight_number': '2', 'transfers': 1, 'price': 26000}
+        long = row | {'flight_number': '3', 'return_at': '2026-10-10T18:00:00+03:00'}
+        return httpx.Response(200, json={'success': True, 'data': [row, stopped, long]})
+    with TestClient(create_app(Settings(token='fixture'), transport=httpx.MockTransport(handler), now=lambda: NOW)) as client:
+        query = QUERY.model_dump()
+        assert len(client.post('/api/v1/search', json=query).json()['offers']) == 1
+        assert len(client.post('/api/v1/search', json=query | {'max_budget_minor': 3000000}).json()['offers']) == 2
+        assert len(client.post('/api/v1/search', json=query | {'max_budget_minor': 3000000, 'direct_only': True}).json()['offers']) == 1
+        assert len(client.post('/api/v1/search', json=query | {'weekend_only': False}).json()['offers']) == 2
+        assert len(calls) == 1 and calls[0]['direct'] == 'false'
+
+
+def test_exact_params_and_cache_separation():
+    calls = []
+    def handler(req):
+        calls.append(dict(req.url.params))
+        return httpx.Response(200, json={'success': True, 'data': []})
+    with TestClient(create_app(Settings(token='fixture'), transport=httpx.MockTransport(handler), now=lambda: NOW)) as client:
+        query = QUERY.model_dump() | {'departure_date': '2026-10-06', 'return_date': '2026-10-08', 'destination': 'LED', 'destination_city_code': 'LED'}
+        assert client.post('/api/v1/search', json=query).status_code == 200
+        assert client.post('/api/v1/search', json=query | {'return_date': '2026-10-09'}).status_code == 200
+        assert client.post('/api/v1/search', json=QUERY.model_dump()).status_code == 200
+        assert len(calls) == 3
+        assert calls[0]['departure_at'] == '2026-10-06' and calls[0]['return_at'] == '2026-10-08' and calls[0]['destination'] == 'LED'
+        assert 'return_at' not in calls[2] and 'destination' not in calls[2]
+        assert client.post('/api/v1/search', json=query | {'destination_city_code': 'MOW'}).status_code == 422
+        assert client.post('/api/v1/search', json=query | {'destination': 'DME', 'destination_city_code': 'MOW'}).status_code == 422
+        assert client.post('/api/v1/search', json=query | {'departure_date': '2026-09-30', 'month': '2026-09'}).status_code == 422

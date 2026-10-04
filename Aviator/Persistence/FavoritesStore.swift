@@ -19,12 +19,16 @@ import SwiftData
     }
     func add(_ offer: Offer, at date: Date) throws {
         // Snapshot identity is independent of current price; keep first saved price.
-        if try context.fetch(FetchDescriptor<FavoriteSnapshot>()).contains(where: { $0.offerID == offer.id }) { return }
+        let id = offer.id
+        var descriptor = FetchDescriptor<FavoriteSnapshot>(predicate: #Predicate { $0.offerID == id })
+        descriptor.fetchLimit = 1
+        if try !context.fetch(descriptor).isEmpty { return }
         context.insert(FavoriteSnapshot(offerID: offer.id, payload: try JSONEncoder().encode(offer), savedAt: date))
         do { try context.save() } catch { context.rollback(); throw error }
     }
     func remove(id: String) throws {
-        for snapshot in try context.fetch(FetchDescriptor<FavoriteSnapshot>()) where snapshot.offerID == id { context.delete(snapshot) }
+        let descriptor = FetchDescriptor<FavoriteSnapshot>(predicate: #Predicate { $0.offerID == id })
+        for snapshot in try context.fetch(descriptor) { context.delete(snapshot) }
         do { try context.save() } catch { context.rollback(); throw error }
     }
 }

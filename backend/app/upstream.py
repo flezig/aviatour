@@ -76,7 +76,7 @@ class Travelpayouts:
                 except ValueError:
                     self.blocked_until = self.clock() + 60
             try:
-                payload = json.loads(response.text, parse_float=Decimal)
+                payload = await asyncio.to_thread(json.loads, response.text, parse_float=Decimal)
             except (ValueError, TypeError):
                 raise SearchError('upstream_json', 'Источник вернул некорректный JSON.') from None
             if not isinstance(payload, dict) or not isinstance(payload.get('success'), bool):
@@ -89,6 +89,22 @@ class Travelpayouts:
                 raise SearchError('upstream_json', 'Валюта источника не соответствует RUB.')
             return payload
 
+    @staticmethod
+    def normalize_page(rows, request, received, currency):
+        offers, invalid, seen = [], False, set()
+        for row in rows:
+            identity = json.dumps(row, sort_keys=True, default=str)
+            if identity in seen:
+                continue
+            seen.add(identity)
+            try:
+                offer = normalize(row, request, received, currency)
+                if offer:
+                    offers.append(offer)
+            except (ValueError, TypeError, KeyError, OverflowError):
+                invalid = True
+        return offers, invalid
+
     async def search(self, request):
         if not self.settings.token:
             raise SearchError('configuration', 'LIVE не настроен: добавьте токен Travelpayouts на backend.', 503)
@@ -98,8 +114,14 @@ class Travelpayouts:
             nonlocal pages_read
             for page in range(1, self.settings.pages + 1):
                 try:
-                    payload = await self.page(dict(origin=request.origin_city_code or request.origin, departure_at=request.month, one_way='false', currency='rub', market=self.settings.market,
-                        direct=str(request.direct_only).lower(), unique='false', sorting='price', limit=1000, page=page), deadline)
+                    params = dict(origin=request.origin_city_code or request.origin, departure_at=request.departure_date or request.month,
+                        one_way='false', currency='rub', market=self.settings.market,
+                        direct=str(request.direct_only).lower(), unique='false', sorting='price', limit=1000, page=page)
+                    if request.return_date:
+                        params['return_at'] = request.return_date
+                    if request.destination:
+                        params['destination'] = request.destination_city_code or request.destination
+                    payload = await self.page(params, deadline)
                 except SearchError as error:
                     if not pages_read:
                         raise
@@ -107,18 +129,15 @@ class Travelpayouts:
                     break
                 pages_read += 1
                 received = self.now()
-                for row in payload['data']:
-                    try:
-                        offer = normalize(row, request, received, payload.get('currency', 'rub'))
-                    except (ValueError, TypeError, KeyError, OverflowError):
-                        if 'Некорректные записи исключены.' not in warnings:
-                            warnings.append('Некорректные записи исключены.')
-                        continue
-                    if offer:
-                        offer.partner_url = self.partner(offer.search_url)
-                        previous = offers.get(offer.id)
-                        if previous is None or offer.price_minor < previous.price_minor:
-                            offers[offer.id] = offer
+                # Parsing thousands of records must not block other HTTP requests.
+                page_offers, invalid = await asyncio.to_thread(self.normalize_page, payload['data'], request, received, payload.get('currency', 'rub'))
+                if invalid and 'Некорректные записи исключены.' not in warnings:
+                    warnings.append('Некорректные записи исключены.')
+                for offer in page_offers:
+                    offer.partner_url = self.partner(offer.search_url)
+                    previous = offers.get(offer.id)
+                    if previous is None or offer.price_minor < previous.price_minor:
+                        offers[offer.id] = offer
                 if len(payload['data']) < 1000:
                     break
                 if page == self.settings.pages:

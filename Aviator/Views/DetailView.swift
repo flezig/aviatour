@@ -29,15 +29,28 @@ import SwiftUI
                     Label("\(offer.originCity) · \(offer.originName) (\(offer.originAirport))", systemImage: "airplane.departure")
                     Label("\(offer.city) · \(offer.destinationName) (\(offer.destinationAirport))", systemImage: "airplane.arrival")
                     Divider()
-                    Text("Туда: " + TravelDates.display(offer.departureAt, zone: offer.originTimezone, time: true))
-                    Text(offer.originTimezone).font(.caption).foregroundStyle(.secondary)
-                    Text("Обратно: " + TravelDates.display(offer.returnAt, zone: offer.destinationTimezone, time: true))
-                    Text(offer.destinationTimezone).font(.caption).foregroundStyle(.secondary)
+                    Text("Авиакомпания по данным источника: " + offer.airlineLabel).font(.headline)
+                    if let flight = offer.flightNumber { Text("Рейс туда: \(offer.airline ?? "") \(flight)") }
+                    Text("Вылет туда: " + TravelDates.display(offer.departureAt, zone: offer.originTimezone, time: true))
+                    if let arrival = offer.arrivalAt { Text("Прилёт туда ≈ " + TravelDates.display(arrival, zone: offer.destinationTimezone, time: true)) }
+                    else { Text("Время прилёта туда не указано").foregroundStyle(.secondary) }
+                    Text("Вылет обратно: " + TravelDates.display(offer.returnAt, zone: offer.destinationTimezone, time: true))
+                    if let arrival = offer.returnArrivalAt { Text("Прилёт домой ≈ " + TravelDates.display(arrival, zone: offer.originTimezone, time: true)) }
+                    else { Text("Время прилёта домой не указано").foregroundStyle(.secondary) }
+                    Text("Время местное: \(offer.originTimezone) / \(offer.destinationTimezone). Прилёт рассчитан из длительности перелёта; подтвердите расписание и перевозчиков всех сегментов у партнёра.").font(.caption).foregroundStyle(.secondary)
                     Text("Календарная длительность: \(TravelDates.days(offer)) дн.").font(.subheadline)
                     Text("Пересадки туда: \(stops(offer.transfers)) · обратно: \(stops(offer.returnTransfers))").font(.subheadline)
                     if let minutes = offer.durationTo { Text("Перелёт туда: \(minutes) мин") }
                     if let minutes = offer.durationBack { Text("Перелёт обратно: \(minutes) мин") }
                 }.padding(20).background(Color(.systemGroupedBackground), in: RoundedRectangle(cornerRadius: 20))
+                if let hours = offer.stayHours, let cost = offer.costPerStayHourMinor {
+                    VStack(alignment: .leading, spacing: 10) {
+                        Label("Время для вашей поездки", systemImage: "sun.max.fill").font(.headline)
+                        Text("≈ \(Int(hours)) часов в пункте назначения").font(.title2.bold())
+                        Text("\(Money.format(cost)) за час поездки").foregroundStyle(Color.aviatorBlue)
+                        Text("От расчётного прилёта до обратного вылета, включая ночи. Дорога из аэропорта, ожидание, проживание и питание не учтены.").font(.caption).foregroundStyle(.secondary)
+                    }.padding(20).background(Color.aviatorBlue.opacity(0.08), in: RoundedRectangle(cornerRadius: 20))
+                }
                 PrimaryButton(title: "Посмотреть на Aviasales →") {
                     do {
                         let url = try LinkBuilder.url(for: offer, now: clock.now)
