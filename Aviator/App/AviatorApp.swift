@@ -16,6 +16,7 @@ import SwiftData
 
 @MainActor final class AppDependencies {
     let airports: [Airport]
+    let airportIndex: AirportIndex
     let clock: any AppClock
     let analytics: any AnalyticsService
     let mode: String
@@ -23,6 +24,7 @@ import SwiftData
     let favorites: FavoritesViewModel
     init() throws {
         airports = try Catalog.load()
+        airportIndex = AirportIndex(airports: airports)
         let isSmoke = ProcessInfo.processInfo.arguments.contains("--ui-smoke")
         clock = isSmoke ? FixedClock(now: ISO8601DateFormatter().date(from: "2026-10-01T09:00:00Z")!) : SystemClock()
         analytics = LocalAnalytics()
@@ -43,7 +45,7 @@ import SwiftData
     init(dependencies: AppDependencies) { self.dependencies = dependencies; self.favorites = dependencies.favorites }
     var body: some View {
         TabView {
-            HomeView(model: dependencies.search, favorites: dependencies.favorites, airports: dependencies.airports, mode: dependencies.mode, analytics: dependencies.analytics)
+            HomeView(model: dependencies.search, favorites: dependencies.favorites, airports: dependencies.airports, airportIndex: dependencies.airportIndex, mode: dependencies.mode, analytics: dependencies.analytics)
                 .tabItem { Label("Поиск", systemImage: "magnifyingglass") }
             FavoritesView(favorites: dependencies.favorites, clock: dependencies.clock, analytics: dependencies.analytics)
                 .tabItem { Label("Избранное", systemImage: "heart") }

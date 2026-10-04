@@ -7,7 +7,8 @@ import SwiftUI
     @Environment(\.dismiss) private var dismiss
     @Environment(\.dynamicTypeSize) private var textSize
     var body: some View {
-        ScrollView {
+        let offers = model.offers
+        return ScrollView {
             VStack(alignment: .leading, spacing: 20) {
                 if let query = model.performedQuery {
                     Text("\(query.originCityCode.map { "\($0) · все аэропорты" } ?? query.origin) · \(TravelDates.monthLabel(query.month)) · до \(Money.format(query.maxBudgetMinor))").font(.subheadline).foregroundStyle(.secondary)
@@ -28,7 +29,7 @@ import SwiftUI
                         Text("Показаны найденные варианты; список может быть неполным").font(.footnote).foregroundStyle(.secondary)
                         ForEach(model.result.warnings, id: \.self) { Text($0).font(.caption).foregroundStyle(.secondary) }
                     }
-                    if model.offers.isEmpty {
+                    if offers.isEmpty {
                         StatusPanel(symbol: "paperplane", title: "Пока без вариантов", message: model.emptyMessage)
                         if !model.filters.isEmpty {
                             PrimaryButton(title: "Сбросить фильтры") { model.filters = ExtraFilters() }
@@ -43,7 +44,7 @@ import SwiftUI
                         }
                     } else {
                         LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 16), count: textSize.isAccessibilitySize ? 1 : 2), spacing: 20) {
-                            ForEach(model.offers) { offer in
+                            ForEach(offers) { offer in
                                 NavigationLink { DetailView(offer: offer, favorites: favorites, clock: model.clock, analytics: analytics) } label: { OfferCard(offer: offer, favorites: favorites) }
                                     .buttonStyle(.plain).accessibilityIdentifier("offer.\(offer.destinationAirport)")
                             }

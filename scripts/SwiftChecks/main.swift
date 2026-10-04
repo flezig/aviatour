@@ -46,6 +46,37 @@ final class FixtureURLProtocol: URLProtocol {
         // Run from repository root. The app uses its bundle, not this filesystem path.
         let decoder = JSONDecoder(); decoder.keyDecodingStrategy = .convertFromSnakeCase
         let airports = try decoder.decode([Airport].self, from: Data(contentsOf: URL(fileURLWithPath: "Aviator/Resources/airports.json")))
+        let indexStart = Date()
+        let index = AirportIndex(airports: airports)
+        let indexDuration = Date().timeIntervalSince(indexStart)
+        check(index.cities.flatMap(\.airports).count == airports.count, "catalog preserves every airport")
+        check(Set(index.cities.map(\.id)).count == index.cities.count, "stable unique city IDs")
+        for term in ["Москва", "мОсКвА", "MOW", "svo", "Heathrow", "LED", "несуществующий-город"] {
+            let expected = airports.filter {
+                $0.city.localizedCaseInsensitiveContains(term) || $0.cityCode.localizedCaseInsensitiveContains(term)
+                || $0.iata.localizedCaseInsensitiveContains(term) || $0.name.localizedCaseInsensitiveContains(term)
+            }
+            check(Set(index.matching(term).flatMap(\.airports).map(\.iata)) == Set(expected.map(\.iata)), "indexed search preserves matches: \(term)")
+        }
+        check(index.matching("  ").count == index.cities.count, "blank search returns all cities")
+        let svoCity = index.matching("SVO").first!
+        check(svoCity.airports.map(\.iata) == ["SVO"], "IATA search narrows airport rows")
+        check(svoCity.codes == airports.filter { $0.cityCode == "MOW" }.map(\.iata).joined(separator: ", "), "city selection retains all codes")
+        let oldStart = Date()
+        let oldGroups = Dictionary(grouping: airports, by: \.cityCode).values.sorted {
+            ($0.first?.city ?? "").localizedStandardCompare($1.first?.city ?? "") == .orderedAscending
+        }
+        let oldCodes = oldGroups.map { group in
+            airports.filter { $0.cityCode == group[0].cityCode }.map(\.iata).joined(separator: ", ")
+        }
+        let oldDuration = Date().timeIntervalSince(oldStart)
+        let newStart = Date()
+        let newCodes = index.matching("").map(\.codes)
+        let newDuration = Date().timeIntervalSince(newStart)
+        check(Set(oldCodes) == Set(newCodes), "precomputed city codes preserve full catalog")
+        let searchStart = Date()
+        for _ in 0..<20 { _ = index.matching("москва") }
+        print(String(format: "Catalog: %d airports / %d cities; index once %.1f ms; old preparation %.1f ms; indexed reopen %.3f ms; search average %.2f ms", airports.count, index.cities.count, indexDuration * 1000, oldDuration * 1000, newDuration * 1000, Date().timeIntervalSince(searchStart) * 1000 / 20))
         let service = MockSearchService(airports: airports, clock: FixedClock(now: now))
         let query = SearchQuery(month: "2026-10")
         let all = try await service.search(SearchQuery(month: "2026-10", maxBudgetMinor: 10_000_000)).offers
