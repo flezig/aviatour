@@ -8,6 +8,7 @@ from functools import lru_cache
 import re
 from .catalog import BY_IATA, AIRLINE_NAMES
 from .models import Offer
+from .regions import includes
 
 
 def rubles_to_minor(value, currency='rub'):
@@ -58,6 +59,8 @@ def zone(name):
 
 
 def matches(offer, request, now):
+    if not includes(request.region, offer.country_code):
+        return False
     dep, ret = offer.departure_at, offer.return_at
     if dep <= now or ret <= dep or offer.price_minor > request.max_budget_minor:
         return False

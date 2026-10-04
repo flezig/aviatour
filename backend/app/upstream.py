@@ -11,12 +11,15 @@ from .errors import SearchError
 from .models import SearchResponse
 from .rules import normalize
 from .runtime import RateLimiter
+from .regions import REGION_CITIES
+from .catalog import AIRPORTS
 
 class Travelpayouts:
     def __init__(self, client, settings, now=lambda: datetime.now(timezone.utc), clock=time.monotonic, sleep=asyncio.sleep):
         self.client, self.settings, self.now, self.clock, self.sleep = client, settings, now, clock, sleep
         self.limiter = RateLimiter(550, clock)  # below documented 600/min
         self.blocked_until = 0
+        self.region_slots = asyncio.Semaphore(4)
         self.partner_links = json.loads(Path(settings.partner_links_file).read_text()) if settings.partner_links_file else {}
 
     def partner(self, url):
@@ -105,18 +108,18 @@ class Travelpayouts:
                 invalid = True
         return offers, invalid
 
-    async def search(self, request):
+    async def search(self, request, *, page_limit=None, row_limit=1000):
         if not self.settings.token:
             raise SearchError('configuration', 'LIVE не настроен: добавьте токен Travelpayouts на backend.', 503)
         deadline = self.clock() + self.settings.timeout
         offers, warnings, pages_read = {}, [], 0
         async def collect():
             nonlocal pages_read
-            for page in range(1, self.settings.pages + 1):
+            for page in range(1, (page_limit or self.settings.pages) + 1):
                 try:
                     params = dict(origin=request.origin_city_code or request.origin, departure_at=request.departure_date or request.month,
                         one_way='false', currency='rub', market=self.settings.market,
-                        direct=str(request.direct_only).lower(), unique='false', sorting='price', limit=1000, page=page)
+                        direct=str(request.direct_only).lower(), unique='false', sorting='price', limit=row_limit, page=page)
                     if request.return_date:
                         params['return_at'] = request.return_date
                     if request.destination:
@@ -138,9 +141,9 @@ class Travelpayouts:
                     previous = offers.get(offer.id)
                     if previous is None or offer.price_minor < previous.price_minor:
                         offers[offer.id] = offer
-                if len(payload['data']) < 1000:
+                if len(payload['data']) < row_limit:
                     break
-                if page == self.settings.pages:
+                if page == (page_limit or self.settings.pages):
                     warnings.append('Достигнут предел страниц.')
         try:
             async with asyncio.timeout(self.settings.timeout):
@@ -150,3 +153,37 @@ class Travelpayouts:
                 raise SearchError('timeout', 'Поиск превысил 20 секунд.', 504) from None
             warnings.append('Достигнут предел времени.')
         return SearchResponse(offers=sorted(offers.values(), key=lambda o: (o.price_minor, o.city_code, o.id)), received_at=self.now(), incomplete=bool(warnings), warnings=warnings)
+
+    async def search_region(self, request):
+        # A bounded selection of popular cities, not a complete inventory of the region.
+        cities = REGION_CITIES[request.region]
+        targets = {a['city_code']: a['iata'] for a in AIRPORTS if a['city_code'] in cities and a['timezone']}
+        completed, errors = [], []
+        async def fetch(city):
+            async with self.region_slots:
+                target = request.model_copy(update={'destination': targets[city], 'destination_city_code': city})
+                try:
+                    completed.append(await self.search(target, page_limit=2, row_limit=100))
+                except SearchError as error:
+                    errors.append(error)
+        tasks = [asyncio.create_task(fetch(city)) for city in cities if city in targets and city != request.origin_city_code]
+        try:
+            await asyncio.wait(tasks, timeout=self.settings.timeout)
+        finally:
+            unfinished = [task for task in tasks if not task.done()]
+            for task in unfinished:
+                task.cancel()
+            outcomes = await asyncio.gather(*tasks, return_exceptions=True)
+            for outcome in outcomes:
+                if isinstance(outcome, Exception):
+                    raise outcome
+        if not completed:
+            if errors:
+                raise errors[0]
+            raise SearchError('timeout', 'Не удалось проверить города за отведённое время. Попробуйте конкретный город.', 504)
+        offers = {offer.id: offer for result in completed for offer in result.offers}
+        warnings = ['Поиск по основным городам региона; другие города доступны через выбор направления.']
+        if unfinished or errors or any(result.incomplete for result in completed):
+            warnings.append('Часть городов или дат не удалось проверить полностью. Попробуйте конкретный город.')
+        return SearchResponse(offers=sorted(offers.values(), key=lambda o: (o.price_minor, o.city_code, o.id)),
+            received_at=self.now(), incomplete=True, warnings=warnings)

@@ -31,7 +31,10 @@ release=plistlib.loads((root/'Aviator/Config/Info-Release.plist').read_bytes())
 assert 'NSAppTransportSecurity' not in release
 assert (root/'Aviator/Resources/airports.json').read_bytes()==(root/'backend/app/airports.json').read_bytes()
 assets=root/'Aviator/Resources/Assets.xcassets'
-assert len(list(assets.glob('*.imageset')))==11
+expected_photos = set('hero LED KZN KGD AER MRV EVN TBS IST GYD MSQ PAR LON ROM MIL BER MAD BCN LIS AMS VIE PRG ATH NYC LAX SFO CHI MIA WAS BOS LAS'.split())
+assert {asset.stem for asset in assets.glob('*.imageset')} == expected_photos
+credits = (root/'Aviator/Resources/credits.md').read_text()
+assert all(f'**{name}**' in credits for name in expected_photos)
 for asset in assets.iterdir():
     if not asset.is_dir():continue
     for item in json.loads((asset/'Contents.json').read_text()).get('images',[]):
