@@ -41,6 +41,41 @@ struct SearchQuery: Codable, Equatable {
     var usesExactDates: Bool { departureDate != nil && returnDate != nil }
 }
 
+// Optional detailed itinerary: old saved snapshots remain readable.
+struct FlightSegment: Codable, Hashable, Identifiable {
+    let id: String
+    let originAirport: String
+    let destinationAirport: String
+    let originCity: String
+    let destinationCity: String
+    let originName: String
+    let destinationName: String
+    let originTimezone: String
+    let destinationTimezone: String
+    let departureAt: Date
+    let arrivalAt: Date
+    let operatingAirline: String?
+    let marketingAirline: String?
+    let flightNumber: String?
+    var durationMinutes: Int { max(0, Int(arrivalAt.timeIntervalSince(departureAt) / 60)) }
+    func connection(to next: FlightSegment) -> FlightConnection {
+        FlightConnection(arrival: self, departure: next)
+    }
+}
+
+struct FlightConnection {
+    let arrival: FlightSegment
+    let departure: FlightSegment
+    var minutes: Int { max(0, Int(departure.departureAt.timeIntervalSince(arrival.arrivalAt) / 60)) }
+    var changesAirport: Bool { arrival.destinationAirport != departure.originAirport }
+    var crossesLocalDate: Bool {
+        TravelDates.dateKey(arrival.arrivalAt, zone: arrival.destinationTimezone)
+            != TravelDates.dateKey(departure.departureAt, zone: arrival.destinationTimezone)
+    }
+}
+
+enum OfferAvailability: String, Codable { case available, unavailable, unknown }
+
 struct Offer: Codable, Identifiable, Hashable {
     let id: String
     let cityCode: String
@@ -70,6 +105,16 @@ struct Offer: Codable, Identifiable, Hashable {
     var airline: String? = nil
     var airlineName: String? = nil
     var flightNumber: String? = nil
+    var outboundSegments: [FlightSegment]? = nil
+    var inboundSegments: [FlightSegment]? = nil
+    var availability: OfferAvailability? = nil
+    var expiresAt: Date? = nil
+    func canDisplay(at now: Date) -> Bool {
+        availability != .unavailable && (expiresAt.map { $0 > now } ?? true) && departureAt > now
+    }
+    var receivedLabel: String {
+        "Получено " + TravelDates.display(receivedAt, zone: TimeZone.current.identifier, time: true)
+    }
     var arrivalAt: Date? { durationTo.flatMap { $0 > 0 ? departureAt.addingTimeInterval(Double($0) * 60) : nil } }
     var returnArrivalAt: Date? { durationBack.flatMap { $0 > 0 ? returnAt.addingTimeInterval(Double($0) * 60) : nil } }
     var stayHours: Double? {

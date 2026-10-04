@@ -100,6 +100,30 @@ final class FixtureURLProtocol: URLProtocol {
         check(SearchRules.destinations(all, query: query, now: now, filters: ExtraFilters()).count == 7, "seven defaults")
         check(SearchRules.destinations(all, query: query, now: now, filters: ExtraFilters(cheap: true)).count == 5, "five cheap")
         let offer = all[0]
+        check(offer.outboundSegments?.count == 1, "direct demo has one explicit segment")
+        let transferOffer = all.first { $0.transfers == 1 }!
+        let itinerary = transferOffer.outboundSegments!
+        check(itinerary.count == 2 && itinerary[0].destinationAirport == "EVN", "demo transfer airport supplied explicitly")
+        check(itinerary[0].connection(to: itinerary[1]).minutes == 45, "connection uses absolute instants")
+        check(!itinerary[0].connection(to: itinerary[1]).changesAirport, "same airport connection")
+        var nextRow = try JSONSerialization.jsonObject(with: JSONEncoder().encode(itinerary[1])) as! [String: Any]
+        nextRow["originAirport"] = "MXP"
+        nextRow["departureAt"] = itinerary[0].arrivalAt.addingTimeInterval(36 * 3600).timeIntervalSinceReferenceDate
+        nextRow["arrivalAt"] = itinerary[0].arrivalAt.addingTimeInterval(37 * 3600).timeIntervalSinceReferenceDate
+        let changed = try JSONDecoder().decode(FlightSegment.self, from: JSONSerialization.data(withJSONObject: nextRow))
+        let longConnection = itinerary[0].connection(to: changed)
+        check(longConnection.changesAirport, "airport change flagged")
+        check(longConnection.crossesLocalDate, "overnight date change flagged")
+        check(longConnection.minutes == 2160, "multi-day waiting duration")
+        let unavailable = try modify(offer, ["availability": "unavailable"])
+        check(!SearchRules.accepts(unavailable, query: query, now: now), "unavailable offer hidden")
+        let expired = try modify(offer, ["expiresAt": now.timeIntervalSinceReferenceDate])
+        check(!SearchRules.accepts(expired, query: query, now: now), "expired at boundary hidden")
+        check(offer.canDisplay(at: now), "legacy unknown availability remains visible")
+        var snapshot = try JSONSerialization.jsonObject(with: JSONEncoder().encode(offer)) as! [String: Any]
+        snapshot.removeValue(forKey: "outboundSegments"); snapshot.removeValue(forKey: "inboundSegments")
+        let oldSnapshot = try JSONDecoder().decode(Offer.self, from: JSONSerialization.data(withJSONObject: snapshot))
+        check(oldSnapshot.outboundSegments == nil, "old favorite snapshots decode without itinerary")
         for (price, matches) in [(2_499_999,true),(2_500_000,true),(2_500_001,false)] {
             check(SearchRules.accepts(try modify(offer,["priceMinor":price]), query:query,now:now) == matches,"budget boundary")
         }

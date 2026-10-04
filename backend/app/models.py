@@ -29,6 +29,35 @@ class SearchRequest(BaseModel):
         return self
 
 
+class FlightSegment(BaseModel):
+    id: str
+    origin_airport: str = Field(pattern=r'^[A-Z]{3}$')
+    destination_airport: str = Field(pattern=r'^[A-Z]{3}$')
+    origin_city: str
+    destination_city: str
+    origin_name: str
+    destination_name: str
+    origin_timezone: str
+    destination_timezone: str
+    departure_at: datetime
+    arrival_at: datetime
+    operating_airline: str | None = None
+    marketing_airline: str | None = None
+    flight_number: str | None = None
+
+    @model_validator(mode='after')
+    def schedule(self):
+        from zoneinfo import ZoneInfo
+        try:
+            ZoneInfo(self.origin_timezone)
+            ZoneInfo(self.destination_timezone)
+        except KeyError:
+            raise ValueError('Invalid segment timezone') from None
+        if self.departure_at.utcoffset() is None or self.arrival_at.utcoffset() is None or self.arrival_at <= self.departure_at:
+            raise ValueError('Invalid segment times')
+        return self
+
+
 class Offer(BaseModel):
     id: str
     city_code: str
@@ -58,6 +87,26 @@ class Offer(BaseModel):
     airline: str | None = None
     airline_name: str | None = None
     flight_number: str | None = None
+    outbound_segments: list[FlightSegment] | None = None
+    inbound_segments: list[FlightSegment] | None = None
+    availability: Literal['available', 'unavailable', 'unknown'] | None = None
+    expires_at: datetime | None = None
+
+    @model_validator(mode='after')
+    def itinerary(self):
+        if self.expires_at is not None and self.expires_at.utcoffset() is None:
+            raise ValueError('Expiry needs timezone')
+        for segments, origin, destination, departure in [
+            (self.outbound_segments, self.origin_airport, self.destination_airport, self.departure_at),
+            (self.inbound_segments, self.destination_airport, self.origin_airport, self.return_at),
+        ]:
+            if not segments:
+                continue
+            if segments[0].origin_airport != origin or segments[-1].destination_airport != destination or segments[0].departure_at != departure:
+                raise ValueError('Itinerary does not match offer')
+            if any(a.arrival_at > b.departure_at for a, b in zip(segments, segments[1:])):
+                raise ValueError('Overlapping segments')
+        return self
 
 class SearchResponse(BaseModel):
     offers: list[Offer]

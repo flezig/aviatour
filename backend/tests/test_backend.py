@@ -375,3 +375,27 @@ def test_region_cache_is_separate_from_anywhere():
         assert len(client.post('/api/v1/search',json=q).json()['offers'])==1
         assert client.post('/api/v1/search',json=dict(q,region='usa')).json()['offers']==[]
         assert len(seen)>1
+
+@pytest.mark.parametrize('availability,expiry,accepted', [
+    ('unavailable', None, False), ('unknown', None, True),
+    ('available', NOW, False), ('available', datetime(2026, 10, 1, 10, tzinfo=timezone.utc), True),
+])
+def test_availability_and_price_expiry(availability, expiry, accepted):
+    from app.rules import matches
+    offer = normalize(record(), QUERY, NOW).model_copy(update={'availability': availability, 'expires_at': expiry})
+    assert matches(offer, QUERY, NOW) == accepted
+
+
+def test_segment_chronology_and_local_zones():
+    from app.models import FlightSegment
+    segment = dict(id='segment', origin_airport='SVO', destination_airport='EVN',
+        origin_city='Москва', destination_city='Ереван', origin_name='Шереметьево', destination_name='Звартноц',
+        origin_timezone='Europe/Moscow', destination_timezone='Asia/Yerevan',
+        departure_at='2026-10-06T20:00:00+03:00', arrival_at='2026-10-07T00:00:00+04:00',
+        operating_airline='Example Operator', marketing_airline='Example Seller')
+    parsed = FlightSegment(**segment)
+    assert (parsed.arrival_at - parsed.departure_at).total_seconds() == 3 * 3600
+    with pytest.raises(ValueError):
+        FlightSegment(**dict(segment, arrival_at='2026-10-06T19:00:00+04:00'))
+    with pytest.raises(ValueError):
+        FlightSegment(**dict(segment, departure_at='2026-10-06T20:00:00'))

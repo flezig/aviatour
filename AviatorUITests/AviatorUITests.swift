@@ -41,8 +41,30 @@ final class AviatorUITests: XCTestCase {
         XCTAssertTrue(count.waitForExistence(timeout: 5))
         let card = app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH %@", "offer.LED.")).firstMatch
         XCTAssertTrue(card.exists); card.tap()
-        XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH %@", "Авиакомпания по данным источника:")).firstMatch.waitForExistence(timeout: 5))
-        XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH %@", "Прилёт туда ≈")).firstMatch.exists)
+        XCTAssertTrue(app.descendants(matching: .any)["route.outbound"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["Выполняет: Aeroflot · DEMO"].firstMatch.exists)
+    }
+
+    func testTransferItinerary() {
+        let app = XCUIApplication(); app.launchArguments = ["--ui-smoke"]; app.launch()
+        XCTAssertTrue(app.buttons["originPicker"].waitForExistence(timeout: 10))
+        let budget = app.sliders["Бюджет в рублях"]
+        for _ in 0..<4 where !budget.isHittable { app.swipeUp() }
+        budget.adjust(toNormalizedSliderPosition: 0.1)
+        let search = app.buttons["searchButton"]
+        for _ in 0..<4 where !search.isHittable { app.swipeUp() }
+        search.tap()
+        let card = app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH %@", "offer.TBS.")).firstMatch
+        XCTAssertTrue(app.buttons["allFiltersButton"].waitForExistence(timeout: 5))
+        for _ in 0..<12 where !card.exists || !card.isHittable { app.swipeUp() }
+        XCTAssertTrue(card.exists)
+        card.tap()
+        let connection = app.staticTexts["Пересадка: Ереван"]
+        for _ in 0..<6 where !connection.firstMatch.isHittable { app.swipeUp() }
+        XCTAssertTrue(connection.firstMatch.exists)
+        XCTAssertTrue(app.staticTexts["Ожидание 45 мин"].firstMatch.exists)
+        XCTAssertTrue(app.staticTexts["Выполняет: S7 Airlines · DEMO"].firstMatch.exists)
+        let image = XCTAttachment(screenshot: app.screenshot()); image.name = "Подробная пересадка"; image.lifetime = .keepAlways; add(image)
     }
 
     func testRegionalSearchAndPriceSort() {

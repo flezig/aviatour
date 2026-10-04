@@ -148,6 +148,7 @@ struct OfferFacts {
         destination = [offer.city, offer.cityCode, offer.destinationAirport, offer.country ?? ""].joined(separator: " ").lowercased()
     }
     func accepts(query: SearchQuery, now: Date, filters: ExtraFilters) -> Bool {
+        guard offer.canDisplay(at: now) else { return false }
         guard offer.currency == "RUB", offer.departureAt > now, offer.returnAt > offer.departureAt,
               offer.priceMinor <= query.maxBudgetMinor,
               query.originCityCode.map({ offer.originCityCode == $0 }) ?? (offer.originAirport == query.origin) else { return false }

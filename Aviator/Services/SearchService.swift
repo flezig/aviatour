@@ -123,13 +123,32 @@ struct MockSearchService: SearchService {
                 let id = "MOCK-SVO-\(code)-\(Int(dep.timeIntervalSince1970))-\(Int(ret.timeIntervalSince1970))"
                 let url = LinkBuilder.ordinary(origin: "SVO", destination: code, departure: dep, returnDate: ret, originZone: "Europe/Moscow", destinationZone: zone)
                 let minutes = 90 + position * 20 + variant * 15
-                let offer = Offer(id: id, cityCode: airport.cityCode, city: airport.city, countryCode: airport.countryCode, country: airport.country,
+                var offer = Offer(id: id, cityCode: airport.cityCode, city: airport.city, countryCode: airport.countryCode, country: airport.country,
                     originAirport: "SVO", destinationAirport: code, originCity: origin.city, originName: origin.name, destinationName: airport.name,
                     departureAt: dep, returnAt: ret, originTimezone: "Europe/Moscow", destinationTimezone: zone,
                     transfers: out, returnTransfers: back, durationTo: minutes, durationBack: minutes + 10,
                     priceMinor: price + variant * 50000, currency: "RUB", searchURL: url.absoluteString,
                     partnerURL: nil, source: "MOCK", receivedAt: clock.now, originCityCode: "MOW",
                     airline: ["SU", "S7", "DP"][variant], airlineName: ["Aeroflot", "S7 Airlines", "Pobeda"][variant], flightNumber: "\(700 + position)")
+                // Explicit fictional DEMO itinerary; never applied to LIVE cache rows.
+                func segments(from: Airport, to: Airport, start: Date, total: Int, stops: Int?) -> [FlightSegment]? {
+                    guard let stops, let fromZone = from.timezone, let toZone = to.timezone else { return nil }
+                    func segment(_ a: Airport, _ b: Airport, _ departure: Date, _ minutes: Int, _ index: Int) -> FlightSegment {
+                        FlightSegment(id: id + "-" + a.iata + "-" + b.iata, originAirport: a.iata, destinationAirport: b.iata,
+                                      originCity: a.city, destinationCity: b.city, originName: a.name, destinationName: b.name,
+                                      originTimezone: a.timezone ?? fromZone, destinationTimezone: b.timezone ?? toZone,
+                                      departureAt: departure, arrivalAt: departure.addingTimeInterval(Double(minutes) * 60),
+                                      operatingAirline: index == 0 ? "Aeroflot · DEMO" : "S7 Airlines · DEMO", marketingAirline: nil,
+                                      flightNumber: "DEMO \(700 + index)")
+                    }
+                    if stops == 0 { return [segment(from, to, start, total, 0)] }
+                    guard stops == 1, let via = lookup["EVN"], total > 60 else { return nil }
+                    let first = (total - 45) / 2
+                    return [segment(from, via, start, first, 0),
+                            segment(via, to, start.addingTimeInterval(Double(first + 45) * 60), total - first - 45, 1)]
+                }
+                offer.outboundSegments = segments(from: origin, to: airport, start: dep, total: minutes, stops: out)
+                offer.inboundSegments = segments(from: airport, to: origin, start: ret, total: minutes + 10, stops: back)
                 if SearchRules.accepts(offer, query: query, now: clock.now) { offers.append(offer) }
             }
         }
