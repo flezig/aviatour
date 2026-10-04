@@ -85,6 +85,7 @@ struct StatusPanel: View {
                 Text("туда-обратно").font(.caption).foregroundStyle(.secondary)
                 Text(TravelDates.display(offer.departureAt, zone: offer.originTimezone) + " — " + TravelDates.display(offer.returnAt, zone: offer.destinationTimezone)).font(.caption).fixedSize(horizontal: false, vertical: true)
                 Text(offer.isDemo ? "DEMO · условная цена" : "LIVE · кешированная цена").font(.caption.bold()).foregroundStyle(.secondary)
+                Text(offer.receivedLabel).font(.caption2).foregroundStyle(.secondary)
                 Text(offer.isDirect ? "Прямые туда и обратно" : "Условия пересадок — в карточке").font(.caption).foregroundStyle(.secondary)
                 Text(offer.airlineLabel).font(.caption)
                 Text("Туда \(TravelDates.time(offer.departureAt, zone: offer.originTimezone)) → \(offer.arrivalAt.map { TravelDates.time($0, zone: offer.destinationTimezone) } ?? "—")*").font(.caption)

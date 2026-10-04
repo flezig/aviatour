@@ -19,6 +19,7 @@ import SwiftUI
                                         Text(offer.city).font(.headline)
                                         Text(Money.format(offer.priceMinor, currency: offer.currency)).foregroundStyle(Color.aviatorBlue)
                                         Text(offer.isDemo ? "DEMO · снимок цены" : "LIVE · снимок цены").font(.caption)
+                                        Text(offer.receivedLabel).font(.caption2).foregroundStyle(.secondary)
                                         if offer.departureAt <= clock.now { Text("Даты прошли").font(.caption).foregroundStyle(.secondary) }
                                     }
                                 }.padding(.vertical, 4)

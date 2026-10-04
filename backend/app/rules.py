@@ -59,6 +59,8 @@ def zone(name):
 
 
 def matches(offer, request, now):
+    if offer.availability == "unavailable" or (offer.expires_at is not None and offer.expires_at <= now):
+        return False
     if not includes(request.region, offer.country_code):
         return False
     dep, ret = offer.departure_at, offer.return_at
