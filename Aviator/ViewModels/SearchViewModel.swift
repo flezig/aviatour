@@ -1,12 +1,22 @@
 import Foundation
 import Combine
 
+struct FilterChoice: Identifiable { let id: String; let title: String }
+
 @MainActor final class SearchViewModel: ObservableObject {
     enum State: Equatable { case idle, loading, success, empty, error(String), offline }
     @Published var query: SearchQuery
     @Published private(set) var performedQuery: SearchQuery?
     @Published private(set) var state: State = .idle
-    @Published var filters = ExtraFilters()
+    @Published var filters = ExtraFilters() { didSet { if filters != oldValue { refresh() } } }
+    @Published var sort: OfferSort = .price { didSet { if sort != oldValue { refresh() } } }
+    @Published private(set) var offers: [Offer] = []
+    @Published private(set) var isFiltering = false
+    @Published private(set) var airlines: [FilterChoice] = []
+    @Published private(set) var countries: [FilterChoice] = []
+    private var facts: [OfferFacts] = []
+    private var filterTask: Task<Void, Never>?
+    private var filterGeneration = UUID()
     @Published private(set) var result = SearchResult(offers: [], incomplete: false, warnings: [])
     private let service: any SearchService
     let clock: any AppClock
@@ -17,17 +27,28 @@ import Combine
         self.service = service; self.clock = clock; self.analytics = analytics
         query = SearchQuery(month: TravelDates.month(clock.now))
     }
-    var offers: [Offer] {
-        SearchRules.destinations(result.offers, query: performedQuery ?? query, now: clock.now, filters: filters)
+    func refresh() {
+        filterTask?.cancel(); filterGeneration = UUID()
+        let ticket = filterGeneration, source = facts, parameters = performedQuery ?? query
+        let selected = filters, order = sort, now = clock.now
+        isFiltering = true
+        filterTask = Task {
+            do { try await Task.sleep(nanoseconds: 80_000_000) } catch { return }
+            let matched = await Task.detached(priority: .userInitiated) {
+                SearchRules.options(source, query: parameters, now: now, filters: selected, sort: order)
+            }.value
+            guard !Task.isCancelled, filterGeneration == ticket else { return }
+            offers = matched; isFiltering = false
+        }
     }
     var emptyMessage: String {
         if !filters.isEmpty { return "Дополнительные фильтры скрыли найденные варианты. Сбросьте их, чтобы увидеть результаты исходного поиска." }
         let direct = (performedQuery ?? query).directOnly ? " Попробуйте разрешить пересадки." : ""
-        return "В кеше цен нет подходящих поездок на выходные для выбранного месяца и бюджета. Это не означает, что билетов нет. Увеличьте бюджет или выберите другой месяц." + direct
+        return "В кеше цен нет подходящих поездок для выбранных дат и бюджета. Это не означает, что билетов нет. Увеличьте бюджет или выберите другой месяц." + direct
     }
     func retryWithBudget() {
         query = performedQuery ?? query
-        query.maxBudgetMinor = min(10_000_000, query.maxBudgetMinor + 1_000_000)
+        query.maxBudgetMinor = min(50_000_000, query.maxBudgetMinor + 1_000_000)
         start()
     }
     func retryWithTransfers() {
@@ -35,13 +56,29 @@ import Combine
     }
     func start() {
         task?.cancel(); generation = UUID(); let ticket = generation; let parameters = query
-        performedQuery = parameters; filters = ExtraFilters(); result = SearchResult(offers: [], incomplete: false, warnings: []); state = .loading
+        performedQuery = parameters; filters = ExtraFilters(); sort = .price
+        filterTask?.cancel(); filterGeneration = UUID(); isFiltering = false
+        facts = []; offers = []; airlines = []; countries = []
+        result = SearchResult(offers: [], incomplete: false, warnings: []); state = .loading
         analytics.record(.searchStarted)
         task = Task {
             do {
                 let response = try await service.search(parameters)
                 guard !Task.isCancelled, generation == ticket else { return }
-                result = response; state = offers.isEmpty ? .empty : .success; analytics.record(.searchCompleted)
+                let now = clock.now
+                let prepared = await Task.detached(priority: .userInitiated) {
+                    let facts = response.offers.map(OfferFacts.init)
+                    let choices = Dictionary(grouping: response.offers.filter { $0.countryCode != nil }, by: { $0.countryCode! })
+                        .map { FilterChoice(id: $0.key, title: $0.value.first?.country ?? $0.key) }.sorted { $0.title < $1.title }
+                    return (facts, SearchRules.options(facts, query: parameters, now: now, filters: ExtraFilters()),
+                            Dictionary(grouping: response.offers.filter { $0.airline != nil }, by: { $0.airline! })
+                                .map { FilterChoice(id: $0.key, title: $0.value.first?.airlineLabel ?? $0.key) }.sorted { $0.title < $1.title }, choices)
+                }.value
+                guard !Task.isCancelled, generation == ticket else { return }
+                result = response; facts = prepared.0; offers = prepared.1; airlines = prepared.2; countries = prepared.3
+                state = offers.isEmpty ? .empty : .success
+                if !filters.isEmpty || sort != .price { refresh() }
+                analytics.record(.searchCompleted)
             } catch is CancellationError { return }
             catch {
                 guard !Task.isCancelled, generation == ticket else { return }
@@ -54,6 +91,7 @@ import Combine
 
 @MainActor final class FavoritesViewModel: ObservableObject {
     @Published private(set) var offers: [Offer] = []
+    private var favoriteIDs = Set<String>()
     @Published var error: String?
     private let store: any FavoritesStore
     private let clock: any AppClock
@@ -62,9 +100,9 @@ import Combine
         self.store = store; self.clock = clock; self.analytics = analytics; reload()
     }
     func reload() {
-        do { offers = try store.all() } catch { self.error = "Не удалось прочитать избранное: \(error.localizedDescription)" }
+        do { offers = try store.all(); favoriteIDs = Set(offers.map(\.id)) } catch { self.error = "Не удалось прочитать избранное: \(error.localizedDescription)" }
     }
-    func contains(_ offer: Offer) -> Bool { offers.contains { $0.id == offer.id } }
+    func contains(_ offer: Offer) -> Bool { favoriteIDs.contains(offer.id) }
     func toggle(_ offer: Offer) {
         do {
             if contains(offer) { try store.remove(id: offer.id) }

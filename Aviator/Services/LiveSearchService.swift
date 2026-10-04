@@ -13,13 +13,14 @@ private struct OfferDTO: Decodable {
     let currency, searchUrl: String
     let partnerUrl: String?
     let source: String
+    let airline, airlineName, flightNumber: String?
     let receivedAt: Date
     func domain() throws -> Offer {
         guard currency == "RUB", priceMinor > 0, source == "LIVE", TimeZone(identifier: originTimezone) != nil, TimeZone(identifier: destinationTimezone) != nil else { throw SearchFailure.invalidData }
         return Offer(id: id, cityCode: cityCode, city: city, countryCode: countryCode, country: country, originAirport: originAirport, destinationAirport: destinationAirport,
                      originCity: originCity, originName: originName, destinationName: destinationName, departureAt: departureAt, returnAt: returnAt,
                      originTimezone: originTimezone, destinationTimezone: destinationTimezone, transfers: transfers, returnTransfers: returnTransfers,
-                     durationTo: durationTo, durationBack: durationBack, priceMinor: priceMinor, currency: currency, searchURL: searchUrl, partnerURL: partnerUrl, source: source, receivedAt: receivedAt, originCityCode: originCityCode)
+                     durationTo: durationTo, durationBack: durationBack, priceMinor: priceMinor, currency: currency, searchURL: searchUrl, partnerURL: partnerUrl, source: source, receivedAt: receivedAt, originCityCode: originCityCode, airline: airline, airlineName: airlineName, flightNumber: flightNumber)
     }
 }
 private struct SearchResponseDTO: Decodable {
@@ -42,24 +43,12 @@ struct LiveSearchService: SearchService {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         let encoder = JSONEncoder(); encoder.keyEncodingStrategy = .convertToSnakeCase
         request.httpBody = try encoder.encode(query)
-        let decoder = JSONDecoder(); decoder.keyDecodingStrategy = .convertFromSnakeCase
-        decoder.dateDecodingStrategy = .custom { container in
-            let raw = try container.singleValueContainer().decode(String.self)
-            let formatter = ISO8601DateFormatter(); formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-            if let date = formatter.date(from: raw) { return date }
-            formatter.formatOptions = [.withInternetDateTime]
-            guard let date = formatter.date(from: raw) else { throw SearchFailure.invalidData }
-            return date
-        }
         do {
             let (data, response) = try await session.data(for: request)
             guard let http = response as? HTTPURLResponse else { throw SearchFailure.invalidData }
-            guard (200..<300).contains(http.statusCode) else {
-                let error = try? decoder.decode(ErrorDTO.self, from: data)
-                throw SearchFailure.source(error?.error.message ?? "Ошибка backend (\(http.statusCode)).")
-            }
-            let dto = try decoder.decode(SearchResponseDTO.self, from: data)
-            return SearchResult(offers: try dto.offers.map { try $0.domain() }, incomplete: dto.incomplete, warnings: dto.warnings)
+            return try await Task.detached(priority: .userInitiated) {
+                try Self.decode(data, status: http.statusCode)
+            }.value
         } catch let error as URLError {
             if error.code == .cancelled { throw CancellationError() }
             throw SearchFailure.offline
@@ -67,4 +56,21 @@ struct LiveSearchService: SearchService {
             _ = error; throw SearchFailure.invalidData
         }
     }
+    private static func decode(_ data: Data, status: Int) throws -> SearchResult {
+        let fractional = ISO8601DateFormatter(); fractional.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        let standard = ISO8601DateFormatter(); standard.formatOptions = [.withInternetDateTime]
+        let decoder = JSONDecoder(); decoder.keyDecodingStrategy = .convertFromSnakeCase
+        decoder.dateDecodingStrategy = .custom { container in
+            let raw = try container.singleValueContainer().decode(String.self)
+            guard let date = fractional.date(from: raw) ?? standard.date(from: raw) else { throw SearchFailure.invalidData }
+            return date
+        }
+        guard (200..<300).contains(status) else {
+            let error = try? decoder.decode(ErrorDTO.self, from: data)
+            throw SearchFailure.source(error?.error.message ?? "Ошибка backend (\(status)).")
+        }
+        let dto = try decoder.decode(SearchResponseDTO.self, from: data)
+        return SearchResult(offers: try dto.offers.map { try $0.domain() }, incomplete: dto.incomplete, warnings: dto.warnings)
+    }
+
 }

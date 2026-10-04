@@ -28,7 +28,7 @@ final class AviatorTests: XCTestCase {
     func testBudgetBoundariesDefaultsAndQuickFilter() async throws {
         let query = SearchQuery(month: "2026-10")
         XCTAssertEqual(query.origin, "SVO"); XCTAssertEqual(query.maxBudgetMinor, 2_500_000)
-        let all = try await offers(); XCTAssertEqual(all.count, 10)
+        let all = try await offers(); XCTAssertEqual(all.count, 30)
         let defaults = SearchRules.destinations(all, query: query, now: now, filters: ExtraFilters())
         XCTAssertEqual(defaults.count, 7)
         XCTAssertEqual(SearchRules.destinations(all, query: query, now: now, filters: ExtraFilters(cheap: true)).count, 5)
@@ -70,6 +70,29 @@ final class AviatorTests: XCTestCase {
         XCTAssertNotNil(LinkBuilder.validated("https://tp.media/fixture", partner: true))
         XCTAssertNil(LinkBuilder.validated("https://evil.test/fixture", partner: true))
     }
+    func testExactDatesAllVariantsAndPriceSorting() async throws {
+        let service = MockSearchService(airports: try airports(), clock: FixedClock(now: now))
+        let query = SearchQuery(month: "2026-10", departureDate: "2026-10-06", returnDate: "2026-10-08", destination: "LED")
+        let response = try await service.search(query)
+        XCTAssertEqual(response.offers.count, 3)
+        let facts = response.offers.map(OfferFacts.init)
+        XCTAssertEqual(SearchRules.options(facts, query: query, now: now, filters: ExtraFilters()).count, 3)
+        XCTAssertEqual(SearchRules.options(facts, query: query, now: now, filters: ExtraFilters(uniqueDestinations: true)).count, 1)
+        let descending = SearchRules.options(facts, query: query, now: now, filters: ExtraFilters(), sort: .priceDescending)
+        XCTAssertEqual(descending.map(\.priceMinor), [950000, 900000, 850000])
+    }
+    func testUnknownFlightDataAndInclusivePriceFilter() async throws {
+        let original = try await offers()[0]
+        let query = SearchQuery(month: "2026-10")
+        XCTAssertTrue(SearchRules.accepts(original, query: query, now: now, filters: ExtraFilters(minPriceMinor: original.priceMinor, maxPriceMinor: original.priceMinor)))
+        var payload = try JSONSerialization.jsonObject(with: JSONEncoder().encode(original)) as! [String: Any]
+        payload["durationTo"] = NSNull(); payload["durationBack"] = NSNull()
+        let unknown = try JSONDecoder().decode(Offer.self, from: JSONSerialization.data(withJSONObject: payload))
+        XCTAssertNil(unknown.arrivalAt); XCTAssertNil(unknown.stayHours)
+        XCTAssertFalse(SearchRules.accepts(unknown, query: query, now: now, filters: ExtraFilters(arrivalTime: .morning)))
+        XCTAssertFalse(SearchRules.accepts(unknown, query: query, now: now, filters: ExtraFilters(noLeave: true)))
+        XCTAssertTrue(SearchRules.accepts(unknown, query: query, now: now))
+    }
     #if !SWIFT_PACKAGE
     @MainActor func testFavoritesPersistNoDuplicatesRemoveDemo() async throws {
         let url = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString + ".store")
@@ -97,7 +120,7 @@ final class AviatorTests: XCTestCase {
             (StubService(result:.failure(SearchFailure.source("Ошибка"))),.error("Ошибка"))] {
             let vm=SearchViewModel(service:service,clock:FixedClock(now:now),analytics:SilentAnalytics())
             vm.start();XCTAssertEqual(vm.state,.loading)
-            for _ in 0..<20 { await Task.yield() }
+            for _ in 0..<100 where vm.state == .loading { try await Task.sleep(nanoseconds: 5_000_000) }
             XCTAssertEqual(vm.state,expected)
         }
     }

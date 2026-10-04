@@ -2,13 +2,25 @@ import SwiftUI
 import SwiftData
 
 @main @MainActor struct AviatorApp: App {
-    private let bootstrap: Result<AppDependencies, Error>
-    init() { bootstrap = Result { try AppDependencies() } }
+    @State private var bootstrap: Result<AppDependencies, Error>?
     var body: some Scene {
         WindowGroup {
-            switch bootstrap {
-            case .success(let dependencies): RootView(dependencies: dependencies)
-            case .failure(let error): StatusPanel(symbol: "exclamationmark.triangle", title: "Не удалось открыть Aviator", message: "Ошибка локальных данных: \(error.localizedDescription). Перезапустите приложение.")
+            Group {
+                if let bootstrap {
+                    switch bootstrap {
+                    case .success(let dependencies): RootView(dependencies: dependencies)
+                    case .failure(let error): StatusPanel(symbol: "exclamationmark.triangle", title: "Не удалось открыть Aviator", message: "Ошибка локальных данных: \(error.localizedDescription). Перезапустите приложение.")
+                    }
+                } else { ProgressView("Готовим поездки…") }
+            }.task {
+                guard bootstrap == nil else { return }
+                do {
+                    let prepared = try await Task.detached(priority: .userInitiated) {
+                        let airports = try Catalog.load()
+                        return (airports, AirportIndex(airports: airports))
+                    }.value
+                    bootstrap = .success(try AppDependencies(airports: prepared.0, airportIndex: prepared.1))
+                } catch { bootstrap = .failure(error) }
             }
         }
     }
@@ -22,9 +34,9 @@ import SwiftData
     let mode: String
     let search: SearchViewModel
     let favorites: FavoritesViewModel
-    init() throws {
-        airports = try Catalog.load()
-        airportIndex = AirportIndex(airports: airports)
+    init(airports: [Airport], airportIndex: AirportIndex) throws {
+        self.airports = airports
+        self.airportIndex = airportIndex
         let isSmoke = ProcessInfo.processInfo.arguments.contains("--ui-smoke")
         clock = isSmoke ? FixedClock(now: ISO8601DateFormatter().date(from: "2026-10-01T09:00:00Z")!) : SystemClock()
         analytics = LocalAnalytics()
