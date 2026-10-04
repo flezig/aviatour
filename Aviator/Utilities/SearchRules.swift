@@ -151,6 +151,7 @@ struct OfferFacts {
         guard offer.currency == "RUB", offer.departureAt > now, offer.returnAt > offer.departureAt,
               offer.priceMinor <= query.maxBudgetMinor,
               query.originCityCode.map({ offer.originCityCode == $0 }) ?? (offer.originAirport == query.origin) else { return false }
+        guard query.region.includes(offer.countryCode) else { return false }
         if let city = query.destinationCityCode { if offer.cityCode != city { return false } }
         else if let airport = query.destination, offer.destinationAirport != airport { return false }
         if query.usesExactDates {

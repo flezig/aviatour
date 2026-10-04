@@ -9,6 +9,7 @@ class SearchRequest(BaseModel):
     month: str = Field(pattern=r'^\d{4}-(0[1-9]|1[0-2])$')
     max_budget_minor: int = Field(default=2500000, ge=500000, le=50000000)
     direct_only: bool = False
+    region: Literal['any', 'europe', 'usa'] = 'any'
     departure_date: str | None = Field(default=None, pattern=r'^\d{4}-\d{2}-\d{2}$')
     return_date: str | None = Field(default=None, pattern=r'^\d{4}-\d{2}-\d{2}$')
     weekend_only: bool = True

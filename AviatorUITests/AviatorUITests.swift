@@ -45,6 +45,30 @@ final class AviatorUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH %@", "Прилёт туда ≈")).firstMatch.exists)
     }
 
+    func testRegionalSearchAndPriceSort() {
+        let app = XCUIApplication(); app.launchArguments = ["--ui-smoke"]; app.launch()
+        let region = app.buttons["regionPicker"]
+        XCTAssertTrue(region.waitForExistence(timeout: 10)); region.tap()
+        app.buttons["Поездка в США"].tap()
+        app.buttons["destinationPicker"].tap()
+        let field = app.searchFields.firstMatch
+        XCTAssertTrue(field.waitForExistence(timeout: 5)); field.tap(); field.typeText("JFK")
+        XCTAssertTrue(app.buttons["airport.JFK"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.buttons["airport.CDG"].exists)
+        app.buttons["airport.JFK"].tap()
+        let budget = app.sliders["Бюджет в рублях"]
+        for _ in 0..<4 where !budget.isHittable { app.swipeUp() }
+        budget.adjust(toNormalizedSliderPosition: 0.3)
+        let search = app.buttons["searchButton"]
+        for _ in 0..<4 where !search.isHittable { app.swipeUp() }
+        search.tap()
+        XCTAssertTrue(app.staticTexts["3 варианта"].waitForExistence(timeout: 10))
+        let price = app.segmentedControls["priceSort"]
+        XCTAssertTrue(price.exists); price.buttons["Сначала дороже"].tap()
+        XCTAssertTrue(price.buttons["Сначала дороже"].isSelected)
+        let screenshot = XCTAttachment(screenshot: app.screenshot()); screenshot.name = "США и сортировка по цене"; screenshot.lifetime = .keepAlways; add(screenshot)
+    }
+
     func testCityAndDestinationCatalogSearch() {
         let app = XCUIApplication(); app.launchArguments = ["--ui-smoke"]; app.launch()
         XCTAssertTrue(app.buttons["originPicker"].waitForExistence(timeout: 10))

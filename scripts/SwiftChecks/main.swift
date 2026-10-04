@@ -205,6 +205,17 @@ final class FixtureURLProtocol: URLProtocol {
         try await Task.sleep(nanoseconds: 150_000_000)
         check(filterVM.offers.count == 7 && filterVM.offers.allSatisfy { $0.airline == "S7" }, "latest background filter wins")
         check(filterVM.offers.first!.priceMinor >= filterVM.offers.last!.priceMinor, "cached filter sort applied")
+        var europeQuery = query; europeQuery.region = .europe; europeQuery.weekendOnly = false; europeQuery.maxBudgetMinor = 15_000_000
+        let europe = try await MockSearchService(airports: airports, clock: FixedClock(now: now)).search(europeQuery)
+        check(!europe.offers.isEmpty && europe.offers.allSatisfy { TripRegion.europe.includes($0.countryCode) }, "Europe returns only selected region")
+        var usaQuery = europeQuery; usaQuery.region = .usa
+        let usa = try await MockSearchService(airports: airports, clock: FixedClock(now: now)).search(usaQuery)
+        check(usa.offers.count == 12 && usa.offers.allSatisfy { $0.countryCode == "US" }, "USA mock offers")
+        check(!SearchRules.accepts(offer, query: usaQuery, now: now), "region excludes Russian offer")
+        check(usa.offers.first { $0.destinationAirport == "JFK" }?.imageName == "NYC", "all New York airports use city photo")
+        let usaFacts = usa.offers.map(OfferFacts.init)
+        let expensiveFirst = SearchRules.options(usaFacts, query: usaQuery, now: now, filters: ExtraFilters(), sort: .priceDescending)
+        check(expensiveFirst.first!.priceMinor > expensiveFirst.last!.priceMinor, "region price descending")
         let many = Array(repeating: facts, count: 300).flatMap { $0 }
         let performanceStart = Date()
         _ = SearchRules.options(many, query: query, now: now, filters: ExtraFilters(airline: "S7"), sort: .value)

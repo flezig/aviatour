@@ -12,6 +12,7 @@ from .runtime import TTLCache, RateLimiter
 from .settings import Settings
 from .upstream import Travelpayouts
 from .rules import matches
+from .regions import includes
 
 
 def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.utc)):
@@ -47,6 +48,8 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
             destination = BY_IATA.get(request.destination)
             if not destination or (request.destination_city_code and request.destination_city_code != destination['city_code']):
                 raise SearchError('validation', 'Выберите направление из справочника.', 422)
+            if not includes(request.region, destination['country_code']):
+                raise SearchError('validation', 'Выберите город в выбранном регионе или измените регион.', 422)
             if destination['city_code'] == airport['city_code']:
                 raise SearchError('validation', 'Города вылета и назначения должны различаться.', 422)
         local_now = now().astimezone(ZoneInfo(airport['timezone']))
@@ -58,9 +61,9 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
             raise SearchError('validation', 'Дата вылета уже прошла.', 422)
         # Share source data across budgets/direct/weekend toggles; filter after cache.
         key = (request.origin, request.origin_city_code, request.month, request.departure_date,
-               request.return_date, request.destination, request.destination_city_code, settings.market, 'rub')
+               request.return_date, request.destination, request.destination_city_code, request.region, settings.market, 'rub')
         broad = request.model_copy(update={'max_budget_minor': 50000000, 'direct_only': False, 'weekend_only': False})
-        result = await cache.get_or_create(key, lambda: app.state.upstream.search(broad))
+        result = await cache.get_or_create(key, lambda: app.state.upstream.search_region(broad) if request.region != 'any' and not request.destination else app.state.upstream.search(broad))
         # A valid cached response can become stale before TTL expires.
         return result.model_copy(update={'offers': [o for o in result.offers if matches(o, request, now())]})
     return app

@@ -318,3 +318,60 @@ def test_exact_params_and_cache_separation():
         assert client.post('/api/v1/search', json=query | {'destination_city_code': 'MOW'}).status_code == 422
         assert client.post('/api/v1/search', json=query | {'destination': 'DME', 'destination_city_code': 'MOW'}).status_code == 422
         assert client.post('/api/v1/search', json=query | {'departure_date': '2026-09-30', 'month': '2026-09'}).status_code == 422
+
+@pytest.mark.parametrize('region,airport,accepted', [('europe','CDG',True),('europe','JFK',False),('europe','LED',False),('usa','JFK',True),('usa','LAX',True),('usa','CDG',False)])
+def test_region_country_filter(region, airport, accepted):
+    row=record(); row['destination_airport']=airport
+    assert (normalize(row,QUERY.model_copy(update={'region':region}),NOW) is not None) == accepted
+
+def test_region_invalid_value_and_destination():
+    with pytest.raises(ValueError): SearchRequest(origin='SVO',month='2026-10',region='asia')
+    with TestClient(create_app(Settings(token='test'),now=lambda:NOW)) as client:
+        response=client.post('/api/v1/search',json={'origin':'SVO','month':'2026-10','region':'usa','destination':'CDG'})
+        assert response.status_code == 422
+
+def test_regional_search_targets_and_price_order():
+    seen=[]
+    def handler(request):
+        target=request.url.params['destination']; seen.append(target)
+        row=record(); row.update(destination_airport='JFK' if target=='NYC' else 'LAX',price='20000' if target=='NYC' else '30000')
+        return httpx.Response(200,json={'success':True,'data':[row],'currency':'rub'})
+    with TestClient(create_app(Settings(token='test'),transport=httpx.MockTransport(handler),now=lambda:NOW)) as client:
+        q={'origin':'SVO','month':'2026-10','region':'usa','weekend_only':False,'max_budget_minor':10000000}
+        data=client.post('/api/v1/search',json=q).json()
+        assert 'NYC' in seen and 'LAX' in seen and 'PAR' not in seen
+        assert {o['country_code'] for o in data['offers']} == {'US'}
+        assert [o['price_minor'] for o in data['offers']] == sorted(o['price_minor'] for o in data['offers'])
+        assert data['incomplete'] and data['warnings']
+        calls=len(seen);client.post('/api/v1/search',json=dict(q,max_budget_minor=5000000))
+        assert len(seen)==calls
+
+def test_regional_search_partial_failure_keeps_results():
+    def handler(request):
+        if request.url.params['destination'] != 'NYC': return httpx.Response(401)
+        row=record();row.update(destination_airport='JFK',price='20000')
+        return httpx.Response(200,json={'success':True,'data':[row]})
+    with TestClient(create_app(Settings(token='test'),transport=httpx.MockTransport(handler),now=lambda:NOW)) as client:
+        data=client.post('/api/v1/search',json={'origin':'SVO','month':'2026-10','region':'usa','weekend_only':False}).json()
+        assert len(data['offers'])==1 and data['incomplete']
+        assert len(data['warnings'])==2
+
+def test_regional_deadline_reports_timeout_without_results():
+    async def handler(request):
+        await asyncio.sleep(.3)
+        return httpx.Response(200,json={'success':True,'data':[]})
+    with TestClient(create_app(Settings(token='test',timeout=.03),transport=httpx.MockTransport(handler),now=lambda:NOW)) as client:
+        response=client.post('/api/v1/search',json={'origin':'SVO','month':'2026-10','region':'usa'})
+        assert response.status_code==504 and response.json()['error']['code']=='timeout'
+
+def test_region_cache_is_separate_from_anywhere():
+    seen=[]
+    def handler(request):
+        seen.append(request.url.params.get('destination'))
+        row=record();row['price']='8500'
+        return httpx.Response(200,json={'success':True,'data':[row]})
+    with TestClient(create_app(Settings(token='test'),transport=httpx.MockTransport(handler),now=lambda:NOW)) as client:
+        q={'origin':'SVO','month':'2026-10'}
+        assert len(client.post('/api/v1/search',json=q).json()['offers'])==1
+        assert client.post('/api/v1/search',json=dict(q,region='usa')).json()['offers']==[]
+        assert len(seen)>1

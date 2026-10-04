@@ -106,7 +106,10 @@ struct MockSearchService: SearchService {
             }
             initial = date
         }
-        let fixtures: [(String, Int, Int?, Int?)] = [("LED",850000,0,0),("KZN",1050000,0,0),("KGD",1400000,0,0),("AER",1800000,0,0),("MRV",1550000,0,0),("EVN",2400000,0,0),("TBS",2850000,1,1),("IST",3100000,0,0),("GYD",2600000,0,1),("MSQ",2300000,0,0)]
+        let baseFixtures: [(String, Int, Int?, Int?)] = [("LED",850000,0,0),("KZN",1050000,0,0),("KGD",1400000,0,0),("AER",1800000,0,0),("MRV",1550000,0,0),("EVN",2400000,0,0),("TBS",2850000,1,1),("IST",3100000,0,0),("GYD",2600000,0,1),("MSQ",2300000,0,0)]
+        let fixtures = query.region == .any ? baseFixtures : (query.region == .europe
+            ? [("CDG",4200000,1,1),("LHR",5100000,1,1),("FCO",4600000,1,1),("BCN",4800000,1,1),("BER",4400000,1,1),("IST",3100000,0,0)]
+            : [("JFK",8500000,1,1),("LAX",11000000,1,1),("SFO",10500000,1,1),("MIA",9800000,1,1)])
         var offers: [Offer] = []
         for (position, fixture) in fixtures.enumerated() {
             let (code, price, out, back) = fixture

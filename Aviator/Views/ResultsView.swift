@@ -34,6 +34,11 @@ import SwiftUI
                             Label(model.filters.activeCount == 0 ? "Фильтры" : "Фильтры · \(model.filters.activeCount)", systemImage: "slider.horizontal.3")
                         }.accessibilityIdentifier("allFiltersButton")
                     }
+                    Picker("По цене", selection: Binding(get: { model.sort }, set: { model.sort = $0 })) {
+                        Text("Сначала дешевле").tag(OfferSort.price)
+                        Text("Сначала дороже").tag(OfferSort.priceDescending)
+                        if model.sort != .price && model.sort != .priceDescending { Text("Другая сортировка").tag(model.sort) }
+                    }.pickerStyle(.segmented).accessibilityIdentifier("priceSort")
                     Picker("Сортировка", selection: $model.sort) {
                         ForEach(OfferSort.allCases) { Text($0.title).tag($0) }
                     }.pickerStyle(.menu).accessibilityIdentifier("sortPicker")
@@ -81,7 +86,7 @@ import SwiftUI
     }
     private func summary(_ query: SearchQuery) -> String {
         let origin = query.originCityCode.map { "\($0) · все аэропорты" } ?? query.origin
-        let destination = query.destinationCityCode ?? query.destination ?? "куда угодно"
+        let destination = query.destinationCityCode ?? query.destination ?? query.region.title
         let dates = query.usesExactDates ? "\(query.departureDate!) → \(query.returnDate!)" : TravelDates.monthLabel(query.month)
         return "\(origin) → \(destination) · \(dates) · до \(Money.format(query.maxBudgetMinor))"
     }
@@ -92,7 +97,7 @@ import SwiftUI
                 chip("До 20 000 ₽", selected: model.filters.cheap) { model.filters.cheap.toggle() }
                 chip("Прямые", selected: model.filters.direct) { model.filters.direct.toggle() }
                 chip("Без отпуска", selected: model.filters.noLeave) { model.filters.noLeave.toggle() }
-                chip("Россия", selected: model.filters.russia) { model.filters.russia.toggle() }
+                if (model.performedQuery ?? model.query).region == .any { chip("Россия", selected: model.filters.russia) { model.filters.russia.toggle() } }
             }
         }
     }
@@ -142,7 +147,7 @@ import SwiftUI
                         Text("Все страны").tag(Optional<String>.none)
                         ForEach(model.countries) { Text($0.title).tag(Optional($0.id)) }
                     }
-                    Toggle("Только Россия", isOn: $draft.russia)
+                    if (model.performedQuery ?? model.query).region == .any { Toggle("Только Россия", isOn: $draft.russia) }
                     Toggle("Один лучший вариант на город", isOn: $draft.uniqueDestinations)
                 }
                 Section("Перелёт") {

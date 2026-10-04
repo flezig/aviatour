@@ -12,12 +12,27 @@ struct Airport: Codable, Identifiable, Hashable {
     var label: String { "\(city) · \(iata)" }
 }
 
+enum TripRegion: String, Codable, CaseIterable, Identifiable {
+    case any, europe, usa
+    var id: String { rawValue }
+    var title: String { switch self { case .any: "Куда угодно"; case .europe: "Поездка в Европу"; case .usa: "Поездка в США" } }
+    func includes(_ country: String?) -> Bool {
+        switch self {
+        case .any: return true
+        case .usa: return country == "US"
+        case .europe: return Self.europeCountries.contains(country ?? "")
+        }
+    }
+    static let europeCountries = Set("AL AD AT BE BA BG HR CY CZ DK EE FI FR DE GR HU IS IE IT LV LI LT LU MT MD MC ME NL MK NO PL PT RO SM RS SK SI ES SE CH TR UA GB VA XK".split(separator: " ").map(String.init))
+}
+
 struct SearchQuery: Codable, Equatable {
     var origin = "SVO"
     var originCityCode: String? = nil
     var month: String
     var maxBudgetMinor = 2_500_000
     var directOnly = false
+    var region: TripRegion = .any
     var departureDate: String? = nil
     var returnDate: String? = nil
     var weekendOnly = true
@@ -65,7 +80,7 @@ struct Offer: Codable, Identifiable, Hashable {
     var airlineLabel: String { airlineName.map { "\($0) (\(airline ?? ""))" } ?? airline ?? "Авиакомпания не указана" }
     var isDemo: Bool { source == "MOCK" }
     var isDirect: Bool { transfers == 0 && returnTransfers == 0 }
-    var imageName: String { destinationAirport }
+    var imageName: String { cityCode }
 }
 
 struct SearchResult {

@@ -36,6 +36,12 @@ import SwiftUI
                             }.foregroundStyle(.primary).frame(minHeight: 44)
                         }.accessibilityIdentifier("originPicker")
                         Divider()
+                        Picker("Направление поездки", selection: $model.query.region) {
+                            ForEach(TripRegion.allCases) { Text($0.title).tag($0) }
+                        }.pickerStyle(.menu).accessibilityIdentifier("regionPicker")
+                        if model.query.region != .any {
+                            Text("Поиск по основным городам. Можно выбрать конкретный город ниже.").font(.caption).foregroundStyle(.secondary)
+                        }
                         HStack {
                             Button { chooseDestination = true } label: {
                                 VStack(alignment: .leading, spacing: 4) {
@@ -86,10 +92,16 @@ import SwiftUI
                 .navigationDestination(isPresented: $showResults) { ResultsView(model: model, favorites: favorites, analytics: analytics) }
                 .sheet(isPresented: $chooseAirport) { AirportPicker(index: airportIndex, selection: $model.query.origin, citySelection: $model.query.originCityCode) }
                 .sheet(isPresented: $chooseDestination) {
-                    AirportPicker(index: airportIndex, selection: Binding(get: { model.query.destination ?? "LED" }, set: { model.query.destination = $0 }), citySelection: $model.query.destinationCityCode, title: "Куда летим")
+                    AirportPicker(index: AirportIndex(airports: airports.filter { model.query.region.includes($0.countryCode) }), selection: Binding(get: { model.query.destination ?? "LED" }, set: { model.query.destination = $0 }), citySelection: $model.query.destinationCityCode, title: "Куда летим")
                 }
                 .environment(\.timeZone, TravelDates.calendar(zone).timeZone)
                 .sheet(isPresented: $showCredits) { CreditsView() }
+                .onChange(of: model.query.region) { _, region in
+                    if let code = model.query.destination, !region.includes(airportIndex.byIATA[code]?.countryCode) {
+                        model.query.destination = nil; model.query.destinationCityCode = nil
+                    }
+                    if region != .any { model.query.weekendOnly = false }
+                }
                 .onChange(of: model.query.origin) { _, _ in
                     let months = TravelDates.months(now: model.clock.now, zone: airport?.timezone ?? "Europe/Moscow")
                     if !model.query.usesExactDates && !months.contains(model.query.month) { model.query.month = months[0] }
@@ -98,7 +110,7 @@ import SwiftUI
     }
     private var zone: String { airport?.timezone ?? "Europe/Moscow" }
     private var destinationLabel: String {
-        guard let code = model.query.destination else { return "Куда угодно" }
+        guard let code = model.query.destination else { return model.query.region == .any ? "Куда угодно" : "Все основные города" }
         let selected = airportIndex.byIATA[code]
         return model.query.destinationCityCode == nil ? (selected?.label ?? code) : "\(selected?.city ?? code) · все аэропорты"
     }
