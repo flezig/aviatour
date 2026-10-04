@@ -22,6 +22,52 @@ enum Catalog {
     }
 }
 
+// Built once at app startup, shared across picker presentations.
+struct AirportIndex {
+    struct City: Identifiable {
+        let id: String
+        let name: String
+        let representative: Airport
+        let codes: String
+        let airports: [Airport]
+    }
+    let cities: [City]
+    private let searchable: [String: [String]]
+    private let locale: Locale
+
+    init(airports: [Airport], locale: Locale = .current) {
+        self.locale = locale
+        searchable = Dictionary(uniqueKeysWithValues: airports.map { airport in
+            (airport.iata, [airport.city, airport.cityCode, airport.iata, airport.name].map {
+                $0.folding(options: [.caseInsensitive], locale: locale)
+            })
+        })
+        cities = Dictionary(grouping: airports, by: \.cityCode).map { code, members in
+            let first = members[0]
+            return City(id: code, name: first.city, representative: first,
+                        codes: members.map(\.iata).joined(separator: ", "), airports: members)
+        }.sorted {
+            let order = $0.name.localizedStandardCompare($1.name)
+            return order == .orderedSame ? $0.id < $1.id : order == .orderedAscending
+        }
+    }
+
+    func matching(_ text: String) -> [City] {
+        let term = text.trimmingCharacters(in: .whitespacesAndNewlines)
+            .folding(options: [.caseInsensitive], locale: locale)
+        guard !term.isEmpty else { return cities }
+        return cities.compactMap { city in
+            let matches = city.airports.filter { airport in
+                searchable[airport.iata]?.contains(where: { $0.contains(term) }) == true
+            }
+            guard !matches.isEmpty else { return nil }
+            // A city selection still includes ALL its airports, even for an IATA search.
+            return City(id: city.id, name: city.name, representative: city.representative,
+                        codes: city.codes, airports: matches)
+        }
+    }
+}
+
 struct MockSearchService: SearchService {
     let airports: [Airport]
     let clock: any AppClock

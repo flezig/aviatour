@@ -4,6 +4,7 @@ import SwiftUI
     @ObservedObject var model: SearchViewModel
     @ObservedObject var favorites: FavoritesViewModel
     let airports: [Airport]
+    let airportIndex: AirportIndex
     let mode: String
     let analytics: any AnalyticsService
     @Environment(\.dynamicTypeSize) private var textSize
@@ -56,7 +57,7 @@ import SwiftUI
                 }
             }.background(Color(.systemGroupedBackground)).toolbar(.hidden, for: .navigationBar)
                 .navigationDestination(isPresented: $showResults) { ResultsView(model: model, favorites: favorites, analytics: analytics) }
-                .sheet(isPresented: $chooseAirport) { AirportPicker(airports: airports, selection: $model.query.origin, citySelection: $model.query.originCityCode) }
+                .sheet(isPresented: $chooseAirport) { AirportPicker(index: airportIndex, selection: $model.query.origin, citySelection: $model.query.originCityCode) }
                 .sheet(isPresented: $showCredits) { CreditsView() }
                 .onChange(of: model.query.origin) { _, _ in
                     let months = TravelDates.months(now: model.clock.now, zone: airport?.timezone ?? "Europe/Moscow")
@@ -67,43 +68,61 @@ import SwiftUI
 }
 
 struct AirportPicker: View {
-    let airports: [Airport]
+    let index: AirportIndex
     @Binding var selection: String
     @Binding var citySelection: String?
     @Environment(\.dismiss) private var dismiss
     @State private var text = ""
-    private var matches: [Airport] { airports.filter { text.isEmpty || $0.city.localizedCaseInsensitiveContains(text) || $0.cityCode.localizedCaseInsensitiveContains(text) || $0.iata.localizedCaseInsensitiveContains(text) || $0.name.localizedCaseInsensitiveContains(text) } }
-    private var groups: [[Airport]] {
-        Dictionary(grouping: matches, by: \.cityCode).values.sorted {
-            ($0.first?.city ?? "").localizedStandardCompare($1.first?.city ?? "") == .orderedAscending
-        }
+    @State private var groups: [AirportIndex.City]
+
+    init(index: AirportIndex, selection: Binding<String>, citySelection: Binding<String?>) {
+        self.index = index
+        _selection = selection
+        _citySelection = citySelection
+        _groups = State(initialValue: index.cities)
     }
     var body: some View {
         NavigationStack {
-            List {
-                ForEach(groups, id: \.self) { group in
-                    if let representative = group.first {
-                        Section(representative.city) {
+            ScrollView {
+                LazyVStack(alignment: .leading, spacing: 0, pinnedViews: [.sectionHeaders]) {
+                    ForEach(groups) { group in
+                        Section {
                             Button {
-                                selection = representative.iata; citySelection = representative.cityCode; dismiss()
+                                selection = group.representative.iata; citySelection = group.id; dismiss()
                             } label: {
                                 VStack(alignment: .leading, spacing: 4) {
                                     Text("Все аэропорты города").font(.headline)
-                                    Text(airports.filter { $0.cityCode == representative.cityCode }.map(\.iata).joined(separator: ", ")).font(.caption).foregroundStyle(.secondary)
+                                    Text(group.codes).font(.caption).foregroundStyle(.secondary)
                                 }.foregroundStyle(.primary)
-                            }.accessibilityIdentifier("originCity.\(representative.cityCode)")
-                            ForEach(group) { airport in
+                                    .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
+                                    .padding(.horizontal, 20).padding(.vertical, 12).contentShape(Rectangle())
+                            }.buttonStyle(.plain)
+                                .accessibilityIdentifier("originCity.\(group.id)")
+                            Divider()
+                            ForEach(group.airports) { airport in
                                 Button { selection = airport.iata; citySelection = nil; dismiss() } label: {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text(airport.label).font(.headline)
                                         Text(airport.name).font(.subheadline).foregroundStyle(.secondary)
-                                    }.foregroundStyle(.primary).padding(.vertical, 4)
-                                }
+                                    }.foregroundStyle(.primary)
+                                        .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
+                                        .padding(.horizontal, 20).padding(.vertical, 8).contentShape(Rectangle())
+                                }.buttonStyle(.plain)
+                                Divider()
                             }
+                        } header: {
+                            Text(group.name).font(.headline).padding(.horizontal, 20).padding(.vertical, 10)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .background(Color(.systemGroupedBackground))
+                                .accessibilityAddTraits(.isHeader)
                         }
                     }
                 }
-            }.searchable(text: $text, prompt: "Город или IATA-код").navigationTitle("Откуда летим")
+                if groups.isEmpty {
+                    ContentUnavailableView.search(text: text)
+                }
+            }.onChange(of: text) { _, value in groups = index.matching(value) }
+                .searchable(text: $text, prompt: "Город или IATA-код").navigationTitle("Откуда летим")
                 .toolbar { Button("Готово") { dismiss() } }
         }
     }
