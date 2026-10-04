@@ -47,6 +47,12 @@ private struct SearchResponseDTO: Decodable {
 }
 private struct ErrorDTO: Decodable { struct Detail: Decodable { let code, message: String }; let error: Detail }
 
+private struct BatchRequestDTO: Encodable { let queries: [SearchQuery] }
+private struct BatchResponseDTO: Decodable {
+    struct Item: Decodable { let result: SearchResponseDTO?; let error: String? }
+    let results: [Item]
+}
+
 struct LiveSearchService: SearchService {
     let baseURL: URL?
     let session: URLSession
@@ -73,7 +79,42 @@ struct LiveSearchService: SearchService {
             _ = error; throw SearchFailure.invalidData
         }
     }
-    private static func decode(_ data: Data, status: Int) throws -> SearchResult {
+    func searchBatch(_ queries: [SearchQuery]) async throws -> [BatchSearchItem] {
+        guard !queries.isEmpty, queries.count <= 7 else { throw SearchFailure.invalidData }
+        guard let baseURL else { throw SearchFailure.configuration }
+        #if !DEBUG
+        guard baseURL.scheme == "https" else { throw SearchFailure.configuration }
+        #endif
+        var request = URLRequest(url: baseURL.appendingPathComponent("api/v1/search/batch"))
+        request.httpMethod = "POST"; request.timeoutInterval = 90
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        let encoder = JSONEncoder(); encoder.keyEncodingStrategy = .convertToSnakeCase
+        request.httpBody = try encoder.encode(BatchRequestDTO(queries: queries))
+        do {
+            let (data, response) = try await session.data(for: request)
+            guard let http = response as? HTTPURLResponse else { throw SearchFailure.invalidData }
+            return try await Task.detached(priority: .userInitiated) {
+                let decoder = Self.decoder()
+                guard (200..<300).contains(http.statusCode) else {
+                    let error = try? decoder.decode(ErrorDTO.self, from: data)
+                    throw SearchFailure.source(error?.error.message ?? "Ошибка backend (\(http.statusCode)).")
+                }
+                let dto = try decoder.decode(BatchResponseDTO.self, from: data)
+                guard dto.results.count == queries.count else { throw SearchFailure.invalidData }
+                return try dto.results.map { item in
+                    guard (item.result != nil) != (item.error != nil) else { throw SearchFailure.invalidData }
+                    if let result = item.result {
+                        return BatchSearchItem(result: SearchResult(offers: try result.offers.map { try $0.domain() }, incomplete: result.incomplete, warnings: result.warnings), error: nil)
+                    }
+                    return BatchSearchItem(result: nil, error: item.error)
+                }
+            }.value
+        } catch let error as URLError {
+            if error.code == .cancelled { throw CancellationError() }
+            throw SearchFailure.offline
+        } catch is DecodingError { throw SearchFailure.invalidData }
+    }
+    private static func decoder() -> JSONDecoder {
         let fractional = ISO8601DateFormatter(); fractional.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
         let standard = ISO8601DateFormatter(); standard.formatOptions = [.withInternetDateTime]
         let decoder = JSONDecoder(); decoder.keyDecodingStrategy = .convertFromSnakeCase
@@ -82,6 +123,10 @@ struct LiveSearchService: SearchService {
             guard let date = fractional.date(from: raw) ?? standard.date(from: raw) else { throw SearchFailure.invalidData }
             return date
         }
+        return decoder
+    }
+    private static func decode(_ data: Data, status: Int) throws -> SearchResult {
+        let decoder = decoder()
         guard (200..<300).contains(status) else {
             let error = try? decoder.decode(ErrorDTO.self, from: data)
             throw SearchFailure.source(error?.error.message ?? "Ошибка backend (\(status)).")

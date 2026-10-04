@@ -45,8 +45,10 @@ import SwiftData
         if mode == "MOCK" { service = MockSearchService(airports: airports, clock: clock) }
         else if mode == "LIVE" { service = LiveSearchService(baseURL: URL(string: Bundle.main.object(forInfoDictionaryKey: "AVIATOR_BASE_URL") as? String ?? "")) }
         else { throw SearchFailure.configuration }
+        let mock = MockSearchService(airports: airports, clock: clock)
+        let live = LiveSearchService(baseURL: URL(string: Bundle.main.object(forInfoDictionaryKey: "AVIATOR_BASE_URL") as? String ?? ""))
         let container = try ModelContainer(for: FavoriteSnapshot.self, configurations: ModelConfiguration(isStoredInMemoryOnly: isSmoke))
-        favorites = FavoritesViewModel(store: SwiftDataFavoritesStore(container: container), clock: clock, analytics: analytics)
+        favorites = FavoritesViewModel(store: SwiftDataFavoritesStore(container: container), clock: clock, analytics: analytics, services: ["MOCK": mock, "LIVE": live])
         search = SearchViewModel(service: service, clock: clock, analytics: analytics)
         analytics.record(.appOpen)
     }
@@ -54,14 +56,29 @@ import SwiftData
 @MainActor struct RootView: View {
     let dependencies: AppDependencies
     @ObservedObject private var favorites: FavoritesViewModel
-    init(dependencies: AppDependencies) { self.dependencies = dependencies; self.favorites = dependencies.favorites }
+    @ObservedObject private var search: SearchViewModel
+    @StateObject private var comparison = ComparisonModel()
+    @State private var selectedTab: String
+    init(dependencies: AppDependencies) {
+        self.dependencies = dependencies; self.favorites = dependencies.favorites; self.search = dependencies.search
+        _selectedTab = State(initialValue: ProcessInfo.processInfo.arguments.contains("--ui-smoke") ? "search" : "collections")
+    }
     var body: some View {
-        TabView {
+        TabView(selection: $selectedTab) {
+            CollectionsView(search: search, favorites: favorites, airports: dependencies.airports, index: dependencies.airportIndex, mode: dependencies.mode, analytics: dependencies.analytics)
+                .tabItem { Label("Подборки", systemImage: "sparkles") }.tag("collections")
             HomeView(model: dependencies.search, favorites: dependencies.favorites, airports: dependencies.airports, airportIndex: dependencies.airportIndex, mode: dependencies.mode, analytics: dependencies.analytics)
-                .tabItem { Label("Поиск", systemImage: "magnifyingglass") }
+                .tabItem { Label("Поиск", systemImage: "magnifyingglass") }.tag("search")
+            TripComparisonView(favorites: favorites, clock: dependencies.clock, analytics: dependencies.analytics)
+                .tabItem { Label("Сравнение", systemImage: "rectangle.split.2x1") }.tag("comparison")
             FavoritesView(favorites: dependencies.favorites, clock: dependencies.clock, analytics: dependencies.analytics)
-                .tabItem { Label("Избранное", systemImage: "heart") }
-        }.tint(.aviatorBlue).preferredColorScheme(.light)
+                .tabItem { Label("Избранное", systemImage: "heart") }.tag("favorites")
+        }.environmentObject(comparison).environment(\.tripBudget, search.query.maxBudgetMinor)
+            .onChange(of: favorites.offers) { _, offers in for offer in offers { comparison.update(offer) } }
+            .alert("Сравнение", isPresented: Binding(get: { comparison.message != nil }, set: { if !$0 { comparison.message = nil } })) {
+                Button("Понятно", role: .cancel) {}
+            } message: { Text(comparison.message ?? "") }
+            .tint(.aviatorBlue).preferredColorScheme(.light)
             .alert("Избранное", isPresented: Binding(get: { favorites.error != nil }, set: { if !$0 { favorites.error = nil } })) {
                 Button("Понятно", role: .cancel) {}
             } message: { Text(favorites.error ?? "") }

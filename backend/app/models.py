@@ -9,6 +9,7 @@ class SearchRequest(BaseModel):
     month: str = Field(pattern=r'^\d{4}-(0[1-9]|1[0-2])$')
     max_budget_minor: int = Field(default=2500000, ge=500000, le=50000000)
     direct_only: bool = False
+    force_refresh: bool = False
     region: Literal['any', 'europe', 'usa'] = 'any'
     departure_date: str | None = Field(default=None, pattern=r'^\d{4}-\d{2}-\d{2}$')
     return_date: str | None = Field(default=None, pattern=r'^\d{4}-\d{2}-\d{2}$')
@@ -113,3 +114,15 @@ class SearchResponse(BaseModel):
     received_at: datetime
     incomplete: bool = False
     warnings: list[str] = Field(default_factory=list)
+
+
+class BatchSearchRequest(BaseModel):
+    model_config = ConfigDict(extra='forbid')
+    queries: list[SearchRequest] = Field(min_length=1, max_length=7)
+
+class BatchSearchItem(BaseModel):
+    result: SearchResponse | None = None
+    error: str | None = None
+
+class BatchSearchResponse(BaseModel):
+    results: list[BatchSearchItem]

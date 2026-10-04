@@ -26,7 +26,7 @@ enum TripRegion: String, Codable, CaseIterable, Identifiable {
     static let europeCountries = Set("AL AD AT BE BA BG HR CY CZ DK EE FI FR DE GR HU IS IE IT LV LI LT LU MT MD MC ME NL MK NO PL PT RO SM RS SK SI ES SE CH TR UA GB VA XK".split(separator: " ").map(String.init))
 }
 
-struct SearchQuery: Codable, Equatable {
+struct SearchQuery: Codable, Equatable, Hashable {
     var origin = "SVO"
     var originCityCode: String? = nil
     var month: String
@@ -38,6 +38,7 @@ struct SearchQuery: Codable, Equatable {
     var weekendOnly = true
     var destination: String? = nil
     var destinationCityCode: String? = nil
+    var forceRefresh = false
     var usesExactDates: Bool { departureDate != nil && returnDate != nil }
 }
 
@@ -105,6 +106,11 @@ struct Offer: Codable, Identifiable, Hashable {
     var airline: String? = nil
     var airlineName: String? = nil
     var flightNumber: String? = nil
+    var originalPriceMinor: Int? = nil
+    var previousPriceMinor: Int? = nil
+    var lastCheckedAt: Date? = nil
+    var refreshStatus: FavoriteRefreshStatus? = nil
+    var refreshMessage: String? = nil
     var outboundSegments: [FlightSegment]? = nil
     var inboundSegments: [FlightSegment]? = nil
     var availability: OfferAvailability? = nil

@@ -6,6 +6,9 @@ enum TravelDates {
         calendar.timeZone = TimeZone(identifier: zone) ?? TimeZone(secondsFromGMT: 0)!
         return calendar
     }
+    static func weekdayTime(_ date: Date, zone: String) -> String {
+        Formatters.date(date, zone: zone, locale: "ru_RU", format: "EEEE HH:mm")
+    }
     static func month(_ date: Date, zone: String = "Europe/Moscow") -> String {
         let c = calendar(zone).dateComponents([.year, .month], from: date)
         return String(format: "%04d-%02d", c.year!, c.month!)
