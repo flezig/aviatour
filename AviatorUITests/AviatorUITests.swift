@@ -67,6 +67,63 @@ final class AviatorUITests: XCTestCase {
         let image = XCTAttachment(screenshot: app.screenshot()); image.name = "Подробная пересадка"; image.lifetime = .keepAlways; add(image)
     }
 
+    func testCollectionsRespectBudget() {
+        let app = XCUIApplication(); app.launchArguments = ["--ui-smoke"]; app.launch()
+        XCTAssertTrue(app.buttons["originPicker"].waitForExistence(timeout: 10))
+        app.tabBars.buttons["Подборки"].tap()
+        let collection = app.buttons["collection.budget20"]
+        XCTAssertTrue(collection.waitForExistence(timeout: 5))
+        for _ in 0..<4 where !collection.isHittable { app.swipeUp() }
+        collection.tap()
+        let offer = app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH %@", "collection.offer.LED.")).firstMatch
+        XCTAssertTrue(offer.waitForExistence(timeout: 5))
+        for _ in 0..<8 where !offer.isHittable { app.swipeUp() }
+        XCTAssertTrue(app.staticTexts["Билеты туда-обратно · без проживания"].firstMatch.exists)
+        let shot = XCTAttachment(screenshot: app.screenshot()); shot.name = "Подборка до 20 тысяч"; shot.lifetime = .keepAlways; add(shot)
+        offer.tap()
+        XCTAssertTrue(app.buttons["nearbyDatesButton"].waitForExistence(timeout: 5))
+    }
+
+    func testCompareTwoTrips() {
+        let app = XCUIApplication(); app.launchArguments = ["--ui-smoke"]; app.launch()
+        XCTAssertTrue(app.buttons["searchButton"].waitForExistence(timeout: 10))
+        app.buttons["searchButton"].tap()
+        let first = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@", "compare.MOCK-SVO-LED-")).firstMatch
+        XCTAssertTrue(first.waitForExistence(timeout: 5))
+        for _ in 0..<6 where !first.isHittable { app.swipeUp() }
+        first.tap()
+        let second = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@", "compare.MOCK-SVO-KZN-")).firstMatch
+        for _ in 0..<8 where !second.exists || !second.isHittable { app.swipeUp() }
+        XCTAssertTrue(second.exists); second.tap()
+        app.tabBars.buttons["Сравнение"].tap()
+        XCTAssertTrue(app.staticTexts["Санкт-Петербург"].firstMatch.waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["Дорога туда и обратно"].firstMatch.exists)
+        XCTAssertTrue(app.staticTexts["Пересадки туда / обратно"].firstMatch.exists)
+        let shot = XCTAttachment(screenshot: app.screenshot()); shot.name = "Сравнение поездок"; shot.lifetime = .keepAlways; add(shot)
+    }
+
+    func testFavoriteRefreshAndNearbyDates() {
+        let app = XCUIApplication(); app.launchArguments = ["--ui-smoke"]; app.launch()
+        XCTAssertTrue(app.buttons["searchButton"].waitForExistence(timeout: 10))
+        app.buttons["searchButton"].tap()
+        let card = app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH %@", "offer.LED.")).firstMatch
+        XCTAssertTrue(card.waitForExistence(timeout: 5)); card.tap()
+        app.buttons["favorite.LED"].tap()
+        app.tabBars.buttons["Избранное"].tap()
+        XCTAssertTrue(app.buttons["favorites.refresh"].waitForExistence(timeout: 5)); app.buttons["favorites.refresh"].tap()
+        XCTAssertTrue(app.staticTexts["favorites.refreshSummary"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["Цена как при сохранении"].exists)
+        app.descendants(matching: .any)["saved.LED"].tap()
+        let nearby = app.buttons["nearbyDatesButton"]
+        for _ in 0..<6 where !nearby.isHittable { app.swipeUp() }
+        nearby.tap()
+        let original = app.descendants(matching: .any)["nearby.offer.0"]
+        XCTAssertTrue(original.waitForExistence(timeout: 5))
+        for _ in 0..<8 where !original.isHittable { app.swipeUp() }
+        XCTAssertTrue(app.staticTexts["Как в исходном снимке"].firstMatch.exists)
+        let shot = XCTAttachment(screenshot: app.screenshot()); shot.name = "Соседние даты"; shot.lifetime = .keepAlways; add(shot)
+    }
+
     func testRegionalSearchAndPriceSort() {
         let app = XCUIApplication(); app.launchArguments = ["--ui-smoke"]; app.launch()
         let region = app.buttons["regionPicker"]

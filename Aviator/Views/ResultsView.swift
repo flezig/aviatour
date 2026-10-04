@@ -66,7 +66,7 @@ import SwiftUI
                     } else {
                         LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 16), count: textSize.isAccessibilitySize ? 1 : 2), spacing: 20) {
                             ForEach(Array(model.offers.prefix(visibleLimit))) { offer in
-                                NavigationLink { DetailView(offer: offer, favorites: favorites, clock: model.clock, analytics: analytics) } label: {
+                                NavigationLink { DetailView(offer: offer, favorites: favorites, clock: model.clock, analytics: analytics, budgetMinor: model.performedQuery?.maxBudgetMinor ?? model.query.maxBudgetMinor) } label: {
                                     OfferCard(offer: offer, favorites: favorites)
                                 }.buttonStyle(.plain).accessibilityIdentifier("offer.\(offer.destinationAirport).\(offer.id)")
                             }

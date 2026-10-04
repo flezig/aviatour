@@ -18,7 +18,7 @@ struct FilterChoice: Identifiable { let id: String; let title: String }
     private var filterTask: Task<Void, Never>?
     private var filterGeneration = UUID()
     @Published private(set) var result = SearchResult(offers: [], incomplete: false, warnings: [])
-    private let service: any SearchService
+    let service: any SearchService
     let clock: any AppClock
     private let analytics: any AnalyticsService
     private var task: Task<Void, Never>?
@@ -26,6 +26,12 @@ struct FilterChoice: Identifiable { let id: String; let title: String }
     init(service: any SearchService, clock: any AppClock, analytics: any AnalyticsService) {
         self.service = service; self.clock = clock; self.analytics = analytics
         query = SearchQuery(month: TravelDates.month(clock.now))
+    }
+    func reset() {
+        task?.cancel(); generation = UUID()
+        filterTask?.cancel(); filterGeneration = UUID()
+        isFiltering = false; state = .idle; offers = []; facts = []
+        result = SearchResult(offers: [], incomplete: false, warnings: []); performedQuery = nil
     }
     func refresh() {
         filterTask?.cancel(); filterGeneration = UUID()
@@ -54,9 +60,9 @@ struct FilterChoice: Identifiable { let id: String; let title: String }
     func retryWithTransfers() {
         query = performedQuery ?? query; query.directOnly = false; start()
     }
-    func start() {
+    func start(filters initialFilters: ExtraFilters = ExtraFilters(), sort initialSort: OfferSort = .price) {
         task?.cancel(); generation = UUID(); let ticket = generation; let parameters = query
-        performedQuery = parameters; filters = ExtraFilters(); sort = .price
+        performedQuery = parameters; filters = initialFilters; sort = initialSort
         filterTask?.cancel(); filterGeneration = UUID(); isFiltering = false
         facts = []; offers = []; airlines = []; countries = []
         result = SearchResult(offers: [], incomplete: false, warnings: []); state = .loading
@@ -70,7 +76,7 @@ struct FilterChoice: Identifiable { let id: String; let title: String }
                     let facts = response.offers.map(OfferFacts.init)
                     let choices = Dictionary(grouping: response.offers.filter { $0.countryCode != nil }, by: { $0.countryCode! })
                         .map { FilterChoice(id: $0.key, title: $0.value.first?.country ?? $0.key) }.sorted { $0.title < $1.title }
-                    return (facts, SearchRules.options(facts, query: parameters, now: now, filters: ExtraFilters()),
+                    return (facts, SearchRules.options(facts, query: parameters, now: now, filters: initialFilters, sort: initialSort),
                             Dictionary(grouping: response.offers.filter { $0.airline != nil }, by: { $0.airline! })
                                 .map { FilterChoice(id: $0.key, title: $0.value.first?.airlineLabel ?? $0.key) }.sorted { $0.title < $1.title }, choices)
                 }.value
@@ -86,28 +92,5 @@ struct FilterChoice: Identifiable { let id: String; let title: String }
                 else { state = .error(error.localizedDescription) }
             }
         }
-    }
-}
-
-@MainActor final class FavoritesViewModel: ObservableObject {
-    @Published private(set) var offers: [Offer] = []
-    private var favoriteIDs = Set<String>()
-    @Published var error: String?
-    private let store: any FavoritesStore
-    private let clock: any AppClock
-    private let analytics: any AnalyticsService
-    init(store: any FavoritesStore, clock: any AppClock, analytics: any AnalyticsService) {
-        self.store = store; self.clock = clock; self.analytics = analytics; reload()
-    }
-    func reload() {
-        do { offers = try store.all(); favoriteIDs = Set(offers.map(\.id)) } catch { self.error = "Не удалось прочитать избранное: \(error.localizedDescription)" }
-    }
-    func contains(_ offer: Offer) -> Bool { favoriteIDs.contains(offer.id) }
-    func toggle(_ offer: Offer) {
-        do {
-            if contains(offer) { try store.remove(id: offer.id) }
-            else { try store.add(offer, at: clock.now); analytics.record(.destinationFavorited) }
-            reload()
-        } catch { self.error = "Не удалось сохранить изменение: \(error.localizedDescription)" }
     }
 }

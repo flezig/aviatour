@@ -399,3 +399,57 @@ def test_segment_chronology_and_local_zones():
         FlightSegment(**dict(segment, arrival_at='2026-10-06T19:00:00+04:00'))
     with pytest.raises(ValueError):
         FlightSegment(**dict(segment, departure_at='2026-10-06T20:00:00'))
+
+@pytest.mark.asyncio
+async def test_cache_manual_refresh_singleflight():
+    cache = TTLCache()
+    calls = 0
+    async def load():
+        nonlocal calls
+        calls += 1
+        await asyncio.sleep(.01)
+        return calls
+    assert await cache.get_or_create('route', load) == 1
+    assert await cache.get_or_create('route', load) == 1
+    assert await asyncio.gather(*(cache.get_or_create('route', load, refresh=True) for _ in range(3))) == [2, 2, 2]
+    assert await cache.get_or_create('route', load) == 2
+
+
+def test_batch_order_partial_errors_bounds_and_one_user_action():
+    calls = []
+    def transport(request):
+        calls.append(request.url.params.get('departure_at'))
+        return httpx.Response(200, json={'success': True, 'data': [], 'currency': 'rub'})
+    app = create_app(Settings(token='fixture', rate=1), transport=httpx.MockTransport(transport), now=lambda: NOW)
+    valid = dict(origin='SVO', month='2026-10', max_budget_minor=2500000,
+                 departure_date='2026-10-06', return_date='2026-10-08', destination='LED', weekend_only=False)
+    invalid = dict(valid, origin='ZZZ')
+    with TestClient(app) as client:
+        response = client.post('/api/v1/search/batch', json={'queries': [valid, invalid, dict(valid, departure_date='2026-10-07', return_date='2026-10-09')]})
+        assert response.status_code == 200
+        items = response.json()['results']
+        assert items[0]['result']['offers'] == [] and items[0]['error'] is None
+        assert items[1]['result'] is None and items[1]['error']
+        assert items[2]['result']['offers'] == []
+        assert sorted(calls) == ['2026-10-06', '2026-10-07']
+        assert client.post('/api/v1/search/batch', json={'queries': [valid]}).status_code == 429
+    with TestClient(create_app(now=lambda: NOW)) as client:
+        assert client.post('/api/v1/search/batch', json={'queries': []}).status_code == 422
+        assert client.post('/api/v1/search/batch', json={'queries': [valid] * 8}).status_code == 422
+
+
+def test_force_refresh_refetches_source_without_changing_cache_key():
+    calls = 0
+    def transport(request):
+        nonlocal calls
+        calls += 1
+        row = record(); row['price'] = 8500 + calls * 100
+        return httpx.Response(200, json={'success': True, 'data': [row], 'currency': 'rub'})
+    app = create_app(Settings(token='fixture'), transport=httpx.MockTransport(transport), now=lambda: NOW)
+    query = dict(origin='SVO', month='2026-10', max_budget_minor=2500000)
+    with TestClient(app) as client:
+        first = client.post('/api/v1/search', json=query).json()['offers'][0]
+        second = client.post('/api/v1/search', json=query).json()['offers'][0]
+        fresh = client.post('/api/v1/search', json=dict(query, force_refresh=True)).json()['offers'][0]
+        assert calls == 2 and first['price_minor'] == second['price_minor'] < fresh['price_minor']
+        assert first['id'] == fresh['id']

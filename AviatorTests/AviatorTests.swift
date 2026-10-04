@@ -111,6 +111,31 @@ final class AviatorTests: XCTestCase {
         XCTAssertEqual(saved.searchURL,offer.searchURL)
         try store.remove(id:offer.id); XCTAssertTrue(try store.all().isEmpty)
     }
+    @MainActor func testFavoriteRefreshMetadataPersistsAfterReopening() async throws {
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString + ".store")
+        defer { for suffix in ["", "-wal", "-shm"] { try? FileManager.default.removeItem(atPath: url.path + suffix) } }
+        let original = try await offers()[0]
+        do {
+            let container = try ModelContainer(for: FavoriteSnapshot.self, configurations: ModelConfiguration(url: url))
+            let store = SwiftDataFavoritesStore(container: container)
+            try store.add(original, at: now)
+            var updated = try changed(original, price: original.priceMinor - 10000)
+            updated.originalPriceMinor = original.priceMinor
+            updated.previousPriceMinor = original.priceMinor
+            updated.lastCheckedAt = now; updated.refreshStatus = .updated
+            XCTAssertTrue(try store.update(updated))
+            try store.remove(id: original.id)
+            XCTAssertFalse(try store.update(updated))
+            XCTAssertTrue(try store.all().isEmpty)
+            try store.add(updated, at: now)
+        }
+        let container = try ModelContainer(for: FavoriteSnapshot.self, configurations: ModelConfiguration(url: url))
+        let persisted = try XCTUnwrap(SwiftDataFavoritesStore(container: container).all().first)
+        XCTAssertEqual(persisted.originalPriceMinor, original.priceMinor)
+        XCTAssertEqual(persisted.priceChangeMinor, -10000)
+        XCTAssertEqual(persisted.lastCheckedAt, now)
+        XCTAssertEqual(persisted.refreshStatus, .updated)
+    }
     #endif
     @MainActor func testViewModelSuccessEmptyErrorOffline() async throws {
         let all = try await offers()

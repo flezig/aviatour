@@ -1,6 +1,26 @@
 import Foundation
 
-protocol SearchService { func search(_ query: SearchQuery) async throws -> SearchResult }
+struct BatchSearchItem {
+    let result: SearchResult?
+    let error: String?
+}
+
+protocol SearchService {
+    func search(_ query: SearchQuery) async throws -> SearchResult
+    func searchBatch(_ queries: [SearchQuery]) async throws -> [BatchSearchItem]
+}
+extension SearchService {
+    func searchBatch(_ queries: [SearchQuery]) async throws -> [BatchSearchItem] {
+        var items: [BatchSearchItem] = []
+        for query in queries {
+            try Task.checkCancellation()
+            do { items.append(BatchSearchItem(result: try await search(query), error: nil)) }
+            catch is CancellationError { throw CancellationError() }
+            catch { items.append(BatchSearchItem(result: nil, error: error.localizedDescription)) }
+        }
+        return items
+    }
+}
 enum SearchFailure: Error, LocalizedError {
     case unsupportedAirport, offline, configuration, source(String), invalidData
     var errorDescription: String? {

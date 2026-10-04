@@ -5,11 +5,14 @@ import SwiftUI
     @ObservedObject var favorites: FavoritesViewModel
     let clock: any AppClock
     let analytics: any AnalyticsService
+    var budgetMinor: Int? = nil
+    @Environment(\.tripBudget) private var tripBudget
     @Environment(\.openURL) private var openURL
     @State private var linkError: String?
     @State private var recordedOpen = false
     private var past: Bool { offer.departureAt <= clock.now }
     var body: some View {
+        let offer = favorites.current(self.offer)
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
                 DestinationPhoto(name: offer.imageName).frame(height: 180).clipShape(RoundedRectangle(cornerRadius: 24))
@@ -26,6 +29,20 @@ import SwiftUI
                     if !offer.isDemo { Text("Класс тарифа не подтверждён Data API. Поиск на Aviasales откроется для эконом-класса.").font(.footnote).foregroundStyle(.secondary) }
                     Text(offer.receivedLabel).font(.caption).foregroundStyle(.secondary)
                 }
+                HStack {
+                    CompareButton(offer: offer)
+                    Spacer()
+                    if favorites.contains(offer) {
+                        Button("Обновить цену") { Task { await favorites.refresh([offer]) } }
+                            .disabled(favorites.isRefreshing || past).frame(minHeight: 44)
+                            .accessibilityIdentifier("detail.refresh")
+                    }
+                }
+                if let message = offer.refreshMessage { Text(message).font(.footnote).foregroundStyle(.secondary) }
+                NavigationLink {
+                    NearbyDatesView(offer: offer, favorites: favorites, clock: clock, analytics: analytics, budget: budgetMinor ?? tripBudget)
+                } label: { Label("Сравнить соседние даты ±3 дня", systemImage: "calendar.badge.plus").frame(minHeight: 44) }
+                    .disabled(past).accessibilityIdentifier("nearbyDatesButton")
                 RouteCard(offer: offer, outbound: true)
                 RouteCard(offer: offer, outbound: false)
                 if let hours = offer.stayHours, let cost = offer.costPerStayHourMinor {
@@ -36,7 +53,7 @@ import SwiftUI
                         Text("От расчётного прилёта до обратного вылета, включая ночи. Дорога из аэропорта, ожидание, проживание и питание не учтены.").font(.caption).foregroundStyle(.secondary)
                     }.padding(20).background(Color.aviatorBlue.opacity(0.08), in: RoundedRectangle(cornerRadius: 20))
                 }
-                PrimaryButton(title: "Посмотреть на Aviasales →") {
+                PrimaryButton(title: "Проверить цену на Aviasales →") {
                     do {
                         let url = try LinkBuilder.url(for: offer, now: clock.now)
                         openURL(url) { accepted in

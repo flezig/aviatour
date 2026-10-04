@@ -17,16 +17,29 @@ struct LateService: SearchService {
     var saved: [String: Offer] = [:]
     func all() throws -> [Offer] { Array(saved.values) }
     func add(_ offer: Offer, at date: Date) throws { if saved[offer.id] == nil { saved[offer.id] = offer } }
+    func update(_ offer: Offer) throws -> Bool { guard saved[offer.id] != nil else { return false }; saved[offer.id] = offer; return true }
     func remove(id: String) throws { saved.removeValue(forKey: id) }
 }
 final class FixtureURLProtocol: URLProtocol {
     static var status = 200
     static var body = Data()
     static var lastRequest: URLRequest?
+    static var lastBody = Data()
     override class func canInit(with request: URLRequest) -> Bool { true }
     override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
     override func startLoading() {
         Self.lastRequest = request
+        if let body = request.httpBody { Self.lastBody = body }
+        else if let stream = request.httpBodyStream {
+            stream.open(); defer { stream.close() }
+            var data = Data(), buffer = [UInt8](repeating: 0, count: 4096)
+            while stream.hasBytesAvailable {
+                let count = stream.read(&buffer, maxLength: buffer.count)
+                if count <= 0 { break }
+                data.append(buffer, count: count)
+            }
+            Self.lastBody = data
+        }
         client?.urlProtocol(self, didReceive: HTTPURLResponse(url: request.url!, statusCode: Self.status, httpVersion: nil, headerFields: ["Content-Type":"application/json"])!, cacheStoragePolicy: .notAllowed)
         client?.urlProtocol(self, didLoad: Self.body)
         client?.urlProtocolDidFinishLoading(self)
@@ -244,6 +257,7 @@ final class FixtureURLProtocol: URLProtocol {
         let performanceStart = Date()
         _ = SearchRules.options(many, query: query, now: now, filters: ExtraFilters(airline: "S7"), sort: .value)
         print(String(format: "Filter/sort %d indexed offers: %.2f ms off UI thread", many.count, Date().timeIntervalSince(performanceStart) * 1000))
+        count += try await TripPlanningChecks.run(airports: airports, now: now)
         print("Aviator: \(count) Swift behavior assertions passed. SwiftData persistence and UI require full Xcode.")
     }
 }

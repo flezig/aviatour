@@ -9,11 +9,13 @@ class TTLCache:
         self.entries = OrderedDict()
         self.inflight = {}
 
-    async def get_or_create(self, key, factory):
+    async def get_or_create(self, key, factory, *, refresh=False):
         now = self.clock()
         for old in list(self.entries):
             if self.entries[old][0] <= now:
                 del self.entries[old]
+        if refresh:
+            self.entries.pop(key, None)
         if key in self.entries:
             self.entries.move_to_end(key)
             return self.entries[key][1]

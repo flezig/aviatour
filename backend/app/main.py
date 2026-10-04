@@ -1,3 +1,4 @@
+import asyncio
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
@@ -7,7 +8,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from .catalog import AIRPORTS, BY_IATA
 from .errors import SearchError
-from .models import SearchRequest, SearchResponse
+from .models import SearchRequest, SearchResponse, BatchSearchRequest, BatchSearchItem, BatchSearchResponse
 from .runtime import TTLCache, RateLimiter
 from .settings import Settings
 from .upstream import Travelpayouts
@@ -36,9 +37,7 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
     @app.get('/api/v1/airports')
     async def airports():
         return AIRPORTS
-    @app.post('/api/v1/search', response_model=SearchResponse)
     async def search(request: SearchRequest):
-        limiter.check()
         airport = BY_IATA.get(request.origin)
         if not airport or not airport['timezone']:
             raise SearchError('validation', 'Выберите аэропорт из справочника.', 422)
@@ -63,9 +62,27 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
         key = (request.origin, request.origin_city_code, request.month, request.departure_date,
                request.return_date, request.destination, request.destination_city_code, request.region, settings.market, 'rub')
         broad = request.model_copy(update={'max_budget_minor': 50000000, 'direct_only': False, 'weekend_only': False})
-        result = await cache.get_or_create(key, lambda: app.state.upstream.search_region(broad) if request.region != 'any' and not request.destination else app.state.upstream.search(broad))
+        result = await cache.get_or_create(key, lambda: app.state.upstream.search_region(broad) if request.region != 'any' and not request.destination else app.state.upstream.search(broad), refresh=request.force_refresh)
         # A valid cached response can become stale before TTL expires.
         return result.model_copy(update={'offers': [o for o in result.offers if matches(o, request, now())]})
+    @app.post('/api/v1/search', response_model=SearchResponse)
+    async def search_endpoint(request: SearchRequest):
+        limiter.check()
+        return await search(request)
+
+    @app.post('/api/v1/search/batch', response_model=BatchSearchResponse)
+    async def batch_endpoint(request: BatchSearchRequest):
+        # One bounded user action: up to seven route/date pairs, two in parallel.
+        limiter.check()
+        slots = asyncio.Semaphore(2)
+        async def one(query):
+            async with slots:
+                try:
+                    return BatchSearchItem(result=await search(query))
+                except SearchError as error:
+                    return BatchSearchItem(error=error.message)
+        return BatchSearchResponse(results=await asyncio.gather(*(one(query) for query in request.queries)))
+
     return app
 
 app = create_app()
