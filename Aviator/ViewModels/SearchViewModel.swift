@@ -48,6 +48,9 @@ struct FilterChoice: Identifiable { let id: String; let title: String }
         }
     }
     var emptyMessage: String {
+        if (performedQuery ?? query).tripPreferences.fullBudgetMinor != nil && !result.offers.isEmpty {
+            return "Найденные билеты не прошли условие полного бюджета: сумма превышает предел или данных о расходах недостаточно. Уберите предел полного бюджета, чтобы увидеть билеты."
+        }
         if !filters.isEmpty { return "Дополнительные фильтры скрыли найденные варианты. Сбросьте их, чтобы увидеть результаты исходного поиска." }
         let direct = (performedQuery ?? query).directOnly ? " Попробуйте разрешить пересадки." : ""
         return "В кеше цен нет подходящих поездок для выбранных дат и бюджета. Это не означает, что билетов нет. Увеличьте бюджет или выберите другой месяц." + direct

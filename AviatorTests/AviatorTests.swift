@@ -25,6 +25,31 @@ final class AviatorTests: XCTestCase {
         if let id { json["id"] = id }
         return try JSONDecoder().decode(Offer.self, from: JSONSerialization.data(withJSONObject: json))
     }
+    func testRatingSortingFilteringAndSavedPreferences() async throws {
+        let originals = try await offers()
+        let encoder = JSONEncoder()
+        func rated(_ offer: Offer, score: Int, total: Int) throws -> Offer {
+            var raw = try JSONSerialization.jsonObject(with: encoder.encode(offer)) as! [String: Any]
+            raw["tripRating"] = ["version": "trip-v1.0", "score": score, "roadScore": score,
+                "totalLowMinor": total, "totalHighMinor": total, "currency": "RUB", "days": 3, "nights": 2,
+                "travelers": 2, "housing": "standard", "food": "mixed", "fullBudgetMinor": 3_000_000,
+                "completeness": "medium", "suitability": "unknown", "entryStatus": "Условия въезда не проверены",
+                "updatedAt": now.timeIntervalSinceReferenceDate, "reasons": [], "missing": [], "lines": [], "evidence": []] as [String: Any]
+            return try JSONDecoder().decode(Offer.self, from: JSONSerialization.data(withJSONObject: raw))
+        }
+        let a = try rated(originals[0], score: 70, total: 2_000_000)
+        let b = try rated(originals[1], score: 90, total: 2_500_000)
+        let unknown = originals[2]
+        let facts = [unknown, a, b].map(OfferFacts.init)
+        var query = SearchQuery(month: "2026-10", maxBudgetMinor: 50_000_000)
+        XCTAssertEqual(SearchRules.options(facts, query: query, now: now, filters: ExtraFilters(), sort: .rating).map(\.id), [b.id, a.id, unknown.id])
+        XCTAssertEqual(SearchRules.options(facts, query: query, now: now, filters: ExtraFilters(), sort: .fullBudget).map(\.id), [a.id, b.id, unknown.id])
+        query.tripPreferences.fullBudgetMinor = 2_000_000
+        XCTAssertEqual(SearchRules.options(facts, query: query, now: now, filters: ExtraFilters()).map(\.id), [a.id])
+        XCTAssertEqual(a.exactQuery().tripPreferences.travelers, 2)
+        XCTAssertEqual(a.exactQuery().tripPreferences.fullBudgetMinor, 3_000_000)
+        XCTAssertNil(unknown.tripRating)
+    }
     func testBudgetBoundariesDefaultsAndQuickFilter() async throws {
         let query = SearchQuery(month: "2026-10")
         XCTAssertEqual(query.origin, "SVO"); XCTAssertEqual(query.maxBudgetMinor, 2_500_000)

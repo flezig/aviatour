@@ -43,6 +43,7 @@ import SwiftUI
                     NearbyDatesView(offer: offer, favorites: favorites, clock: clock, analytics: analytics, budget: budgetMinor ?? tripBudget)
                 } label: { Label("Сравнить соседние даты ±3 дня", systemImage: "calendar.badge.plus").frame(minHeight: 44) }
                     .disabled(past).accessibilityIdentifier("nearbyDatesButton")
+                TripRatingView(offer: offer, detailed: true).padding(16).background(.white, in: RoundedRectangle(cornerRadius: 20))
                 RouteCard(offer: offer, outbound: true)
                 RouteCard(offer: offer, outbound: false)
                 if let hours = offer.stayHours, let cost = offer.costPerStayHourMinor {

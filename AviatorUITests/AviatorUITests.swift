@@ -1,13 +1,32 @@
 import XCTest
 final class AviatorUITests: XCTestCase {
+    func testUnknownFullBudgetCanBeRemovedWithoutLosingFlightSearch() {
+        let app = XCUIApplication(); app.launchArguments = ["--ui-smoke"]; app.launch()
+        let preferences = app.buttons["Условия полного бюджета"]
+        for _ in 0..<5 where !preferences.isHittable { app.swipeUp() }
+        XCTAssertTrue(preferences.waitForExistence(timeout: 5)); preferences.tap()
+        let toggle = app.switches["fullBudgetToggle"]
+        for _ in 0..<4 where !toggle.isHittable { app.swipeUp() }
+        XCTAssertTrue(toggle.exists); toggle.tap()
+        let search = app.buttons["searchButton"]
+        for _ in 0..<4 where !search.isHittable { app.swipeUp() }
+        search.tap()
+        let remove = app.buttons["Убрать предел полного бюджета"]
+        for _ in 0..<4 where !remove.isHittable { app.swipeUp() }
+        XCTAssertTrue(remove.waitForExistence(timeout: 5)); remove.tap()
+        XCTAssertTrue(app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH %@", "offer.LED.")).firstMatch.waitForExistence(timeout: 5))
+    }
     func testMockJourney() {
         let app = XCUIApplication();app.launchArguments=["--ui-smoke"];app.launch()
         XCTAssertTrue(app.buttons["originPicker"].waitForExistence(timeout:5))
+        for _ in 0..<4 where !app.buttons["searchButton"].isHittable { app.swipeUp() }
         app.buttons["searchButton"].tap()
         let card=app.buttons["offer.LED"]
         // SwiftUI NavigationLink can expose either link or button depending on SDK.
         let destination=app.descendants(matching:.any).matching(NSPredicate(format: "identifier BEGINSWITH %@", "offer.LED.")).firstMatch
         XCTAssertTrue(destination.waitForExistence(timeout:5));destination.tap()
+        XCTAssertTrue(app.descendants(matching: .any)["rating.details"].waitForExistence(timeout:5))
+        for _ in 0..<6 where !app.buttons["aviasalesButton"].isHittable { app.swipeUp() }
         XCTAssertTrue(app.buttons["aviasalesButton"].waitForExistence(timeout:5))
         app.buttons["favorite.LED"].tap()
         app.tabBars.buttons["Избранное"].tap()

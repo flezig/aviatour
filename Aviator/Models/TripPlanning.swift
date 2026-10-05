@@ -9,10 +9,14 @@ extension Offer {
         return durationTo + durationBack
     }
     func exactQuery(refresh: Bool = false) -> SearchQuery {
-        SearchQuery(origin: originAirport, month: TravelDates.month(departureAt, zone: originTimezone),
+        var query = SearchQuery(origin: originAirport, month: TravelDates.month(departureAt, zone: originTimezone),
                     maxBudgetMinor: 50_000_000, departureDate: TravelDates.dateKey(departureAt, zone: originTimezone),
                     returnDate: TravelDates.dateKey(returnAt, zone: destinationTimezone), weekendOnly: false,
                     destination: destinationAirport, forceRefresh: refresh)
+        if let r = tripRating {
+            query.tripPreferences = TripPreferences(travelers: r.travelers, housing: r.housing, food: r.food, fullBudgetMinor: r.fullBudgetMinor)
+        }
+        return query
     }
     func matchesSavedVariant(_ saved: Offer) -> Bool {
         id == saved.id && source == saved.source && currency == saved.currency &&

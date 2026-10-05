@@ -1,0 +1,336 @@
+{
+  "$defs": {
+    "Component": {
+      "additionalProperties": false,
+      "properties": {
+        "score": {
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Score",
+          "type": "integer"
+        },
+        "evidence": {
+          "$ref": "#/$defs/Evidence"
+        }
+      },
+      "required": [
+        "score",
+        "evidence"
+      ],
+      "title": "Component",
+      "type": "object"
+    },
+    "Evidence": {
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "minLength": 1,
+          "title": "Source",
+          "type": "string"
+        },
+        "source_url": {
+          "pattern": "^https://",
+          "title": "Source Url",
+          "type": "string"
+        },
+        "geography": {
+          "enum": [
+            "city",
+            "region",
+            "country",
+            "route"
+          ],
+          "title": "Geography",
+          "type": "string"
+        },
+        "period_start": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Period Start"
+        },
+        "period_end": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Period End"
+        },
+        "fetched_at": {
+          "format": "date-time",
+          "title": "Fetched At",
+          "type": "string"
+        },
+        "estimated": {
+          "title": "Estimated",
+          "type": "boolean"
+        },
+        "method": {
+          "minLength": 1,
+          "title": "Method",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source",
+        "source_url",
+        "geography",
+        "period_start",
+        "period_end",
+        "fetched_at",
+        "estimated",
+        "method"
+      ],
+      "title": "Evidence",
+      "type": "object"
+    },
+    "ExchangeRate": {
+      "additionalProperties": false,
+      "properties": {
+        "currency": {
+          "pattern": "^[A-Z]{3}$",
+          "title": "Currency",
+          "type": "string"
+        },
+        "rub_per_unit": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "title": "Rub Per Unit"
+        },
+        "evidence": {
+          "$ref": "#/$defs/Evidence"
+        }
+      },
+      "required": [
+        "currency",
+        "rub_per_unit",
+        "evidence"
+      ],
+      "title": "ExchangeRate",
+      "type": "object"
+    },
+    "MoneyRange": {
+      "additionalProperties": false,
+      "properties": {
+        "low_minor": {
+          "minimum": 0,
+          "title": "Low Minor",
+          "type": "integer"
+        },
+        "high_minor": {
+          "minimum": 0,
+          "title": "High Minor",
+          "type": "integer"
+        },
+        "currency": {
+          "pattern": "^[A-Z]{3}$",
+          "title": "Currency",
+          "type": "string"
+        },
+        "evidence": {
+          "$ref": "#/$defs/Evidence"
+        }
+      },
+      "required": [
+        "low_minor",
+        "high_minor",
+        "currency",
+        "evidence"
+      ],
+      "title": "MoneyRange",
+      "type": "object"
+    },
+    "TripPreferences": {
+      "additionalProperties": false,
+      "properties": {
+        "travelers": {
+          "default": 1,
+          "maximum": 8,
+          "minimum": 1,
+          "title": "Travelers",
+          "type": "integer"
+        },
+        "housing": {
+          "default": "standard",
+          "enum": [
+            "budget",
+            "standard",
+            "comfort"
+          ],
+          "title": "Housing",
+          "type": "string"
+        },
+        "food": {
+          "default": "mixed",
+          "enum": [
+            "groceries",
+            "mixed",
+            "restaurants"
+          ],
+          "title": "Food",
+          "type": "string"
+        },
+        "full_budget_minor": {
+          "anyOf": [
+            {
+              "maximum": 500000000,
+              "minimum": 10000,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Full Budget Minor"
+        }
+      },
+      "title": "TripPreferences",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Reviewed provider output, keyed to exact dates and occupancy; no monthly rent.",
+  "properties": {
+    "city_code": {
+      "pattern": "^[A-Z]{3}$",
+      "title": "City Code",
+      "type": "string"
+    },
+    "check_in": {
+      "format": "date",
+      "title": "Check In",
+      "type": "string"
+    },
+    "check_out": {
+      "format": "date",
+      "title": "Check Out",
+      "type": "string"
+    },
+    "preferences": {
+      "$ref": "#/$defs/TripPreferences"
+    },
+    "housing_total": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/MoneyRange"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "food_per_day": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/MoneyRange"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "transport_per_day": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/MoneyRange"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "theft": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Component"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "violence": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Component"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "advisory": {
+      "default": "unknown",
+      "enum": [
+        "none",
+        "caution",
+        "avoid",
+        "unknown"
+      ],
+      "title": "Advisory",
+      "type": "string"
+    },
+    "advisory_evidence": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Evidence"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "conditions": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Component"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "rates": {
+      "items": {
+        "$ref": "#/$defs/ExchangeRate"
+      },
+      "title": "Rates",
+      "type": "array"
+    }
+  },
+  "required": [
+    "city_code",
+    "check_in",
+    "check_out",
+    "preferences"
+  ],
+  "title": "DestinationData",
+  "type": "object"
+}
