@@ -16,6 +16,33 @@ final class AviatorUITests: XCTestCase {
         XCTAssertTrue(remove.waitForExistence(timeout: 5)); remove.tap()
         XCTAssertTrue(app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH %@", "offer.LED.")).firstMatch.waitForExistence(timeout: 5))
     }
+    func testCityRatingsSearchAndCategoryDashboard() {
+        let app = XCUIApplication(); app.launchArguments = ["--ui-smoke"]; app.launch()
+        app.tabBars.buttons["Рейтинг"].tap()
+        XCTAssertTrue(app.buttons["ratings.city.LED"].waitForExistence(timeout: 10))
+        let field = app.textFields["ratings.search"]
+        field.tap(); field.typeText("LED\n")
+        XCTAssertTrue(app.staticTexts["Направлений: 1"].waitForExistence(timeout: 5))
+        let list = XCTAttachment(screenshot: app.screenshot()); list.name = "Рейтинг городов — список"; list.lifetime = .keepAlways; add(list)
+        app.buttons["ratings.city.LED"].tap()
+        XCTAssertTrue(app.descendants(matching: .any)["ratings.dashboard"].waitForExistence(timeout: 5))
+        let score = XCTAttachment(screenshot: app.screenshot()); score.name = "Рейтинг города — балл и шкала"; score.lifetime = .keepAlways; add(score)
+        for _ in 0..<4 where !app.descendants(matching: .any)["ratings.category.safety"].isHittable { app.swipeUp() }
+        XCTAssertTrue(app.descendants(matching: .any)["ratings.category.safety"].exists)
+        let categories = XCTAttachment(screenshot: app.screenshot()); categories.name = "Рейтинг города — категории"; categories.lifetime = .keepAlways; add(categories)
+    }
+    func testCompactRatingOpensSeparateTab() {
+        let app = XCUIApplication(); app.launchArguments = ["--ui-smoke"]; app.launch()
+        let search = app.buttons["searchButton"]
+        for _ in 0..<4 where !search.isHittable { app.swipeUp() }
+        search.tap()
+        let rating = app.buttons["rating.compact"].firstMatch
+        XCTAssertTrue(rating.waitForExistence(timeout: 10))
+        for _ in 0..<4 where !rating.isHittable { app.swipeUp() }
+        rating.tap()
+        XCTAssertTrue(app.tabBars.buttons["Рейтинг"].isSelected)
+        XCTAssertTrue(app.descendants(matching: .any)["ratings.dashboard"].waitForExistence(timeout: 10))
+    }
     func testMockJourney() {
         let app = XCUIApplication();app.launchArguments=["--ui-smoke"];app.launch()
         XCTAssertTrue(app.buttons["originPicker"].waitForExistence(timeout:5))
@@ -25,7 +52,7 @@ final class AviatorUITests: XCTestCase {
         // SwiftUI NavigationLink can expose either link or button depending on SDK.
         let destination=app.descendants(matching:.any).matching(NSPredicate(format: "identifier BEGINSWITH %@", "offer.LED.")).firstMatch
         XCTAssertTrue(destination.waitForExistence(timeout:5));destination.tap()
-        XCTAssertTrue(app.descendants(matching: .any)["rating.details"].waitForExistence(timeout:5))
+        XCTAssertTrue(app.descendants(matching: .any)["rating.compact"].waitForExistence(timeout:5))
         for _ in 0..<6 where !app.buttons["aviasalesButton"].isHittable { app.swipeUp() }
         XCTAssertTrue(app.buttons["aviasalesButton"].waitForExistence(timeout:5))
         app.buttons["favorite.LED"].tap()

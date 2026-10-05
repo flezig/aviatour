@@ -58,6 +58,7 @@ import SwiftData
     @ObservedObject private var favorites: FavoritesViewModel
     @ObservedObject private var search: SearchViewModel
     @StateObject private var comparison = ComparisonModel()
+    @State private var ratingRequest: CityRatingRequest?
     @State private var selectedTab: String
     init(dependencies: AppDependencies) {
         self.dependencies = dependencies; self.favorites = dependencies.favorites; self.search = dependencies.search
@@ -69,11 +70,15 @@ import SwiftData
                 .tabItem { Label("Подборки", systemImage: "sparkles") }.tag("collections")
             HomeView(model: dependencies.search, favorites: dependencies.favorites, airports: dependencies.airports, airportIndex: dependencies.airportIndex, mode: dependencies.mode, analytics: dependencies.analytics)
                 .tabItem { Label("Поиск", systemImage: "magnifyingglass") }.tag("search")
+            CityRatingsView(search: search, favorites: favorites, index: dependencies.airportIndex, analytics: dependencies.analytics, request: $ratingRequest, showConditions: { selectedTab = "search" })
+                .tabItem { Label("Рейтинг", systemImage: "chart.bar.xaxis") }.tag("rating")
             TripComparisonView(favorites: favorites, clock: dependencies.clock, analytics: dependencies.analytics)
                 .tabItem { Label("Сравнение", systemImage: "rectangle.split.2x1") }.tag("comparison")
             FavoritesView(favorites: dependencies.favorites, clock: dependencies.clock, analytics: dependencies.analytics)
                 .tabItem { Label("Избранное", systemImage: "heart") }.tag("favorites")
-        }.environmentObject(comparison).environment(\.tripBudget, search.query.maxBudgetMinor)
+        }.environment(\.openCityRating, { offer in
+            ratingRequest = CityRatingRequest(offer: offer); selectedTab = "rating"
+        }).environmentObject(comparison).environment(\.tripBudget, search.query.maxBudgetMinor)
             .onChange(of: favorites.offers) { _, offers in for offer in offers { comparison.update(offer) } }
             .alert("Сравнение", isPresented: Binding(get: { comparison.message != nil }, set: { if !$0 { comparison.message = nil } })) {
                 Button("Понятно", role: .cancel) {}

@@ -41,7 +41,7 @@ struct CompareButton: View {
                                         metric("Дорога туда и обратно", offer.roadMinutes.map { "\($0 / 60) ч \($0 % 60) мин" } ?? "Неизвестно")
                                         metric("Пересадки туда / обратно", "\(offer.transfers.map(String.init) ?? "?") / \(offer.returnTransfers.map(String.init) ?? "?")")
                                         metric("Стоимость часа поездки", offer.costPerStayHourMinor.map { Money.format($0, currency: offer.currency) } ?? "Неизвестно")
-                                        TripRatingView(offer: offer)
+                                        CompactRatingView(offer: offer)
                                         NavigationLink("Подробнее") { DetailView(offer: offer, favorites: favorites, clock: clock, analytics: analytics) }.frame(minHeight: 44)
                                         Button("Убрать") { comparison.toggle(saved) }.frame(minHeight: 44).foregroundStyle(.secondary)
                                     }.padding(18).frame(width: 245, alignment: .leading)

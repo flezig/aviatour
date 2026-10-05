@@ -25,6 +25,7 @@ import SwiftUI
                     PrimaryButton(title: "Повторить поиск") { model.start() }
                 case .idle: EmptyView()
                 case .success, .empty:
+                    Text("* Оценка перелёта — цена билетов и дорога; полный рейтинг и безопасность во вкладке «Рейтинг».").font(.caption).foregroundStyle(.secondary)
                     quickFilters
                     HStack {
                         Text(OfferCount.label(model.offers.count)).font(.headline).accessibilityIdentifier("resultsCount")
