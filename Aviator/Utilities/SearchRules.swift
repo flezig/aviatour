@@ -53,7 +53,14 @@ enum SearchRules {
         OfferFacts(offer).accepts(query: query, now: now, filters: filters)
     }
     static func options(_ facts: [OfferFacts], query: SearchQuery, now: Date, filters: ExtraFilters, sort: OfferSort = .price) -> [Offer] {
-        let matches = facts.filter { $0.accepts(query: query, now: now, filters: filters) }.sorted { a, b in
+        let matches = facts.filter { fact in
+            guard fact.accepts(query: query, now: now, filters: filters) else { return false }
+            if let limit = query.tripPreferences.fullBudgetMinor {
+                guard let total = fact.offer.tripRating?.totalHighMinor else { return false }
+                return total <= limit
+            }
+            return true
+        }.sorted { a, b in
             let av: Double, bv: Double
             switch sort {
             case .price: av = Double(a.offer.priceMinor); bv = Double(b.offer.priceMinor)
@@ -61,6 +68,10 @@ enum SearchRules {
             case .departure: av = a.offer.departureAt.timeIntervalSince1970; bv = b.offer.departureAt.timeIntervalSince1970
             case .duration: av = a.totalFlightMinutes; bv = b.totalFlightMinutes
             case .stay: av = a.offer.stayHours.map { -$0 } ?? .infinity; bv = b.offer.stayHours.map { -$0 } ?? .infinity
+            case .flightRating: av = a.offer.tripRating?.preliminaryScore.map { -Double($0) } ?? .infinity; bv = b.offer.tripRating?.preliminaryScore.map { -Double($0) } ?? .infinity
+            case .rating: av = a.offer.tripRating?.score.map { -Double($0) } ?? .infinity; bv = b.offer.tripRating?.score.map { -Double($0) } ?? .infinity
+            case .fullBudget: av = a.offer.tripRating?.totalHighMinor.map(Double.init) ?? .infinity; bv = b.offer.tripRating?.totalHighMinor.map(Double.init) ?? .infinity
+            case .road: av = a.offer.tripRating?.roadScore.map { -Double($0) } ?? .infinity; bv = b.offer.tripRating?.roadScore.map { -Double($0) } ?? .infinity
             case .value: av = a.offer.stayHours.map { Double(a.offer.priceMinor) / $0 } ?? .infinity; bv = b.offer.stayHours.map { Double(b.offer.priceMinor) / $0 } ?? .infinity
             }
             if av != bv { return av < bv }

@@ -41,6 +41,7 @@ struct CompareButton: View {
                                         metric("Дорога туда и обратно", offer.roadMinutes.map { "\($0 / 60) ч \($0 % 60) мин" } ?? "Неизвестно")
                                         metric("Пересадки туда / обратно", "\(offer.transfers.map(String.init) ?? "?") / \(offer.returnTransfers.map(String.init) ?? "?")")
                                         metric("Стоимость часа поездки", offer.costPerStayHourMinor.map { Money.format($0, currency: offer.currency) } ?? "Неизвестно")
+                                        CompactRatingView(offer: offer)
                                         NavigationLink("Подробнее") { DetailView(offer: offer, favorites: favorites, clock: clock, analytics: analytics) }.frame(minHeight: 44)
                                         Button("Убрать") { comparison.toggle(saved) }.frame(minHeight: 44).foregroundStyle(.secondary)
                                     }.padding(18).frame(width: 245, alignment: .leading)
@@ -49,7 +50,7 @@ struct CompareButton: View {
                             }
                         }
                     }
-                    Text("Бюджет — только билеты туда-обратно на одного взрослого. Время на месте и прилёт рассчитаны; проживание и дорога из аэропорта не включены. Багаж уточните у продавца. Наличие и окончательную цену проверяет Aviasales.").font(.footnote).foregroundStyle(.secondary)
+                    Text("Цена билетов — туда-обратно на одного взрослого. Полный бюджет показан отдельно, когда хватает данных. Время на месте и прилёт рассчитаны; проживание и дорога из аэропорта не включены. Багаж уточните у продавца. Наличие и окончательную цену проверяет Aviasales.").font(.footnote).foregroundStyle(.secondary)
                 }.padding(20)
             }.background(Color(.systemGroupedBackground)).navigationTitle("Сравнение")
                 .toolbar { if !comparison.offers.isEmpty { Button("Очистить") { comparison.clear() } } }

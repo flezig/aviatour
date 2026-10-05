@@ -14,6 +14,9 @@ from .settings import Settings
 from .upstream import Travelpayouts
 from .rules import matches
 from .regions import includes
+from .rating import evaluate, round_int
+from .rating_sources import RatingSources, load_reviewed_data
+from .hotel_source import AmadeusHotels
 
 
 def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.utc)):
@@ -23,6 +26,12 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
     async def lifespan(app):
         async with httpx.AsyncClient(transport=transport, follow_redirects=False, timeout=5, headers={'Accept-Encoding': 'gzip, deflate'}) as client:
             app.state.upstream = Travelpayouts(client, settings, now)
+            app.state.hotel_source = AmadeusHotels(client, settings.amadeus_client_id, settings.amadeus_client_secret)
+            app.state.rating_sources = RatingSources(client, settings.gpm_key)
+            data, app.state.rating_data_status = load_reviewed_data(settings.rating_data_file)
+            app.state.rating_data = {}
+            for item in data:
+                app.state.rating_data.setdefault(item.city_code, []).append(item)
             yield
     app = FastAPI(title='Aviator', lifespan=lifespan)
     @app.exception_handler(SearchError)
@@ -64,7 +73,36 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
         broad = request.model_copy(update={'max_budget_minor': 50000000, 'direct_only': False, 'weekend_only': False})
         result = await cache.get_or_create(key, lambda: app.state.upstream.search_region(broad) if request.region != 'any' and not request.destination else app.state.upstream.search(broad), refresh=request.force_refresh)
         # A valid cached response can become stale before TTL expires.
-        return result.model_copy(update={'offers': [o for o in result.offers if matches(o, request, now())]})
+        offers = []
+        for offer in result.offers:
+            if not matches(offer, request, now()):
+                continue
+            candidates = app.state.rating_data.get(offer.city_code, [])
+            values = [evaluate(offer, request.trip_preferences, now())]
+            values.extend(evaluate(offer, request.trip_preferences, now(), candidate) for candidate in candidates)
+            rating = min(values, key=lambda value: len(value.missing))
+            # A cheaper/more complete quote must not erase a serious active warning.
+            warnings = [value for value in values if value.suitability in ('avoid', 'warning')]
+            if warnings:
+                strongest = min(warnings, key=lambda value: 0 if value.suitability == 'avoid' else 1)
+                rating.suitability = strongest.suitability
+                rating.reasons = list(dict.fromkeys(strongest.reasons[:1] + rating.reasons))
+                rating.evidence.extend(e for e in strongest.evidence if e not in rating.evidence)
+                if rating.suitability == 'avoid':
+                    rating.score = None
+                    rating.preliminary_score = None
+                elif rating.safety_score is not None:
+                    rating.safety_score = min(50, rating.safety_score)
+                    if rating.score is not None:
+                        rating.score = round_int(.45 * rating.budget_score + .25 * rating.road_score + .2 * rating.safety_score + .1 * rating.conditions_score)
+            offers.append(offer.model_copy(update={'trip_rating': rating}))
+        return result.model_copy(update={'offers': offers})
+    @app.get('/api/v1/rating/status')
+    async def rating_status():
+        return {'version': 'trip-v1.0', 'evidence_feed': app.state.rating_data_status,
+                'gpm_city_configured': bool(settings.gpm_key),
+                'entry_status': 'Условия въезда не проверены'}
+
     @app.post('/api/v1/search', response_model=SearchResponse)
     async def search_endpoint(request: SearchRequest):
         limiter.check()

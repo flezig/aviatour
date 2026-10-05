@@ -17,6 +17,7 @@ private struct OfferDTO: Decodable {
     let outboundSegments, inboundSegments: [FlightSegment]?
     let availability: OfferAvailability?
     let expiresAt: Date?
+    let tripRating: TripRating?
     let receivedAt: Date
     func domain() throws -> Offer {
         guard currency == "RUB", priceMinor > 0, source == "LIVE", TimeZone(identifier: originTimezone) != nil, TimeZone(identifier: destinationTimezone) != nil else { throw SearchFailure.invalidData }
@@ -37,7 +38,7 @@ private struct OfferDTO: Decodable {
         return Offer(id: id, cityCode: cityCode, city: city, countryCode: countryCode, country: country, originAirport: originAirport, destinationAirport: destinationAirport,
                      originCity: originCity, originName: originName, destinationName: destinationName, departureAt: departureAt, returnAt: returnAt,
                      originTimezone: originTimezone, destinationTimezone: destinationTimezone, transfers: transfers, returnTransfers: returnTransfers,
-                     durationTo: durationTo, durationBack: durationBack, priceMinor: priceMinor, currency: currency, searchURL: searchUrl, partnerURL: partnerUrl, source: source, receivedAt: receivedAt, originCityCode: originCityCode, airline: airline, airlineName: airlineName, flightNumber: flightNumber, outboundSegments: outboundSegments, inboundSegments: inboundSegments, availability: availability, expiresAt: expiresAt)
+                     durationTo: durationTo, durationBack: durationBack, priceMinor: priceMinor, currency: currency, searchURL: searchUrl, partnerURL: partnerUrl, source: source, receivedAt: receivedAt, originCityCode: originCityCode, airline: airline, airlineName: airlineName, flightNumber: flightNumber, outboundSegments: outboundSegments, inboundSegments: inboundSegments, availability: availability, expiresAt: expiresAt, tripRating: tripRating)
     }
 }
 private struct SearchResponseDTO: Decodable {

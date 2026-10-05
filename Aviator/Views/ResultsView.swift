@@ -25,6 +25,7 @@ import SwiftUI
                     PrimaryButton(title: "Повторить поиск") { model.start() }
                 case .idle: EmptyView()
                 case .success, .empty:
+                    Text("* Оценка перелёта — цена билетов и дорога; полный рейтинг и безопасность во вкладке «Рейтинг».").font(.caption).foregroundStyle(.secondary)
                     quickFilters
                     HStack {
                         Text(OfferCount.label(model.offers.count)).font(.headline).accessibilityIdentifier("resultsCount")
@@ -42,6 +43,9 @@ import SwiftUI
                     Picker("Сортировка", selection: $model.sort) {
                         ForEach(OfferSort.allCases) { Text($0.title).tag($0) }
                     }.pickerStyle(.menu).accessibilityIdentifier("sortPicker")
+                    if [.rating, .fullBudget, .road, .flightRating].contains(model.sort) {
+                        Text("Варианты с неизвестной оценкой идут в конце. Полный рейтинг требует всех компонентов.").font(.caption).foregroundStyle(.secondary)
+                    }
                     if model.sort == .stay || model.sort == .value || model.filters.minStayHours > 0 {
                         Text("Время на месте — от расчётного прилёта до обратного вылета, включая ночи. Дорога из аэропорта и ожидание не вычтены.")
                             .font(.caption).foregroundStyle(.secondary)
@@ -55,6 +59,13 @@ import SwiftUI
                         if !model.filters.isEmpty {
                             PrimaryButton(title: "Сбросить фильтры") { model.filters = ExtraFilters() }
                         } else {
+                            if (model.performedQuery ?? model.query).tripPreferences.fullBudgetMinor != nil {
+                                PrimaryButton(title: "Убрать предел полного бюджета") {
+                                    model.query = model.performedQuery ?? model.query
+                                    model.query.tripPreferences.fullBudgetMinor = nil
+                                    model.start()
+                                }
+                            }
                             if (model.performedQuery ?? model.query).maxBudgetMinor < 50_000_000 {
                                 PrimaryButton(title: "Увеличить бюджет на 10 000 ₽") { model.retryWithBudget() }
                             }

@@ -25,6 +25,69 @@ final class AviatorTests: XCTestCase {
         if let id { json["id"] = id }
         return try JSONDecoder().decode(Offer.self, from: JSONSerialization.data(withJSONObject: json))
     }
+    func testRatingSortingFilteringAndSavedPreferences() async throws {
+        let originals = try await offers()
+        let encoder = JSONEncoder()
+        func rated(_ offer: Offer, score: Int, total: Int) throws -> Offer {
+            var raw = try JSONSerialization.jsonObject(with: encoder.encode(offer)) as! [String: Any]
+            raw["tripRating"] = ["version": "trip-v1.0", "score": score, "roadScore": score,
+                "totalLowMinor": total, "totalHighMinor": total, "currency": "RUB", "days": 3, "nights": 2,
+                "travelers": 2, "housing": "standard", "food": "mixed", "fullBudgetMinor": 3_000_000,
+                "completeness": "medium", "suitability": "unknown", "entryStatus": "Условия въезда не проверены",
+                "updatedAt": now.timeIntervalSinceReferenceDate, "reasons": [], "missing": [], "lines": [], "evidence": []] as [String: Any]
+            return try JSONDecoder().decode(Offer.self, from: JSONSerialization.data(withJSONObject: raw))
+        }
+        let a = try rated(originals[0], score: 70, total: 2_000_000)
+        let b = try rated(originals[1], score: 90, total: 2_500_000)
+        let unknown = originals[2]
+        let facts = [unknown, a, b].map(OfferFacts.init)
+        var query = SearchQuery(month: "2026-10", maxBudgetMinor: 50_000_000)
+        XCTAssertEqual(SearchRules.options(facts, query: query, now: now, filters: ExtraFilters(), sort: .rating).map(\.id), [b.id, a.id, unknown.id])
+        XCTAssertEqual(SearchRules.options(facts, query: query, now: now, filters: ExtraFilters(), sort: .fullBudget).map(\.id), [a.id, b.id, unknown.id])
+        query.tripPreferences.fullBudgetMinor = 2_000_000
+        XCTAssertEqual(SearchRules.options(facts, query: query, now: now, filters: ExtraFilters()).map(\.id), [a.id])
+        XCTAssertEqual(a.exactQuery().tripPreferences.travelers, 2)
+        XCTAssertEqual(a.exactQuery().tripPreferences.fullBudgetMinor, 3_000_000)
+        XCTAssertNil(unknown.tripRating)
+    }
+    func testCityAggregationDeduplicatesAndFiltersWithoutChangingAverage() async throws {
+        let all = try await offers()
+        let cities = CityRanking.build(all + [all[0]], now: now)
+        XCTAssertEqual(cities.count, 10)
+        let led = try XCTUnwrap(cities.first { $0.id == "LED" })
+        XCTAssertEqual(led.offers.count, 3)
+        XCTAssertEqual(led.averagePriceMinor, 900_000)
+        XCTAssertEqual(led.minPriceMinor, 850_000)
+        XCTAssertEqual(led.maxPriceMinor, 950_000)
+        XCTAssertNil(led.score(.full)); XCTAssertNil(led.score(.flight))
+        var filters = CityRankingFilters(); filters.text = "LED"
+        let result = CityRanking.visible(cities, kind: .flight, filters: filters, sort: .score)
+        XCTAssertEqual(result.map(\.id), ["LED"])
+        XCTAssertEqual(result.first?.averagePriceMinor, led.averagePriceMinor)
+        filters.text = "Санкт"; XCTAssertEqual(CityRanking.visible(cities, kind: .flight, filters: filters, sort: .price).map(\.id), ["LED"])
+        filters.text = "Sankt"; XCTAssertEqual(CityRanking.visible(cities, kind: .flight, filters: filters, sort: .price).map(\.id), ["LED"])
+        filters.text = ""; filters.knownSafety = true
+        XCTAssertTrue(CityRanking.visible(cities, kind: .full, filters: filters, sort: .score).isEmpty)
+        filters.knownSafety = false; filters.minScore = 50
+        XCTAssertTrue(CityRanking.visible(cities, kind: .full, filters: filters, sort: .score).isEmpty)
+        let nonRuble = try changed(all[0], currency: "USD", id: "USD")
+        XCTAssertEqual(CityRanking.build([all[0], nonRuble], now: now).first?.offers.count, 1)
+        XCTAssertTrue(CityRanking.build(all, now: now.addingTimeInterval(86400 * 100)).isEmpty)
+    }
+    @MainActor func testCityRankingModelKeepsTravelConditionsButExpandsDestinationSample() {
+        var query = SearchQuery(month: "2026-10", maxBudgetMinor: 1_000_000, destination: "LED")
+        query.tripPreferences = TripPreferences(travelers: 2, housing: "comfort", food: "groceries", fullBudgetMinor: 5_000_000)
+        let parameters = CityRatingsModel.parameters(query)
+        XCTAssertFalse(parameters.weekendOnly)
+        XCTAssertNil(parameters.destination)
+        XCTAssertEqual(parameters.maxBudgetMinor, 50_000_000)
+        XCTAssertEqual(parameters.tripPreferences.travelers, 2)
+        XCTAssertNil(parameters.tripPreferences.fullBudgetMinor)
+        XCTAssertEqual(RatingCategoryInfo.categories(sampleOfferForCategories(), kind: .full).map(\.weight), [45,25,20,10])
+    }
+    private func sampleOfferForCategories() -> Offer {
+        return Offer(id: "test", cityCode: "LED", city: "Санкт-Петербург", countryCode: "RU", country: "Россия", originAirport: "SVO", destinationAirport: "LED", originCity: "Москва", originName: "Шереметьево", destinationName: "Пулково", departureAt: now, returnAt: now.addingTimeInterval(86400), originTimezone: "Europe/Moscow", destinationTimezone: "Europe/Moscow", transfers: 0, returnTransfers: 0, durationTo: 90, durationBack: 90, priceMinor: 850000, currency: "RUB", searchURL: "https://aviasales.com", partnerURL: nil, source: "MOCK", receivedAt: now)
+    }
     func testBudgetBoundariesDefaultsAndQuickFilter() async throws {
         let query = SearchQuery(month: "2026-10")
         XCTAssertEqual(query.origin, "SVO"); XCTAssertEqual(query.maxBudgetMinor, 2_500_000)

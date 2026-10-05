@@ -79,6 +79,22 @@ import SwiftUI
                             Slider(value: Binding(get: { Double(model.query.maxBudgetMinor / 100) }, set: { model.query.maxBudgetMinor = Int($0) * 100 }), in: 5000...500000, step: 1000).accessibilityLabel("Бюджет в рублях")
                             Text("Билеты туда-обратно на одного").font(.footnote).foregroundStyle(.secondary)
                         }
+                        DisclosureGroup("Условия полного бюджета") {
+                            Stepper("Взрослых: \(model.query.tripPreferences.travelers)", value: $model.query.tripPreferences.travelers, in: 1...8)
+                            Picker("Проживание", selection: $model.query.tripPreferences.housing) {
+                                Text("Бюджетное").tag("budget"); Text("Стандарт").tag("standard"); Text("Комфорт").tag("comfort")
+                            }
+                            Picker("Питание", selection: $model.query.tripPreferences.food) {
+                                Text("Продукты").tag("groceries"); Text("Продукты и кафе").tag("mixed"); Text("Рестораны").tag("restaurants")
+                            }
+                            Toggle("Ограничить полный бюджет на человека", isOn: Binding(get: { model.query.tripPreferences.fullBudgetMinor != nil }, set: { model.query.tripPreferences.fullBudgetMinor = $0 ? 10_000_000 : nil })).accessibilityIdentifier("fullBudgetToggle")
+                            if let limit = model.query.tripPreferences.fullBudgetMinor {
+                                Text("Перелёт + жильё + питание + транспорт: " + Money.format(limit))
+                                Slider(value: Binding(get: { Double(model.query.tripPreferences.fullBudgetMinor ?? 10_000_000) / 100 }, set: { model.query.tripPreferences.fullBudgetMinor = Int($0) * 100 }), in: 1000...1000000, step: 1000)
+                                Text("Поездки с неизвестным полным бюджетом будут исключены. Данные доступны пока не для всех направлений.").font(.caption).foregroundStyle(.secondary)
+                            }
+                            Text("Билеты ищутся для одного взрослого. Полный бюджет на человека — оценка для группы с общим жильём.").font(.caption).foregroundStyle(.secondary)
+                        }
                         Toggle("Только прямые рейсы", isOn: $model.query.directOnly).accessibilityIdentifier("directToggle")
                         PrimaryButton(title: "Найти варианты →") { model.start(); showResults = true }.disabled(model.state == .loading).accessibilityIdentifier("searchButton")
                     }.padding(20).background(.white, in: RoundedRectangle(cornerRadius: 24)).shadow(color: .black.opacity(0.08), radius: 18, y: 6).padding(.horizontal, 20).padding(.top, -24)

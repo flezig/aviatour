@@ -95,6 +95,7 @@ struct StatusPanel: View {
                     Label("≈ \(Int(hours)) ч на месте", systemImage: "sun.max").font(.caption.bold()).foregroundStyle(Color.aviatorBlue)
                     if let cost = offer.costPerStayHourMinor { Text("\(Money.format(cost)) / час поездки").font(.caption) }
                 }
+                CompactRatingView(offer: offer)
                 CompareButton(offer: offer)
             }.padding([.horizontal, .bottom], 12)
         }.background(.white).clipShape(RoundedRectangle(cornerRadius: 20)).shadow(color: .black.opacity(0.06), radius: 12, y: 4)

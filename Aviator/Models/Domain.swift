@@ -31,6 +31,7 @@ struct SearchQuery: Codable, Equatable, Hashable {
     var originCityCode: String? = nil
     var month: String
     var maxBudgetMinor = 2_500_000
+    var tripPreferences = TripPreferences()
     var directOnly = false
     var region: TripRegion = .any
     var departureDate: String? = nil
@@ -115,6 +116,7 @@ struct Offer: Codable, Identifiable, Hashable {
     var inboundSegments: [FlightSegment]? = nil
     var availability: OfferAvailability? = nil
     var expiresAt: Date? = nil
+    var tripRating: TripRating? = nil
     func canDisplay(at now: Date) -> Bool {
         availability != .unavailable && (expiresAt.map { $0 > now } ?? true) && departureAt > now
     }
@@ -141,7 +143,7 @@ struct SearchResult {
 }
 
 enum OfferSort: String, CaseIterable, Identifiable {
-    case price, priceDescending, departure, duration, stay, value
+    case price, priceDescending, departure, duration, stay, value, rating, fullBudget, road, flightRating
     var id: String { rawValue }
     var title: String {
         switch self {
@@ -151,6 +153,10 @@ enum OfferSort: String, CaseIterable, Identifiable {
         case .duration: return "Меньше времени в пути"
         case .stay: return "Больше времени на месте"
         case .value: return "Выгоднее час поездки"
+        case .flightRating: return "По предварительной оценке перелёта"
+        case .rating: return "По рейтингу поездки"
+        case .fullBudget: return "По полному бюджету"
+        case .road: return "По удобству дороги"
         }
     }
 }
