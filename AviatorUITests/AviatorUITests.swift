@@ -48,6 +48,7 @@ final class AviatorUITests: XCTestCase {
         let field = app.textFields["ratings.search"]
         field.tap(); field.typeText("LED\n")
         XCTAssertTrue(app.staticTexts["Направлений: 1"].waitForExistence(timeout: 5))
+        app.swipeUp()
         let list = XCTAttachment(screenshot: app.screenshot()); list.name = "Рейтинг городов — список"; list.lifetime = .keepAlways; add(list)
         app.buttons["ratings.city.LED"].tap()
         XCTAssertTrue(app.descendants(matching: .any)["ratings.dashboard"].waitForExistence(timeout: 5))

@@ -11,11 +11,23 @@ struct RatingDashboard: View {
         VStack(alignment: .leading, spacing: 20) {
             VStack(alignment: .leading, spacing: 18) {
                 Text(kind == .full ? "ПОЛНАЯ ПОЕЗДКА" : "ПРЕДВАРИТЕЛЬНО · ПЕРЕЛЁТ").font(.caption.weight(.semibold)).tracking(1).foregroundStyle(Color.aviatorBlue)
-                HStack(alignment: .firstTextBaseline, spacing: 8) {
-                    Text(score.map(String.init) ?? "—").font(.system(size: textSize.isAccessibilitySize ? 56 : 72, weight: .bold, design: .rounded)).foregroundStyle(Color.aviatorBlue).monospacedDigit().accessibilityIdentifier("ratings.score")
-                    Text("из 100").font(.headline).foregroundStyle(.secondary)
-                    Spacer()
-                    if let score { Text(grade(score)).font(.title2.bold()).foregroundStyle(Color.aviatorBlue).padding(14).background(Color.aviatorBlue.opacity(0.09), in: RoundedRectangle(cornerRadius: 14)) }
+                HStack(spacing: 20) {
+                    ZStack {
+                        Circle().stroke(Color.aviatorBlue.opacity(0.1), lineWidth: 9)
+                        if let score {
+                            Circle().trim(from: 0, to: CGFloat(score) / 100)
+                                .stroke(Color.aviatorBlue.gradient, style: StrokeStyle(lineWidth: 9, lineCap: .round)).rotationEffect(.degrees(-90))
+                        }
+                        VStack(spacing: 0) {
+                            Text(score.map(String.init) ?? "—").font(.system(size: 42, weight: .bold, design: .rounded)).foregroundStyle(Color.aviatorBlue).monospacedDigit().accessibilityIdentifier("ratings.score")
+                            Text("из 100").font(.caption).foregroundStyle(.secondary)
+                        }
+                    }.frame(width: 116, height: 116).accessibilityElement(children: .contain)
+                    VStack(alignment: .leading, spacing: 7) {
+                        Text(score.map { "Уровень " + grade($0) } ?? "Балл пока\nне рассчитан").font(.system(.title3, design: .rounded, weight: .bold))
+                        Text(score == nil ? "Ждём проверенные данные" : "Лучшая найденная поездка").font(.caption).foregroundStyle(.secondary)
+                    }
+                    Spacer(minLength: 0)
                 }
                 scale
                 Text(score == nil ? "Недостаточно данных для этой модели" : "Балл лучшей найденной поездки").font(.subheadline.bold())
@@ -56,6 +68,9 @@ struct RatingDashboard: View {
                         VStack(alignment: .leading, spacing: 4) {
                             Text(category.title).font(.subheadline.bold()).foregroundStyle(Color.primary)
                             Text(category.score.map { "\($0) из 100 · вес \(weight(category))" } ?? "Нет данных · вес \(weight(category))").font(.caption).foregroundStyle(.secondary)
+                            if let value = category.score {
+                                ProgressView(value: Double(value), total: 100).tint(Color.aviatorBlue).padding(.top, 3)
+                            }
                         }
                         Spacer(minLength: 0)
                         if !textSize.isAccessibilitySize { Text(category.score == nil ? "Нет данных" : "Есть данные").font(.caption2).padding(6).foregroundStyle(category.score == nil ? Color.secondary : Color.aviatorBlue).background(Color.gray.opacity(0.07), in: Capsule()) }

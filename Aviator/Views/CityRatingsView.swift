@@ -31,16 +31,28 @@ import SwiftUI
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 18) {
-                    Text("Куда поехать из вашего города").font(.title2.bold())
-                    Text("Рейтинг направлений по найденным поездкам. Балл зависит от города вылета и условий поездки.").font(.subheadline).foregroundStyle(.secondary)
                     VStack(alignment: .leading, spacing: 8) {
-                        Text(conditions).font(.headline)
-                        Button("Изменить город вылета и даты") { request = nil; showConditions() }.frame(minHeight: 44).accessibilityIdentifier("ratings.conditions")
-                    }.padding(16).frame(maxWidth: .infinity, alignment: .leading).background(.white, in: RoundedRectangle(cornerRadius: 18))
-                    Text("Все поездки выбранного месяца или точных дат; фильтр коротких выходных из поиска здесь не применяется.").font(.caption).foregroundStyle(.secondary)
-                    TextField("Найти город или код аэропорта", text: $filters.text).textFieldStyle(.roundedBorder).autocorrectionDisabled().accessibilityIdentifier("ratings.search")
+                        Text("Ваш следующий город").font(.system(.title2, design: .rounded, weight: .bold))
+                        Text("Сравните направления и выберите поездку под себя.").font(.subheadline).foregroundStyle(.secondary)
+                    }.padding(.vertical, 8)
+                    Button { request = nil; showConditions() } label: {
+                        HStack(spacing: 12) {
+                            Image(systemName: "airplane.departure").font(.title2).foregroundStyle(Color.aviatorBlue)
+                            VStack(alignment: .leading, spacing: 5) {
+                                Text("ВАША ПОЕЗДКА").font(.caption2.bold()).tracking(1).foregroundStyle(.secondary)
+                                Text(conditions).font(.subheadline.weight(.semibold)).foregroundStyle(.primary)
+                            }
+                            Spacer(minLength: 0)
+                            Image(systemName: "slider.horizontal.3").foregroundStyle(Color.aviatorBlue)
+                        }.padding(18).frame(maxWidth: .infinity, alignment: .leading)
+                            .background(.white, in: RoundedRectangle(cornerRadius: 22))
+                    }.buttonStyle(.plain).accessibilityIdentifier("ratings.conditions")
+                    TextField("Найти город или код аэропорта", text: $filters.text).padding(14).background(.white, in: RoundedRectangle(cornerRadius: 16)).autocorrectionDisabled().accessibilityIdentifier("ratings.search")
                     Picker("Модель рейтинга", selection: $kind) { ForEach(CityScoreKind.allCases) { Text($0.title).tag($0) } }.pickerStyle(.segmented).accessibilityIdentifier("ratings.kind")
-                    Text(kind == .flight ? "Предварительный балл: только цена билетов и удобство дороги. Без безопасности и стоимости отдыха." : "Полная поездка: бюджет 45%, дорога 25%, безопасность 20%, условия 10%. Если данных не хватает, балла нет.").font(.caption).foregroundStyle(.secondary)
+                    DisclosureGroup("Как считается балл") {
+                        Text(kind == .flight ? "Предварительный балл: цена билетов 65%, удобство дороги 35%. Без безопасности и стоимости отдыха." : "Полная поездка: бюджет 45%, дорога 25%, безопасность 20%, условия 10%. Если данных не хватает, балла нет.").font(.caption).foregroundStyle(.secondary).padding(.top, 8)
+                        Text("Все поездки выбранного месяца или точных дат; фильтр коротких выходных здесь не применяется.").font(.caption).foregroundStyle(.secondary)
+                    }.font(.subheadline).tint(Color.aviatorBlue)
                     Text("Для вас: " + profile.preferences.style.title + " · интересов выбрано: \(profile.preferences.interests.count)").font(.caption).foregroundStyle(.secondary)
                     if sort == .personal {
                         let weights = profile.preferences.style.weights
@@ -108,30 +120,66 @@ import SwiftUI
         else if let code = request.cityCode { filters.text = code; selectedCity = model.cities.first { $0.id == code } }
     }
     private func cityRow(_ city: CityRating, position: Int) -> some View {
-        let offer = city.best(kind)
-        return VStack(alignment: .leading, spacing: 10) {
-            HStack(alignment: .top) {
-                Text("\(position)").font(.title3.bold()).foregroundStyle(.secondary).frame(width: 28)
-                VStack(alignment: .leading, spacing: 4) { Text(city.city).font(.title3.bold()); Text(city.country ?? "Страна неизвестна").font(.caption).foregroundStyle(.secondary) }
-                Spacer()
-                Text((sort == .personal ? city.personalScore(profile.preferences) : city.score(kind)).map { "\($0)/100" } ?? "—").font(.title2.bold()).foregroundStyle(city.avoid ? Color.red : Color.aviatorBlue)
+        let score = sort == .personal ? city.personalScore(profile.preferences) : city.score(kind)
+        return VStack(alignment: .leading, spacing: 0) {
+            DestinationPhoto(name: city.id)
+                .frame(height: 172)
+                .overlay(LinearGradient(colors: [.clear, .black.opacity(0.75)], startPoint: .top, endPoint: .bottom))
+                .overlay(alignment: .topLeading) {
+                    Text(String(format: "%02d", position)).font(.caption.bold()).monospacedDigit()
+                        .padding(10).background(.ultraThinMaterial, in: Capsule()).padding(16)
+                }
+                .overlay(alignment: .topTrailing) {
+                    if profile.savedCities.contains(city.id) {
+                        Image(systemName: "bookmark.fill").foregroundStyle(.white).padding(10).background(.black.opacity(0.25), in: Circle()).padding(16)
+                    }
+                }
+                .overlay(alignment: .bottomLeading) {
+                    HStack(alignment: .bottom) {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(city.country ?? "Страна неизвестна").font(.caption.weight(.medium)).foregroundStyle(.white.opacity(0.8))
+                            Text(city.city).font(.system(.title, design: .rounded, weight: .bold)).foregroundStyle(.white)
+                        }
+                        Spacer()
+                        VStack(spacing: 2) {
+                            Text(score.map(String.init) ?? "—").font(.title2.bold()).monospacedDigit()
+                            Text(score == nil ? "нет балла" : "из 100").font(.caption2)
+                        }.foregroundStyle(.white).padding(12).background(.white.opacity(0.18), in: RoundedRectangle(cornerRadius: 16))
+                    }.padding(18)
+                }
+            VStack(alignment: .leading, spacing: 12) {
+                HStack(alignment: .firstTextBaseline) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("СРЕДНИЙ ПЕРЕЛЁТ").font(.caption2.bold()).tracking(0.8).foregroundStyle(.secondary)
+                        Text("≈ " + city.averagePriceLabel).font(.system(.title2, design: .rounded, weight: .bold))
+                    }
+                    Spacer()
+                    Image(systemName: "arrow.up.right").font(.headline).foregroundStyle(Color.aviatorBlue)
+                        .padding(12).background(Color.aviatorBlue.opacity(0.08), in: Circle())
+                }
+                Text("Туда-обратно · на человека · " + OfferCount.label(city.offers.count)).font(.caption).foregroundStyle(.secondary)
+                Divider()
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: 12) { cityMetrics(city) }
+                    VStack(alignment: .leading, spacing: 8) { cityMetrics(city) }
+                }
+                if city.hasWarning { Label(city.avoid ? "Поездка не рекомендована" : "Есть предупреждение", systemImage: "exclamationmark.triangle.fill").font(.caption.bold()).foregroundStyle(.red) }
+                Text(city.isDemo ? "DEMO · условные цены; балл не рассчитан" : score == nil ? "Недостаточно данных для выбранной модели" : sort == .personal ? "Подбор по предпочтениям · без визы, безопасности и полного бюджета" : "Балл лучшей найденной поездки").font(.caption2).foregroundStyle(.secondary)
+            }.padding(18)
+        }.background(.white, in: RoundedRectangle(cornerRadius: 24)).clipShape(RoundedRectangle(cornerRadius: 24))
+            .overlay(RoundedRectangle(cornerRadius: 24).strokeBorder(Color.primary.opacity(0.04)))
+    }
+    @ViewBuilder private func cityMetrics(_ city: CityRating) -> some View {
+        Label(city.roadScore.map { "Дорога \($0)" } ?? "Дорога —", systemImage: "airplane").font(.caption).foregroundStyle(.secondary)
+        if let guide = CityGuide.all[city.id] {
+            if let match = guide.match(profile.preferences.interests) {
+                Label("Интересы \(match)%", systemImage: "sparkles").font(.caption).foregroundStyle(Color.aviatorBlue)
             }
-            Text("Средний перелёт ≈ " + city.averagePriceLabel + " / человек").font(.subheadline.bold())
-            Text("Медиана: " + Money.format(city.medianPriceMinor)).font(.caption)
-            if let guide = CityGuide.all[city.id] {
-                if let match = guide.match(profile.preferences.interests) { Text("Интересы: \(match)% совпадений").font(.caption).foregroundStyle(Color.aviatorBlue) }
-                if let hdi = guide.hdiValue, let year = guide.hdiYear { Text("HDI страны: \(hdi.formatted(.number.precision(.fractionLength(3)))) · \(String(year))").font(.caption).foregroundStyle(.secondary) }
+            if let hdi = guide.hdiValue {
+                Text("HDI " + hdi.formatted(.number.precision(.fractionLength(3)))).font(.caption).foregroundStyle(.secondary)
             }
-            if profile.savedCities.contains(city.id) { Label("Город сохранён", systemImage: "bookmark.fill").font(.caption) }
-            Text("\(OfferCount.label(city.offers.count)) · от " + Money.format(city.minPriceMinor) + " до " + Money.format(city.maxPriceMinor)).font(.caption).foregroundStyle(.secondary)
-            HStack { Text("Дорога: \(city.roadScore.map { "\($0)/100" } ?? "нет данных")"); Spacer(); Text("Безопасность: \(offer.tripRating?.safetyScore.map { "\($0)/100" } ?? "нет данных")") }.font(.caption)
-            if city.hasWarning { Label(city.avoid ? "Поездка не рекомендована" : "Есть предупреждение", systemImage: "exclamationmark.triangle.fill").font(.caption.bold()).foregroundStyle(.red) }
-            if sort == .personal {
-                Text(city.personalScore(profile.preferences) == nil ? "Для подбора нужны интересы в профиле и LIVE-данные дороги" : "Подбор по предпочтениям · без визы, безопасности и полного бюджета").font(.caption2).foregroundStyle(.secondary)
-            }
-            Text(city.isDemo ? "DEMO · условные цены; балл не рассчитан" : city.score(kind) == nil ? "Недостаточно данных для выбранной модели" : "Балл лучшей найденной поездки · остальные компоненты в деталях").font(.caption2).foregroundStyle(.secondary)
-            HStack { Text("Обновлено " + TravelDates.display(city.updatedAt, zone: TimeZone.current.identifier, time: true)); Spacer(); Image(systemName: "chevron.right") }.font(.caption2).foregroundStyle(.secondary)
-        }.padding(18).frame(maxWidth: .infinity, alignment: .leading).background(.white, in: RoundedRectangle(cornerRadius: 20))
+        }
+
     }
 }
 
@@ -146,7 +194,14 @@ import SwiftUI
         let offer = city.best(kind)
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                DestinationPhoto(name: city.id).frame(height: 120).clipShape(RoundedRectangle(cornerRadius: 20))
+                DestinationPhoto(name: city.id).frame(height: 210)
+                    .overlay(LinearGradient(colors: [.clear, .black.opacity(0.7)], startPoint: .center, endPoint: .bottom))
+                    .overlay(alignment: .bottomLeading) {
+                        VStack(alignment: .leading, spacing: 5) {
+                            Text(city.country ?? "").font(.subheadline)
+                            Text(city.city).font(.system(.largeTitle, design: .rounded, weight: .bold))
+                        }.foregroundStyle(.white).padding(20)
+                    }.clipShape(RoundedRectangle(cornerRadius: 26))
                 Text("Вылет: \(offer.originCity)").font(.headline)
                 Text("Средний перелёт ≈ " + city.averagePriceLabel + " / человек").font(.subheadline.bold())
                 if city.hasWarning { Label(city.avoid ? "Есть серьёзное предупреждение: поездка не рекомендована" : "Есть действующее предупреждение", systemImage: "exclamationmark.triangle.fill").foregroundStyle(.red) }
