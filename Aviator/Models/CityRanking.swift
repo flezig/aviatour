@@ -2,7 +2,10 @@ import Foundation
 
 struct CityRatingRequest: Identifiable, Equatable {
     let id = UUID()
-    let offer: Offer
+    let offer: Offer?
+    let cityCode: String?
+    init(offer: Offer) { self.offer = offer; cityCode = offer.cityCode }
+    init(cityCode: String) { offer = nil; self.cityCode = cityCode }
 }
 enum CityScoreKind: String, CaseIterable, Identifiable {
     case flight, full
@@ -10,10 +13,10 @@ enum CityScoreKind: String, CaseIterable, Identifiable {
     var title: String { self == .flight ? "Перелёт" : "Полная поездка" }
 }
 enum CityRankingSort: String, CaseIterable, Identifiable {
-    case score, price, road, name
+    case score, price, road, name, interests, hdi, personal
     var id: String { rawValue }
     var title: String {
-        switch self { case .score: return "По баллу"; case .price: return "По средней цене перелёта"; case .road: return "По удобству дороги"; case .name: return "По названию" }
+        switch self { case .personal: return "Под мои предпочтения"; case .interests: return "По совпадению интересов"; case .hdi: return "По HDI страны"; case .score: return "По баллу"; case .price: return "По средней цене перелёта"; case .road: return "По удобству дороги"; case .name: return "По названию" }
     }
 }
 struct CityRankingFilters: Equatable {
@@ -38,6 +41,15 @@ struct CityRating: Identifiable, Hashable {
     let bestFullOffer: Offer
     let roadScore: Int?
     let searchKey: String
+    var medianPriceMinor: Int {
+        let prices = offers.map(\.priceMinor).sorted()
+        let middle = prices.count / 2
+        return prices.count % 2 == 1 ? prices[middle] : Int((Double(prices[middle-1]) + Double(prices[middle])) / 2)
+    }
+    func personalScore(_ preferences: TravelerPreferences) -> Int? {
+        guard !avoid else { return nil }
+        return offers.compactMap { PersonalRanking.score($0, preferences: preferences) }.max()
+    }
     var averagePriceLabel: String { Money.format(Int((Double(averagePriceMinor) / 100).rounded()) * 100) }
     var isDemo: Bool { offers.allSatisfy(\.isDemo) }
     var hasDirect: Bool { offers.contains(where: \.isDirect) }
@@ -59,8 +71,9 @@ enum CityRanking {
     static func build(_ offers: [Offer], now: Date) -> [CityRating] {
         var unique: [String: Offer] = [:]
         for offer in offers where offer.currency == "RUB" && offer.canDisplay(at: now) {
-            if let old = unique[offer.id], old.receivedAt > offer.receivedAt || (old.receivedAt == offer.receivedAt && old.priceMinor <= offer.priceMinor) { continue }
-            unique[offer.id] = offer
+            let identity = offer.source + "|" + offer.id
+            if let old = unique[identity], old.receivedAt > offer.receivedAt || (old.receivedAt == offer.receivedAt && old.priceMinor <= offer.priceMinor) { continue }
+            unique[identity] = offer
         }
         return Dictionary(grouping: unique.values, by: \.cityCode).map { code, rows in
             let ordered = rows.sorted { $0.id < $1.id }
@@ -82,15 +95,24 @@ enum CityRanking {
                 searchKey: key(first.city + " " + (first.country ?? "") + " " + code + " " + Set(rows.map(\.destinationAirport)).sorted().joined(separator: " ")))
         }.sorted { $0.id < $1.id }
     }
-    static func visible(_ cities: [CityRating], kind: CityScoreKind, filters: CityRankingFilters, sort: CityRankingSort) -> [CityRating] {
+    static func visible(_ cities: [CityRating], kind: CityScoreKind, filters: CityRankingFilters, sort: CityRankingSort, preferences: TravelerPreferences = TravelerPreferences()) -> [CityRating] {
         let text = key(filters.text.trimmingCharacters(in: .whitespacesAndNewlines))
         return cities.filter { city in
             (text.isEmpty || city.searchKey.contains(text)) && (filters.countryCode == nil || city.countryCode == filters.countryCode)
                 && (!filters.hasDirect || city.hasDirect) && (!filters.knownSafety || city.best(kind).tripRating?.safetyScore != nil)
                 && (filters.maxAverageMinor.map { city.averagePriceMinor <= $0 } ?? true)
-                && (filters.minScore.map { minimum in city.score(kind).map { $0 >= minimum } ?? false } ?? true)
+                && (filters.minScore.map { minimum in (sort == .personal ? city.personalScore(preferences) : city.score(kind)).map { $0 >= minimum } ?? false } ?? true)
         }.sorted { a, b in
             switch sort {
+            case .personal:
+                if a.personalScore(preferences) != b.personalScore(preferences) { return (a.personalScore(preferences) ?? -1) > (b.personalScore(preferences) ?? -1) }
+            case .interests:
+                let av = CityGuide.all[a.id]?.match(preferences.interests), bv = CityGuide.all[b.id]?.match(preferences.interests)
+                if av != bv { return (av ?? -1) > (bv ?? -1) }
+            case .hdi:
+                let av = CityGuide.all[a.id]?.hdiValue, bv = CityGuide.all[b.id]?.hdiValue
+                if av != bv { return (av ?? -1) > (bv ?? -1) }
+
             case .score: if a.score(kind) != b.score(kind) { return (a.score(kind) ?? -1) > (b.score(kind) ?? -1) }
             case .price: if a.averagePriceMinor != b.averagePriceMinor { return a.averagePriceMinor < b.averagePriceMinor }
             case .road: if a.roadScore != b.roadScore { return (a.roadScore ?? -1) > (b.roadScore ?? -1) }

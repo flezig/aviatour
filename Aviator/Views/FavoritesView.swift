@@ -1,16 +1,20 @@
 import SwiftUI
 
 @MainActor struct FavoritesView: View {
+    @EnvironmentObject private var profile: TravelerProfile
+    @Environment(\.openSavedCity) private var openSavedCity
     @ObservedObject var favorites: FavoritesViewModel
+    var airports: [Airport] = []
     let clock: any AppClock
     let analytics: any AnalyticsService
     var body: some View {
         NavigationStack {
             Group {
                 if favorites.offers.isEmpty {
-                    StatusPanel(symbol: "heart", title: "Сохраните мечту", message: "Нажмите на сердечко понравившейся поездки. Маршрут, даты и снимок цены останутся здесь без сети.")
+                    VStack { savedCities; StatusPanel(symbol: "heart", title: "Сохраните мечту", message: "Нажмите на сердечко понравившейся поездки. Маршрут, даты и снимок цены останутся здесь без сети.") }.padding(.horizontal)
                 } else {
                     List {
+                        savedCities
                         Section {
                             Text("Обновление повторно запрашивает найденные цены. Наличие билетов и багаж проверяются на Aviasales.").font(.footnote).foregroundStyle(.secondary)
                             Toggle("Сообщать о снижении цены", isOn: $favorites.priceDropAlertsEnabled)
@@ -60,4 +64,24 @@ import SwiftUI
                 }
         }
     }
+    private var savedCities: some View {
+        Group {
+            if !profile.savedCities.isEmpty {
+                Section("Сохранённые города") {
+                    ForEach(profile.savedCities.sorted(), id: \.self) { code in
+                        HStack {
+                            Button { openSavedCity(code) } label: {
+                                Label(airports.first { $0.cityCode == code }?.city ?? code, systemImage: "building.2")
+                            }.frame(minHeight: 44)
+                            Spacer()
+                            Button { profile.toggleCity(code) } label: { Image(systemName: "bookmark.slash") }
+                                .accessibilityLabel("Убрать город из сохранённых").frame(minWidth: 44, minHeight: 44)
+                        }
+                    }
+                    Text("Города сохранены без конкретного рейса. При открытии используются текущие условия поиска.").font(.caption).foregroundStyle(.secondary)
+                }
+            }
+        }
+    }
+
 }

@@ -17,6 +17,7 @@ from .regions import includes
 from .rating import evaluate, round_int
 from .rating_sources import RatingSources, load_reviewed_data
 from .hotel_source import AmadeusHotels
+from .city_insights import CityInsights, InsightRequest
 
 
 def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.utc)):
@@ -28,6 +29,7 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
             app.state.upstream = Travelpayouts(client, settings, now)
             app.state.hotel_source = AmadeusHotels(client, settings.amadeus_client_id, settings.amadeus_client_secret)
             app.state.rating_sources = RatingSources(client, settings.gpm_key)
+            app.state.city_insights = CityInsights(client, now)
             data, app.state.rating_data_status = load_reviewed_data(settings.rating_data_file)
             app.state.rating_data = {}
             for item in data:
@@ -102,6 +104,12 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
         return {'version': 'trip-v1.0', 'evidence_feed': app.state.rating_data_status,
                 'gpm_city_configured': bool(settings.gpm_key),
                 'entry_status': 'Условия въезда не проверены'}
+
+    @app.post('/api/v1/cities/insights')
+    async def city_insights(request: InsightRequest):
+        limiter.check()
+        # Separate from airfare search; partial source failures remain visible.
+        return await app.state.city_insights.build(request)
 
     @app.post('/api/v1/search', response_model=SearchResponse)
     async def search_endpoint(request: SearchRequest):
