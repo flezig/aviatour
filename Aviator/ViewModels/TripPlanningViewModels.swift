@@ -57,14 +57,31 @@ import Combine
     @Published private(set) var offers: [Offer] = []
     @Published private(set) var isRefreshing = false
     @Published private(set) var refreshSummary: String?
+    @Published private(set) var priceDropAlerts: [String] = []
+    @Published var priceDropAlertsEnabled: Bool = false {
+        didSet {
+            preferences.set(priceDropAlertsEnabled, forKey: "favorites.priceDrop.enabled")
+            if priceDropAlertsEnabled && !oldValue {
+                for offer in offers { lowestNotifiedPrice[alertKey(offer)] = offer.priceMinor }
+                saveAlertState()
+            }
+        }
+    }
+    private let preferences: UserDefaults
+    private var lowestNotifiedPrice: [String: Int] = [:]
     private var favoriteIDs = Set<String>()
     @Published var error: String?
     private let store: any FavoritesStore
     let clock: any AppClock
     private let analytics: any AnalyticsService
     let services: [String: any SearchService]
-    init(store: any FavoritesStore, clock: any AppClock, analytics: any AnalyticsService, services: [String: any SearchService] = [:]) {
-        self.store = store; self.clock = clock; self.analytics = analytics; self.services = services; reload()
+    init(store: any FavoritesStore, clock: any AppClock, analytics: any AnalyticsService, services: [String: any SearchService] = [:], preferences: UserDefaults = .standard) {
+        self.store = store; self.clock = clock; self.analytics = analytics; self.services = services
+        self.preferences = preferences
+        lowestNotifiedPrice = preferences.dictionary(forKey: "favorites.priceDrop.lowest") as? [String: Int] ?? [:]
+        priceDropAlerts = preferences.stringArray(forKey: "favorites.priceDrop.history") ?? []
+        priceDropAlertsEnabled = preferences.bool(forKey: "favorites.priceDrop.enabled")
+        reload()
     }
     func service(for offer: Offer) -> (any SearchService)? { services[offer.source] }
     func reload() {
@@ -74,7 +91,10 @@ import Combine
     func current(_ offer: Offer) -> Offer { offers.first { $0.id == offer.id && $0.source == offer.source } ?? offer }
     func toggle(_ offer: Offer) {
         do {
-            if contains(offer) { try store.remove(id: offer.id) }
+            if contains(offer) {
+                try store.remove(id: offer.id)
+                lowestNotifiedPrice.removeValue(forKey: alertKey(offer)); saveAlertState()
+            }
             else { try store.add(offer, at: clock.now); analytics.record(.destinationFavorited) }
             reload()
         } catch { self.error = "Не удалось сохранить изменение: \(error.localizedDescription)" }
@@ -133,12 +153,35 @@ import Combine
                             replacement.refreshStatus = .failed
                             replacement.refreshMessage = "Не удалось обновить: " + (response.error ?? "Некорректный ответ")
                         }
-                        if persist(replacement) && replacement.refreshStatus == .updated { updated += 1 }
+                        if persist(replacement) && replacement.refreshStatus == .updated {
+                            updated += 1
+                            recordPriceDrop(from: saved, to: replacement)
+                        }
                     }
                 }
             }
         }
         refreshSummary = "Проверено: \(checked) · цены обновлены: \(updated). Доступность билетов уточните на Aviasales."
+    }
+    func clearPriceDropAlerts() {
+        priceDropAlerts = []; saveAlertState()
+    }
+    private func alertKey(_ offer: Offer) -> String { "\(offer.source)|\(offer.id)|\(offer.currency)" }
+    private func saveAlertState() {
+        preferences.set(lowestNotifiedPrice, forKey: "favorites.priceDrop.lowest")
+        preferences.set(priceDropAlerts, forKey: "favorites.priceDrop.history")
+    }
+    private func recordPriceDrop(from saved: Offer, to updated: Offer) {
+        guard priceDropAlertsEnabled else { return }
+        let key = alertKey(saved)
+        let baseline = min(lowestNotifiedPrice[key] ?? saved.priceMinor, saved.priceMinor)
+        guard updated.priceMinor < baseline else { return }
+        lowestNotifiedPrice[key] = updated.priceMinor
+        let message = "\(updated.isDemo ? "DEMO · " : "")\(updated.city): снижение на \(Money.format(baseline - updated.priceMinor, currency: updated.currency)), теперь \(Money.format(updated.priceMinor, currency: updated.currency)). "
+            + "Проверка: " + TravelDates.display(clock.now, zone: TimeZone.current.identifier, time: true)
+        priceDropAlerts.insert(message, at: 0)
+        priceDropAlerts = Array(priceDropAlerts.prefix(20))
+        saveAlertState()
     }
     @discardableResult private func persist(_ offer: Offer) -> Bool {
         do { if try store.update(offer) { reload(); return true }; return false }

@@ -13,6 +13,16 @@ import SwiftUI
                     List {
                         Section {
                             Text("Обновление повторно запрашивает найденные цены. Наличие билетов и багаж проверяются на Aviasales.").font(.footnote).foregroundStyle(.secondary)
+                            Toggle("Сообщать о снижении цены", isOn: $favorites.priceDropAlertsEnabled)
+                                .accessibilityIdentifier("favorites.priceDropAlerts")
+                            Text("Уведомления появляются здесь после ручного обновления. Фоновых проверок нет. Повторяется только новое снижение ниже уже сообщённой цены.")
+                                .font(.caption).foregroundStyle(.secondary)
+                            if !favorites.priceDropAlerts.isEmpty {
+                                ForEach(Array(favorites.priceDropAlerts.enumerated()), id: \.offset) { _, message in
+                                    Label(message, systemImage: "bell.badge").font(.subheadline)
+                                }
+                                Button("Очистить уведомления") { favorites.clearPriceDropAlerts() }
+                            }
                             if favorites.isRefreshing { ProgressView("Обновляем избранное…") }
                             if let summary = favorites.refreshSummary { Text(summary).font(.footnote).accessibilityIdentifier("favorites.refreshSummary") }
                         }
