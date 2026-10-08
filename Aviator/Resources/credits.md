@@ -40,3 +40,17 @@ Creator: Johann Gottfried Schadow; [CC BY-SA 2.5](https://creativecommons.org/li
 - **LAX**: [File:Skyline downtown Los Angeles 2019 1.jpg](https://commons.wikimedia.org/wiki/File:Skyline_downtown_Los_Angeles_2019_1.jpg) — Steven Lek; [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0). Фото масштабировано средствами Commons, отображается с кадрированием.
 - **MIA**: [File:Miami skyline from the ocean.jpg](https://commons.wikimedia.org/wiki/File:Miami_skyline_from_the_ocean.jpg) — Matthew T Rader; [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0). Фото масштабировано средствами Commons, отображается с кадрированием.
 - **BCN**: [File:Barcelona - Flickr - concrete^fells (1).jpg](https://commons.wikimedia.org/wiki/File:Barcelona_-_Flickr_-_concrete%5Efells_(1).jpg) — concrete&fells from Darlington, United Kingdom; [CC BY 2.0](https://creativecommons.org/licenses/by/2.0). Фото масштабировано средствами Commons, отображается с кадрированием.
+
+## Показатели городов
+
+Погода и исторические сезонные ориентиры: Open-Meteo (https://open-meteo.com/), CC BY 4.0. Бесплатные endpoints используются для некоммерческого пилота.
+
+Цены продуктов: Open Prices / Open Food Facts (https://prices.openfoodfacts.org/), Open Database License (ODbL). Показаны ограниченные наблюдения, не полный рынок.
+
+Предупреждения о поездках: GOV.UK / Foreign, Commonwealth & Development Office (https://www.gov.uk/foreign-travel-advice), Open Government Licence v3.0. Аудитория исходных рекомендаций — британские граждане.
+
+HDI: United Nations Development Programme, Human Development Report 2025, показатель 2023 года; официальный снимок от 08.10.2026 (https://hdr.undp.org/data-center/documentation-and-downloads).
+
+Коды стран ISO2/ISO3: Unicode CLDR (https://github.com/unicode-org/cldr), Unicode License v3 (https://www.unicode.org/license.txt).
+
+Описания городов и теги интересов подготовлены редакционно для Aviatour; ссылки туристических порталов указаны в карточках. Sherpa — внешний сервис проверки требований по паспорту; наличие ссылки не означает подключение или подтверждение визового API.

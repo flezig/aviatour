@@ -15,7 +15,7 @@ def array(items): return Raw('( '+', '.join(items)+' )')
 def settings(items): return Raw('{ '+ ' '.join(f'{k} = {quote(v)};' for k,v in items.items())+' }')
 
 files={}
-for path in sorted([*Path('Aviator').rglob('*.swift'), *Path('AviatorTests').glob('*.swift'), *Path('AviatorUITests').glob('*.swift'),Path('Aviator/Resources/airports.json'),Path('Aviator/Resources/credits.md'),Path('Aviator/Resources/Assets.xcassets'), *Path('Aviator/Config').glob('*.xcconfig'), *Path('Aviator/Config').glob('*.plist')]):
+for path in sorted([*Path('Aviator').rglob('*.swift'), *Path('AviatorTests').glob('*.swift'), *Path('AviatorUITests').glob('*.swift'),*Path('Aviator/Resources').glob('*.json'),Path('Aviator/Resources/credits.md'),Path('Aviator/Resources/Assets.xcassets'), *Path('Aviator/Config').glob('*.xcconfig'), *Path('Aviator/Config').glob('*.plist')]):
     kind={'.swift':'sourcecode.swift','.json':'text.json','.md':'text','.xcassets':'folder.assetcatalog','.xcconfig':'text.xcconfig','.plist':'text.plist.xml'}[path.suffix]
     files[str(path)]=add(str(path), 'PBXFileReference', lastKnownFileType=quote(kind), path=quote(path), sourceTree=quote('<group>'))
 products={name:add(name+'product','PBXFileReference',explicitFileType=quote('wrapper.application' if name=='Aviator' else 'wrapper.cfbundle'),path=quote(name+('.app' if name=='Aviator' else '.xctest')),sourceTree=quote('BUILT_PRODUCTS_DIR')) for name in ['Aviator','AviatorTests','AviatorUITests']}

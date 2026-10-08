@@ -5,7 +5,14 @@ struct FilterChoice: Identifiable { let id: String; let title: String }
 
 @MainActor final class SearchViewModel: ObservableObject {
     enum State: Equatable { case idle, loading, success, empty, error(String), offline }
-    @Published var query: SearchQuery
+    @Published var query: SearchQuery {
+        didSet {
+            if let preferences, let data = try? JSONEncoder().encode(query) { preferences.set(data, forKey: "search.conditions") }
+        }
+    }
+    @Published private(set) var previousOffers: [Offer] = []
+    @Published private(set) var previousQuery: SearchQuery?
+    private let preferences: UserDefaults?
     @Published private(set) var performedQuery: SearchQuery?
     @Published private(set) var state: State = .idle
     @Published var filters = ExtraFilters() { didSet { if filters != oldValue { refresh() } } }
@@ -23,13 +30,20 @@ struct FilterChoice: Identifiable { let id: String; let title: String }
     private let analytics: any AnalyticsService
     private var task: Task<Void, Never>?
     private var generation = UUID()
-    init(service: any SearchService, clock: any AppClock, analytics: any AnalyticsService) {
+    init(service: any SearchService, clock: any AppClock, analytics: any AnalyticsService, preferences: UserDefaults? = nil) {
         self.service = service; self.clock = clock; self.analytics = analytics
-        query = SearchQuery(month: TravelDates.month(clock.now))
+        self.preferences = preferences
+        var restored = preferences?.data(forKey: "search.conditions").flatMap { try? JSONDecoder().decode(SearchQuery.self, from: $0) } ?? SearchQuery(month: TravelDates.month(clock.now))
+        if !TravelDates.months(now: clock.now, zone: "Europe/Moscow").contains(restored.month) {
+            restored.month = TravelDates.month(clock.now); restored.departureDate = nil; restored.returnDate = nil
+        }
+        if let date = restored.departureDate, date < TravelDates.dateKey(clock.now, zone: "UTC") { restored.departureDate = nil; restored.returnDate = nil }
+        query = restored
     }
     func reset() {
         task?.cancel(); generation = UUID()
         filterTask?.cancel(); filterGeneration = UUID()
+        previousOffers = []; previousQuery = nil
         isFiltering = false; state = .idle; offers = []; facts = []
         result = SearchResult(offers: [], incomplete: false, warnings: []); performedQuery = nil
     }
@@ -64,6 +78,9 @@ struct FilterChoice: Identifiable { let id: String; let title: String }
         query = performedQuery ?? query; query.directOnly = false; start()
     }
     func start(filters initialFilters: ExtraFilters = ExtraFilters(), sort initialSort: OfferSort = .price) {
+        if state == .success || state == .empty {
+            previousOffers = offers; previousQuery = performedQuery
+        }
         task?.cancel(); generation = UUID(); let ticket = generation; let parameters = query
         performedQuery = parameters; filters = initialFilters; sort = initialSort
         filterTask?.cancel(); filterGeneration = UUID(); isFiltering = false

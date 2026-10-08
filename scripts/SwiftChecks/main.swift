@@ -257,6 +257,7 @@ final class FixtureURLProtocol: URLProtocol {
         let performanceStart = Date()
         _ = SearchRules.options(many, query: query, now: now, filters: ExtraFilters(airline: "S7"), sort: .value)
         print(String(format: "Filter/sort %d indexed offers: %.2f ms off UI thread", many.count, Date().timeIntervalSince(performanceStart) * 1000))
+        count += try await PersonalRatingChecks.run(airports: airports, now: now)
         count += try await TripPlanningChecks.run(airports: airports, now: now)
         print("Aviator: \(count) Swift behavior assertions passed. SwiftData persistence and UI require full Xcode.")
     }

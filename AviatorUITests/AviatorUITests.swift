@@ -16,9 +16,34 @@ final class AviatorUITests: XCTestCase {
         XCTAssertTrue(remove.waitForExistence(timeout: 5)); remove.tap()
         XCTAssertTrue(app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH %@", "offer.LED.")).firstMatch.waitForExistence(timeout: 5))
     }
+    func testProfileInterestsAndSavedCity() {
+        let app = XCUIApplication(); app.launchArguments = ["--ui-smoke"]; app.launch()
+        app.tabBars.buttons["Куда поехать"].tap()
+        app.buttons["profile.open"].tap()
+        XCTAssertTrue(app.descendants(matching: .any)["profile.screen"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["profile.citizenship"].exists)
+        let interest = app.switches["profile.interest.culture"]
+        XCTAssertTrue(interest.exists); interest.switches.firstMatch.exists ? interest.switches.firstMatch.tap() : interest.tap()
+        XCTAssertEqual(interest.value as? String, "1")
+        app.buttons["Готово"].tap()
+        XCTAssertTrue(app.staticTexts["Для вас: Баланс · интересов выбрано: 1"].waitForExistence(timeout: 5))
+        let field = app.textFields["ratings.search"]
+        XCTAssertTrue(field.waitForExistence(timeout: 5)); field.tap(); field.typeText("LED\n")
+        app.buttons["ratings.city.LED"].tap()
+        let save = app.buttons["city.save"]
+        for _ in 0..<10 where !save.isHittable { app.swipeUp() }
+        XCTAssertTrue(save.waitForExistence(timeout: 5)); save.tap()
+        for identifier in ["city.weather", "city.basket", "city.safety", "city.visa", "city.hdi"] {
+            XCTAssertTrue(app.descendants(matching: .any)[identifier].exists)
+        }
+        let shot = XCTAttachment(screenshot: app.screenshot()); shot.name = "Контекст города и профиль"; shot.lifetime = .keepAlways; add(shot)
+        app.tabBars.buttons["Избранное"].tap()
+        XCTAssertTrue(app.buttons["Санкт-Петербург"].waitForExistence(timeout: 5))
+    }
+
     func testCityRatingsSearchAndCategoryDashboard() {
         let app = XCUIApplication(); app.launchArguments = ["--ui-smoke"]; app.launch()
-        app.tabBars.buttons["Рейтинг"].tap()
+        app.tabBars.buttons["Куда поехать"].tap()
         XCTAssertTrue(app.buttons["ratings.city.LED"].waitForExistence(timeout: 10))
         let field = app.textFields["ratings.search"]
         field.tap(); field.typeText("LED\n")
@@ -40,7 +65,7 @@ final class AviatorUITests: XCTestCase {
         XCTAssertTrue(rating.waitForExistence(timeout: 10))
         for _ in 0..<4 where !rating.isHittable { app.swipeUp() }
         rating.tap()
-        XCTAssertTrue(app.tabBars.buttons["Рейтинг"].isSelected)
+        XCTAssertTrue(app.tabBars.buttons["Куда поехать"].isSelected)
         XCTAssertTrue(app.descendants(matching: .any)["ratings.dashboard"].waitForExistence(timeout: 10))
     }
     func testMockJourney() {
@@ -116,7 +141,7 @@ final class AviatorUITests: XCTestCase {
     func testCollectionsRespectBudget() {
         let app = XCUIApplication(); app.launchArguments = ["--ui-smoke"]; app.launch()
         XCTAssertTrue(app.buttons["originPicker"].waitForExistence(timeout: 10))
-        app.tabBars.buttons["Подборки"].tap()
+        app.tabBars.buttons["Куда поехать"].tap(); app.buttons["Подборки"].tap()
         let collection = app.buttons["collection.budget20"]
         XCTAssertTrue(collection.waitForExistence(timeout: 5))
         for _ in 0..<4 where !collection.isHittable { app.swipeUp() }
@@ -141,7 +166,7 @@ final class AviatorUITests: XCTestCase {
         let second = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@", "compare.MOCK-SVO-KZN-")).firstMatch
         for _ in 0..<8 where !second.exists || !second.isHittable { app.swipeUp() }
         XCTAssertTrue(second.exists); second.tap()
-        app.tabBars.buttons["Сравнение"].tap()
+        app.tabBars.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Сравнение")).firstMatch.tap()
         XCTAssertTrue(app.staticTexts["Санкт-Петербург"].firstMatch.waitForExistence(timeout: 5))
         XCTAssertTrue(app.staticTexts["Дорога туда и обратно"].firstMatch.exists)
         XCTAssertTrue(app.staticTexts["Пересадки туда / обратно"].firstMatch.exists)

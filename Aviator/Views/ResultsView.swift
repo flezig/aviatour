@@ -14,6 +14,13 @@ import SwiftUI
                 if let query = model.performedQuery {
                     Text(summary(query)).font(.subheadline).foregroundStyle(.secondary)
                 }
+                if !model.filters.isEmpty {
+                    HStack {
+                        Label(model.filters.activeLabels.joined(separator: " · "), systemImage: "line.3.horizontal.decrease.circle.fill").font(.caption)
+                        Spacer()
+                        Button("Сбросить") { model.filters = ExtraFilters() }.frame(minHeight: 44)
+                    }
+                }
                 switch model.state {
                 case .loading:
                     ProgressView("Ищем варианты поездки…").frame(maxWidth: .infinity).padding(48).accessibilityIdentifier("loadingState")
@@ -88,12 +95,25 @@ import SwiftUI
                         }
                     }
                 }
+                if showPrevious && !model.previousOffers.isEmpty {
+                    Text("Предыдущие результаты").font(.headline)
+                    if let query = model.previousQuery { Text(summary(query)).font(.caption).foregroundStyle(.secondary) }
+                    Text("Сохранены на время нового запроса. Эти варианты относятся к предыдущим условиям.").font(.caption).foregroundStyle(.secondary)
+                    ForEach(Array(model.previousOffers.prefix(12))) { offer in
+                        NavigationLink { DetailView(offer: offer, favorites: favorites, clock: model.clock, analytics: analytics, budgetMinor: model.previousQuery?.maxBudgetMinor) } label: {
+                            OfferCard(offer: offer, favorites: favorites)
+                        }.buttonStyle(.plain)
+                    }
+                }
             }.padding(20)
         }.background(Color(.systemGroupedBackground)).navigationTitle("Варианты")
             .sheet(isPresented: $showFilters) { OfferFiltersView(model: model) }
             .onChange(of: model.filters) { _, _ in visibleLimit = 60 }
             .onChange(of: model.sort) { _, _ in visibleLimit = 60 }
             .onAppear { if model.state == .success || model.state == .empty { model.refresh() } }
+    }
+    private var showPrevious: Bool {
+        switch model.state { case .loading, .offline, .error: return true; default: return false }
     }
     private func summary(_ query: SearchQuery) -> String {
         let origin = query.originCityCode.map { "\($0) · все аэропорты" } ?? query.origin

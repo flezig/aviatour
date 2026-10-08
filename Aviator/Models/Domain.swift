@@ -205,6 +205,30 @@ struct ExtraFilters: Equatable {
     var returnArrivalTime: FlightTime = .any
     var noLeave = false
     var uniqueDestinations = false
+    var activeLabels: [String] {
+        var labels: [String] = []
+        if cheap { labels.append("До 20 000 ₽") }
+        if direct { labels.append("Без пересадок") }
+        if russia { labels.append("Россия") }
+        if minPriceMinor > 0 { labels.append("От " + Money.format(minPriceMinor)) }
+        if let maxPriceMinor { labels.append("До " + Money.format(maxPriceMinor)) }
+        if let countryCode { labels.append(Locale(identifier: "ru_RU").localizedString(forRegionCode: countryCode) ?? countryCode) }
+        if let airline { labels.append("Авиакомпания " + airline) }
+        if let airlineName { labels.append("Название: " + airlineName) }
+        if !destinationText.isEmpty { labels.append(destinationText) }
+        if let maxTransfers { labels.append("Пересадок ≤ \(maxTransfers)") }
+        if let maxFlightMinutes { labels.append("Плечо ≤ \(maxFlightMinutes) мин") }
+        if minDays > 0 { labels.append("От \(minDays) дней") }
+        if let maxDays { labels.append("До \(maxDays) дней") }
+        if minStayHours > 0 { labels.append("На месте ≥ \(minStayHours) ч") }
+        if outboundTime != .any { labels.append("Туда: " + outboundTime.title) }
+        if inboundTime != .any { labels.append("Обратно: " + inboundTime.title) }
+        if arrivalTime != .any { labels.append("Прилёт: " + arrivalTime.title) }
+        if returnArrivalTime != .any { labels.append("Домой: " + returnArrivalTime.title) }
+        if noLeave { labels.append("Без отпуска") }
+        if uniqueDestinations { labels.append("Один вариант на город") }
+        return labels
+    }
     var isEmpty: Bool { self == ExtraFilters() }
     var activeCount: Int {
         [cheap, direct, russia, minPriceMinor > 0, maxPriceMinor != nil, countryCode != nil,
