@@ -59,8 +59,32 @@ import Foundation
         let cheaper = try BehaviorChecks.modify(saved, ["priceMinor": saved.priceMinor - 10000])
         let recorder = RecordingSearch(.success(SearchResult(offers: [cheaper], incomplete: false, warnings: [])))
         let store = MemoryFavorites()
-        let favorites = FavoritesViewModel(store: store, clock: clock, analytics: QuietAnalytics(), services: ["MOCK": recorder])
+        let suite = "price-drop-checks-" + UUID().uuidString
+        let preferences = UserDefaults(suiteName: suite)!
+        defer { preferences.removePersistentDomain(forName: suite) }
+        let favorites = FavoritesViewModel(store: store, clock: clock, analytics: QuietAnalytics(), services: ["MOCK": recorder], preferences: preferences)
         favorites.toggle(saved)
+        check(!favorites.priceDropAlertsEnabled, "alerts require opt in")
+        favorites.priceDropAlertsEnabled = true
+        await favorites.refresh()
+        check(favorites.priceDropAlerts.count == 1, "lower price creates alert")
+        await favorites.refresh()
+        check(favorites.priceDropAlerts.count == 1, "same price does not repeat alert")
+        let restored = FavoritesViewModel(store: store, clock: clock, analytics: QuietAnalytics(), services: ["MOCK": recorder], preferences: preferences)
+        check(restored.priceDropAlertsEnabled && restored.priceDropAlerts.count == 1, "setting and alerts survive restart")
+        restored.clearPriceDropAlerts()
+        await restored.refresh()
+        check(restored.priceDropAlerts.isEmpty, "dismissal retains deduplication after restart")
+        let lower = try BehaviorChecks.modify(saved, ["priceMinor": saved.priceMinor - 20000])
+        recorder.result = .success(SearchResult(offers: [lower], incomplete: false, warnings: []))
+        await restored.refresh()
+        check(restored.priceDropAlerts.count == 1, "new record low creates another alert")
+        restored.priceDropAlertsEnabled = false
+        recorder.result = .success(SearchResult(offers: [try BehaviorChecks.modify(saved, ["priceMinor": saved.priceMinor - 30000])], incomplete: false, warnings: []))
+        await restored.refresh()
+        check(restored.priceDropAlerts.count == 1, "disabled alerts stay quiet")
+        // Restore the original fixture for the existing refresh checks.
+        recorder.result = .success(SearchResult(offers: [cheaper], incomplete: false, warnings: []))
         await favorites.refresh()
         let refreshed = favorites.offers[0]
         check(refreshed.priceMinor == cheaper.priceMinor && refreshed.originalPriceMinor == saved.priceMinor && refreshed.priceChangeMinor == -10000, "favorite price change and baseline persisted")
@@ -71,12 +95,14 @@ import Foundation
         await favorites.refresh()
         check(favorites.offers[0].refreshStatus == .notFound && favorites.offers[0].priceMinor == cheaper.priceMinor, "source mismatch keeps snapshot")
         check(favorites.offers[0].receivedAt == refreshed.receivedAt, "missing quote does not relabel old price as new")
+        let alertCount = favorites.priceDropAlerts.count
         recorder.result = .failure(SearchFailure.offline)
         await favorites.refresh()
         check(favorites.offers[0].refreshStatus == .failed && favorites.offers[0].priceMinor == cheaper.priceMinor, "network error retains price")
         recorder.result = .success(SearchResult(offers: [try BehaviorChecks.modify(cheaper, ["departureAt": saved.departureAt.addingTimeInterval(60).timeIntervalSinceReferenceDate])], incomplete: false, warnings: []))
         await favorites.refresh()
         check(favorites.offers[0].refreshStatus == .notFound, "same ID cannot replace different departure")
+        check(favorites.priceDropAlerts.count == alertCount, "failed and missing quotes do not alert")
         let past = try BehaviorChecks.modify(saved, ["id": "past", "departureAt": now.addingTimeInterval(-3600).timeIntervalSinceReferenceDate])
         favorites.toggle(past)
         let requestsBefore = recorder.queries.count
@@ -88,6 +114,7 @@ import Foundation
         favorites.toggle(favorites.current(saved))
         await pending.value
         check(!favorites.contains(saved), "deleted favorite cannot be resurrected by late response")
+        check(favorites.priceDropAlerts.count == alertCount, "past and deleted favorites do not alert")
         let neighborVM = NearbyDatesViewModel()
         await neighborVM.load(offer: saved, budget: 2_500_000, service: mock, clock: clock)
         check(neighborVM.completed && !neighborVM.isLoading && neighborVM.options.first { $0.offset == 0 }?.best != nil, "neighbor batch finds matching date pair")
