@@ -52,7 +52,7 @@ import SwiftUI
                     DisclosureGroup("Как считается балл") {
                         Text(kind == .flight ? "Предварительный балл: цена билетов 65%, удобство дороги 35%. Без безопасности и стоимости отдыха." : "Полная поездка: бюджет 45%, дорога 25%, безопасность 20%, условия 10%. Если данных не хватает, балла нет.").font(.caption).foregroundStyle(.secondary).padding(.top, 8)
                         Text("Все поездки выбранного месяца или точных дат; фильтр коротких выходных здесь не применяется.").font(.caption).foregroundStyle(.secondary)
-                    }.font(.subheadline).tint(Color.aviatorBlue)
+                    }.font(.subheadline).tint(.primary)
                     Text("Для вас: " + profile.preferences.style.title + " · интересов выбрано: \(profile.preferences.interests.count)").font(.caption).foregroundStyle(.secondary)
                     if sort == .personal {
                         let weights = profile.preferences.style.weights
@@ -76,9 +76,9 @@ import SwiftUI
                                 Text("Любой / неизвестно").tag(Optional<Int>.none)
                                 ForEach([50, 70, 85], id: \.self) { Text("От \($0)").tag(Optional($0)) }
                             }
-                            Button("Сбросить фильтры") { filters = CityRankingFilters(); savedOnly = false; withinBudget = false }
+                            Button("Сбросить фильтры") { filters = CityRankingFilters(); savedOnly = false; withinBudget = false }.inlineAction("arrow.counterclockwise", expanded: true)
                         }.padding(.top, 8)
-                    }.accessibilityIdentifier("ratings.filters")
+                    }.tint(.primary).accessibilityIdentifier("ratings.filters")
                     Picker("Порядок", selection: $sort) { ForEach(CityRankingSort.allCases) { Text($0.title).tag($0) } }.accessibilityIdentifier("ratings.sort")
                     if model.loading { ProgressView("Собираем рейтинг направлений…").frame(maxWidth: .infinity).padding(24) }
                     else if let error = model.error {
@@ -96,7 +96,7 @@ import SwiftUI
                     if model.incomplete { Label("Рейтинг по неполной выборке источника", systemImage: "exclamationmark.triangle").font(.caption).foregroundStyle(.orange) }
                     ForEach(Array(model.warnings.enumerated()), id: \.offset) { _, warning in Text(warning).font(.caption).foregroundStyle(.secondary) }
                     Text("Средняя цена — по уникальным найденным предложениям туда-обратно на взрослого, до 500 000 ₽. Это выборка кешированных находок, а не рыночная средняя или подтверждение покупки. При поиске месяца даты и длительность поездок различаются.").font(.footnote).foregroundStyle(.secondary)
-                    Button("Обновить рейтинг") { Task { await model.load(parameters, force: true) } }.disabled(model.loading).frame(minHeight: 44)
+                    Button("Обновить рейтинг") { Task { await model.load(parameters, force: true) } }.inlineAction("arrow.clockwise", expanded: true).disabled(model.loading)
                 }.padding(20)
             }.background(Color(.systemGroupedBackground)).navigationTitle("Рейтинг городов").navigationBarTitleDisplayMode(.inline)
                 .navigationDestination(item: $selectedCity) { selected in
@@ -216,23 +216,23 @@ import SwiftUI
                     Text("Медиана: " + Money.format(city.medianPriceMinor)).font(.subheadline)
                     Text("\(OfferCount.label(city.offers.count)) в выборке · от " + Money.format(city.minPriceMinor) + " до " + Money.format(city.maxPriceMinor)).font(.caption)
                     Text("Среднее по найденным кешированным ценам, не гарантированная цена к покупке. Рейтинг и расходы относятся к лучшей найденной поездке, а не к среднему бюджету города.").font(.footnote).foregroundStyle(.secondary)
-                }.padding(18).background(.white, in: RoundedRectangle(cornerRadius: 20))
+                }.tint(.primary).padding(18).background(.white, in: RoundedRectangle(cornerRadius: 20))
                 CityContextView(city: city, offer: offer)
                 DisclosureGroup("Расходы, источники и методика") {
                     TripRatingView(offer: offer, detailed: true).padding(.top, 14)
-                }.padding(18).background(.white, in: RoundedRectangle(cornerRadius: 20)).accessibilityIdentifier("ratings.sources")
+                }.tint(.primary).padding(18).background(.white, in: RoundedRectangle(cornerRadius: 20)).accessibilityIdentifier("ratings.sources")
                 DisclosureGroup("Найденные поездки в этот город") {
                     ForEach(Array(city.offers.sorted { $0.priceMinor < $1.priceMinor }.prefix(5))) { variant in
                         VStack(alignment: .leading, spacing: 8) {
                             NavigationLink { DetailView(offer: variant, favorites: favorites, clock: clock, analytics: analytics) } label: {
                                 Text(Money.format(variant.priceMinor) + " · " + TravelDates.display(variant.departureAt, zone: variant.originTimezone) + " → " + TravelDates.display(variant.returnAt, zone: variant.destinationTimezone))
-                            }.frame(minHeight: 44)
+                            }.inlineAction("arrow.up.right", expanded: true)
                             CompareButton(offer: variant)
                         }
                     }
                     if city.offers.count > 5 { Text("Показаны пять самых дешёвых найденных вариантов").font(.caption) }
-                }.padding(18).background(.white, in: RoundedRectangle(cornerRadius: 20))
-                NavigationLink("Посмотреть выбранную поездку") { DetailView(offer: offer, favorites: favorites, clock: clock, analytics: analytics) }.frame(minHeight: 44)
+                }.tint(.primary).padding(18).background(.white, in: RoundedRectangle(cornerRadius: 20))
+                NavigationLink("Посмотреть выбранную поездку") { DetailView(offer: offer, favorites: favorites, clock: clock, analytics: analytics) }.inlineAction("arrow.right", expanded: true)
             }.padding(20)
         }.background(Color(.systemGroupedBackground)).navigationTitle(city.city).navigationBarTitleDisplayMode(.inline).accessibilityIdentifier("ratings.detail")
     }

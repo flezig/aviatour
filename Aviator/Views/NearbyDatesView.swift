@@ -39,7 +39,7 @@ import SwiftUI
                     }.padding(18).frame(maxWidth: .infinity, alignment: .leading)
                         .background(.white, in: RoundedRectangle(cornerRadius: 20))
                 }
-                if model.completed { Button("Обновить сравнение дат") { Task { await load() } }.frame(minHeight: 44).disabled(model.isLoading) }
+                if model.completed { Button("Обновить сравнение дат") { Task { await load() } }.inlineAction("arrow.clockwise", expanded: true).disabled(model.isLoading) }
                 Text("Цена может измениться. Перед покупкой проверьте её на Aviasales.").font(.footnote).foregroundStyle(.secondary)
             }.padding(20)
         }.background(Color(.systemGroupedBackground)).navigationTitle("Соседние даты").navigationBarTitleDisplayMode(.inline)
