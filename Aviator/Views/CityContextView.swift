@@ -126,8 +126,8 @@ import SwiftUI
             if loading { ProgressView("Загружаем показатели города…") }
             if let failure { Text(failure).font(.caption).foregroundStyle(.secondary) }
             if !useLive { Text("DEMO: описания редакционные; живые цены, погода и предупреждения не загружаются.").font(.caption).foregroundStyle(.secondary) }
-            else { Button("Повторить загрузку показателей") { refreshID = UUID() }.disabled(loading) }
-        }.padding(18).background(.white, in: RoundedRectangle(cornerRadius: 20))
+            else { Button("Повторить загрузку показателей") { refreshID = UUID() }.inlineAction("arrow.clockwise", expanded: true).disabled(loading) }
+        }.tint(.primary).padding(18).background(.white, in: RoundedRectangle(cornerRadius: 20))
             .task(id: parameters) { await load() }.task(id: refreshID) { if evidence != nil || failure != nil { await load() } }
     }
     private func load() async {
@@ -144,7 +144,7 @@ import SwiftUI
         catch { if !Task.isCancelled && loadTicket == ticket { failure = "Не удалось получить показатели. Перелёты и редакционное описание доступны; попробуйте ещё раз." } }
     }
     private func source(_ label: String, _ address: String) -> some View {
-        Group { if let url = URL(string: address), url.scheme == "https" { Link(label, destination: url).font(.caption).frame(minHeight: 44) } }
+        Group { if let url = URL(string: address), url.scheme == "https" { Link(label, destination: url).inlineAction("arrow.up.right", expanded: true) } }
     }
     private func unit(_ value: String) -> String { value == "unit" ? "шт" : value == "l" ? "л" : "кг" }
     private func country(_ code: String?) -> String { code.flatMap { Locale(identifier: "ru_RU").localizedString(forRegionCode: $0) } ?? "не указано" }

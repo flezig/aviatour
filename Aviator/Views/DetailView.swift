@@ -34,7 +34,7 @@ import SwiftUI
                     Spacer()
                     if favorites.contains(offer) {
                         Button("Обновить цену") { Task { await favorites.refresh([offer]) } }
-                            .disabled(favorites.isRefreshing || past).frame(minHeight: 44)
+                            .inlineAction("arrow.clockwise").disabled(favorites.isRefreshing || past)
                             .accessibilityIdentifier("detail.refresh")
                     }
                 }
@@ -42,7 +42,7 @@ import SwiftUI
                 NavigationLink {
                     NearbyDatesView(offer: offer, favorites: favorites, clock: clock, analytics: analytics, budget: budgetMinor ?? tripBudget)
                 } label: { Label("Сравнить соседние даты ±3 дня", systemImage: "calendar.badge.plus").frame(minHeight: 44) }
-                    .disabled(past).accessibilityIdentifier("nearbyDatesButton")
+                    .inlineAction(expanded: true).disabled(past).accessibilityIdentifier("nearbyDatesButton")
                 CompactRatingView(offer: offer)
                 RouteCard(offer: offer, outbound: true)
                 RouteCard(offer: offer, outbound: false)

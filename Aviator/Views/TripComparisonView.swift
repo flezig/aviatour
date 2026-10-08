@@ -7,7 +7,7 @@ struct CompareButton: View {
         Button { comparison.toggle(offer) } label: {
             Label(comparison.contains(offer) ? "В сравнении" : "Сравнить", systemImage: comparison.contains(offer) ? "checkmark.circle.fill" : "rectangle.split.2x1")
                 .font(.subheadline).frame(minHeight: 44)
-        }.buttonStyle(.plain).foregroundStyle(Color.aviatorBlue)
+        }.inlineAction()
             .accessibilityIdentifier("compare.\(offer.id)")
     }
 }
@@ -42,8 +42,8 @@ struct CompareButton: View {
                                         metric("Пересадки туда / обратно", "\(offer.transfers.map(String.init) ?? "?") / \(offer.returnTransfers.map(String.init) ?? "?")")
                                         metric("Стоимость часа поездки", offer.costPerStayHourMinor.map { Money.format($0, currency: offer.currency) } ?? "Неизвестно")
                                         CompactRatingView(offer: offer)
-                                        NavigationLink("Подробнее") { DetailView(offer: offer, favorites: favorites, clock: clock, analytics: analytics) }.frame(minHeight: 44)
-                                        Button("Убрать") { comparison.toggle(saved) }.frame(minHeight: 44).foregroundStyle(.secondary)
+                                        NavigationLink("Подробнее") { DetailView(offer: offer, favorites: favorites, clock: clock, analytics: analytics) }.inlineAction("arrow.up.right", expanded: true)
+                                        Button("Убрать") { comparison.toggle(saved) }.inlineAction("minus.circle")
                                     }.padding(18).frame(width: 245, alignment: .leading)
                                         .background(.white, in: RoundedRectangle(cornerRadius: 22)).accessibilityIdentifier("comparison.\(offer.id)")
                                 }

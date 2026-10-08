@@ -75,7 +75,7 @@ struct RatingDashboard: View {
                         Spacer(minLength: 0)
                         if !textSize.isAccessibilitySize { Text(category.score == nil ? "Нет данных" : "Есть данные").font(.caption2).padding(6).foregroundStyle(category.score == nil ? Color.secondary : Color.aviatorBlue).background(Color.gray.opacity(0.07), in: Capsule()) }
                     }
-                }.padding(16).background(.white, in: RoundedRectangle(cornerRadius: 20)).accessibilityIdentifier("ratings.category.\(category.id)")
+                }.tint(.primary).padding(16).background(.white, in: RoundedRectangle(cornerRadius: 20)).accessibilityIdentifier("ratings.category.\(category.id)")
             }
         }
     }

@@ -44,7 +44,7 @@ struct TripRatingView: View {
                     Text("Цены билетов кешированные. Умножение на число взрослых не подтверждает наличие мест для группы. Обязательные сборы учитываются только при наличии в источнике.").font(.caption).foregroundStyle(.secondary)
                     ForEach(Array(r.evidence.enumerated()), id: \.offset) { _, e in
                         VStack(alignment: .leading, spacing: 4) {
-                            Link(e.source, destination: URL(string: e.sourceUrl) ?? URL(string: "https://travelpayouts.github.io/slate/")!)
+                            Link(e.source, destination: URL(string: e.sourceUrl) ?? URL(string: "https://travelpayouts.github.io/slate/")!).inlineAction("arrow.up.right", expanded: true)
                             Text("Уровень: " + geography(e.geography) + "; период \(e.periodStart ?? "неизвестен") — \(e.periodEnd ?? "неизвестен")").font(.caption)
                             Text(e.method + (e.estimated ? ". Расчётные данные." : "")).font(.caption)
                             Text("Получено " + TravelDates.display(e.fetchedAt, zone: TimeZone.current.identifier, time: true)).font(.caption2)

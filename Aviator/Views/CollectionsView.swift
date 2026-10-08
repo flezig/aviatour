@@ -25,7 +25,7 @@ import SwiftUI
                     VStack(alignment: .leading, spacing: 10) {
                         Text(conditions).font(.subheadline)
                         Text("До \(Money.format(search.query.maxBudgetMinor)) · только билеты туда-обратно на одного").font(.caption).foregroundStyle(.secondary)
-                        Button("Изменить условия") { showConditions = true }.frame(minHeight: 44).accessibilityIdentifier("collection.conditions")
+                        Button("Изменить условия") { showConditions = true }.inlineAction("slider.horizontal.3", expanded: true).accessibilityIdentifier("collection.conditions")
                     }.padding(18).frame(maxWidth: .infinity, alignment: .leading).background(.white, in: RoundedRectangle(cornerRadius: 20))
                     LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 12), count: textSize.isAccessibilitySize ? 1 : 2), spacing: 12) {
                         ForEach(TripCollection.allCases) { collection in
@@ -68,7 +68,7 @@ import SwiftUI
                                 if selected == .noLeave { Text("Под обычный график пн–пт: проверьте личное расписание и запас на дорогу домой.").font(.caption).foregroundStyle(.secondary) }
                             case .idle: EmptyView()
                             }
-                            Button("Обновить подборку") { run(selected) }.frame(minHeight: 44).disabled(model.state == .loading)
+                            Button("Обновить подборку") { run(selected) }.inlineAction("arrow.clockwise", expanded: true).disabled(model.state == .loading)
                                 .accessibilityIdentifier("collection.refresh")
                         }.id("collection-results")
                     }

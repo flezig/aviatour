@@ -25,7 +25,7 @@ import SwiftUI
                                 ForEach(Array(favorites.priceDropAlerts.enumerated()), id: \.offset) { _, message in
                                     Label(message, systemImage: "bell.badge").font(.subheadline)
                                 }
-                                Button("Очистить уведомления") { favorites.clearPriceDropAlerts() }
+                                Button("Очистить уведомления") { favorites.clearPriceDropAlerts() }.inlineAction("checkmark")
                             }
                             if favorites.isRefreshing { ProgressView("Обновляем избранное…") }
                             if let summary = favorites.refreshSummary { Text(summary).font(.footnote).accessibilityIdentifier("favorites.refreshSummary") }

@@ -101,3 +101,28 @@ struct StatusPanel: View {
         }.background(.white).clipShape(RoundedRectangle(cornerRadius: 20)).shadow(color: .black.opacity(0.06), radius: 12, y: 4)
     }
 }
+
+/// Shared treatment for inline actions; system toolbar and destructive actions keep their native style.
+struct InlineActionStyle: ButtonStyle {
+    var symbol: String? = nil
+    var expanded = false
+    @Environment(\.isEnabled) private var enabled
+    func makeBody(configuration: Configuration) -> some View {
+        HStack(spacing: 10) {
+            if let symbol { Image(systemName: symbol).font(.subheadline.weight(.semibold)).accessibilityHidden(true) }
+            configuration.label.font(.subheadline.weight(.semibold)).multilineTextAlignment(.leading)
+            if expanded { Spacer(minLength: 4) }
+        }
+        .padding(.horizontal, 16).padding(.vertical, 11).frame(minHeight: 48)
+        .frame(maxWidth: expanded ? .infinity : nil, alignment: .leading)
+        .foregroundStyle(Color.primary.opacity(enabled ? 0.85 : 0.35))
+        .background(Color.aviatorBlue.opacity(configuration.isPressed ? 0.16 : enabled ? 0.07 : 0.03), in: RoundedRectangle(cornerRadius: 16))
+        .overlay(RoundedRectangle(cornerRadius: 16).strokeBorder(Color.aviatorBlue.opacity(enabled ? 0.12 : 0.04)))
+        .scaleEffect(configuration.isPressed ? 0.985 : 1)
+    }
+}
+extension View {
+    func inlineAction(_ symbol: String? = nil, expanded: Bool = false) -> some View {
+        buttonStyle(InlineActionStyle(symbol: symbol, expanded: expanded))
+    }
+}

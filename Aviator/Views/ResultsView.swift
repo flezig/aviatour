@@ -18,7 +18,7 @@ import SwiftUI
                     HStack {
                         Label(model.filters.activeLabels.joined(separator: " · "), systemImage: "line.3.horizontal.decrease.circle.fill").font(.caption)
                         Spacer()
-                        Button("Сбросить") { model.filters = ExtraFilters() }.frame(minHeight: 44)
+                        Button("Сбросить") { model.filters = ExtraFilters() }.inlineAction("arrow.counterclockwise")
                     }
                 }
                 switch model.state {
@@ -79,7 +79,7 @@ import SwiftUI
                             if (model.performedQuery ?? model.query).directOnly {
                                 PrimaryButton(title: "Разрешить пересадки") { model.retryWithTransfers() }
                             }
-                            Button("Изменить даты и направление") { dismiss() }.frame(minHeight: 44)
+                            Button("Изменить даты и направление") { dismiss() }.inlineAction("slider.horizontal.3", expanded: true)
                         }
                     } else {
                         LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 16), count: textSize.isAccessibilitySize ? 1 : 2), spacing: 20) {

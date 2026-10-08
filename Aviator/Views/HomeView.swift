@@ -101,7 +101,7 @@ import SwiftUI
                     VStack(alignment: .leading, spacing: 12) {
                         Label("Больше поездки — меньше дороги", systemImage: "sun.max").font(.headline)
                         Text("Aviator сравнивает не только цену билета, но и время в пункте назначения. Найдите выезд без отпуска или лучший бюджет за час поездки.").font(.footnote).foregroundStyle(.secondary)
-                        Button("Источники фотографий") { showCredits = true }.font(.footnote).frame(minHeight: 44)
+                        Button("Источники фотографий") { showCredits = true }.inlineAction("photo", expanded: true)
                     }.padding(24)
                 }
             }.background(Color(.systemGroupedBackground)).toolbar(.hidden, for: .navigationBar)
