@@ -1,23 +1,29 @@
 import asyncio
+import re
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone
+from pathlib import Path
 from zoneinfo import ZoneInfo
 import httpx
 from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import JSONResponse
+from fastapi.middleware.gzip import GZipMiddleware
+from fastapi.responses import JSONResponse, RedirectResponse
+from fastapi.staticfiles import StaticFiles
 from .catalog import AIRPORTS, BY_IATA
 from .errors import SearchError
 from .models import SearchRequest, SearchResponse, BatchSearchRequest, BatchSearchItem, BatchSearchResponse
 from .runtime import TTLCache, RateLimiter
 from .settings import Settings
 from .upstream import Travelpayouts
-from .rules import matches
+from .rules import matches, safe_search_url
 from .regions import includes
 from .rating import evaluate, round_int
 from .rating_sources import RatingSources, load_reviewed_data
 from .hotel_source import AmadeusHotels
 from .city_insights import CityInsights, InsightRequest
+
+WEB_DIR = Path(__file__).resolve().parents[2] / 'web'
 
 
 def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.utc)):
@@ -36,6 +42,7 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
                 app.state.rating_data.setdefault(item.city_code, []).append(item)
             yield
     app = FastAPI(title='Aviator', lifespan=lifespan)
+    app.add_middleware(GZipMiddleware, minimum_size=1024)
     @app.exception_handler(SearchError)
     async def search_error(_, error):
         return JSONResponse(status_code=error.status, content={'error': {'code': error.code, 'message': error.message}}, headers={'Retry-After': str(error.retry_after)} if error.retry_after else None)
@@ -128,6 +135,23 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
                 except SearchError as error:
                     return BatchSearchItem(error=error.message)
         return BatchSearchResponse(results=await asyncio.gather(*(one(query) for query in request.queries)))
+
+    @app.get('/go')
+    async def go(u: str = '', s: str = ''):
+        # The only outbound redirect: an exact Aviasales search URL or its Travelpayouts partner link.
+        # s is an optional click label for partner reports; anything but a short slug is dropped.
+        try:
+            if len(u) > 1000:
+                raise ValueError('link')
+            url = safe_search_url(u)
+        except ValueError:
+            raise SearchError('validation', 'Ссылка должна вести на поиск Aviasales.', 422) from None
+        label = s if re.fullmatch(r'[a-z0-9-]{1,32}', s) else ''
+        return RedirectResponse(await app.state.upstream.partner_link(url, label) or url, status_code=302, headers={'Cache-Control': 'no-store'})
+
+    # Registered last so the site never shadows API routes.
+    if WEB_DIR.is_dir():
+        app.mount('/', StaticFiles(directory=WEB_DIR, html=True), name='web')
 
     return app
 

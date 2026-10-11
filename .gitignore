@@ -56,3 +56,5 @@ xcuserdata/
 
 # Local token files (including token.env)
 *.env
+.vercel
+.env.local

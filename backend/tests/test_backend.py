@@ -208,6 +208,89 @@ def test_partner_links_only_generated_exact_urls(tmp_path):
     assert adapter.partner('https://www.aviasales.com/search/unmapped') is None
 
 
+SEARCH_URL='https://www.aviasales.com/search/SVO0210LED04101?t=abc&expected_price=8500'
+
+def link_app(handler,**settings):
+    calls=[]
+    def transport(request):
+        calls.append(request)
+        return handler(request)
+    options=dict(token='secret',marker='12345',trs='678')|settings
+    return create_app(Settings(**options),httpx.MockTransport(transport),now=lambda:NOW),calls
+
+def test_go_redirects_through_generated_partner_link_once():
+    def handler(request):
+        body=json.loads(request.content)
+        assert str(request.url)=='https://api.travelpayouts.com/links/v1/create' and request.headers['X-Access-Token']=='secret'
+        assert body=={'trs':678,'marker':12345,'shorten':False,'links':[{'url':SEARCH_URL}]}
+        return httpx.Response(200,json={'result':{'links':[{'url':SEARCH_URL,'code':'success','partner_url':'https://tp.media/r?marker=12345&trs=678&u=x'}]}})
+    app,calls=link_app(handler)
+    with TestClient(app,follow_redirects=False) as client:
+        for _ in range(2):
+            response=client.get('/go',params={'u':SEARCH_URL})
+            assert response.status_code==302 and response.headers['location']=='https://tp.media/r?marker=12345&trs=678&u=x'
+            assert response.headers['cache-control']=='no-store'
+    assert len(calls)==1
+
+@pytest.mark.parametrize('reply',[
+    httpx.Response(500),
+    httpx.Response(200,json={'result':{'links':[{'code':'failed','message':'Invalid url'}]}}),
+    httpx.Response(200,json={'result':{'links':[{'code':'success','partner_url':'https://tp.media.evil.test/r'}]}}),
+    httpx.Response(200,json={'unexpected':True}),
+    httpx.Response(200,text='not json')])
+def test_go_falls_back_to_ordinary_link_and_pauses_attempts(reply):
+    app,calls=link_app(lambda request:reply)
+    with TestClient(app,follow_redirects=False) as client:
+        for _ in range(2):
+            response=client.get('/go',params={'u':SEARCH_URL})
+            assert response.status_code==302 and response.headers['location']==SEARCH_URL
+    assert len(calls)==1
+
+def test_go_passes_click_label_and_drops_unsafe_ones():
+    seen=[]
+    def handler(request):
+        link=json.loads(request.content)['links'][0];seen.append(link.get('sub_id'))
+        return httpx.Response(200,json={'result':{'links':[{'code':'success','partner_url':'https://tp.media/r?sub_id='+str(link.get('sub_id'))}]}})
+    app,calls=link_app(handler)
+    with TestClient(app,follow_redirects=False) as client:
+        for label,expected in [('web-home-a','web-home-a'),('web-home-a','web-home-a'),('web-home-b','web-home-b'),('Bad Label!','None'),('x'*33,'None')]:
+            assert client.get('/go',params={'u':SEARCH_URL,'s':label}).headers['location']=='https://tp.media/r?sub_id='+expected
+    assert seen==['web-home-a','web-home-b',None]
+
+@pytest.mark.parametrize('settings',[{'marker':''},{'trs':''},{'token':''},{'marker':'12345.sub'}])
+def test_go_without_partner_settings_never_calls_converter(settings):
+    app,calls=link_app(lambda request:httpx.Response(500),**settings)
+    with TestClient(app,follow_redirects=False) as client:
+        assert client.get('/go',params={'u':SEARCH_URL}).headers['location']==SEARCH_URL
+        assert client.get('/go',params={'u':'/search/SVO0210LED04101'}).headers['location']=='https://www.aviasales.com/search/SVO0210LED04101'
+    assert calls==[]
+
+@pytest.mark.parametrize('url',['','https://evil.test/search/a','https://aviasales.com.evil.test/search/a','//evil.test/search/a','https://www.aviasales.com/','javascript:alert(1)','https://www.aviasales.com/search/'+'A'*1000])
+def test_go_rejects_anything_but_aviasales_search(url):
+    app,calls=link_app(lambda request:httpx.Response(500))
+    with TestClient(app,follow_redirects=False) as client:
+        response=client.get('/go',params={'u':url})
+        assert response.status_code==422 and response.json()['error']['code']=='validation'
+    assert calls==[]
+
+def test_site_is_served_without_shadowing_api():
+    with TestClient(create_app(Settings(),now=lambda:NOW)) as client:
+        page=client.get('/')
+        assert page.status_code==200 and 'text/html' in page.headers['content-type'] and 'Aviator' in page.text
+        assert client.get('/health').json()['status']=='ok'
+        assert client.get('/missing-page.html').status_code==404
+
+
+def test_deploy_dependencies_match_local_pins():
+    import tomllib
+    from pathlib import Path
+    root=Path(__file__).resolve().parents[2]
+    pinned=set(root.joinpath('backend/requirements.txt').read_text().split())
+    deployed=tomllib.loads(root.joinpath('pyproject.toml').read_text())['project']['dependencies']
+    assert {item.split('==')[0] for item in deployed}=={'fastapi','httpx','pydantic','python-dotenv','tzdata'}
+    assert all(item in pinned for item in deployed if '==' in item)
+
+
 def test_contract_fixture_stays_in_sync():
     from pathlib import Path
     from app.models import SearchResponse

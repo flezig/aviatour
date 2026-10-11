@@ -1,0 +1,21 @@
+# Размещение сайта и backend на Vercel. Локальная установка по-прежнему из backend/requirements.txt.
+[project]
+name = "aviator"
+version = "0.1.0"
+requires-python = ">=3.12"
+# Только то, что нужно серверу. Версии совпадают с backend/requirements.txt (проверяется тестом).
+# tzdata: на сервере может не быть системной базы часовых поясов, без неё не работает zoneinfo.
+dependencies = [
+    "fastapi==0.142.2",
+    "httpx==0.28.1",
+    "pydantic==2.13.5",
+    "python-dotenv==1.2.4",
+    "tzdata",
+]
+
+[tool.vercel]
+entrypoint = "backend.app.main:app"
+
+[tool.vercel.fastapi.static]
+# Единственное общее middleware — сжатие, оно ничего не защищает: файлы сайта отдаются с CDN.
+cdn = true

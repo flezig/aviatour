@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Aviator — куда улететь дешево</title>
+  <meta name="description" content="Aviator подбирает поездки под ваш бюджет: сравнивает цену билета и время на месте. Покупка проходит на Aviasales.">
+  <meta name="theme-color" content="#f2f2f7">
+  <link rel="canonical" href="https://aviatour.vercel.app/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Aviator">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:title" content="Aviator — куда улететь дешево">
+  <meta property="og:description" content="Aviator подбирает поездки под ваш бюджет: сравнивает цену билета и время на месте. Покупка проходит на Aviasales.">
+  <meta property="og:url" content="https://aviatour.vercel.app/">
+  <meta property="og:image" content="https://aviatour.vercel.app/og.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="tabbar" aria-label="Разделы сайта">
+    <a class="tabbar-brand" href="index.html">Aviator</a>
+    <a href="index.html" aria-current="page"><svg class="icon" aria-hidden="true"><use href="icons.svg#search"></use></svg>Поиск</a>
+    <a href="how-we-earn.html"><svg class="icon" aria-hidden="true"><use href="icons.svg#coin"></use></svg>Как зарабатываем</a>
+    <a href="about.html"><svg class="icon" aria-hidden="true"><use href="icons.svg#info"></use></svg>О проекте</a>
+  </nav>
+
+  <header class="hero">
+    <div class="wrap">
+      <p class="hero-brand">Aviator</p>
+      <h1>Куда улететь дешево?</h1>
+      <p>Больше мира за меньшие деньги</p>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <form class="card search" id="search" novalidate>
+      <p class="eyebrow">LIVE · найденные цены</p>
+      <div class="search-fields">
+        <div class="field-group">
+          <button type="button" class="pick pick--tinted" id="originPick">
+            <svg class="icon" aria-hidden="true"><use href="icons.svg#takeoff"></use></svg>
+            <span class="pick-text"><span class="caption">Откуда</span><span class="pick-value" id="originLabel">Москва · все аэропорты</span></span>
+            <svg class="icon" aria-hidden="true"><use href="icons.svg#chevron-down"></use></svg>
+          </button>
+        </div>
+
+        <div class="field-group">
+          <select class="menu" id="region" aria-label="Направление поездки">
+            <option value="any">Куда угодно</option>
+            <option value="europe">Поездка в Европу</option>
+            <option value="usa">Поездка в США</option>
+          </select>
+          <p class="caption" id="regionHint" hidden>Поиск по основным городам. Можно выбрать конкретный город ниже.</p>
+          <div class="pick-row">
+            <button type="button" class="pick" id="destinationPick">
+              <span class="pick-text"><span class="caption">Куда</span><span class="pick-value" id="destinationLabel">Куда угодно</span></span>
+            </button>
+            <button type="button" class="icon-button" id="destinationClear" aria-label="Искать все направления" hidden>
+              <svg class="icon" aria-hidden="true"><use href="icons.svg#close"></use></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <div class="segmented" role="radiogroup" aria-label="Выбор дат">
+            <label><input type="radio" name="dateMode" value="month" checked><span>Месяц</span></label>
+            <label><input type="radio" name="dateMode" value="exact"><span>Конкретные даты</span></label>
+          </div>
+          <div class="stack" id="monthFields">
+            <select class="menu" id="month" aria-label="Когда"></select>
+            <label class="toggle"><span>Только короткие выходные</span><input type="checkbox" class="switch" id="weekendOnly"></label>
+          </div>
+          <div class="stack" id="exactFields" hidden>
+            <label class="date-row"><span>Туда</span><input type="date" id="departureDate"></label>
+            <label class="date-row"><span>Обратно</span><input type="date" id="returnDate"></label>
+            <p class="caption">Даты вылета по местному времени каждого аэропорта</p>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <div class="budget">
+            <label class="caption" for="budget">Бюджет</label>
+            <output class="budget-value" id="budgetValue" for="budget">25 000 ₽</output>
+            <input type="range" class="slider" id="budget" min="5000" max="500000" step="1000" value="25000">
+            <p class="footnote">Билеты туда-обратно на одного</p>
+          </div>
+          <label class="toggle"><span>Только прямые рейсы</span><input type="checkbox" class="switch" id="directOnly"></label>
+        </div>
+      </div>
+      <button class="btn-primary" type="submit" id="searchButton">Найти варианты →</button>
+    </form>
+
+    <p class="sr-only" role="status" id="resultsStatus"></p>
+    <section class="results" id="results" aria-label="Варианты" hidden></section>
+
+    <section class="blurb">
+      <h2><svg class="icon" aria-hidden="true"><use href="icons.svg#sun"></use></svg>Больше поездки — меньше дороги</h2>
+      <p class="footnote">Aviator сравнивает не только цену билета, но и время в пункте назначения. Найдите выезд без отпуска или лучший бюджет за час поездки.</p>
+      <p class="footnote">Покупка и оплата проходят на Aviasales. Aviator не продаёт билеты и не принимает оплату. <a href="how-we-earn.html">Как мы зарабатываем</a></p>
+    </section>
+  </main>
+
+  <footer class="wrap footer">
+    <nav aria-label="Информация">
+      <a href="how-we-earn.html">Как мы зарабатываем</a>
+      <a href="about.html">О проекте</a>
+      <a href="credits.html">Источники фотографий</a>
+    </nav>
+    <p class="caption">Цены ориентировочные: это кешированные находки Aviasales. Актуальную цену и наличие мест показывает Aviasales.</p>
+  </footer>
+
+  <dialog class="sheet" id="picker" aria-labelledby="pickerTitle">
+    <div class="sheet-bar">
+      <h2 id="pickerTitle">Откуда летим</h2>
+      <button class="sheet-done" type="button" data-close>Готово</button>
+    </div>
+    <div class="sheet-body">
+      <div class="picker-search"><input type="search" id="pickerInput" placeholder="Город или IATA-код" aria-label="Город или IATA-код" autocomplete="off"></div>
+      <div class="picker-list" id="pickerList"></div>
+    </div>
+  </dialog>
+
+  <dialog class="sheet" id="detail" aria-labelledby="detailTitle">
+    <div class="sheet-bar">
+      <h2 id="detailTitle">Поездка</h2>
+      <button class="sheet-done" type="button" data-close>Готово</button>
+    </div>
+    <div class="sheet-body" id="detailBody"></div>
+  </dialog>
+
+  <script src="config.js" defer></script>
+  <script src="app.js" defer></script>
+</body>
+</html>

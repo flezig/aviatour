@@ -10,7 +10,7 @@ import httpx
 from .errors import SearchError
 from .models import SearchResponse
 from .rules import normalize
-from .runtime import RateLimiter
+from .runtime import RateLimiter, TTLCache
 from .regions import REGION_CITIES
 from .catalog import AIRPORTS
 
@@ -21,16 +21,54 @@ class Travelpayouts:
         self.blocked_until = 0
         self.region_slots = asyncio.Semaphore(4)
         self.partner_links = json.loads(Path(settings.partner_links_file).read_text()) if settings.partner_links_file else {}
+        self.link_limiter = RateLimiter(90, clock)  # below documented 100/min per marker
+        self.generated_links = TTLCache(86400, 5000, clock)
+        self.links_blocked_until = 0
 
-    def partner(self, url):
-        value = self.partner_links.get(url)
+    @staticmethod
+    def safe_partner(value, hosts=frozenset({'tp.media', 'avs.io'})):
         if not isinstance(value, str):
             return None
         parts = urlsplit(value)
-        # Only pre-generated links from the official cabinet, never invent parameters.
-        if parts.scheme == 'https' and parts.hostname in {'tp.media', 'avs.io'} and not parts.username and not parts.password and parts.port in (None, 443):
+        if parts.scheme == 'https' and parts.hostname in hosts and not parts.username and not parts.password and parts.port in (None, 443):
             return value
         return None
+
+    def partner(self, url):
+        # Only pre-generated links from the official cabinet, never invent parameters.
+        return self.safe_partner(self.partner_links.get(url))
+
+    def links_configured(self):
+        return bool(self.settings.token) and self.settings.marker.isdigit() and self.settings.trs.isdigit()
+
+    async def create_partner_link(self, url, sub_id=''):
+        # Official converter: https://support.travelpayouts.com/hc/en-us/articles/25289759198226
+        self.link_limiter.check()
+        link = {'url': url, 'sub_id': sub_id} if sub_id else {'url': url}
+        response = await self.client.post('https://api.travelpayouts.com/links/v1/create',
+            json={'trs': int(self.settings.trs), 'marker': int(self.settings.marker), 'shorten': False, 'links': [link]},
+            headers={'X-Access-Token': self.settings.token}, timeout=4)
+        if not response.is_success:
+            raise ValueError('partner link status')
+        item = response.json()['result']['links'][0]
+        link = self.safe_partner(item.get('partner_url'), {'tp.media', 'avs.io', 'tp.st'}) if item.get('code') == 'success' else None
+        if not link:
+            raise ValueError('partner link rejected')
+        return link
+
+    async def partner_link(self, url, sub_id=''):
+        """Partner link for an exact Aviasales search URL; None keeps the ordinary link.
+
+        sub_id labels the click in Travelpayouts reports (traffic source or experiment variant)."""
+        ready = self.partner(url)
+        if ready or not self.links_configured() or self.clock() < self.links_blocked_until:
+            return ready
+        try:
+            return await self.generated_links.get_or_create((url, sub_id), lambda: self.create_partner_link(url, sub_id))
+        except (SearchError, httpx.HTTPError, ValueError, KeyError, IndexError, TypeError, AttributeError):
+            # A failed conversion must never block the visitor: pause attempts and fall back.
+            self.links_blocked_until = self.clock() + 60
+            return None
 
     def retry_delay(self, response):
         raw = response.headers.get('Retry-After', '1')
