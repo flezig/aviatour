@@ -5,7 +5,6 @@
 из гидов по городам берутся только поля, которые показывает сайт.
 """
 import json
-import shutil
 import subprocess
 from pathlib import Path
 
@@ -13,6 +12,8 @@ ROOT = Path(__file__).resolve().parents[1]
 ASSETS = ROOT / 'Aviator/Resources/Assets.xcassets'
 OUT = ROOT / 'web/photos'
 GUIDE_FIELDS = ('summary', 'tags', 'places', 'areas', 'days', 'tourism_url', 'editorial_updated')
+# The site keys photos by the offer's city code; a few app assets are named by an airport.
+CITY_CODES = {'GYD': 'BAK'}
 
 
 def longest_side(path):
@@ -22,19 +23,18 @@ def longest_side(path):
 
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
-    for old in OUT.glob('*.jpg'):
-        old.unlink()
-    names = []
     for source in sorted(ASSETS.glob('*.imageset/photo.*')):
-        name = source.parent.stem
+        name = CITY_CODES.get(source.parent.stem, source.parent.stem)
         # The hero fills the first screen; city photos are card-sized. Never upscale a smaller source.
         limit = min(1600 if name == 'hero' else 720, longest_side(source))
         subprocess.run(['sips', '-s', 'format', 'jpeg', '-s', 'formatOptions', '62', '-Z', str(limit), str(source), '--out', str(OUT / f'{name}.jpg')],
                        check=True, capture_output=True)
-        names.append(name)
-    cities = [name for name in names if name != 'hero']
+    # Web-only city photos (scripts/download_web_photos.py) stay next to the app's and share the manifest and credits page.
+    cities = sorted(path.stem for path in OUT.glob('*.jpg') if path.stem != 'hero')
     (OUT / 'manifest.json').write_text(json.dumps(cities) + '\n')
-    shutil.copyfile(ROOT / 'Aviator/Resources/credits.md', OUT / 'credits.md')
+    web_credits = OUT / 'credits-web.md'
+    credits = (ROOT / 'Aviator/Resources/credits.md').read_text().replace('**GYD**', '**BAK**')
+    (OUT / 'credits.md').write_text(credits + ('\n' + web_credits.read_text() if web_credits.exists() else ''))
     # Link preview for messengers: the hero cropped to the 1200x630 card format.
     preview = ROOT / 'web/og.jpg'
     subprocess.run(['sips', '-s', 'format', 'jpeg', '-s', 'formatOptions', '70', '--resampleWidth', '1200', str(ASSETS / 'hero.imageset/photo.jpg'), '--out', str(preview)], check=True, capture_output=True)

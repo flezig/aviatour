@@ -85,6 +85,8 @@ img { display: block; max-width: 100%; }
 .search { position: relative; margin-top: -24px; padding: 20px; box-shadow: var(--shadow-card); display: grid; gap: 24px; }
 .search-fields { display: grid; gap: 24px; }
 .field-group { display: grid; gap: 16px; align-content: start; min-width: 0; }
+.search-summary { display: none; align-items: center; gap: 12px; width: 100%; min-height: 44px; padding: 0; background: none; border: 0; text-align: left; }
+.search-summary-edit { flex: none; color: var(--blue); font-weight: 600; }
 .field-group + .field-group { padding-top: 24px; border-top: 1px solid var(--separator); }
 
 .pick {
@@ -258,6 +260,14 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.35); }
 .tags { display: flex; flex-wrap: wrap; gap: 6px; }
 .tag { padding: 4px 10px; border-radius: 999px; background: var(--blue-08); color: #0b5fc7; font-size: 13px; font-weight: 600; }
 .handoff { display: grid; gap: 12px; }
+/* The way to Aviasales stays on screen while the trip card scrolls. */
+.detail-cta {
+  position: sticky; bottom: 0; z-index: 1; display: grid; gap: 8px;
+  margin: 0 -20px -20px; padding: 12px 20px calc(12px + env(safe-area-inset-bottom));
+  background: rgba(242, 242, 247, 0.94); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
+  border-top: 1px solid var(--separator);
+}
+.detail-cta .caption { text-align: center; }
 .trust { display: flex; gap: 12px; padding: 14px; border-radius: 16px; background: #fff; font-size: 13px; }
 .trust .icon { color: var(--blue); }
 
@@ -279,6 +289,17 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.35); }
 .footer a { text-decoration: none; }
 .footer a:hover { text-decoration: underline; }
 
+/* Phones: a shorter hero and the folded form put the first results on the first screen. */
+@media (max-width: 719.98px) {
+  .hero { height: 220px; }
+  .hero .wrap { gap: 8px; padding-bottom: 40px; }
+  .search--collapsed { gap: 12px; }
+  .search--collapsed .search-fields, .search--collapsed > .btn-primary { display: none; }
+  .search--collapsed .search-summary { display: flex; }
+  .search--collapsed ~ .results .summary { display: none; }
+  /* The sort menu below already offers both price orders. */
+  .sort-row .segmented { display: none; }
+}
 @media (min-width: 720px) {
   :root { --gutter: 32px; }
   body { padding-bottom: 0; }

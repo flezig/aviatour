@@ -39,7 +39,11 @@
   <main class="wrap">
     <form class="card search" id="search" novalidate>
       <p class="eyebrow">LIVE · найденные цены</p>
-      <div class="search-fields">
+      <button type="button" class="search-summary" id="searchSummary" aria-controls="searchFields" aria-expanded="false">
+        <span class="pick-text"><span class="pick-value" id="summaryRoute"></span><span class="caption" id="summaryDetails"></span></span>
+        <span class="search-summary-edit">Изменить</span>
+      </button>
+      <div class="search-fields" id="searchFields">
         <div class="field-group">
           <button type="button" class="pick pick--tinted" id="originPick">
             <svg class="icon" aria-hidden="true"><use href="icons.svg#takeoff"></use></svg>
@@ -133,6 +137,7 @@
   </dialog>
 
   <script src="config.js" defer></script>
+  <script src="analytics.js" defer></script>
   <script src="app.js" defer></script>
 </body>
 </html>

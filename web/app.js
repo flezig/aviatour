@@ -78,7 +78,7 @@
   const state = {
     query: { origin: 'SVO', originCity: 'MOW', destination: null, destinationCity: null, region: 'any', exact: false, month: defaultMonth(DEFAULT_ZONE), departure: null, returning: null, weekend: false, budget: 25000, direct: false },
     labels: { origin: 'Москва · все аэропорты', destination: null },
-    performed: null, performedLabels: null, performedLabel: '', status: 'idle', error: '', result: null,
+    performed: null, performedLabels: null, performedSummary: null, performedLabel: '', status: 'idle', error: '', result: null,
     // A first-time visitor asks «куда», so one best offer per city is on by default; «Все» shows every date and flight.
     filters: { cheap: false, direct: false, noLeave: false, russia: false, unique: true }, sort: 'price', limit: PAGE,
     airports: null, cities: null, byIata: new Map(), photos: new Set(), guides: {}, pickerTarget: 'origin', shown: new Map(),
@@ -204,8 +204,7 @@
         .filter(([name]) => name !== 'russia' || q.region === 'any')
         .map(([name, title]) => `<button type="button" class="chip" data-chip="${name}" aria-pressed="${state.filters[name]}">${title}</button>`).join('');
       const otherSort = state.sort !== 'price' && state.sort !== 'priceDescending';
-      body = `<p class="caption">* Оценка перелёта — цена билетов и дорога. Жильё, безопасность и полный бюджет в неё не входят.</p>
-        <div class="chips" role="group" aria-label="Быстрые фильтры">${chips}</div>
+      body = `<div class="chips" role="group" aria-label="Быстрые фильтры">${chips}</div>
         <div class="results-bar"><p class="results-count">${esc(countLabel(offers.length))}</p></div>
         <div class="sort-row">
           <div class="segmented" role="radiogroup" aria-label="По цене">
@@ -232,7 +231,8 @@
         }
       } else {
         body += `<div class="grid">${offers.slice(0, state.limit).map(offerCard).join('')}</div>`
-          + (state.limit < offers.length ? `<div class="status-actions">${action('more', `Ещё варианты · ${offers.length - state.limit}`)}</div>` : '');
+          + (state.limit < offers.length ? `<div class="status-actions">${action('more', `Ещё варианты · ${offers.length - state.limit}`)}</div>` : '')
+          + '<p class="caption">* Оценка перелёта — цена билетов и дорога. Жильё, безопасность и полный бюджет в неё не входят.</p>';
       }
     }
     section.innerHTML = `<h2>Варианты</h2><p class="summary">${esc(state.performedLabel)}</p>${body}`;
@@ -302,15 +302,19 @@
         <p class="caption">От расчётного прилёта до обратного вылета, включая ночи. Дорога из аэропорта, ожидание, проживание и питание не учтены.</p>
       </section>` : ''}
       <div class="handoff">
-        ${link ? `<a class="btn-primary" href="${esc(link)}" target="_blank" rel="noopener">Проверить цену на Aviasales →</a>` : `<span class="btn-primary" aria-disabled="true">Проверить цену на Aviasales →</span>`}
         ${!link && !past ? '<p class="footnote">Не удалось сформировать безопасную ссылку.</p>' : ''}
         <div class="trust">${icon('shield')}<p>Откроется сайт Aviasales в новой вкладке. Покупка и оплата проходят там. Aviator не принимает оплату и не запрашивает данные карты или паспорта. <a href="how-we-earn.html">Как мы зарабатываем</a></p></div>
         <p class="footnote">Цена ориентировочная и может измениться. Актуальную стоимость показывает Aviasales.</p>
         <p class="footnote">Проживание, питание и трансферы не включены. Условия багажа проверяйте у продавца.</p>
       </div>
+      <div class="detail-cta">
+        <p class="caption">${esc(fmtMoney(offer.price_minor))} туда-обратно · оплата на Aviasales</p>
+        ${link ? `<a class="btn-primary" href="${esc(link)}" target="_blank" rel="noopener">Проверить цену на Aviasales →</a>` : `<span class="btn-primary" aria-disabled="true">Проверить цену на Aviasales →</span>`}
+      </div>
     </div>`;
     $('detailBody').scrollTop = 0;
     $('detail').showModal();
+    window.aviatorGoal?.('trip');
   }
 
   // --- form ---
@@ -358,17 +362,21 @@
   function summary(q) {
     const day = (key) => fmtDate(new Date(key + 'T00:00:00Z'), 'UTC');
     const dates = q.exact ? `${day(q.departure)} — ${day(q.returning)}` : monthLabel(q.month);
-    return `${state.labels.origin} → ${state.labels.destination ?? REGIONS[q.region]} · ${dates} · до ${fmtMoney(q.budget * 100)}`;
+    return { route: `${state.labels.origin} → ${state.labels.destination ?? REGIONS[q.region]}`, details: `${dates} · до ${fmtMoney(q.budget * 100)}` };
+  }
+  // Phones: once results are on the way the form folds into one line so the first cards fit on the first screen.
+  // The class only changes the layout below 720px; wider screens always show the whole form.
+  function collapseForm(collapsed) {
+    $('search').classList.toggle('search--collapsed', collapsed);
+    $('searchSummary').setAttribute('aria-expanded', String(!collapsed));
+    if (collapsed && state.performedSummary) {
+      $('summaryRoute').textContent = state.performedSummary.route;
+      $('summaryDetails').textContent = state.performedSummary.details;
+    }
   }
 
   // --- search ---
-  function payload(q) {
-    return {
-      origin: q.origin, origin_city_code: q.originCity, month: q.month, max_budget_minor: q.budget * 100, direct_only: q.direct,
-      region: q.region, departure_date: q.exact ? q.departure : null, return_date: q.exact ? q.returning : null, weekend_only: q.weekend,
-      destination: q.destination, destination_city_code: q.destinationCity,
-    };
-  }
+  // The page URL and the search request share these parameters (/api/v1/search/web).
   function toParams(q) {
     const params = new URLSearchParams({ from: q.origin, budget: q.budget });
     if (q.originCity) params.set('fc', q.originCity);
@@ -383,13 +391,15 @@
   async function search({ scroll = true, auto = false } = {}) {
     request?.abort();
     request = new AbortController();
-    const q = { ...state.query }, signal = request.signal;
-    Object.assign(state, { performed: q, performedLabels: { ...state.labels }, performedLabel: summary(q), status: 'loading', limit: PAGE });
-    if (!auto) history.replaceState(null, '', '?' + toParams(q));
+    const q = { ...state.query }, signal = request.signal, label = summary(q);
+    Object.assign(state, { performed: q, performedLabels: { ...state.labels }, performedSummary: label, performedLabel: `${label.route} · ${label.details}`, status: 'loading', limit: PAGE });
+    if (!auto) { history.replaceState(null, '', '?' + toParams(q)); window.aviatorGoal?.('search'); }
+    collapseForm(true);
     renderResults();
     if (scroll) $('results').scrollIntoView({ block: 'start' });
     try {
-      const response = await fetch('/api/v1/search', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload(q)), signal });
+      // GET with the page's own parameters: the CDN answers repeated queries (the first screen above all) without the search backend.
+      const response = await fetch('/api/v1/search/web?' + toParams(q), { signal });
       const data = await response.json().catch(() => null);
       if (!response.ok || !Array.isArray(data?.offers)) {
         Object.assign(state, { status: auto ? 'idle' : 'error', error: data?.error?.message || 'Сервер вернул неожиданный ответ. Попробуйте позже.' });
@@ -400,6 +410,8 @@
       if (error.name === 'AbortError') return;
       state.status = auto ? 'idle' : 'offline';
     }
+    // A failed first-screen load leaves just the form, so it must be open.
+    if (state.status === 'idle') collapseForm(false);
     renderResults();
   }
 
@@ -487,6 +499,8 @@
   $('budget').addEventListener('input', (event) => { state.query.budget = +event.target.value; renderForm(); });
   $('directOnly').addEventListener('change', (event) => { state.query.direct = event.target.checked; });
   $('search').addEventListener('submit', (event) => { event.preventDefault(); search(); });
+  $('searchSummary').addEventListener('click', () => { collapseForm(false); $('originPick').focus(); });
+  $('detailBody').addEventListener('click', (event) => { if (event.target.closest('a[href^="/go"]')) window.aviatorGoal?.('aviasales'); });
 
   $('results').addEventListener('click', (event) => {
     const chip = event.target.closest('[data-chip]'), act = event.target.closest('[data-action]'), open = event.target.closest('[data-offer]');
@@ -499,7 +513,7 @@
       const name = act.dataset.action, q = state.query;
       if (name === 'more') { state.limit += PAGE; renderResults(); return; }
       if (name === 'resetFilters') { for (const key of Object.keys(state.filters)) state.filters[key] = false; renderResults(); return; }
-      if (name === 'edit') { $('search').scrollIntoView({ block: 'start' }); return; }
+      if (name === 'edit') { collapseForm(false); $('search').scrollIntoView({ block: 'start' }); return; }
       if (name !== 'retry') { Object.assign(q, state.performed); state.labels = { ...state.performedLabels }; }
       if (name === 'moreBudget') q.budget = Math.min(500000, q.budget + 10000);
       if (name === 'allowTransfers') q.direct = false;
@@ -538,7 +552,8 @@
   }
   (async () => {
     renderForm();
-    fetch('photos/manifest.json').then((response) => response.ok ? response.json() : []).then((codes) => { state.photos = new Set(codes); if (state.status === 'done') renderResults(); }).catch(() => {});
+    // The photo list changes with each deploy; /photos/* is cached for a day, so revalidate the list itself.
+    fetch('photos/manifest.json', { cache: 'no-cache' }).then((response) => response.ok ? response.json() : []).then((codes) => { state.photos = new Set(codes); if (state.status === 'done') renderResults(); }).catch(() => {});
     fetch('data/city-guides.json').then((response) => response.ok ? response.json() : {}).then((guides) => { state.guides = guides; if (state.status === 'done') renderResults(); }).catch(() => {});
     const restored = await restore();
     renderForm();

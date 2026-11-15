@@ -166,7 +166,22 @@ def test_http_rate_limit_and_contract():
     with TestClient(create_app(Settings(token='fixture',rate=1),transport=transport,now=lambda:NOW)) as client:
         response=client.post('/api/v1/search',json=QUERY.model_dump())
         assert response.status_code==200 and response.json()['offers'][0]['price_minor']==850000
-        response=client.post('/api/v1/search',json=QUERY.model_dump());assert response.status_code==429 and response.headers['Retry-After']
+        # A cached answer does not count against the limit; only another trip to the source does.
+        assert client.post('/api/v1/search',json=QUERY.model_dump()|{'max_budget_minor':3000000}).status_code==200
+        assert client.get('/api/v1/search/web',params={'from':'SVO','month':'2026-10','budget':25000}).status_code==200
+        response=client.post('/api/v1/search',json=QUERY.model_dump()|{'month':'2026-11'});assert response.status_code==429 and response.headers['Retry-After']
+
+def test_web_search_is_cacheable_and_compact():
+    row=record();row['price']=8500
+    transport=httpx.MockTransport(lambda req:httpx.Response(200,json={'success':True,'data':[row]}))
+    with TestClient(create_app(Settings(token='fixture'),transport=transport,now=lambda:NOW)) as client:
+        response=client.get('/api/v1/search/web',params={'from':'SVO','fc':'MOW','month':'2026-10','budget':25000,'weekend':'0'})
+        assert response.status_code==200 and 's-maxage' in response.headers['Cache-Control']
+        offer=response.json()['offers'][0]
+        assert offer['price_minor']==850000 and set(offer['trip_rating'])=={'score','preliminary_score'}
+        assert client.get('/api/v1/search/web',params={'from':'SVO','month':'2026-10','budget':25000,'dep':'2026-10-02','ret':'2026-10-04'}).json()['offers']
+        bad=client.get('/api/v1/search/web',params={'from':'svo','month':'2026-10','budget':25000})
+        assert bad.status_code==422 and 'Cache-Control' not in bad.headers
 
 @pytest.mark.parametrize('value',['not-a-price','', 'NaN', 'Infinity'])
 def test_invalid_decimal_strings(value):

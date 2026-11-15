@@ -20,7 +20,7 @@ const SITE = window.AVIATOR ?? { team: [], contact: '' };
     const inline = (text) => esc(text)
       .replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')
       .replace(/\[([^\]]+)\]\((https:\/\/(?:[^()\s]|\([^()\s]*\))+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
-    fetch('photos/credits.md').then((response) => response.ok ? response.text() : Promise.reject()).then((markdown) => {
+    fetch('photos/credits.md', { cache: 'no-cache' }).then((response) => response.ok ? response.text() : Promise.reject()).then((markdown) => {
       let html = '', list = false;
       for (const line of markdown.split('\n').map((value) => value.trim()).filter(Boolean)) {
         const item = line.startsWith('- ');

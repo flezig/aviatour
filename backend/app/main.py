@@ -5,8 +5,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
 import httpx
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
 from fastapi.exceptions import RequestValidationError
+from pydantic import ValidationError
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
@@ -54,8 +55,8 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
         return {'status': 'ok', 'live_configured': bool(settings.token)}
     @app.get('/api/v1/airports')
     async def airports():
-        return AIRPORTS
-    async def search(request: SearchRequest):
+        return JSONResponse(AIRPORTS, headers={'Cache-Control': 'public, max-age=3600, s-maxage=86400'})
+    async def search(request: SearchRequest, check=None):
         airport = BY_IATA.get(request.origin)
         if not airport or not airport['timezone']:
             raise SearchError('validation', 'Выберите аэропорт из справочника.', 422)
@@ -80,7 +81,12 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
         key = (request.origin, request.origin_city_code, request.month, request.departure_date,
                request.return_date, request.destination, request.destination_city_code, request.region, settings.market, 'rub')
         broad = request.model_copy(update={'max_budget_minor': 50000000, 'direct_only': False, 'weekend_only': False})
-        result = await cache.get_or_create(key, lambda: app.state.upstream.search_region(broad) if request.region != 'any' and not request.destination else app.state.upstream.search(broad), refresh=request.force_refresh)
+        def load():
+            # check is the rate limit: only a cache miss reaches Travelpayouts, so a cached answer costs nothing.
+            if check:
+                check()
+            return app.state.upstream.search_region(broad) if request.region != 'any' and not request.destination else app.state.upstream.search(broad)
+        result = await cache.get_or_create(key, load, refresh=request.force_refresh)
         # A valid cached response can become stale before TTL expires.
         offers = []
         for offer in result.offers:
@@ -120,8 +126,25 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
 
     @app.post('/api/v1/search', response_model=SearchResponse)
     async def search_endpoint(request: SearchRequest):
-        limiter.check()
-        return await search(request)
+        return await search(request, limiter.check)
+
+    @app.get('/api/v1/search/web')
+    async def web_search_endpoint(budget: int, month: str = '', dep: str | None = None, ret: str | None = None, region: str = 'any',
+                                  weekend: str = '1', direct: str = '0', fc: str | None = None, to: str | None = None, tc: str | None = None,
+                                  origin: str = Query(alias='from')):
+        # The site's search: the page's own URL parameters, a GET so the CDN shares one answer per query among visitors,
+        # and only the rating fields the page shows (the full rating is ~80% of an offer).
+        try:
+            request = SearchRequest(origin=origin, origin_city_code=fc, destination=to, destination_city_code=tc, region=region,
+                month=dep[:7] if dep else month, departure_date=dep, return_date=ret, max_budget_minor=budget * 100,
+                weekend_only=weekend != '0', direct_only=direct == '1')
+        except ValidationError:
+            raise SearchError('validation', 'Проверьте аэропорты, даты и бюджет.', 422) from None
+        body = (await search(request, limiter.check)).model_dump(mode='json', exclude={'offers': {'__all__': {'outbound_segments', 'inbound_segments'}}})
+        for offer in body['offers']:
+            if offer['trip_rating']:
+                offer['trip_rating'] = {key: offer['trip_rating'][key] for key in ('score', 'preliminary_score')}
+        return JSONResponse(body, headers={'Cache-Control': 'public, max-age=60, s-maxage=600, stale-while-revalidate=600'})
 
     @app.post('/api/v1/search/batch', response_model=BatchSearchResponse)
     async def batch_endpoint(request: BatchSearchRequest):

@@ -9,4 +9,6 @@ window.AVIATOR = {
   // Пример: { name: 'Имя Фамилия', role: 'продукт и разработка', link: 'https://t.me/username' }
   team: [],
   contact: '', // https://t.me/... или mailto:...
+  // Яндекс Метрика: номер счётчика, только цифры. Пусто — счётчик не загружается (см. analytics.js).
+  metrika: '',
 };
