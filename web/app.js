@@ -445,7 +445,27 @@
     </div>`;
     $('detailBody').scrollTop = 0;
     if (!$('detail').open) $('detail').showModal();
+    // The trip has its own address: Back closes the card instead of leaving the site, and the link can be shared.
+    const hash = `?${toParams(state.performed ?? state.query)}#trip=${offer.id}`;
+    if (history.state?.trip) history.replaceState({ trip: offer.id }, '', hash); else history.pushState({ trip: offer.id }, '', hash);
+    $('share').textContent = 'Поделиться';
     window.aviatorGoal?.('trip');
+  }
+  const tripLink = () => location.href;
+  async function shareTrip() {
+    const offer = state.detail;
+    if (!offer) return;
+    const url = tripLink(), title = `${offer.city} за ${fmtMoney(offer.price_minor)} туда-обратно`;
+    window.aviatorGoal?.('share');
+    if (navigator.share) {
+      try { await navigator.share({ title, text: title, url }); return; } catch (error) { if (error.name === 'AbortError') return; }
+    }
+    try { await navigator.clipboard.writeText(url); $('share').textContent = 'Ссылка скопирована'; } catch { $('share').textContent = 'Скопируйте адрес страницы'; }
+  }
+  // A shared link: once its search has loaded, open the trip it points to (if that flight is still in the cache).
+  function openLinked(id) {
+    const offer = state.result?.offers.find((other) => other.id === id);
+    if (offer) openDetail(offer);
   }
 
   // --- form ---
@@ -643,6 +663,11 @@
       <button type="button" class="cta-hotel-close" aria-label="Скрыть подсказку про жильё" data-hotel-close>${icon('close')}</button>
     </div>`);
   });
+  $('share').addEventListener('click', shareTrip);
+  // Closing the card by hand steps back over its history entry, once: the click and the dialog's own close event both land here.
+  let leaving = false;
+  function leaveTrip() { if (!leaving && history.state?.trip) { leaving = true; history.back(); } }
+  window.addEventListener('popstate', () => { leaving = false; if (!history.state?.trip && $('detail').open) $('detail').close(); });
   $('searchSummary').addEventListener('click', () => { collapseForm(false); $('originPick').focus(); });
   $('detailBody').addEventListener('click', (event) => {
     const fav = event.target.closest('[data-fav]');
@@ -687,7 +712,8 @@
     if (event.target.id === 'length') { state.length = event.target.value; state.limit = PAGE; renderResults(); }
   });
   for (const dialog of document.querySelectorAll('dialog')) {
-    dialog.addEventListener('click', (event) => { if (event.target === dialog || event.target.closest('[data-close]')) dialog.close(); });
+    dialog.addEventListener('click', (event) => { if (event.target === dialog || event.target.closest('[data-close]')) { dialog.close(); if (dialog.id === 'detail') leaveTrip(); } });
+    if (dialog.id === 'detail') dialog.addEventListener('close', () => { if (!dialog.open) leaveTrip(); });
   }
 
   // --- start ---
@@ -717,7 +743,9 @@
     fetch('data/city-guides.json').then((response) => response.ok ? response.json() : {}).then((guides) => { state.guides = guides; if (state.status === 'done') renderResults(); }).catch(() => {});
     const restored = await restore();
     renderForm();
+    // Read before the search: it rewrites the address and drops the hash.
+    const linked = restored && /^#trip=([0-9a-f]{32})$/.exec(location.hash)?.[1];
     // Variant A of the home test is the bare form: nothing loads until the visitor searches.
-    if (restored || homeVariant === 'B') search({ scroll: false, auto: !restored });
+    if (restored || homeVariant === 'B') search({ scroll: false, auto: !restored }).then(() => { if (linked && state.status === 'done') openLinked(linked); });
   })();
 })();

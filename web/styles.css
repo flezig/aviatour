@@ -1,13 +1,13 @@
 /* Aviator web: the same visual language as the iOS app (Aviator/Components/Design.swift). */
 :root {
   color-scheme: light;
-  /* Brand: sea teal on warm paper, ink for the hero. Deliberately not the blue-and-orange of flight search sites. */
-  --brand: #0b7a75;
-  --brand-06: rgba(11, 122, 117, 0.06);
-  --brand-08: rgba(11, 122, 117, 0.09);
-  --brand-12: rgba(11, 122, 117, 0.14);
-  --brand-16: rgba(11, 122, 117, 0.18);
-  --ink: #0c2a30;
+  /* Brand: deep cobalt on warm paper, navy ink for the hero. Darker and more indigo than the azure-and-orange of Aviasales. */
+  --brand: #2346d8;
+  --brand-06: rgba(35, 70, 216, 0.06);
+  --brand-08: rgba(35, 70, 216, 0.09);
+  --brand-12: rgba(35, 70, 216, 0.14);
+  --brand-16: rgba(35, 70, 216, 0.18);
+  --ink: #0f1b3d;
   --bg: #f5f4f0;
   --card: #fff;
   --text: #000;
@@ -75,7 +75,7 @@ img { display: block; max-width: 100%; }
 .tabbar a:hover { background: var(--fill); }
 
 .hero { position: relative; height: 320px; color: #fff; background: var(--ink) url("photos/hero.jpg") center / cover no-repeat; }
-.hero::before { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(12, 42, 48, 0.2) 15%, rgba(12, 42, 48, 0.86)); }
+.hero::before { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(15, 27, 61, 0.2) 15%, rgba(15, 27, 61, 0.86)); }
 .hero .wrap { position: relative; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; gap: 12px; padding-bottom: 48px; }
 .hero-brand { display: flex; align-items: center; gap: 8px; font-size: 17px; font-weight: 700; }
 .hero h1 { font-size: 34px; font-weight: 700; line-height: 1.12; letter-spacing: 0.01em; }
@@ -109,7 +109,7 @@ img { display: block; max-width: 100%; }
   appearance: none; -webkit-appearance: none;
   justify-self: start; max-width: 100%; min-height: 44px; padding: 0 26px 0 0;
   border: 0; border-radius: 12px; background: transparent no-repeat right center / 14px 18px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 18' fill='none' stroke='%230b7a75' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 7l4-4 4 4M3 11l4 4 4-4'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 18' fill='none' stroke='%232346d8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 7l4-4 4 4M3 11l4 4 4-4'/%3E%3C/svg%3E");
   color: var(--brand); font-size: 17px; cursor: pointer;
 }
 .menu--plain { font-size: 15px; }
@@ -183,7 +183,7 @@ img { display: block; max-width: 100%; }
 .offer { position: relative; display: flex; flex-direction: column; background: #fff; border-radius: 20px; overflow: hidden; box-shadow: var(--shadow-offer); transition: transform 0.15s, box-shadow 0.15s; }
 .offer:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(0, 0, 0, 0.1); }
 .offer:focus-within { outline: 3px solid var(--brand); outline-offset: 2px; }
-.photo { position: relative; height: 170px; background: linear-gradient(135deg, rgba(11, 122, 117, 0.28), rgba(240, 180, 90, 0.18)); display: grid; place-items: center; color: var(--brand); overflow: hidden; }
+.photo { position: relative; height: 170px; background: linear-gradient(135deg, rgba(35, 70, 216, 0.28), rgba(120, 165, 255, 0.16)); display: grid; place-items: center; color: var(--brand); overflow: hidden; }
 .photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .photo .icon { width: 56px; height: 56px; }
 .offer-body { display: grid; gap: 8px; padding: 12px 14px 14px; }
@@ -239,6 +239,8 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.35); }
 .sheet-bar h2 { font-size: 17px; font-weight: 600; }
 .sheet-done { min-height: 44px; padding: 0 12px; border: 0; border-radius: 12px; background: none; color: var(--brand); font-size: 17px; font-weight: 600; }
 .sheet-done:hover { background: var(--fill); }
+.sheet-actions { display: flex; align-items: center; gap: 2px; }
+.sheet-actions #share { font-weight: 400; }
 .sheet-body { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
 
 .picker-search { padding: 12px 20px; background: var(--bg); position: sticky; top: 0; z-index: 1; }
@@ -279,7 +281,7 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.35); }
 .guide h4 { margin: 0; font-size: 15px; font-weight: 600; }
 .guide ul { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
 .tags { display: flex; flex-wrap: wrap; gap: 6px; }
-.tag { padding: 4px 10px; border-radius: 999px; background: var(--brand-08); color: #075e5a; font-size: 13px; font-weight: 600; }
+.tag { padding: 4px 10px; border-radius: 999px; background: var(--brand-08); color: #1a34a8; font-size: 13px; font-weight: 600; }
 .longer { display: grid; gap: 10px; padding: 20px; border-radius: 20px; background: var(--green-10); }
 .longer h3 { font-size: 17px; font-weight: 600; color: var(--green); }
 .longer .btn-inline { border-color: rgba(52, 199, 89, 0.3); background: #fff; }
@@ -389,9 +391,9 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.35); }
 .tabbar .tabbar-brand { gap: 10px; }
 h1, h2 { letter-spacing: -0.02em; }
 .offer-price, .detail-price, .budget-value, .alike-price, .compare td { font-variant-numeric: tabular-nums; }
-.btn-primary { box-shadow: 0 6px 16px rgba(11, 122, 117, 0.28); }
+.btn-primary { box-shadow: 0 6px 16px rgba(35, 70, 216, 0.28); }
 .btn-primary[disabled], .btn-primary[aria-disabled="true"] { box-shadow: none; }
-.card.search { border: 1px solid rgba(12, 42, 48, 0.06); }
+.card.search { border: 1px solid rgba(15, 27, 61, 0.06); }
 @media (min-width: 720px) {
   .hero-brand { display: none; }
   .hero h1 { font-size: 56px; font-weight: 800; }
