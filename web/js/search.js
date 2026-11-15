@@ -242,7 +242,7 @@ function renderResults() {
   $('searchButton').disabled = state.status === 'loading';
   // Первый экран не загрузился сам — выдачи нет, остаётся форма.
   if (!q || state.status === 'idle') return;
-  let body = '', title = 'Варианты';
+  let body = '', title = 'Варианты', tools = '';
   const announce = (text) => { $('resultsStatus').textContent = text; };
   if (state.status === 'loading') {
     // Заготовки карточек: страница держит форму, пока грузятся цены.
@@ -265,9 +265,9 @@ function renderResults() {
       .filter(([name]) => name !== 'russia' || q.region === 'any')
       .map(([name, title]) => `<button type="button" class="chip" data-chip="${name}" aria-pressed="${state.filters[name]}">${title}</button>`).join('');
     const menu = (id, label, options, value) => `<select class="menu menu--plain" id="${id}" aria-label="${label}">${Object.entries(options).map(([name, title]) => `<option value="${name}" ${value === name ? 'selected' : ''}>${title}</option>`).join('')}</select>`;
-    body = `<p class="source">Цены Aviasales на ${esc(receivedLabel(state.result.received_at ?? new Date().toISOString()))} · туда и обратно на одного · <a href="/how-we-count.html">Как мы считаем</a></p>
+    tools = `<div class="sort-menus">${menu('sort', 'Сортировка', SORTS, state.sort)}${menu('length', 'Длительность поездки', LENGTHS, state.length)}</div>`;
+    body = `<p class="source"><span class="summary">${esc(state.performedLabel)}. </span>Цены Aviasales на ${esc(receivedLabel(state.result.received_at ?? new Date().toISOString()))} · туда и обратно на одного · <a href="/how-we-count.html">Как мы считаем</a></p>
       <div class="chips" role="group" aria-label="Быстрые фильтры">${chips}</div>
-      <div class="sort-menus">${menu('sort', 'Сортировка', SORTS, state.sort)}${menu('length', 'Длительность поездки', LENGTHS, state.length)}</div>
       ${state.sort === 'flightRating' ? '<p class="caption">Оценка перелёта — цена и дорога, 0–100. Варианты без оценки идут в конце.</p>' : ''}
       ${state.sort === 'stay' || state.sort === 'value' ? '<p class="caption">Время на месте — от расчётного прилёта до обратного вылета, включая ночи.</p>' : ''}
       ${state.result.incomplete ? `<p class="caption">Источник вернул часть вариантов, выдача может быть неполной.</p>${state.result.warnings.map((text) => `<p class="caption">${esc(text)}</p>`).join('')}` : ''}`;
@@ -289,7 +289,7 @@ function renderResults() {
         + (state.limit < offers.length ? `<div class="status-actions">${action('more', `Ещё варианты · ${offers.length - state.limit}`)}</div>` : '');
     }
   }
-  section.innerHTML = `<div class="results-head"><h2>${esc(title)}</h2><button type="button" class="chip chip--fav" data-action="favorites">${icon('heart')}Избранное · <span id="favCount">${state.favs.size}</span></button></div><p class="summary">${esc(state.performedLabel)}</p>${body}`;
+  section.innerHTML = `<div class="results-head"><h2>${esc(title)}</h2>${tools}<button type="button" class="chip chip--fav" data-action="favorites">${icon('heart')}Избранное · <span id="favCount">${state.favs.size}</span></button></div>${body}`;
 }
 
 function endpoint(date, estimated, zone, city, airport, code) {
@@ -400,11 +400,16 @@ function openDetail(offer) {
 }
 // Один заметный переход на сайте: фото карточки раскрывается в карточку поездки (View Transitions).
 // Без поддержки браузера или при «уменьшить движение» карточка просто открывается.
+let opening = null;
 function openFromCard(offer, card) {
+  if (opening) return;
   const picture = card?.querySelector('.photo');
   if (!document.startViewTransition || reduceMotion.matches || !picture || $('detail').open) { openDetail(offer); return; }
   picture.style.viewTransitionName = 'trip-photo';
-  document.startViewTransition(() => { picture.style.viewTransitionName = ''; openDetail(offer); });
+  opening = document.startViewTransition(() => { picture.style.viewTransitionName = ''; openDetail(offer); });
+  // Пропущенный переход — не ошибка: карточка всё равно открывается.
+  opening.ready.catch(() => {});
+  opening.finished.catch(() => {}).finally(() => { opening = null; });
 }
 async function shareTrip() {
   const offer = state.detail;
