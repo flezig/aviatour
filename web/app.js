@@ -9,7 +9,7 @@
   const REGIONS = { any: 'Куда угодно', russia: 'По России', europe: 'Поездка в Европу', usa: 'Поездка в США' };
   // Regions searched city by city (a bounded list); the rest are one search filtered by country.
   const CITY_REGIONS = new Set(['europe', 'usa']);
-  const LENGTHS = { any: 'Любая длительность', short: '1–2 дня', mid: '3–4 дня', week: '5–7 дней', long: 'Дольше недели' };
+  const LENGTHS = { any: 'Длительность', short: '1–2 дня', mid: '3–4 дня', week: '5–7 дней', long: 'Дольше недели' };
   const SORTS = { price: 'Сначала дешевле', priceDescending: 'Сначала дороже', departure: 'Ближайший вылет', duration: 'Меньше времени в пути', stay: 'Больше времени на месте', value: 'Выгоднее час поездки', flightRating: 'По предварительной оценке перелёта' };
   const CHIPS = { cheap: 'До 20 000 ₽', direct: 'Прямые', noLeave: 'Без отпуска', comfy: 'Удобное время вылета', near: 'В пути до 3 ч', russia: 'Россия', unique: 'Один вариант на город' };
   const TAGS = { sea: 'Море', culture: 'Музеи и культура', food: 'Гастрономия', architecture: 'Архитектура', nature: 'Природа', nightlife: 'Вечерняя жизнь' };
@@ -454,7 +454,7 @@
     const q = state.query, zone = originZone(), list = months(zone), today = zoned(new Date(), zone).key;
     if (!q.exact && !list.includes(q.month)) q.month = list[0];
     $('originLabel').textContent = state.labels.origin;
-    $('destinationLabel').textContent = state.labels.destination ?? (q.region === 'any' ? 'Куда угодно' : 'Все основные города');
+    $('destinationLabel').textContent = state.labels.destination ?? (CITY_REGIONS.has(q.region) ? 'Все основные города' : 'Любой город');
     $('destinationClear').hidden = !q.destination;
     $('region').value = q.region;
     $('regionHint').hidden = !CITY_REGIONS.has(q.region);

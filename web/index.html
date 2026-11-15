@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Aviator — куда улететь дешево</title>
   <meta name="description" content="Aviator подбирает поездки под ваш бюджет: сравнивает цену билета и время на месте. Покупка проходит на Aviasales.">
-  <meta name="theme-color" content="#f2f2f7">
+  <meta name="theme-color" content="#f5f4f0">
   <link rel="canonical" href="https://aviatour.vercel.app/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Aviator">
@@ -22,7 +22,7 @@
 </head>
 <body>
   <nav class="tabbar" aria-label="Разделы сайта">
-    <a class="tabbar-brand" href="index.html">Aviator</a>
+    <a class="tabbar-brand" href="index.html"><span class="logo"><svg class="icon" aria-hidden="true"><use href="icons.svg#plane"></use></svg></span>Aviator</a>
     <a href="index.html" aria-current="page"><svg class="icon" aria-hidden="true"><use href="icons.svg#search"></use></svg>Поиск</a>
     <a href="how-we-earn.html"><svg class="icon" aria-hidden="true"><use href="icons.svg#coin"></use></svg>Как зарабатываем</a>
     <a href="about.html"><svg class="icon" aria-hidden="true"><use href="icons.svg#info"></use></svg>О проекте</a>
@@ -30,7 +30,7 @@
 
   <header class="hero">
     <div class="wrap">
-      <p class="hero-brand">Aviator</p>
+      <p class="hero-brand"><span class="logo"><svg class="icon" aria-hidden="true"><use href="icons.svg#plane"></use></svg></span>Aviator</p>
       <h1>Куда улететь дешево?</h1>
       <p>Больше мира за меньшие деньги</p>
     </div>
@@ -53,6 +53,7 @@
         </div>
 
         <div class="field-group">
+          <span class="caption">Куда</span>
           <select class="menu" id="region" aria-label="Направление поездки">
             <option value="any">Куда угодно</option>
             <option value="russia">По России</option>
@@ -62,7 +63,7 @@
           <p class="caption" id="regionHint" hidden>Поиск по основным городам. Можно выбрать конкретный город ниже.</p>
           <div class="pick-row">
             <button type="button" class="pick" id="destinationPick">
-              <span class="pick-text"><span class="caption">Куда</span><span class="pick-value" id="destinationLabel">Куда угодно</span></span>
+              <span class="pick-text"><span class="caption">Город</span><span class="pick-value" id="destinationLabel">Любой город</span></span>
             </button>
             <button type="button" class="icon-button" id="destinationClear" aria-label="Искать все направления" hidden>
               <svg class="icon" aria-hidden="true"><use href="icons.svg#close"></use></svg>
