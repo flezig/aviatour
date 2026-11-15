@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Макет 3 · Табло вылетов — Aviator</title>
+<link rel="stylesheet" href="fonts/fonts.css">
+<style>
+:root {
+  --paper: #f5f4f0; --navy: #0f1b3d; --navy-2: #17264f; --navy-3: #22336a; --cobalt: #2346d8; --cobalt-hi: #4a6bff;
+  --on-navy: #f3f4fa; --on-navy-muted: #a9b1cc; --line-navy: rgba(255, 255, 255, .1);
+  --muted: #565d70; --low: #8fe3b0; --high: #f4b9b2;
+  --f-head: 'Tektur', system-ui, sans-serif; --f-text: 'Onest', system-ui, sans-serif; --f-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --r-tile: 14px; --r-flap: 4px; --r-field: 10px; --r-thumb: 8px;
+  --t-fast: 160ms; --t-flip: 220ms; --ease: cubic-bezier(.2, .7, .2, 1);
+  --gutter: 16px; --page: 1184px;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); color: var(--navy); font: 400 16px/1.45 var(--f-text); -webkit-font-smoothing: antialiased; }
+h1, h2, h3, p { margin: 0; }
+a { color: inherit; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+:focus-visible { outline: 2px solid var(--cobalt-hi); outline-offset: 2px; border-radius: 4px; }
+.ic { width: 20px; height: 20px; flex: none; }
+.wrap { max-width: var(--page); margin: 0 auto; padding: 0 var(--gutter); }
+
+.sky { background: var(--navy); color: var(--on-navy); padding-bottom: 20px; }
+.top { display: flex; align-items: center; gap: 20px; height: 56px; }
+.brand { display: flex; align-items: center; gap: 10px; font: 700 19px/1 var(--f-head); text-decoration: none; }
+.brand-mark { width: 30px; height: 30px; border-radius: 8px; background: var(--cobalt); display: grid; place-items: center; }
+.brand-mark .ic { width: 17px; height: 17px; }
+.nav { display: none; gap: 4px; margin-left: 16px; }
+.nav a { text-decoration: none; padding: 10px 12px; border-radius: 8px; color: var(--on-navy-muted); font-size: 15px; font-weight: 600; }
+.nav a[aria-current] { color: var(--on-navy); background: var(--line-navy); }
+.from { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; font-weight: 600; font-size: 15px; }
+.from b { font: 700 14px/1 var(--f-mono); color: var(--navy); background: var(--on-navy); border-radius: 4px; padding: 4px 5px; }
+.from .ic { width: 18px; height: 18px; color: var(--on-navy-muted); }
+
+.ai { display: flex; align-items: center; gap: 8px; min-height: 40px; color: var(--on-navy-muted); font-size: 14px; }
+.ai .ic { width: 16px; height: 16px; }
+.ai i { font-style: normal; font-size: 12px; padding: 1px 7px; border-radius: 6px; background: var(--line-navy); }
+.bar { display: flex; align-items: center; background: var(--on-navy); color: var(--navy); border-radius: var(--r-field); min-height: 52px; }
+.bar-sum { flex: 1; min-width: 0; padding: 6px 14px; text-align: left; display: grid; }
+.bar-sum b { font-weight: 600; font-size: 15px; }
+.bar-sum small { color: var(--muted); font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bar-field { display: none; }
+.bar-go { align-self: stretch; margin: 5px; padding: 0 16px; border-radius: 7px; background: var(--cobalt); color: #fff; display: flex; align-items: center; gap: 8px; font-weight: 600; }
+.go-label { display: none; }
+
+.board-head { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 14px; margin-top: 22px; }
+h1 { font: 700 26px/1.1 var(--f-head); letter-spacing: -.01em; }
+.stamp { font-size: 13px; color: var(--on-navy-muted); }
+
+/* подборки — значки в скруглённых квадратах */
+.tiles { display: flex; gap: 8px; overflow-x: auto; margin: 14px calc(-1 * var(--gutter)) 0; padding: 2px var(--gutter) 4px; scrollbar-width: none; }
+.tiles::-webkit-scrollbar { display: none; }
+.tile { flex: none; width: 82px; display: grid; justify-items: center; gap: 6px; text-align: center; font-size: 12px; line-height: 1.2; color: var(--on-navy-muted); padding: 2px 0; }
+.tile-sq { width: 48px; height: 48px; border-radius: var(--r-tile); background: var(--navy-2); box-shadow: inset 0 0 0 1px var(--line-navy); display: grid; place-items: center; color: var(--on-navy); position: relative; transition: background var(--t-fast) var(--ease); }
+.tile-sq .ic { width: 22px; height: 22px; }
+.tile-sq em { position: absolute; top: -5px; right: -7px; font: 700 11px/1 var(--f-mono); font-style: normal; background: var(--on-navy); color: var(--navy); border-radius: 6px; padding: 3px 4px; }
+.tile[aria-selected="true"] { color: var(--on-navy); font-weight: 600; }
+.tile[aria-selected="true"] .tile-sq { background: var(--cobalt); box-shadow: none; }
+.tile:hover .tile-sq { background: var(--navy-3); }
+.tile[aria-selected="true"]:hover .tile-sq { background: var(--cobalt); }
+
+/* табло */
+.board { margin-top: 14px; background: var(--navy-2); border-radius: 12px; box-shadow: inset 0 0 0 1px var(--line-navy); }
+.board-cols { display: none; }
+.rowx { display: grid; grid-template-columns: auto 1fr auto; gap: 4px 12px; align-items: center; padding: 11px 12px; border-top: 1px solid var(--line-navy); text-decoration: none; transition: background var(--t-fast) var(--ease); }
+.rowx:first-of-type { border-top: 0; }
+.rowx:hover { background: var(--navy-3); }
+.flaps { display: flex; gap: 2px; }
+.flap { width: 21px; height: 30px; border-radius: var(--r-flap); background: #0b1430; display: grid; place-items: center; font: 700 17px/1 var(--f-mono); color: var(--on-navy); position: relative; overflow: hidden; }
+.flap::after { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: rgba(0, 0, 0, .55); box-shadow: 0 1px rgba(255, 255, 255, .05); }
+.flipping .flap { animation: flip var(--t-flip) var(--ease) both; animation-delay: calc(var(--i) * 18ms); }
+@keyframes flip { from { transform: rotateX(80deg); opacity: .2; } to { transform: none; opacity: 1; } }
+.dest b { display: block; font-weight: 600; font-size: 15px; line-height: 1.25; }
+.dest small { color: var(--on-navy-muted); font-size: 13px; }
+.when { display: none; }
+.cost { text-align: right; }
+.cost b { display: block; font: 700 16px/1.2 var(--f-mono); white-space: nowrap; }
+.cost small { font-size: 12px; font-weight: 600; white-space: nowrap; }
+.cost small.low { color: var(--low); } .cost small.high { color: var(--high); } .cost small.usual { color: var(--on-navy-muted); }
+.thumb { display: none; }
+.board-foot { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 10px 12px; border-top: 1px solid var(--line-navy); font-size: 13px; color: var(--on-navy-muted); }
+.board-foot a { color: var(--on-navy); font-weight: 600; text-decoration: none; display: inline-flex; gap: 4px; align-items: center; min-height: 44px; white-space: nowrap; }
+.board-foot .ic { width: 16px; height: 16px; }
+
+.foot { margin: 28px auto 32px; color: var(--muted); font-size: 13px; display: flex; flex-wrap: wrap; gap: 6px 18px; }
+.foot a { color: var(--muted); }
+
+@media (min-width: 900px) {
+  :root { --gutter: 48px; }
+  .top { height: 72px; }
+  .nav { display: flex; }
+  .find { display: grid; grid-template-columns: 1fr; }
+  .bar { min-height: 60px; }
+  .bar-sum { display: none; }
+  .bar-field { display: grid; flex: 1; padding: 8px 18px; text-align: left; border-right: 1px solid rgba(15, 27, 61, .12); }
+  .bar-field:nth-last-child(2) { border-right: 0; }
+  .bar-field small { color: var(--muted); font-size: 12px; }
+  .bar-field span { font-weight: 600; font-size: 15px; white-space: nowrap; }
+  .bar-field span b { font: 700 15px/1 var(--f-mono); color: var(--cobalt); margin-right: 6px; }
+  .go-label { display: inline; }
+  .bar-go { padding: 0 24px; }
+  .board-wrap { display: grid; grid-template-columns: 172px 1fr; gap: 0 28px; margin-top: 18px; }
+  .board-head { grid-column: 1 / -1; margin-top: 0; }
+  h1 { font-size: 34px; }
+  .tiles { flex-direction: column; overflow: visible; margin: 18px 0 0; padding: 0; gap: 10px; }
+  .tile { width: 100%; grid-template-columns: 48px 1fr; justify-items: start; text-align: left; align-items: center; gap: 10px; font-size: 13px; }
+  .board { margin-top: 18px; }
+  .board-cols, .rowx { display: grid; grid-template-columns: 104px 84px minmax(0, 1fr) 96px 104px 164px; gap: 16px; align-items: center; }
+  .board-cols { padding: 10px 16px 8px; font-size: 12px; color: var(--on-navy-muted); border-bottom: 1px solid var(--line-navy); }
+  .board-cols span:nth-last-child(-n+2) { text-align: right; }
+  .rowx { padding: 9px 16px; }
+  .when { display: block; font: 500 14px/1.3 var(--f-mono); white-space: nowrap; }
+  .when small { display: block; color: var(--on-navy-muted); font: 400 12px/1.3 var(--f-text); }
+  .dest { display: flex; align-items: center; gap: 12px; min-width: 0; }
+  .dest b { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .thumb { display: block; width: 36px; height: 36px; border-radius: var(--r-thumb); overflow: hidden; flex: none; background: var(--navy-3); }
+  .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .dest small { display: none; }
+  .dest > span:last-child { min-width: 0; }
+  .stay, .lvl { font-size: 14px; }
+  .stay small { display: block; color: var(--on-navy-muted); font-size: 12px; }
+  .cost small { display: none; }
+  .lvl { text-align: right; font-weight: 600; font-size: 13px; }
+  .lvl.low { color: var(--low); } .lvl.high { color: var(--high); } .lvl.usual { color: var(--on-navy-muted); }
+}
+@media (max-width: 899px) { .stay, .lvl { display: none; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+</head>
+<body>
+<div class="sky">
+  <header class="wrap top">
+    <a class="brand" href="#"><span class="brand-mark"><svg class="ic" aria-hidden="true"><use href="#i-plane"></use></svg></span>Aviator</a>
+    <nav class="nav" aria-label="Разделы"><a href="#" aria-current="page">Билеты</a><a href="#">Города</a><a href="#">Избранное</a></nav>
+    <button class="from" type="button" aria-label="Город вылета: Москва. Изменить"><b>MOW</b>Москва<svg class="ic" aria-hidden="true"><use href="#i-chev"></use></svg></button>
+  </header>
+  <main class="wrap">
+    <section class="find" aria-label="Поиск">
+      <p class="ai" aria-disabled="true"><svg class="ic" aria-hidden="true"><use href="#i-pen"></use></svg>Опишите поездку словами <i>скоро</i></p>
+      <form class="bar" onsubmit="return false">
+        <button class="bar-sum" type="button"><b>Москва → куда угодно</b><small>ноябрь – декабрь · до 25&#8239;000&nbsp;₽</small></button>
+        <button class="bar-field" type="button"><small>Откуда</small><span><b>MOW</b>Москва</span></button>
+        <button class="bar-field" type="button"><small>Куда</small><span>Куда угодно</span></button>
+        <button class="bar-field" type="button"><small>Когда</small><span>Ноябрь – декабрь</span></button>
+        <button class="bar-field" type="button"><small>Бюджет на билеты</small><span>до 25&#8239;000&nbsp;₽</span></button>
+        <button class="bar-go" type="submit" aria-label="Найти"><svg class="ic" aria-hidden="true"><use href="#i-search"></use></svg><span class="go-label">Найти</span></button>
+      </form>
+    </section>
+    <section class="board-wrap" aria-labelledby="boardTitle">
+      <div class="board-head"><h1 id="boardTitle">Вылеты из Москвы</h1><p class="stamp" id="stamp"></p></div>
+      <div class="tiles" role="tablist" id="tiles"></div>
+      <div>
+        <div class="board" id="board"></div>
+      </div>
+    </section>
+  </main>
+</div>
+<footer class="wrap foot" id="foot"></footer>
+
+<script src="data.js"></script>
+<script src="common.js"></script>
+<script>
+(() => {
+  const { M, F, ROWS, icon } = window.MK;
+  const tiles = document.getElementById('tiles'), board = document.getElementById('board');
+  const label = { hot: 'Горячие', weekend: 'Эти выходные', nextWeekend: 'Следующие выходные', under5: 'До 5 тыс. ₽', under10: 'До 10 тыс. ₽' };
+  tiles.innerHTML = ROWS.map((row, i) => `<button class="tile" role="tab" type="button" aria-selected="${i === 0}" data-key="${row.key}"><span class="tile-sq">${icon(row.icon)}<em>${row.items.length}</em></span><span>${label[row.key]}</span></button>`).join('');
+  document.getElementById('stamp').textContent = `цены Aviasales на ${F.received()}`;
+  const flaps = (code) => `<span class="flaps" aria-hidden="true">${[...code].map((c, i) => `<span class="flap" style="--i:${i}">${c}</span>`).join('')}</span>`;
+  const lvl = (o) => o.level ? (o.level === 'low' && o.diff ? `ниже обычной на ${Math.abs(o.diff)}%` : F.level(o)) : '';
+  const row = (o) => `<a class="rowx" href="#">
+    <span class="when">${F.day(o.dep)}<small>в ${F.time(o.dep)}</small></span>
+    ${flaps(o.code)}
+    <span class="dest"><span class="thumb">${o.photo ? `<img src="${F.photo(o)}" alt="" loading="lazy" decoding="async">` : ''}</span><span><b>${F.esc(F.city(o.city))}</b><small>${F.dayShort(o.dep)} · ${F.nights(o.nights)}</small></span></span>
+    <span class="stay">${F.nights(o.nights)}<small>${F.route(o)}</small></span>
+    <span class="cost"><b>${F.price(o.price)}</b>${o.level ? `<small class="${o.level}">${lvl(o)}</small>` : ''}</span>
+    <span class="lvl ${o.level ?? ''}" title="${F.esc(F.levelNote(o))}">${lvl(o) || '—'}</span></a>`;
+  const show = (key, animate) => {
+    const r = ROWS.find((x) => x.key === key);
+    tiles.querySelectorAll('.tile').forEach((t) => t.setAttribute('aria-selected', String(t.dataset.key === key)));
+    board.innerHTML = `<div class="board-cols" aria-hidden="true"><span>Вылет</span><span>Код</span><span>Город</span><span>На месте</span><span>Цена</span><span>Уровень цены</span></div>
+      ${r.items.slice(0, 7).map(row).join('')}
+      <div class="board-foot"><span>${r.hint}</span><a href="#">Все ${r.items.length}${icon('i-arrow')}</a></div>`;
+    if (animate) { board.classList.remove('flipping'); void board.offsetWidth; board.classList.add('flipping'); }
+  };
+  tiles.addEventListener('click', (e) => { const t = e.target.closest('.tile'); if (t) show(t.dataset.key, true); });
+  show(ROWS[0].key, false);
+  document.getElementById('foot').innerHTML = `<span>Цены — находки Aviasales на ${F.received()} (мск), туда и обратно на одного. Точную цену показывает Aviasales.</span><a href="#">Как мы считаем</a><a href="#">Как зарабатываем</a><a href="../../web/credits.html">Авторы фото</a>`;
+})();
+</script>
+</body>
+</html>
