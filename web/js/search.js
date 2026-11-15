@@ -240,7 +240,8 @@ function renderResults() {
   const section = $('results'), q = state.performed;
   section.hidden = state.status === 'idle';
   $('searchButton').disabled = state.status === 'loading';
-  if (!q) return;
+  // Первый экран не загрузился сам — выдачи нет, остаётся форма.
+  if (!q || state.status === 'idle') return;
   let body = '', title = 'Варианты';
   const announce = (text) => { $('resultsStatus').textContent = text; };
   if (state.status === 'loading') {
