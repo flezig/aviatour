@@ -13,7 +13,7 @@ class SearchRequest(BaseModel):
     trip_preferences: TripPreferences = Field(default_factory=TripPreferences)
     direct_only: bool = False
     force_refresh: bool = False
-    region: Literal['any', 'europe', 'usa'] = 'any'
+    region: Literal['any', 'europe', 'usa', 'russia'] = 'any'
     departure_date: str | None = Field(default=None, pattern=r'^\d{4}-\d{2}-\d{2}$')
     return_date: str | None = Field(default=None, pattern=r'^\d{4}-\d{2}-\d{2}$')
     weekend_only: bool = True

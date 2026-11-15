@@ -6,4 +6,8 @@ REGION_CITIES = {
 }
 
 def includes(region, country):
-    return region == 'any' or (country == 'US' if region == 'usa' else country in EUROPE_COUNTRIES)
+    if region == 'any':
+        return True
+    if region in ('usa', 'russia'):
+        return country == ('US' if region == 'usa' else 'RU')
+    return country in EUROPE_COUNTRIES

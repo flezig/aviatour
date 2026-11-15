@@ -275,6 +275,25 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.35); }
 .cta-hotel-link b { color: var(--blue); font-weight: 600; }
 .cta-hotel-close { display: grid; place-items: center; flex: none; width: 44px; height: 44px; border: 0; border-radius: 12px; background: none; color: var(--secondary); }
 .cta-hotel-close:hover { background: var(--fill); }
+.alike { display: grid; gap: 4px; padding: 20px; }
+.alike h3 { font-size: 17px; font-weight: 600; margin-bottom: 6px; }
+.alike-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 52px; padding: 6px 0; border: 0; border-top: 1px solid var(--separator); background: none; text-align: left; }
+.alike-row > span { display: grid; gap: 2px; }
+.alike-row:hover b:first-child { color: var(--blue); }
+.alike-price { flex: none; color: var(--blue); }
+.sort-menus { display: flex; flex-wrap: wrap; gap: 4px 20px; }
+.skeleton { pointer-events: none; }
+.skeleton .photo, .skeleton i { background: var(--fill); }
+.skeleton i { display: block; height: 16px; border-radius: 8px; }
+.skeleton i:nth-child(1) { width: 60%; height: 22px; }
+.skeleton i:nth-child(2) { width: 35%; }
+.skeleton i:nth-child(4) { width: 80%; }
+@media (prefers-reduced-motion: no-preference) {
+  .skeleton { animation: pulse 1.2s ease-in-out infinite; }
+  .grid:not([aria-hidden]) .offer { animation: rise 0.25s ease-out both; }
+}
+@keyframes pulse { 50% { opacity: 0.55; } }
+@keyframes rise { from { opacity: 0; transform: translateY(8px); } }
 .handoff { display: grid; gap: 12px; }
 /* The way to Aviasales stays on screen while the trip card scrolls. */
 .detail-cta {

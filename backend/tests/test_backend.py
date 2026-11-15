@@ -304,6 +304,16 @@ def test_go_rejects_anything_but_aviasales_search(url):
         assert response.status_code==422 and response.json()['error']['code']=='validation'
     assert calls==[]
 
+def test_russia_region_is_one_search_filtered_by_country():
+    calls=[]
+    def handler(request):
+        calls.append(request)
+        return httpx.Response(200,json={'success':True,'data':[record()|{'price':8500},
+            record()|{'price':9000,'destination':'IST','destination_airport':'IST','link':'/search/SVO0210IST04101'}]})
+    with TestClient(create_app(Settings(token='fixture'),transport=httpx.MockTransport(handler),now=lambda:NOW)) as client:
+        body=client.get('/api/v1/search/web',params={'from':'SVO','fc':'MOW','month':'2026-10','budget':25000,'region':'russia'}).json()
+        assert [o['country_code'] for o in body['offers']]==['RU'] and len(calls)==1
+
 HOTEL_URL='https://www.aviasales.ru/hotels/search?location_id=1993&location_type=city&checkin=2026-12-26&checkout=2026-12-31&adults=1'
 
 def test_go_accepts_aviasales_hotel_search_for_a_city_and_dates():

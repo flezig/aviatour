@@ -18,7 +18,7 @@ from .runtime import TTLCache, RateLimiter
 from .settings import Settings
 from .upstream import Travelpayouts
 from .rules import matches, safe_search_url, safe_hotel_url, longer_stays
-from .regions import includes
+from .regions import includes, REGION_CITIES
 from .rating import evaluate, round_int
 from .rating_sources import RatingSources, load_reviewed_data
 from .hotel_source import AmadeusHotels
@@ -85,7 +85,8 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
             # check is the rate limit: only a cache miss reaches Travelpayouts, so a cached answer costs nothing.
             if check:
                 check()
-            return app.state.upstream.search_region(broad) if request.region != 'any' and not request.destination else app.state.upstream.search(broad)
+            # Russia is one ordinary search filtered by country; Europe and the USA go city by city.
+            return app.state.upstream.search_region(broad) if request.region in REGION_CITIES and not request.destination else app.state.upstream.search(broad)
         result = await cache.get_or_create(key, load, refresh=request.force_refresh)
         if pool is not None:
             # Unfiltered trips of this search (any budget, length or transfers), for hints beyond the visitor's filters.
