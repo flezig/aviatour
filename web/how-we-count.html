@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Как мы считаем — Aviator</title>
+  <meta name="description" content="Откуда цены на Aviator, что в них входит и как считаются время на месте, цена часа и подсказки.">
+  <meta name="theme-color" content="#f5f4f0">
+  <link rel="canonical" href="https://aviatour.vercel.app/how-we-count.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Aviator">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:title" content="Как мы считаем — Aviator">
+  <meta property="og:description" content="Откуда цены на Aviator, что в них входит и как считаются время на месте, цена часа и подсказки.">
+  <meta property="og:url" content="https://aviatour.vercel.app/how-we-count.html">
+  <meta property="og:image" content="https://aviatour.vercel.app/og.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="top wrap">
+    <a class="brand" href="/"><span class="brand-mark"><svg class="icon" aria-hidden="true"><use href="/icons.svg#plane"></use></svg></span>Aviator</a>
+    <nav class="nav" aria-label="Разделы сайта">
+      <a href="/">Билеты</a>
+      <a href="/#fav">Избранное</a>
+      <a href="/how-we-count.html" aria-current="page">Как мы считаем</a>
+    </nav>
+    <a class="top-fav" href="/#fav" aria-label="Избранное"><svg class="icon" aria-hidden="true"><use href="/icons.svg#heart"></use></svg></a>
+  </header>
+
+  <main class="wrap">
+    <header class="page-head">
+      <h1>Как мы считаем</h1>
+      <p>Все оговорки в одном месте, чтобы не загромождать карточки.</p>
+    </header>
+    <div class="prose">
+      <section class="card">
+        <h2>Цены</h2>
+        <ul>
+          <li>Цены — находки Aviasales, которые недавно видели другие люди (Travelpayouts Data API). Это не полный список рейсов и не подтверждение мест.</li>
+          <li>Рядом с ценами указано, когда мы их получили. Авиакомпании меняют цены постоянно: на Aviasales билет может стоить иначе.</li>
+          <li>Цена — билеты туда и обратно на одного взрослого, в рублях. Класс тарифа источник не подтверждает; поиск на Aviasales открывается для эконома.</li>
+          <li>Жильё, еда, дорога из аэропорта и багаж в цену не входят. Условия багажа и возврата показывает продавец на Aviasales.</li>
+        </ul>
+      </section>
+      <section class="card">
+        <h2>Рейсы</h2>
+        <ul>
+          <li>Время местное для каждого аэропорта. Прилёт рассчитан по длительности перелёта и отмечен знаком «≈».</li>
+          <li>Авиакомпания — из найденной цены. Кто выполняет каждый участок и какая авиакомпания везёт обратно, источник не сообщает.</li>
+          <li>Аэропорты пересадок и время ожидания источник тоже не сообщает — их видно на Aviasales.</li>
+        </ul>
+      </section>
+      <section class="card">
+        <h2>Время на месте и цена часа</h2>
+        <p>Время на месте — от расчётного прилёта до обратного вылета, включая ночи. Дорога из аэропорта и ожидание не вычитаются. Цена часа — цена билетов, делённая на эти часы.</p>
+      </section>
+      <section class="card">
+        <h2>Фильтры и подсказки</h2>
+        <dl>
+          <div><dt>Без отпуска</dt><dd>Вылет в пятницу после 18:00 или в субботу, прилёт домой в воскресенье или в понедельник до 09:00 (≈).</dd></div>
+          <div><dt>Удобное время вылета</dt><dd>Оба вылета с 06:00 до 22:59 по местному времени.</dd></div>
+          <div><dt>В пути до 3 ч</dt><dd>Каждый перелёт известен и длится не больше трёх часов.</dd></div>
+          <div><dt>Дольше — дешевле</dt><dd>Вылет в тот же день, возвращение на 1–4 дня позже, билеты дешевле минимум на 5 % и 300 ₽, пересадок не больше. Жильё и еда на лишние дни — отдельно.</dd></div>
+          <div><dt>Дешевле в соседние дни</dt><dd>Тот же город и та же длина поездки, вылет на 1–3 дня раньше или позже, дешевле минимум на 5 % и 300 ₽.</dd></div>
+          <div><dt>За эти же деньги</dt><dd>До трёх других городов, где найденная цена отличается не больше чем на 15 %.</dd></div>
+          <div><dt>Оценка перелёта</dt><dd>Число от 0 до 100: на 65 % — цена билетов, на 35 % — дорога: длительность перелётов, пересадки, доля времени на месте и время вылетов. Жильё, безопасность и полный бюджет не учитываются.</dd></div>
+        </dl>
+      </section>
+      <section class="card">
+        <h2>Жильё и заметки о городах</h2>
+        <ul>
+          <li>Кнопка «Отели» открывает поиск отелей Aviasales с городом и датами: заезд в день прилёта, выезд в день обратного вылета, один взрослый. Цены и условия — там.</li>
+          <li>Заметки о городах пишет редакция; у каждой указана дата. Часы работы и транспорт проверяйте перед поездкой.</li>
+        </ul>
+      </section>
+    </div>
+  </main>
+
+  <footer class="wrap footer">
+    <nav aria-label="Информация">
+      <a href="/how-we-count.html">Как мы считаем</a>
+      <a href="/how-we-earn.html">Как мы зарабатываем</a>
+      <a href="/about.html">О проекте</a>
+      <a href="/privacy.html" data-metrika hidden>Конфиденциальность</a>
+      <a href="/credits.html">Авторы фото</a>
+    </nav>
+    <p class="caption">Цены — находки Aviasales, окончательную цену и наличие мест показывает Aviasales. Билеты продаёт Aviasales, мы получаем комиссию.</p>
+  </footer>
+
+  <script src="/config.js" defer></script>
+  <script type="module" src="/js/site.js"></script>
+</body>
+</html>
