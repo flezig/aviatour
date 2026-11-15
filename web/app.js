@@ -68,6 +68,10 @@
     const days = Math.floor(minutes / 1440), hours = Math.floor((minutes % 1440) / 60), rest = minutes % 60;
     return (days ? `${days} д ` : '') + (hours ? `${hours} ч ` : '') + `${rest} мин`;
   }
+  function daysLabel(count) {
+    const tail = count % 100, last = count % 10;
+    return `${count} ${tail >= 11 && tail <= 14 ? 'дней' : last === 1 ? 'день' : last >= 2 && last <= 4 ? 'дня' : 'дней'}`;
+  }
   function countLabel(count) {
     const tail = count % 100, last = count % 10;
     const word = tail >= 11 && tail <= 14 ? 'вариантов' : last === 1 ? 'вариант' : last >= 2 && last <= 4 ? 'варианта' : 'вариантов';
@@ -81,7 +85,7 @@
     performed: null, performedLabels: null, performedSummary: null, performedLabel: '', status: 'idle', error: '', result: null,
     // A first-time visitor asks «куда», so one best offer per city is on by default; «Все» shows every date and flight.
     filters: { cheap: false, direct: false, noLeave: false, russia: false, unique: true }, sort: 'price', limit: PAGE,
-    airports: null, cities: null, byIata: new Map(), photos: new Set(), guides: {}, pickerTarget: 'origin', shown: new Map(),
+    airports: null, cities: null, byIata: new Map(), photos: new Set(), guides: {}, pickerTarget: 'origin', shown: new Map(), detail: null,
   };
   let request = null;
 
@@ -142,6 +146,15 @@
     }).filter((offer) => !state.filters.unique || (!seen.has(offer.city_code) && seen.add(offer.city_code)));
   }
   const airlineLabel = (offer) => offer.airline_name ? `${offer.airline_name} (${offer.airline ?? ''})` : offer.airline || 'Авиакомпания не указана';
+  // «Back later, cheaper»: the server found a trip from the same day that returns 1–4 days later for less.
+  // Shown as a plain fact with the catch spelled out: the extra nights of housing are not included.
+  function longer(offer) {
+    const trip = state.result?.longer?.[offer.id];
+    if (!trip) return null;
+    const x = facts(offer), y = facts(trip), zone = offer.destination_timezone;
+    const days = Math.round((Date.parse(zoned(y.ret, zone).key) - Date.parse(zoned(x.ret, zone).key)) / 86400000);
+    return { trip, days, saving: offer.price_minor - trip.price_minor, sameFlight: y.dep.getTime() === x.dep.getTime() };
+  }
   const photo = (code) => `<div class="photo">${state.photos.has(code) ? `<img src="photos/${esc(code)}.jpg" alt="" loading="lazy" decoding="async">` : icon('plane')}</div>`;
   // Same allow-list as the app: only an HTTPS Aviasales search page may be opened, and only through /go.
   function handoff(offer) {
@@ -154,13 +167,14 @@
   }
 
   function offerCard(offer) {
-    const x = facts(offer), score = x.score;
+    const x = facts(offer), score = x.score, hint = longer(offer);
     return `<article class="offer">
       ${photo(offer.city_code)}
       <div class="offer-body">
         <h3 class="offer-city"><button type="button" class="offer-open" data-offer="${esc(offer.id)}">${esc(offer.city)}</button></h3>
         ${state.guides[offer.city_code] ? `<p class="caption">${esc(state.guides[offer.city_code].summary)}</p>` : ''}
         <div><span class="offer-price">${esc(fmtMoney(offer.price_minor))}</span><p class="caption">туда-обратно</p></div>
+        ${hint ? `<p class="offer-longer">+${esc(daysLabel(hint.days))} на месте — на ${esc(fmtMoney(hint.saving))} дешевле</p>` : ''}
         <p>${esc(fmtDate(x.dep, offer.origin_timezone))} — ${esc(fmtDate(x.ret, offer.destination_timezone))}</p>
         <p class="strong">LIVE · кешированная цена</p>
         <p class="tiny">Получено ${esc(fmtDate(new Date(offer.received_at), localZone, true))}</p>
@@ -280,7 +294,8 @@
     </section>`;
   }
   function openDetail(offer) {
-    const x = facts(offer), past = x.dep <= Date.now(), link = past ? null : handoff(offer);
+    const x = facts(offer), past = x.dep <= Date.now(), link = past ? null : handoff(offer), hint = past ? null : longer(offer);
+    state.detail = offer;
     $('detailBody').innerHTML = `<div class="detail">
       ${photo(offer.city_code)}
       <div class="stack"><h2>${esc(offer.city)}</h2><p class="footnote">${esc(offer.country ?? 'Страна не указана')}</p></div>
@@ -292,6 +307,12 @@
         <p class="footnote">Класс тарифа не подтверждён источником. Поиск на Aviasales откроется для эконом-класса.</p>
         <p class="caption">Получено ${esc(fmtDate(new Date(offer.received_at), localZone, true))}</p>
       </div>
+      ${hint ? `<section class="longer">
+        <h3>Дольше — дешевле</h3>
+        <p>Если вернуться ${esc(fmtDate(facts(hint.trip).ret, offer.destination_timezone))}, билеты будут на <b>${esc(fmtMoney(hint.saving))} дешевле</b>, а на месте — на ${esc(daysLabel(hint.days))} больше.</p>
+        <p class="caption">${hint.sameFlight ? 'Туда тот же рейс' : `Вылет в тот же день, в ${esc(fmtTime(facts(hint.trip).dep, offer.origin_timezone))}`}. Жильё и питание на лишние дни в эту цену не входят.</p>
+        <button type="button" class="btn-inline btn-inline--wide" data-longer>Посмотреть этот вариант · ${esc(fmtMoney(hint.trip.price_minor))}</button>
+      </section>` : ''}
       ${guideBlock(offer.city_code)}
       ${routeCard(offer, true)}
       ${routeCard(offer, false)}
@@ -313,7 +334,7 @@
       </div>
     </div>`;
     $('detailBody').scrollTop = 0;
-    $('detail').showModal();
+    if (!$('detail').open) $('detail').showModal();
     window.aviatorGoal?.('trip');
   }
 
@@ -500,7 +521,11 @@
   $('directOnly').addEventListener('change', (event) => { state.query.direct = event.target.checked; });
   $('search').addEventListener('submit', (event) => { event.preventDefault(); search(); });
   $('searchSummary').addEventListener('click', () => { collapseForm(false); $('originPick').focus(); });
-  $('detailBody').addEventListener('click', (event) => { if (event.target.closest('a[href^="/go"]')) window.aviatorGoal?.('aviasales'); });
+  $('detailBody').addEventListener('click', (event) => {
+    if (event.target.closest('a[href^="/go"]')) window.aviatorGoal?.('aviasales');
+    const hint = event.target.closest('[data-longer]') && longer(state.detail);
+    if (hint) { window.aviatorGoal?.('longer'); openDetail(hint.trip); }
+  });
 
   $('results').addEventListener('click', (event) => {
     const chip = event.target.closest('[data-chip]'), act = event.target.closest('[data-action]'), open = event.target.closest('[data-offer]');

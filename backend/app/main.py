@@ -17,7 +17,7 @@ from .models import SearchRequest, SearchResponse, BatchSearchRequest, BatchSear
 from .runtime import TTLCache, RateLimiter
 from .settings import Settings
 from .upstream import Travelpayouts
-from .rules import matches, safe_search_url
+from .rules import matches, safe_search_url, longer_stays
 from .regions import includes
 from .rating import evaluate, round_int
 from .rating_sources import RatingSources, load_reviewed_data
@@ -56,7 +56,7 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
     @app.get('/api/v1/airports')
     async def airports():
         return JSONResponse(AIRPORTS, headers={'Cache-Control': 'public, max-age=3600, s-maxage=86400'})
-    async def search(request: SearchRequest, check=None):
+    async def search(request: SearchRequest, check=None, pool=None):
         airport = BY_IATA.get(request.origin)
         if not airport or not airport['timezone']:
             raise SearchError('validation', 'Выберите аэропорт из справочника.', 422)
@@ -87,6 +87,9 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
                 check()
             return app.state.upstream.search_region(broad) if request.region != 'any' and not request.destination else app.state.upstream.search(broad)
         result = await cache.get_or_create(key, load, refresh=request.force_refresh)
+        if pool is not None:
+            # Unfiltered trips of this search (any budget, length or transfers), for hints beyond the visitor's filters.
+            pool.extend(result.offers)
         # A valid cached response can become stale before TTL expires.
         offers = []
         for offer in result.offers:
@@ -140,10 +143,15 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
                 weekend_only=weekend != '0', direct_only=direct == '1')
         except ValidationError:
             raise SearchError('validation', 'Проверьте аэропорты, даты и бюджет.', 422) from None
-        body = (await search(request, limiter.check)).model_dump(mode='json', exclude={'offers': {'__all__': {'outbound_segments', 'inbound_segments'}}})
+        pool = []
+        result = await search(request, limiter.check, pool)
+        compact = {'outbound_segments', 'inbound_segments'}
+        body = result.model_dump(mode='json', exclude={'offers': {'__all__': compact}})
         for offer in body['offers']:
             if offer['trip_rating']:
                 offer['trip_rating'] = {key: offer['trip_rating'][key] for key in ('score', 'preliminary_score')}
+        # Hint «back later, cheaper»: offer id → the longer, cheaper trip. Not tied to the weekend filter on purpose.
+        body['longer'] = {offer_id: trip.model_dump(mode='json', exclude=compact) for offer_id, trip in longer_stays(result.offers, pool, request, now()).items()}
         return JSONResponse(body, headers={'Cache-Control': 'public, max-age=60, s-maxage=600, stale-while-revalidate=600'})
 
     @app.post('/api/v1/search/batch', response_model=BatchSearchResponse)

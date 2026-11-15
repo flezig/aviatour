@@ -12,6 +12,8 @@
   --secondary: #6b6b70;
   --separator: rgba(60, 60, 67, 0.16);
   --fill: rgba(118, 118, 128, 0.12);
+  --green: #1e7b34;
+  --green-10: rgba(52, 199, 89, 0.12);
   --orange: #c26a00;
   --red: #d70015;
   --shadow-card: 0 6px 18px rgba(0, 0, 0, 0.08);
@@ -191,6 +193,7 @@ img { display: block; max-width: 100%; }
 .offer-body p { font-size: 12px; }
 .offer-body .strong { font-weight: 700; color: var(--secondary); }
 .offer-body .tiny { font-size: 11px; color: var(--secondary); }
+.offer-longer { padding: 6px 10px; border-radius: 10px; background: var(--green-10); color: var(--green); font-size: 15px; font-weight: 600; }
 .offer-stay { display: flex; align-items: center; gap: 6px; font-weight: 700; color: var(--blue); }
 .offer-stay .icon { width: 16px; height: 16px; }
 .rating { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px; border-radius: 12px; background: var(--blue-06); font-size: 12px; }
@@ -259,6 +262,10 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.35); }
 .guide ul { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
 .tags { display: flex; flex-wrap: wrap; gap: 6px; }
 .tag { padding: 4px 10px; border-radius: 999px; background: var(--blue-08); color: #0b5fc7; font-size: 13px; font-weight: 600; }
+.longer { display: grid; gap: 10px; padding: 20px; border-radius: 20px; background: var(--green-10); }
+.longer h3 { font-size: 17px; font-weight: 600; color: var(--green); }
+.longer .btn-inline { border-color: rgba(52, 199, 89, 0.3); background: #fff; }
+.longer .btn-inline:hover { background: rgba(255, 255, 255, 0.7); }
 .handoff { display: grid; gap: 12px; }
 /* The way to Aviasales stays on screen while the trip card scrolls. */
 .detail-cta {

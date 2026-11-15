@@ -183,6 +183,22 @@ def test_web_search_is_cacheable_and_compact():
         bad=client.get('/api/v1/search/web',params={'from':'svo','month':'2026-10','budget':25000})
         assert bad.status_code==422 and 'Cache-Control' not in bad.headers
 
+def test_web_search_suggests_longer_cheaper_trip():
+    # Friday 2 Oct → Sunday 4 Oct is the weekend trip; coming back later is cheaper in some cases.
+    rows=[record()|{'price':8500},
+          record()|{'price':7000,'return_at':'2026-10-06T18:00:00+03:00'},  # +2 days, 1500 ₽ less: the hint
+          record()|{'price':6000,'return_at':'2026-10-07T18:00:00+03:00','transfers':1},  # cheaper but with a transfer
+          record()|{'price':8400,'return_at':'2026-10-08T18:00:00+03:00'},  # saves only 100 ₽
+          record()|{'price':5000,'return_at':'2026-10-10T18:00:00+03:00'}]  # 6 days later: a different trip
+    transport=httpx.MockTransport(lambda req:httpx.Response(200,json={'success':True,'data':rows}))
+    with TestClient(create_app(Settings(token='fixture'),transport=transport,now=lambda:NOW)) as client:
+        body=client.get('/api/v1/search/web',params={'from':'SVO','fc':'MOW','month':'2026-10','budget':25000}).json()
+        assert [o['price_minor'] for o in body['offers']]==[850000]
+        trip=body['longer'][body['offers'][0]['id']]
+        assert trip['price_minor']==700000 and trip['return_at'].startswith('2026-10-06')
+        direct=client.get('/api/v1/search/web',params={'from':'SVO','fc':'MOW','month':'2026-10','budget':25000,'weekend':'0'}).json()
+        assert all(o['id'] not in direct['longer'] or direct['longer'][o['id']]['price_minor']<o['price_minor'] for o in direct['offers'])
+
 @pytest.mark.parametrize('value',['not-a-price','', 'NaN', 'Infinity'])
 def test_invalid_decimal_strings(value):
     with pytest.raises(ValueError): rubles_to_minor(value)

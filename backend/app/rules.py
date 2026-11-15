@@ -117,3 +117,33 @@ def normalize(row, request, received_at, envelope_currency='rub'):
         transfers=transfers, return_transfers=back, duration_to=count(row.get('duration_to')), duration_back=count(row.get('duration_back')),
         price_minor=price, search_url=safe_search_url(row.get('link')), received_at=received_at, airline=airline, airline_name=AIRLINE_NAMES.get(airline), flight_number=number)
     return offer if matches(offer, request, received_at) else None
+
+
+def longer_stays(offers, pool, request, now):
+    """For each offer: the cheapest trip from the same city on the same day that comes back 1–4 days later,
+    costs at least 5% and 300 ₽ less and has no more transfers. A longer trip with cheaper tickets is a real
+    saving; the extra nights of housing are not included, and the site says so."""
+    def no_worse(candidate, current):
+        return current is None or (candidate is not None and candidate <= current)
+    groups = {}
+    for candidate in pool:
+        if candidate.departure_at <= now or candidate.availability == 'unavailable':
+            continue
+        if request.direct_only and (candidate.transfers != 0 or candidate.return_transfers != 0):
+            continue
+        groups.setdefault((candidate.origin_city_code, candidate.city_code, candidate.departure_at.date()), []).append(candidate)
+    found = {}
+    for offer in offers:
+        best = None
+        for candidate in groups.get((offer.origin_city_code, offer.city_code, offer.departure_at.date()), ()):
+            extra = (candidate.return_at.date() - offer.return_at.date()).days
+            saving = offer.price_minor - candidate.price_minor
+            if not 1 <= extra <= 4 or saving < max(30000, offer.price_minor * 0.05):
+                continue
+            if not no_worse(candidate.transfers, offer.transfers) or not no_worse(candidate.return_transfers, offer.return_transfers):
+                continue
+            if best is None or candidate.price_minor < best.price_minor:
+                best = candidate
+        if best:
+            found[offer.id] = best
+    return found
