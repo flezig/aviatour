@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Макет 2 · Иллюминатор — Aviator</title>
+<link rel="icon" href="../../web/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="fonts/fonts.css">
 <style>
 :root {
@@ -24,10 +25,10 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .wrap { max-width: var(--page); margin: 0 auto; padding: 0 var(--gutter); }
 
 .top { display: flex; align-items: center; gap: 20px; height: 56px; }
-.brand { font: 600 22px/1 var(--f-head); text-decoration: none; letter-spacing: -.01em; display: flex; align-items: center; gap: 8px; }
+.brand { min-height: 44px; font: 600 22px/1 var(--f-head); text-decoration: none; letter-spacing: -.01em; display: flex; align-items: center; gap: 8px; }
 .brand .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--cobalt); }
 .nav { display: none; gap: 22px; margin-left: 28px; font-size: 15px; }
-.nav a { text-decoration: none; color: var(--muted); padding: 10px 0; }
+.nav a { display: flex; align-items: center; min-height: 44px; text-decoration: none; color: var(--muted); }
 .nav a[aria-current] { color: var(--ink); box-shadow: inset 0 -2px var(--cobalt); }
 .from { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 4px; font-weight: 600; font-size: 15px; }
 .from .ic { width: 18px; height: 18px; color: var(--cobalt); }
@@ -56,7 +57,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .btn { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px; border-radius: 10px; background: var(--ink); color: #fff; text-decoration: none; font-weight: 600; font-size: 15px; transition: background var(--t-fast) var(--ease); }
 .btn:hover { background: var(--cobalt); }
 .btn .ic { width: 18px; height: 18px; }
-.link { color: var(--cobalt); font-weight: 600; font-size: 15px; text-decoration: none; padding: 10px 4px; }
+.link { display: inline-flex; align-items: center; min-height: 44px; color: var(--cobalt); font-weight: 600; font-size: 15px; text-decoration: none; padding: 0 4px; }
 
 /* иллюминатор: рамка — стилями, фото не трогаем */
 .window { position: relative; grid-row: 2 / 4; grid-column: 2; aspect-ratio: 4 / 5; padding: 9px; border-radius: var(--r-window); background: linear-gradient(160deg, #fbfaf6, var(--paper-2)); box-shadow: inset 0 0 0 1px var(--line), 0 10px 24px -14px rgba(15, 27, 61, .45); }
@@ -77,11 +78,11 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .shelf-hint { margin-top: 10px; font-size: 14px; color: var(--muted); }
 .list { list-style: none; padding: 0; margin-top: 6px; counter-reset: n; }
 .item { counter-increment: n; border-top: 1px solid var(--line); }
-.item a { display: grid; grid-template-columns: 22px 48px 1fr auto; gap: 12px; align-items: center; padding: 12px 0; text-decoration: none; }
+.item a { display: grid; grid-template-columns: 22px 48px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 12px 0; text-decoration: none; }
 .item a::before { content: counter(n, decimal-leading-zero); font: 500 12px/1 var(--f-mono); color: var(--muted); align-self: start; padding-top: 6px; }
 .thumb { width: 48px; height: 58px; border-radius: var(--r-thumb); overflow: hidden; background: var(--cobalt-soft); box-shadow: 0 0 0 3px var(--card), 0 0 0 4px var(--line); }
 .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.item h3 { font: 600 18px/1.2 var(--f-head); }
+.item h3 { font: 600 18px/1.2 var(--f-head); overflow-wrap: anywhere; }
 .meta { font-size: 13px; color: var(--muted); }
 .pr { text-align: right; }
 .pr b { font: 500 17px/1.2 var(--f-mono); white-space: nowrap; display: block; }
@@ -91,7 +92,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .more { display: inline-flex; margin-top: 8px; }
 
 .foot { margin: 40px auto 32px; color: var(--muted); font-size: 13px; display: flex; flex-wrap: wrap; gap: 6px 18px; border-top: 1px solid var(--line); padding-top: 16px; }
-.foot a { color: var(--muted); }
+.foot a { color: var(--muted); display: inline-flex; align-items: center; min-height: 44px; }
 
 @media (min-width: 900px) {
   :root { --gutter: 48px; }

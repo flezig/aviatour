@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Макет 3 · Табло вылетов — Aviator</title>
+<link rel="icon" href="../../web/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="fonts/fonts.css">
 <style>
 :root {
@@ -26,11 +27,11 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 
 .sky { background: var(--navy); color: var(--on-navy); padding-bottom: 20px; }
 .top { display: flex; align-items: center; gap: 20px; height: 56px; }
-.brand { display: flex; align-items: center; gap: 10px; font: 700 19px/1 var(--f-head); text-decoration: none; }
+.brand { min-height: 44px; display: flex; align-items: center; gap: 10px; font: 700 19px/1 var(--f-head); text-decoration: none; }
 .brand-mark { width: 30px; height: 30px; border-radius: 8px; background: var(--cobalt); display: grid; place-items: center; }
 .brand-mark .ic { width: 17px; height: 17px; }
 .nav { display: none; gap: 4px; margin-left: 16px; }
-.nav a { text-decoration: none; padding: 10px 12px; border-radius: 8px; color: var(--on-navy-muted); font-size: 15px; font-weight: 600; }
+.nav a { display: flex; align-items: center; min-height: 44px; text-decoration: none; padding: 0 12px; border-radius: 8px; color: var(--on-navy-muted); font-size: 15px; font-weight: 600; }
 .nav a[aria-current] { color: var(--on-navy); background: var(--line-navy); }
 .from { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; font-weight: 600; font-size: 15px; }
 .from b { font: 700 14px/1 var(--f-mono); color: var(--navy); background: var(--on-navy); border-radius: 4px; padding: 4px 5px; }
@@ -39,7 +40,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .ai { display: flex; align-items: center; gap: 8px; min-height: 40px; color: var(--on-navy-muted); font-size: 14px; }
 .ai .ic { width: 16px; height: 16px; }
 .ai i { font-style: normal; font-size: 12px; padding: 1px 7px; border-radius: 6px; background: var(--line-navy); }
-.bar { display: flex; align-items: center; background: var(--on-navy); color: var(--navy); border-radius: var(--r-field); min-height: 52px; }
+.bar { display: flex; align-items: center; background: var(--on-navy); color: var(--navy); border-radius: var(--r-field); min-height: 54px; }
 .bar-sum { flex: 1; min-width: 0; padding: 6px 14px; text-align: left; display: grid; }
 .bar-sum b { font-weight: 600; font-size: 15px; }
 .bar-sum small { color: var(--muted); font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -87,7 +88,7 @@ h1 { font: 700 26px/1.1 var(--f-head); letter-spacing: -.01em; }
 .board-foot .ic { width: 16px; height: 16px; }
 
 .foot { margin: 28px auto 32px; color: var(--muted); font-size: 13px; display: flex; flex-wrap: wrap; gap: 6px 18px; }
-.foot a { color: var(--muted); }
+.foot a { color: var(--muted); display: inline-flex; align-items: center; min-height: 44px; }
 
 @media (min-width: 900px) {
   :root { --gutter: 48px; }

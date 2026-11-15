@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Макет 1 · Посадочный талон — Aviator</title>
+<link rel="icon" href="../../web/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="fonts/fonts.css">
 <style>
 :root {
@@ -26,18 +27,18 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 
 /* шапка */
 .top { display: flex; align-items: center; gap: 24px; height: 56px; }
-.brand { display: flex; align-items: center; gap: 10px; font: 800 19px/1 var(--f-head); text-decoration: none; letter-spacing: -.01em; }
+.brand { min-height: 44px; display: flex; align-items: center; gap: 10px; font: 800 19px/1 var(--f-head); text-decoration: none; letter-spacing: -.01em; }
 .brand-mark { width: 32px; height: 32px; border-radius: 9px; background: var(--cobalt); color: #fff; display: grid; place-items: center; }
 .brand-mark .ic { width: 18px; height: 18px; }
 .nav { display: none; gap: 4px; margin-left: 12px; }
-.nav a { text-decoration: none; padding: 10px 12px; border-radius: 8px; font-weight: 600; font-size: 15px; color: var(--muted); }
+.nav a { display: flex; align-items: center; min-height: 44px; text-decoration: none; padding: 0 12px; border-radius: 8px; font-weight: 600; font-size: 15px; color: var(--muted); }
 .nav a[aria-current] { color: var(--ink); background: rgba(15, 27, 61, .06); }
 .top-fav { text-decoration: none; margin-left: auto; width: 44px; height: 44px; display: grid; place-items: center; border-radius: 10px; }
 
 /* заголовок и поиск */
 .intro { padding: 12px 0 18px; }
 h1 { font: 800 28px/1.12 var(--f-head); letter-spacing: -.02em; }
-.origin { font: inherit; color: var(--cobalt); text-decoration: underline dashed 2px; text-underline-offset: 6px; display: inline-flex; align-items: baseline; gap: 2px; }
+.origin { padding: 7px 0; margin: -7px 0; font: inherit; color: var(--cobalt); text-decoration: underline dashed 2px; text-underline-offset: 6px; display: inline-flex; align-items: baseline; gap: 2px; }
 .origin .ic { width: 22px; height: 22px; align-self: center; }
 .ai { margin-top: 14px; display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 14px; border: 1px dashed var(--line); border-radius: var(--r-field); color: var(--muted); font-size: 15px; }
 .ai .ic { width: 18px; height: 18px; }
@@ -57,7 +58,7 @@ h1 { font: 800 28px/1.12 var(--f-head); letter-spacing: -.02em; }
 .row-head { display: flex; align-items: baseline; gap: 12px; }
 .row-head h2 { font: 800 20px/1.2 var(--f-head); letter-spacing: -.01em; }
 .row-hint { color: var(--muted); font-size: 14px; display: none; }
-.row-all { margin-left: auto; color: var(--cobalt); font-weight: 600; font-size: 15px; display: inline-flex; align-items: center; gap: 4px; text-decoration: none; padding: 10px 0; white-space: nowrap; }
+.row-all { margin-left: auto; color: var(--cobalt); font-weight: 600; font-size: 15px; display: inline-flex; align-items: center; gap: 4px; text-decoration: none; min-height: 44px; white-space: nowrap; }
 .row-all .ic { width: 16px; height: 16px; }
 .strip { display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 10px var(--gutter) 14px; margin: 0 calc(-1 * var(--gutter)); scrollbar-width: none; }
 .strip::-webkit-scrollbar { display: none; }
@@ -101,7 +102,7 @@ h1 { font: 800 28px/1.12 var(--f-head); letter-spacing: -.02em; }
 .stamp-card .tag { display: inline-block; margin-top: 6px; }
 
 .foot { margin: 40px auto 32px; color: var(--muted); font-size: 13px; display: flex; flex-wrap: wrap; gap: 6px 18px; }
-.foot a { color: var(--muted); }
+.foot a { color: var(--muted); display: inline-flex; align-items: center; min-height: 44px; }
 
 @media (min-width: 900px) {
   :root { --gutter: 48px; }
