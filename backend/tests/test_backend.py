@@ -304,6 +304,24 @@ def test_go_rejects_anything_but_aviasales_search(url):
         assert response.status_code==422 and response.json()['error']['code']=='validation'
     assert calls==[]
 
+HOTEL_URL='https://www.aviasales.ru/hotels/search?location_id=1993&location_type=city&checkin=2026-12-26&checkout=2026-12-31&adults=1'
+
+def test_go_accepts_aviasales_hotel_search_for_a_city_and_dates():
+    app,calls=link_app(lambda request:httpx.Response(500),token='')
+    with TestClient(app,follow_redirects=False) as client:
+        assert client.get('/go',params={'u':HOTEL_URL,'s':'web-hotel'}).headers['location']==HOTEL_URL
+
+@pytest.mark.parametrize('url',[
+    HOTEL_URL+'&utm=x', HOTEL_URL.replace('&adults=1',''), HOTEL_URL.replace('adults=1','adults=1&adults=2'),
+    HOTEL_URL.replace('checkin=2026-12-26','checkin=tomorrow'), HOTEL_URL.replace('/hotels/search','/hotels/search/x'),
+    HOTEL_URL.replace('www.aviasales.ru','aviasales.ru.evil.test'), HOTEL_URL.replace('https:','http:'), HOTEL_URL+'#x',
+    HOTEL_URL.replace('location_type=city','location_type=hotel')])
+def test_go_rejects_other_hotel_links(url):
+    app,calls=link_app(lambda request:httpx.Response(500))
+    with TestClient(app,follow_redirects=False) as client:
+        assert client.get('/go',params={'u':url}).status_code==422
+    assert calls==[]
+
 def test_site_is_served_without_shadowing_api():
     with TestClient(create_app(Settings(),now=lambda:NOW)) as client:
         page=client.get('/')

@@ -2,7 +2,7 @@ import hashlib
 import json
 from datetime import datetime
 from decimal import Decimal, DecimalException, ROUND_CEILING
-from urllib.parse import urlsplit
+from urllib.parse import parse_qs, urlsplit
 from zoneinfo import ZoneInfo
 from functools import lru_cache
 import re
@@ -32,6 +32,22 @@ def safe_search_url(link):
         link = 'https://www.aviasales.com' + link
     parts = urlsplit(link)
     if parts.scheme != 'https' or parts.hostname not in {'www.aviasales.com', 'aviasales.com', 'www.aviasales.ru', 'aviasales.ru'} or parts.username or parts.password or parts.port not in (None, 443) or not parts.path.startswith('/search/'):
+        raise ValueError('link')
+    return link
+
+
+# An Aviasales hotel search for one city and dates; every parameter must be present, once, in this shape.
+HOTEL_PARAMS = {'location_id': r'\d{1,10}', 'location_type': r'city', 'checkin': r'\d{4}-\d{2}-\d{2}', 'checkout': r'\d{4}-\d{2}-\d{2}', 'adults': r'[1-9]'}
+
+
+def safe_hotel_url(link):
+    if not isinstance(link, str):
+        raise ValueError('link')
+    parts = urlsplit(link)
+    if parts.scheme != 'https' or parts.hostname not in {'www.aviasales.com', 'aviasales.com', 'www.aviasales.ru', 'aviasales.ru'} or parts.username or parts.password or parts.port not in (None, 443) or parts.path != '/hotels/search' or parts.fragment:
+        raise ValueError('link')
+    query = parse_qs(parts.query, keep_blank_values=True, strict_parsing=True)
+    if set(query) != set(HOTEL_PARAMS) or any(len(values) != 1 or not re.fullmatch(HOTEL_PARAMS[key], values[0]) for key, values in query.items()):
         raise ValueError('link')
     return link
 

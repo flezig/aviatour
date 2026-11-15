@@ -266,6 +266,15 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.35); }
 .longer h3 { font-size: 17px; font-weight: 600; color: var(--green); }
 .longer .btn-inline { border-color: rgba(52, 199, 89, 0.3); background: #fff; }
 .longer .btn-inline:hover { background: rgba(255, 255, 255, 0.7); }
+.lodging { display: grid; gap: 10px; padding: 20px; }
+.lodging h3 { display: flex; align-items: center; gap: 8px; font-size: 17px; font-weight: 600; }
+.lodging h3 .icon { color: var(--blue); }
+.cta-hotel { display: flex; align-items: center; gap: 4px; padding: 4px 4px 4px 12px; border: 1px solid var(--blue-12); border-radius: 14px; background: #fff; }
+.cta-hotel-link { display: flex; align-items: center; gap: 10px; flex: 1; min-height: 44px; color: var(--text); font-size: 15px; text-decoration: none; }
+.cta-hotel-link .icon { flex: none; color: var(--blue); }
+.cta-hotel-link b { color: var(--blue); font-weight: 600; }
+.cta-hotel-close { display: grid; place-items: center; flex: none; width: 44px; height: 44px; border: 0; border-radius: 12px; background: none; color: var(--secondary); }
+.cta-hotel-close:hover { background: var(--fill); }
 .handoff { display: grid; gap: 12px; }
 /* The way to Aviasales stays on screen while the trip card scrolls. */
 .detail-cta {

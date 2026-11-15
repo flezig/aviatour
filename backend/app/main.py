@@ -17,7 +17,7 @@ from .models import SearchRequest, SearchResponse, BatchSearchRequest, BatchSear
 from .runtime import TTLCache, RateLimiter
 from .settings import Settings
 from .upstream import Travelpayouts
-from .rules import matches, safe_search_url, longer_stays
+from .rules import matches, safe_search_url, safe_hotel_url, longer_stays
 from .regions import includes
 from .rating import evaluate, round_int
 from .rating_sources import RatingSources, load_reviewed_data
@@ -169,12 +169,15 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
 
     @app.get('/go')
     async def go(u: str = '', s: str = ''):
-        # The only outbound redirect: an exact Aviasales search URL or its Travelpayouts partner link.
+        # The only outbound redirect: an exact Aviasales flight or hotel search URL, or its Travelpayouts partner link.
         # s is an optional click label for partner reports; anything but a short slug is dropped.
         try:
             if len(u) > 1000:
                 raise ValueError('link')
-            url = safe_search_url(u)
+            try:
+                url = safe_search_url(u)
+            except ValueError:
+                url = safe_hotel_url(u)
         except ValueError:
             raise SearchError('validation', 'Ссылка должна вести на поиск Aviasales.', 422) from None
         label = s if re.fullmatch(r'[a-z0-9-]{1,32}', s) else ''

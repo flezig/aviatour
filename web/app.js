@@ -72,6 +72,10 @@
     const tail = count % 100, last = count % 10;
     return `${count} ${tail >= 11 && tail <= 14 ? 'дней' : last === 1 ? 'день' : last >= 2 && last <= 4 ? 'дня' : 'дней'}`;
   }
+  function nightsLabel(count) {
+    const tail = count % 100, last = count % 10;
+    return `${count} ${tail >= 11 && tail <= 14 ? 'ночей' : last === 1 ? 'ночь' : last >= 2 && last <= 4 ? 'ночи' : 'ночей'}`;
+  }
   function countLabel(count) {
     const tail = count % 100, last = count % 10;
     const word = tail >= 11 && tail <= 14 ? 'вариантов' : last === 1 ? 'вариант' : last >= 2 && last <= 4 ? 'варианта' : 'вариантов';
@@ -85,7 +89,7 @@
     performed: null, performedLabels: null, performedSummary: null, performedLabel: '', status: 'idle', error: '', result: null,
     // A first-time visitor asks «куда», so one best offer per city is on by default; «Все» shows every date and flight.
     filters: { cheap: false, direct: false, noLeave: false, russia: false, unique: true }, sort: 'price', limit: PAGE,
-    airports: null, cities: null, byIata: new Map(), photos: new Set(), guides: {}, pickerTarget: 'origin', shown: new Map(), detail: null,
+    airports: null, cities: null, byIata: new Map(), photos: new Set(), guides: {}, hotels: {}, pickerTarget: 'origin', shown: new Map(), detail: null, backFrom: null, nudged: new Set(),
   };
   let request = null;
 
@@ -154,6 +158,19 @@
     const x = facts(offer), y = facts(trip), zone = offer.destination_timezone;
     const days = Math.round((Date.parse(zoned(y.ret, zone).key) - Date.parse(zoned(x.ret, zone).key)) / 86400000);
     return { trip, days, saving: offer.price_minor - trip.price_minor, sameFlight: y.dep.getTime() === x.dep.getTime() };
+  }
+  // Housing for the trip: Aviasales hotel search for the city, check-in on the arrival day, check-out on the day of the flight back.
+  // Only cities with a known Aviasales hotel location (data/hotel-locations.json); the rest show no housing offer.
+  function lodging(offer, label) {
+    const location = state.hotels[offer.city_code], x = facts(offer), zone = offer.destination_timezone;
+    if (!location || x.dep <= Date.now()) return null;
+    const checkin = zoned(x.arr ?? x.dep, zone).key, checkout = zoned(x.ret, zone).key;
+    const nights = Math.round((Date.parse(checkout) - Date.parse(checkin)) / 86400000);
+    if (nights < 1) return null;
+    const url = `https://www.aviasales.ru/hotels/search?location_id=${location}&location_type=city&checkin=${checkin}&checkout=${checkout}&adults=1`;
+    const day = (key) => fmtDate(new Date(key + 'T00:00:00Z'), 'UTC');
+    const short = (key) => formatter('UTC', { day: 'numeric', month: 'short' }).format(new Date(key + 'T00:00:00Z'));
+    return { link: `/go?s=${label}&u=${encodeURIComponent(url)}`, nights, dates: `${day(checkin)} — ${day(checkout)}`, short: `${short(checkin)} — ${short(checkout)}` };
   }
   const photo = (code) => `<div class="photo">${state.photos.has(code) ? `<img src="photos/${esc(code)}.jpg" alt="" loading="lazy" decoding="async">` : icon('plane')}</div>`;
   // Same allow-list as the app: only an HTTPS Aviasales search page may be opened, and only through /go.
@@ -294,7 +311,7 @@
     </section>`;
   }
   function openDetail(offer) {
-    const x = facts(offer), past = x.dep <= Date.now(), link = past ? null : handoff(offer), hint = past ? null : longer(offer);
+    const x = facts(offer), past = x.dep <= Date.now(), link = past ? null : handoff(offer), hint = past ? null : longer(offer), hotel = lodging(offer, 'web-hotel');
     state.detail = offer;
     $('detailBody').innerHTML = `<div class="detail">
       ${photo(offer.city_code)}
@@ -321,6 +338,12 @@
         <p class="stay-hours">≈ ${Math.floor(x.stay)} часов в пункте назначения</p>
         <p class="stay-cost">${esc(fmtMoney(x.cost))} за час поездки</p>
         <p class="caption">От расчётного прилёта до обратного вылета, включая ночи. Дорога из аэропорта, ожидание, проживание и питание не учтены.</p>
+      </section>` : ''}
+      ${hotel ? `<section class="card lodging">
+        <h3>${icon('bed')}Где жить</h3>
+        <p><b>${esc(offer.city)}</b> · ${esc(hotel.dates)} · ${esc(nightsLabel(hotel.nights))}</p>
+        <a class="btn-inline btn-inline--wide" href="${esc(hotel.link)}" target="_blank" rel="noopener" data-hotel>Отели на эти даты на Aviasales →</a>
+        <p class="caption">Город и даты уже подставлены: заезд в день прилёта, выезд в день обратного вылета, один взрослый. Цены и условия проживания показывает Aviasales.</p>
       </section>` : ''}
       <div class="handoff">
         ${!link && !past ? '<p class="footnote">Не удалось сформировать безопасную ссылку.</p>' : ''}
@@ -520,9 +543,24 @@
   $('budget').addEventListener('input', (event) => { state.query.budget = +event.target.value; renderForm(); });
   $('directOnly').addEventListener('change', (event) => { state.query.direct = event.target.checked; });
   $('search').addEventListener('submit', (event) => { event.preventDefault(); search(); });
+  // Back from the Aviasales tab with the trip card still open: one quiet line about housing above the button, once per trip.
+  document.addEventListener('visibilitychange', () => {
+    const offer = state.detail;
+    if (document.visibilityState !== 'visible' || !offer || state.backFrom !== offer.id || !$('detail').open || state.nudged.has(offer.id)) return;
+    state.backFrom = null;
+    const hotel = lodging(offer, 'web-hotel-back'), cta = $('detailBody').querySelector('.detail-cta');
+    if (!hotel || !cta) return;
+    state.nudged.add(offer.id);
+    cta.insertAdjacentHTML('afterbegin', `<div class="cta-hotel">
+      <a class="cta-hotel-link" href="${esc(hotel.link)}" target="_blank" rel="noopener" data-hotel>${icon('bed')}<span>Билеты — на Aviasales. А жильё? <b>Отели: ${esc(offer.city)}, ${esc(hotel.short)} →</b></span></a>
+      <button type="button" class="cta-hotel-close" aria-label="Скрыть подсказку про жильё" data-hotel-close>${icon('close')}</button>
+    </div>`);
+  });
   $('searchSummary').addEventListener('click', () => { collapseForm(false); $('originPick').focus(); });
   $('detailBody').addEventListener('click', (event) => {
-    if (event.target.closest('a[href^="/go"]')) window.aviatorGoal?.('aviasales');
+    if (event.target.closest('[data-hotel-close]')) { event.target.closest('.cta-hotel').remove(); return; }
+    if (event.target.closest('a[data-hotel]')) window.aviatorGoal?.('hotel');
+    else if (event.target.closest('a[href^="/go"]')) { window.aviatorGoal?.('aviasales'); state.backFrom = state.detail?.id ?? null; }
     const hint = event.target.closest('[data-longer]') && longer(state.detail);
     if (hint) { window.aviatorGoal?.('longer'); openDetail(hint.trip); }
   });
@@ -579,6 +617,7 @@
     renderForm();
     // The photo list changes with each deploy; /photos/* is cached for a day, so revalidate the list itself.
     fetch('photos/manifest.json', { cache: 'no-cache' }).then((response) => response.ok ? response.json() : []).then((codes) => { state.photos = new Set(codes); if (state.status === 'done') renderResults(); }).catch(() => {});
+    fetch('data/hotel-locations.json').then((response) => response.ok ? response.json() : {}).then((hotels) => { state.hotels = hotels; }).catch(() => {});
     fetch('data/city-guides.json').then((response) => response.ok ? response.json() : {}).then((guides) => { state.guides = guides; if (state.status === 'done') renderResults(); }).catch(() => {});
     const restored = await restore();
     renderForm();
