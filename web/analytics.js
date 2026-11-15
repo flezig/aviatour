@@ -5,6 +5,7 @@
 //   longer — открыл подсказанную более длинную и дешёвую поездку, hotel — перешёл к отелям Aviasales.
 //   similar — открыл город из блока «За эти же деньги».
 //   shifted — открыл вариант из блока «Дешевле в соседние дни».
+//   favorite — добавил поездку в избранное.
 (() => {
   const value = String(window.AVIATOR?.metrika ?? '');
   const id = /^\d{5,12}$/.test(value) ? Number(value) : 0;

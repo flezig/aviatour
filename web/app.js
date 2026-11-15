@@ -92,7 +92,7 @@
     performed: null, performedLabels: null, performedSummary: null, performedLabel: '', status: 'idle', error: '', result: null,
     // A first-time visitor asks «куда», so one best offer per city is on by default; «Все» shows every date and flight.
     filters: { cheap: false, direct: false, noLeave: false, comfy: false, near: false, russia: false, unique: true }, length: 'any', sort: 'price', limit: PAGE,
-    airports: null, cities: null, byIata: new Map(), photos: new Set(), guides: {}, hotels: {}, pickerTarget: 'origin', shown: new Map(), detail: null, backFrom: null, nudged: new Set(),
+    airports: null, cities: null, byIata: new Map(), photos: new Set(), guides: {}, hotels: {}, view: 'results', favs: (() => { try { return new Map(JSON.parse(localStorage.getItem('aviator.favorites') ?? '[]').map((offer) => [offer.id, offer])); } catch { return new Map(); } })(), pickerTarget: 'origin', shown: new Map(), detail: null, backFrom: null, nudged: new Set(),
   };
   let request = null;
 
@@ -204,7 +204,7 @@
       .sort((a, b) => a.price_minor - b.price_minor)
       .filter((other) => !seen.has(other.city_code) && seen.add(other.city_code)).slice(0, 3);
   }
-  const photo = (code) => `<div class="photo">${state.photos.has(code) ? `<img src="photos/${esc(code)}.jpg" alt="" loading="lazy" decoding="async">` : icon('plane')}</div>`;
+  const photo = (code, extra = '') => `<div class="photo">${state.photos.has(code) ? `<img src="photos/${esc(code)}.jpg" alt="" loading="lazy" decoding="async">` : icon('plane')}${extra}</div>`;
   // Same allow-list as the app: only an HTTPS Aviasales search page may be opened, and only through /go.
   function handoff(offer) {
     try {
@@ -215,27 +215,64 @@
     } catch { return null; }
   }
 
+  const favButton = (offer) => `<button type="button" class="fav" data-fav="${esc(offer.id)}" aria-pressed="${state.favs.has(offer.id)}" aria-label="В избранное: ${esc(offer.city)}">${icon('heart')}</button>`;
+  // The card answers three questions at a glance: where, how much, when. Flight times and caveats live in the trip card.
   function offerCard(offer) {
     const x = facts(offer), score = x.score, hint = longer(offer);
+    const badge = score != null ? `<span class="badge">${offer.trip_rating?.score != null ? 'Рейтинг' : 'Оценка*'} ${esc(score)}</span>` : '';
     return `<article class="offer">
-      ${photo(offer.city_code)}
+      ${photo(offer.city_code, badge + favButton(offer))}
       <div class="offer-body">
-        <h3 class="offer-city"><button type="button" class="offer-open" data-offer="${esc(offer.id)}">${esc(offer.city)}</button></h3>
+        <div class="offer-head">
+          <h3 class="offer-city"><button type="button" class="offer-open" data-offer="${esc(offer.id)}">${esc(offer.city)}</button></h3>
+          <span class="offer-price">${esc(fmtMoney(offer.price_minor))}</span>
+        </div>
         ${state.guides[offer.city_code] ? `<p class="caption">${esc(state.guides[offer.city_code].summary)}</p>` : ''}
-        <div><span class="offer-price">${esc(fmtMoney(offer.price_minor))}</span><p class="caption">туда-обратно</p></div>
+        <p>${esc(fmtDate(x.dep, offer.origin_timezone))} — ${esc(fmtDate(x.ret, offer.destination_timezone))}${x.days > 0 ? ` · ${esc(daysLabel(x.days))}` : ''}</p>
         ${hint ? `<p class="offer-longer">+${esc(daysLabel(hint.days))} на месте — на ${esc(fmtMoney(hint.saving))} дешевле</p>` : ''}
-        <p>${esc(fmtDate(x.dep, offer.origin_timezone))} — ${esc(fmtDate(x.ret, offer.destination_timezone))}</p>
-        <p class="strong">LIVE · кешированная цена</p>
-        <p class="tiny">Получено ${esc(fmtDate(new Date(offer.received_at), localZone, true))}</p>
-        <p class="caption">${x.direct ? 'Прямые туда и обратно' : 'Условия пересадок — в карточке'}</p>
-        <p>${esc(airlineLabel(offer))}</p>
-        <p>Туда ${esc(fmtTime(x.dep, offer.origin_timezone))} → ${x.arr ? esc(fmtTime(x.arr, offer.destination_timezone)) : '—'}*</p>
-        <p>Обратно ${esc(fmtTime(x.ret, offer.destination_timezone))} → ${x.home ? esc(fmtTime(x.home, offer.origin_timezone)) : '—'}*</p>
-        <p class="tiny">* Прилёт расчётный · местное время</p>
-        ${x.stay ? `<p class="offer-stay">${icon('sun')}≈ ${Math.floor(x.stay)} ч на месте</p><p>${esc(fmtMoney(x.cost))} / час поездки</p>` : ''}
-        <div class="rating"><span>${offer.trip_rating?.score != null ? 'Рейтинг поездки' : 'Оценка перелёта*'}</span><b>${score != null ? `${esc(score)}/100` : '—'}</b></div>
+        <p class="caption">${x.direct ? 'Прямые рейсы' : 'С пересадками'} · ${esc(airlineLabel(offer))}</p>
+        ${x.stay ? `<p class="offer-stay">${icon('sun')}≈ ${Math.floor(x.stay)} ч на месте · ${esc(fmtMoney(x.cost))} / час</p>` : ''}
+        <p class="tiny">Туда-обратно на одного · цена из кеша, получена ${esc(fmtDate(new Date(offer.received_at), localZone, true))}</p>
       </div>
     </article>`;
+  }
+
+  // Favourites live in this browser only: whole offers, newest last, at most 30.
+  function saveFavs() { try { localStorage.setItem('aviator.favorites', JSON.stringify([...state.favs.values()])); } catch { /* private mode: kept for this visit */ } }
+  function toggleFav(id) {
+    const offer = state.favs.get(id) ?? state.shown.get(id) ?? (state.detail?.id === id ? state.detail : null);
+    if (!offer) return;
+    if (state.favs.has(id)) state.favs.delete(id);
+    else { state.favs.set(id, offer); if (state.favs.size > 30) state.favs.delete(state.favs.keys().next().value); window.aviatorGoal?.('favorite'); }
+    saveFavs();
+    for (const button of document.querySelectorAll('[data-fav]')) if (button.dataset.fav === id) button.setAttribute('aria-pressed', String(state.favs.has(id)));
+    if (state.view === 'fav') renderResults();
+    else if ($('favCount')) $('favCount').textContent = state.favs.size;
+  }
+  function compareTable(offers) {
+    const cheapest = Math.min(...offers.map((offer) => offer.price_minor));
+    const row = (title, cell) => `<tr><th scope="row">${title}</th>${offers.map((offer) => `<td>${cell(offer, facts(offer))}</td>`).join('')}</tr>`;
+    return `<div class="compare"><table>
+      <thead><tr><td></td>${offers.map((offer) => `<th scope="col">${esc(offer.city)}</th>`).join('')}</tr></thead>
+      <tbody>
+        ${row('Цена', (offer) => `<b class="${offer.price_minor === cheapest ? 'best' : ''}">${esc(fmtMoney(offer.price_minor))}</b>`)}
+        ${row('Даты', (offer, x) => `${esc(fmtDate(x.dep, offer.origin_timezone))} — ${esc(fmtDate(x.ret, offer.destination_timezone))}`)}
+        ${row('На месте', (offer, x) => x.stay ? `≈ ${Math.floor(x.stay)} ч` : '—')}
+        ${row('Час поездки', (offer, x) => x.stay ? esc(fmtMoney(x.cost)) : '—')}
+        ${row('В пути', (offer, x) => Number.isFinite(x.flight) ? esc(duration(x.flight)) : '—')}
+        ${row('Пересадки', (offer, x) => x.direct ? 'Прямые' : 'Есть')}
+        ${row('Авиакомпания', (offer) => esc(airlineLabel(offer)))}
+      </tbody></table></div>`;
+  }
+  function renderFavorites() {
+    const section = $('results'), offers = [...state.favs.values()].filter((offer) => facts(offer).dep > Date.now()).reverse();
+    state.shown = new Map(offers.map((offer) => [offer.id, offer]));
+    section.hidden = false;
+    section.innerHTML = `<h2>Избранное</h2>
+      <div><button type="button" class="chip" data-action="results">← К вариантам</button></div>
+      ${offers.length > 1 ? `<p class="caption">Сравнение${offers.length > 4 ? ' первых четырёх' : ''} поездок. Самая низкая цена выделена.</p>${compareTable(offers.slice(0, 4))}` : ''}
+      ${offers.length ? `<div class="grid">${offers.map(offerCard).join('')}</div><p class="caption">Избранное хранится только в этом браузере. Цены в нём — на момент добавления; актуальную покажет Aviasales.</p>`
+        : statusPanel('heart', 'Пока пусто', 'Нажмите на сердечко на карточке поездки — она появится здесь, и поездки можно будет сравнить.')}`;
   }
 
   function statusPanel(symbol, title, message) {
@@ -244,6 +281,7 @@
   const action = (name, title, primary = true) => `<button type="button" class="${primary ? 'btn-primary' : 'btn-inline btn-inline--wide'}" data-action="${name}">${esc(title)}</button>`;
 
   function renderResults() {
+    if (state.view === 'fav') { renderFavorites(); return; }
     const section = $('results'), q = state.performed;
     section.hidden = state.status === 'idle';
     $('searchButton').disabled = state.status === 'loading';
@@ -269,7 +307,7 @@
         .map(([name, title]) => `<button type="button" class="chip" data-chip="${name}" aria-pressed="${state.filters[name]}">${title}</button>`).join('');
       const otherSort = state.sort !== 'price' && state.sort !== 'priceDescending';
       body = `<div class="chips" role="group" aria-label="Быстрые фильтры">${chips}</div>
-        <div class="results-bar"><p class="results-count">${esc(countLabel(offers.length))}</p></div>
+        <div class="results-bar"><p class="results-count">${esc(countLabel(offers.length))}</p><button type="button" class="chip chip--fav" data-action="favorites">${icon('heart')}Избранное · <span id="favCount">${state.favs.size}</span></button></div>
         <div class="sort-row">
           <div class="segmented" role="radiogroup" aria-label="По цене">
             <label><input type="radio" name="priceSort" value="price" ${state.sort === 'price' ? 'checked' : ''}><span>Сначала дешевле</span></label>
@@ -351,7 +389,7 @@
     const alike = past ? [] : similar(offer), nearby = past ? null : shifted(offer);
     state.detail = offer; state.alike = new Map(alike.map((other) => [other.id, other]));
     $('detailBody').innerHTML = `<div class="detail">
-      ${photo(offer.city_code)}
+      ${photo(offer.city_code, favButton(offer))}
       <div class="stack"><h2>${esc(offer.city)}</h2><p class="footnote">${esc(offer.country ?? 'Страна не указана')}</p></div>
       <p class="eyebrow">LIVE · кешированные данные</p>
       ${past ? '<p class="footnote">Даты прошли. Выполните новый поиск.</p>' : ''}
@@ -485,7 +523,7 @@
     request?.abort();
     request = new AbortController();
     const q = { ...state.query }, signal = request.signal, label = summary(q);
-    Object.assign(state, { performed: q, performedLabels: { ...state.labels }, performedSummary: label, performedLabel: `${label.route} · ${label.details}`, status: 'loading', limit: PAGE });
+    Object.assign(state, { performed: q, performedLabels: { ...state.labels }, performedSummary: label, performedLabel: `${label.route} · ${label.details}`, status: 'loading', limit: PAGE, view: 'results' });
     if (!auto) { history.replaceState(null, '', '?' + toParams(q)); window.aviatorGoal?.('search'); }
     collapseForm(true);
     renderResults();
@@ -607,6 +645,8 @@
   });
   $('searchSummary').addEventListener('click', () => { collapseForm(false); $('originPick').focus(); });
   $('detailBody').addEventListener('click', (event) => {
+    const fav = event.target.closest('[data-fav]');
+    if (fav) { toggleFav(fav.dataset.fav); return; }
     if (event.target.closest('[data-hotel-close]')) { event.target.closest('.cta-hotel').remove(); return; }
     if (event.target.closest('a[data-hotel]')) window.aviatorGoal?.('hotel');
     else if (event.target.closest('a[href^="/go"]')) { window.aviatorGoal?.('aviasales'); state.backFrom = state.detail?.id ?? null; }
@@ -619,7 +659,8 @@
   });
 
   $('results').addEventListener('click', (event) => {
-    const chip = event.target.closest('[data-chip]'), act = event.target.closest('[data-action]'), open = event.target.closest('[data-offer]');
+    const chip = event.target.closest('[data-chip]'), act = event.target.closest('[data-action]'), open = event.target.closest('[data-offer]'), fav = event.target.closest('[data-fav]');
+    if (fav) { toggleFav(fav.dataset.fav); return; }
     if (chip) {
       if (chip.dataset.chip === 'all') { for (const name of Object.keys(state.filters)) state.filters[name] = false; state.length = 'any'; }
       else state.filters[chip.dataset.chip] = !state.filters[chip.dataset.chip];
@@ -627,6 +668,7 @@
       renderResults();
     } else if (act) {
       const name = act.dataset.action, q = state.query;
+      if (name === 'favorites' || name === 'results') { state.view = name === 'favorites' ? 'fav' : 'results'; renderResults(); $('results').scrollIntoView({ block: 'start' }); return; }
       if (name === 'more') { state.limit += PAGE; renderResults(); return; }
       if (name === 'resetFilters') { for (const key of Object.keys(state.filters)) state.filters[key] = false; state.length = 'any'; renderResults(); return; }
       if (name === 'edit') { collapseForm(false); $('search').scrollIntoView({ block: 'start' }); return; }

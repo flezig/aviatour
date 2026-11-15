@@ -181,18 +181,34 @@ img { display: block; max-width: 100%; }
 .offer { position: relative; display: flex; flex-direction: column; background: #fff; border-radius: 20px; overflow: hidden; box-shadow: var(--shadow-offer); transition: transform 0.15s, box-shadow 0.15s; }
 .offer:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(0, 0, 0, 0.1); }
 .offer:focus-within { outline: 3px solid var(--blue); outline-offset: 2px; }
-.photo { position: relative; height: 150px; background: linear-gradient(135deg, rgba(22, 119, 242, 0.25), rgba(50, 173, 230, 0.12)); display: grid; place-items: center; color: var(--blue); overflow: hidden; }
+.photo { position: relative; height: 170px; background: linear-gradient(135deg, rgba(22, 119, 242, 0.25), rgba(50, 173, 230, 0.12)); display: grid; place-items: center; color: var(--blue); overflow: hidden; }
 .photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .photo .icon { width: 56px; height: 56px; }
-.offer-body { display: grid; gap: 8px; padding: 8px 12px 12px; }
-.offer-city { font-size: 17px; font-weight: 600; }
+.offer-body { display: grid; gap: 8px; padding: 12px 14px 14px; }
+.offer-city { font-size: 19px; font-weight: 700; }
 .offer-open { padding: 0; border: 0; background: none; font: inherit; text-align: left; }
 .offer-open::after { content: ""; position: absolute; inset: 0; }
 .offer-open:focus-visible { outline: none; }
 .offer-price { font-size: 20px; font-weight: 700; color: var(--blue); }
-.offer-body p { font-size: 12px; }
+.offer-body p { font-size: 14px; }
 .offer-body .strong { font-weight: 700; color: var(--secondary); }
 .offer-body .tiny { font-size: 11px; color: var(--secondary); }
+.offer-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.offer-head .offer-price { flex: none; }
+.badge { position: absolute; left: 10px; bottom: 10px; padding: 4px 10px; border-radius: 999px; background: rgba(0, 0, 0, 0.55); color: #fff; font-size: 13px; font-weight: 600; -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+.fav { position: absolute; top: 8px; right: 8px; z-index: 1; display: grid; place-items: center; width: 44px; height: 44px; border: 0; border-radius: 50%; background: rgba(255, 255, 255, 0.9); color: #3a3a3c; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); transition: transform 0.12s; }
+.fav:active { transform: scale(0.9); }
+.fav .icon, .chip--fav .icon { width: 22px; height: 22px; fill: none; }
+.fav[aria-pressed="true"] { color: var(--red); }
+.fav[aria-pressed="true"] .icon { fill: currentColor; }
+.chip--fav { display: inline-flex; align-items: center; gap: 6px; }
+.chip--fav .icon { width: 18px; height: 18px; color: var(--red); }
+.compare { overflow-x: auto; border-radius: 20px; background: #fff; box-shadow: var(--shadow-offer); }
+.compare table { width: 100%; border-collapse: collapse; font-size: 15px; }
+.compare th, .compare td { padding: 10px 14px; text-align: left; vertical-align: top; border-top: 1px solid var(--separator); min-width: 120px; }
+.compare thead th, .compare thead td { border-top: 0; font-size: 17px; }
+.compare tbody th { min-width: 0; color: var(--secondary); font-weight: 400; white-space: nowrap; }
+.compare .best { color: var(--green); }
 .offer-longer { padding: 6px 10px; border-radius: 10px; background: var(--green-10); color: var(--green); font-size: 15px; font-weight: 600; }
 .offer-stay { display: flex; align-items: center; gap: 6px; font-weight: 700; color: var(--blue); }
 .offer-stay .icon { width: 16px; height: 16px; }
