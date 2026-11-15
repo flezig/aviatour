@@ -4,6 +4,7 @@
 //   search — посетитель сам запустил поиск, trip — открыл карточку поездки, aviasales — перешёл на Aviasales,
 //   longer — открыл подсказанную более длинную и дешёвую поездку, hotel — перешёл к отелям Aviasales.
 //   similar — открыл город из блока «За эти же деньги».
+//   shifted — открыл вариант из блока «Дешевле в соседние дни».
 (() => {
   const value = String(window.AVIATOR?.metrika ?? '');
   const id = /^\d{5,12}$/.test(value) ? Number(value) : 0;

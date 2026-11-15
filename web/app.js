@@ -182,6 +182,20 @@
     const short = (key) => formatter('UTC', { day: 'numeric', month: 'short' }).format(new Date(key + 'T00:00:00Z'));
     return { link: `/go?s=${label}&u=${encodeURIComponent(url)}`, nights, dates: `${day(checkin)} — ${day(checkout)}`, short: `${short(checkin)} — ${short(checkout)}` };
   }
+  // «Cheaper on nearby days»: the same city and trip length, leaving 1–3 days earlier or later,
+  // at least 5% and 300 ₽ cheaper, with no more transfers. Taken from the trips this search already found.
+  function shifted(offer) {
+    const x = facts(offer), fewer = (a, b) => b == null || (a != null && a <= b);
+    let best = null;
+    for (const other of state.result?.offers ?? []) {
+      const y = facts(other), shift = Math.round((Date.parse(y.out.key) - Date.parse(x.out.key)) / 86400000);
+      if (other.city_code !== offer.city_code || y.days !== x.days || !shift || Math.abs(shift) > 3 || y.dep <= Date.now()) continue;
+      if (offer.price_minor - other.price_minor < Math.max(30000, offer.price_minor * 0.05)) continue;
+      if (!fewer(other.transfers, offer.transfers) || !fewer(other.return_transfers, offer.return_transfers)) continue;
+      if (!best || other.price_minor < best.trip.price_minor) best = { trip: other, shift, saving: offer.price_minor - other.price_minor };
+    }
+    return best;
+  }
   // «For the same money»: up to three other cities whose best visible trip costs within 15% of this one.
   function similar(offer) {
     const seen = new Set([offer.city_code]);
@@ -334,7 +348,7 @@
   }
   function openDetail(offer) {
     const x = facts(offer), past = x.dep <= Date.now(), link = past ? null : handoff(offer), hint = past ? null : longer(offer), hotel = lodging(offer, 'web-hotel');
-    const alike = past ? [] : similar(offer);
+    const alike = past ? [] : similar(offer), nearby = past ? null : shifted(offer);
     state.detail = offer; state.alike = new Map(alike.map((other) => [other.id, other]));
     $('detailBody').innerHTML = `<div class="detail">
       ${photo(offer.city_code)}
@@ -352,6 +366,11 @@
         <p>Если вернуться ${esc(fmtDate(facts(hint.trip).ret, offer.destination_timezone))}, билеты будут на <b>${esc(fmtMoney(hint.saving))} дешевле</b>, а на месте — на ${esc(daysLabel(hint.days))} больше.</p>
         <p class="caption">${hint.sameFlight ? 'Туда тот же рейс' : `Вылет в тот же день, в ${esc(fmtTime(facts(hint.trip).dep, offer.origin_timezone))}`}. Жильё и питание на лишние дни в эту цену не входят.</p>
         <button type="button" class="btn-inline btn-inline--wide" data-longer>Посмотреть этот вариант · ${esc(fmtMoney(hint.trip.price_minor))}</button>
+      </section>` : ''}
+      ${nearby ? `<section class="longer">
+        <h3>Дешевле в соседние дни</h3>
+        <p>Если вылететь ${esc(fmtDate(facts(nearby.trip).dep, offer.origin_timezone))} — на ${esc(daysLabel(Math.abs(nearby.shift)))} ${nearby.shift < 0 ? 'раньше' : 'позже'}, — билеты будут на <b>${esc(fmtMoney(nearby.saving))} дешевле</b>. Поездка той же длины.</p>
+        <button type="button" class="btn-inline btn-inline--wide" data-shifted>Посмотреть этот вариант · ${esc(fmtMoney(nearby.trip.price_minor))}</button>
       </section>` : ''}
       ${guideBlock(offer.city_code)}
       ${routeCard(offer, true)}
@@ -593,6 +612,8 @@
     else if (event.target.closest('a[href^="/go"]')) { window.aviatorGoal?.('aviasales'); state.backFrom = state.detail?.id ?? null; }
     const hint = event.target.closest('[data-longer]') && longer(state.detail);
     if (hint) { window.aviatorGoal?.('longer'); openDetail(hint.trip); }
+    const nearby = event.target.closest('[data-shifted]') && shifted(state.detail);
+    if (nearby) { window.aviatorGoal?.('shifted'); openDetail(nearby.trip); return; }
     const other = state.alike?.get(event.target.closest('[data-similar]')?.dataset.similar);
     if (other) { window.aviatorGoal?.('similar'); openDetail(other); }
   });
