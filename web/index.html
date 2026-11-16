@@ -49,8 +49,9 @@
   <main class="wrap">
     <section class="intro">
       <h1>Куда улететь <button type="button" class="origin" id="originTitle" aria-label="Город вылета. Изменить">из&nbsp;Москвы</button></h1>
-      <!-- Место под поиск словами: функция выключена, языковые модели сайт не вызывает. -->
-      <p class="ai" aria-disabled="true"><svg class="icon" aria-hidden="true"><use href="/icons.svg#pen"></use></svg><span>Опишите поездку словами</span><span class="ai-note">пока недоступно</span></p>
+      <!-- Место под поиск словами. Скрыто до запуска функции (решение владельца 16.11.2026): выключенное поле на первом экране
+           выглядит как поломка. Чтобы показать — убрать hidden. Языковые модели сайт не вызывает. -->
+      <p class="ai" aria-disabled="true" hidden><svg class="icon" aria-hidden="true"><use href="/icons.svg#pen"></use></svg><span>Опишите поездку словами</span><span class="ai-note">пока недоступно</span></p>
     </section>
 
     <form class="search search--collapsed" id="search" novalidate aria-label="Поиск поездок">

@@ -20,7 +20,7 @@ export const daysAhead = (count) => count === 0 ? 'сегодня' : count === 1
 
 // «вылет через 3 дня · на 30% ниже обычной цены в декабре»
 export const hotLine = (ahead, diff, month) => `вылет ${daysAhead(ahead)} · на ${Math.abs(diff)}% ниже обычной цены в ${inMonth(month)}`;
-// «2 дня отпуска — 9 дней поездки» или «без отпуска · 3 дня»
+// «2 дня отпуска — 6 дней поездки» или «без отпуска · 3 дня». Дней поездки = ночей + 1, в подборках ночей не больше 7 — значит, до 8 дней.
 export const leaveLine = (leave, tripDays) => leave ? `${days(leave)} отпуска — ${days(tripDays)} поездки` : `без отпуска · ${days(tripDays)}`;
 
 // Объяснение по нажатию на уровень цены.

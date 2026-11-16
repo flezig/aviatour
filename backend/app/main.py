@@ -204,7 +204,6 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
     holidays = data_file('holidays.json', None)
     calendar_ru = showcase.load_calendar(holidays) if holidays else showcase.Calendar()
     city_tags, guides = data_file('city-tags.json', {}), data_file('city-guides.json', {})
-    home_cache = TTLCache(settings.ttl, 40)
     compact = {'outbound_segments', 'inbound_segments', 'trip_rating', 'partner_url', 'source', 'currency', 'availability', 'expires_at'}
 
     def web_query(origin, request, price_minor):
@@ -311,12 +310,42 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
         prices = {offer.id: (offer.price_minor, offer.received_at.isoformat()) for offer in pool.values()}
         return body, prices
 
+    # Готовая главная живёт дольше, чем считается свежей: первые 10 минут — свежая; до 6 часов (в пределах тех же суток)
+    # её отдают сразу, а новую собирают в фоне. Сборка без кеша — 4–8 секунд; ждёт её только первый посетитель
+    # после перезапуска сервера (после выкладки сайт прогревается: scripts/warm_home.sh).
+    HOME_FRESH, HOME_KEEP, HOME_ORIGINS = timedelta(minutes=10), timedelta(hours=6), 20
+    home_store, home_builds = {}, {}
+
+    def rebuild_home(origin, key, today):
+        if key not in home_builds:
+            async def run():
+                try:
+                    limiter.check()  # одна сборка главной — одно действие посетителя
+                    body, prices = await build_home(origin)
+                    home_store.pop(key, None)
+                    home_store[key] = (now(), today, body, prices)
+                    while len(home_store) > HOME_ORIGINS:
+                        home_store.pop(next(iter(home_store)))
+                finally:
+                    home_builds.pop(key, None)
+            task = asyncio.create_task(run())
+            # Фоновую сборку никто не ждёт: её ошибка не должна теряться молча в журнале как «не прочитанная».
+            task.add_done_callback(lambda done: done.cancelled() or done.exception())
+            home_builds[key] = task
+        return home_builds[key]
+
     async def home_for(origin):
+        key = (origin['iata'], origin['all'])
         today = now().astimezone(ZoneInfo(BY_IATA[origin['iata']]['timezone'])).date().isoformat()
-        async def load():
-            limiter.check()  # одна сборка главной — одно действие посетителя
-            return await build_home(origin)
-        return await home_cache.get_or_create((origin['iata'], origin['all'], today), load)
+        entry = home_store.get(key)
+        usable = entry is not None and entry[1] == today and now() - entry[0] < HOME_KEEP
+        if usable and now() - entry[0] < HOME_FRESH:
+            return entry[2], entry[3]
+        task = rebuild_home(origin, key, today)
+        if usable:
+            return entry[2], entry[3]  # устаревшая, но сегодняшняя — сразу; дата цен в ней своя и показывается
+        await asyncio.shield(task)
+        return home_store[key][2], home_store[key][3]
 
     @app.get('/api/v1/home')
     async def home_endpoint(origin: str = Query(alias='from'), fc: str | None = None):
@@ -324,7 +353,8 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
         if not chosen:
             raise SearchError('validation', 'Выберите город вылета из справочника.', 422)
         body, _ = await home_for(chosen)
-        cache_control = 'public, max-age=60, s-maxage=600, stale-while-revalidate=600' if body['complete'] else 'public, max-age=30, s-maxage=60'
+        # CDN: 10 минут свежая, потом сутки отдаёт прежнюю и сам обновляет её в фоне.
+        cache_control = 'public, max-age=60, s-maxage=600, stale-while-revalidate=86400' if body['complete'] else 'public, max-age=30, s-maxage=60, stale-while-revalidate=600'
         return JSONResponse(body, headers={'Cache-Control': cache_control})
 
     @app.get('/api/v1/home/prices')

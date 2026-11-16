@@ -289,7 +289,7 @@ img { display: block; max-width: 100%; }
 }
 
 /* --- Фото в шапке главной: полоса за заголовком и формой, снизу растворяется в небе --- */
-.hero-photo { position: absolute; left: 0; right: 0; top: 0; z-index: -1; height: 300px; overflow: hidden; pointer-events: none; }
+.hero-photo { position: absolute; left: 0; right: 0; top: 0; z-index: -1; height: 254px; overflow: hidden; pointer-events: none; }
 .hero-photo img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 45%; }
 .hero-photo::after { content: ''; position: absolute; inset: 0;
   background: linear-gradient(180deg, var(--photo-shade) 0, rgba(15, 27, 61, .32) 55%, rgba(15, 27, 61, 0) 80%), linear-gradient(0deg, var(--paper) 0, rgba(238, 243, 249, 0) 22%); }

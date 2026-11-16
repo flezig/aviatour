@@ -154,3 +154,38 @@ def test_home_endpoint_builds_rows_hides_short_ones_and_checks_hot_with_route_se
         assert prices == {kazan['id']: {'price_minor': 300000, 'received_at': prices[kazan['id']]['received_at']}}
         assert client.get('/api/v1/home/prices', params={'from': 'SVO', 'fc': 'MOW', 'ids': 'nope'}).status_code == 422
         assert client.get('/api/v1/home', params={'from': 'XXX'}).status_code == 422
+
+
+def test_home_is_served_stale_at_once_and_rebuilt_in_background():
+    import time
+    from datetime import timedelta
+    clock = {'now': NOW}
+    price = {'value': 3000}
+    def handler(request):
+        params = dict(request.url.params)
+        found = [r for r in [row('KZN', '2026-11-20T19:00:00+03:00', '2026-11-22T18:00:00+03:00', price['value']),
+                             row('LED', '2026-11-20T19:00:00+03:00', '2026-11-22T18:00:00+03:00', 3500),
+                             row('UFA', '2026-11-20T19:00:00+03:00', '2026-11-22T18:00:00+03:00', 4000)]
+                 if r['departure_at'].startswith(params['departure_at']) and r['destination'] == params.get('destination', r['destination'])]
+        return httpx.Response(200, json={'success': True, 'data': found})
+    app = create_app(Settings(token='fixture', ttl=1), transport=httpx.MockTransport(handler), now=lambda: clock['now'])
+    def kazan(client):
+        body = client.get('/api/v1/home', params={'from': 'SVO', 'fc': 'MOW'}).json()
+        return next(offer['price_minor'] for offer in body['offers'].values() if offer['city_code'] == 'KZN')
+    with TestClient(app) as client:
+        assert kazan(client) == 300000
+        price['value'] = 2500
+        time.sleep(1.1)  # кеш поисков (ttl=1 с) устарел, источник отдаст новую цену
+        clock['now'] = NOW + timedelta(minutes=11)
+        assert kazan(client) == 300000  # устаревшая главная — сразу, без ожидания сборки
+        for _ in range(40):  # новая собирается в фоне
+            if kazan(client) == 250000:
+                break
+            time.sleep(.05)
+        assert kazan(client) == 250000
+        price['value'] = 2000
+        time.sleep(1.1)
+        clock['now'] = NOW + timedelta(hours=7)  # дольше 6 часов — старую не отдаём, ждём новую
+        assert kazan(client) == 200000
+        response = client.get('/api/v1/home', params={'from': 'SVO', 'fc': 'MOW'})
+        assert 'stale-while-revalidate=86400' in response.headers['Cache-Control']
