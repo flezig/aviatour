@@ -155,8 +155,11 @@ def build():
     city_info = {a['city_code']: a for a in airports if a['timezone']}
     origins, destination = seen_cities()
     old = {city['code']: city for city in json.loads((WEB / 'data/cities.json').read_text())['cities']} if (WEB / 'data/cities.json').exists() else {}
-    chosen = sorted((code for code in origins if code in manifest and code in city_info),
-                    key=lambda code: (-len(origins[code]), -sum(destination[code].values())))[:LIMIT]
+    # Опубликованные страницы не пропадают: город, который сегодня не встретился в выдаче, остаётся (иначе ссылки из
+    # поисковиков ведут на 404). Новые города добавляются, пока всего не больше LIMIT.
+    fresh = sorted((code for code in origins if code in manifest and code in city_info and code not in old),
+                   key=lambda code: (-len(origins[code]), -sum(destination[code].values())))
+    chosen = [code for code in old if code in city_info] + fresh[:max(0, LIMIT - len(old))]
     photo_credits = credits()
     qids = {}
     for code in chosen:
@@ -185,18 +188,22 @@ def build():
         population = fact.get('population')
         cities.append({
             'code': code, 'slug': page, 'name': name, 'to': to_form(name), 'country': info['country'], 'country_code': info['country_code'],
-            'airport': destination[code].most_common(1)[0][0], 'timezone': info['timezone'],
+            'airport': destination[code].most_common(1)[0][0] if destination[code] else old[code]['airport'], 'timezone': info['timezone'],
             'guide': code in guides, 'hotels': code in hotels, 'ostrovok': link,
             'qid': qid, 'population': {'value': population[0], 'year': population[1]} if population else None,
             'photo': photo_credits.get(code),
         })
-        print(code, page, to_form(name), len(origins[code]), bool(link), population)
+        print(code, page, to_form(name), len(origins.get(code, ())), bool(link), population)
     data = {'about': 'Города со своей страницей /city/<slug>. Собирает scripts/build_city_pages.py: фото есть на сайте, город попадает в выдачу '
                      f'(поездки на 1–14 ночей) из {", ".join(fc or iata for iata, fc in ORIGINS)} за {" и ".join(months())}. '
                      'Население — Wikidata (CC0), значение с самой поздней датой. Ostrovok — адрес страницы города, проверен ответом 200.',
             'built': TODAY.isoformat(), 'sources': {'wikidata': 'https://www.wikidata.org/', 'photos': '/credits.html'}, 'cities': cities}
     (WEB / 'data/cities.json').write_text(json.dumps(data, ensure_ascii=False, separators=(',', ':')) + '\n')
-    pages = ['/', '/city/', '/how-we-count.html', '/how-we-earn.html', '/about.html', '/credits.html'] + [f'/city/{city["slug"]}' for city in cities]
+    # Страницы «Куда улететь» — для тех же городов вылета, что в backend/app/scenario_pages.py (ORIGINS).
+    origins = {origin['code']: origin for origin in json.loads((WEB / 'data/origins.json').read_text())['cities']}
+    scenarios = [f'do-{upper}' for upper in (5000, 10000, 15000, 20000)] + ['na-vykhodnye', 'na-prazdniki']
+    kuda = [f'/kuda/{slug(origins[code]["name"])}/{scenario}' for code in ('MOW', 'LED', 'SVX', 'KZN', 'OVB', 'KRR', 'AER', 'UFA', 'KUF', 'GOJ') for scenario in scenarios]
+    pages = ['/', '/city/', '/kuda/', '/how-we-count.html', '/how-we-earn.html', '/about.html', '/credits.html'] + [f'/city/{city["slug"]}' for city in cities] + kuda
     (WEB / 'sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
                                      + ''.join(f'  <url><loc>{SITE}{page}</loc></url>\n' for page in pages) + '</urlset>\n')
     return cities

@@ -1,4 +1,5 @@
 import json
+import re
 from datetime import date, datetime, timezone
 from decimal import Decimal
 from itertools import count
@@ -189,3 +190,31 @@ def test_home_is_served_stale_at_once_and_rebuilt_in_background():
         assert kazan(client) == 200000
         response = client.get('/api/v1/home', params={'from': 'SVO', 'fc': 'MOW'})
         assert 'stale-while-revalidate=86400' in response.headers['Cache-Control']
+
+
+def test_scenario_pages_budget_weekend_holidays():
+    rows = [row(city, '2026-11-20T19:00:00+03:00', '2026-11-22T18:00:00+03:00', price) for city, price in (('KZN', 3000), ('LED', 4500), ('UFA', 8000), ('AER', 9000))]
+    def handler(request):
+        params = dict(request.url.params)
+        found = [r for r in rows if r['departure_at'].startswith(params['departure_at']) and (not params.get('return_at') or r['return_at'].startswith(params['return_at']))
+                 and r['destination'] == params.get('destination', r['destination'])]
+        return httpx.Response(200, json={'success': True, 'data': found})
+    with TestClient(create_app(Settings(token='fixture'), transport=httpx.MockTransport(handler), now=lambda: NOW)) as client:
+        page = client.get('/kuda/moskva/do-10000')
+        html = page.text
+        assert page.status_code == 200 and 's-maxage' in page.headers['Cache-Control']
+        assert '<title>Куда улететь из Москвы до 10 000 ₽ — 4 направления от 3 000 ₽ · Aviator</title>' in html
+        assert '<link rel="canonical" href="https://aviatour.vercel.app/kuda/moskva/do-10000">' in html and 'noindex' not in html
+        # Дешевле — выше; ссылка открывает поездку на главной по её поиску.
+        assert html.index('Казань') < html.index('Санкт-Петербург') < html.index('Уфа') < html.index('Сочи')
+        assert re.search(r'href="/\?from=SVO&amp;fc=MOW&amp;[^"]*#trip=[0-9a-f]{32}"', html)
+        assert 'href="/city/kazan"' in html and '"@type": "BreadcrumbList"' in html
+        five = client.get('/kuda/moskva/do-5000').text  # два города — мало: страница честно говорит и закрыта от поисковиков
+        assert 'noindex' in five and 'Пока мало вариантов' in five and 'Казань' in five and 'Уфа' not in five
+        weekend = client.get('/kuda/moskva/na-vykhodnye').text
+        assert 'Куда улететь из Москвы на выходные' in weekend and 'На эти выходные' in weekend
+        holidays = client.get('/kuda/moskva/na-prazdniki')
+        assert holidays.status_code == 200 and 'новогодние каникулы' in holidays.text and 'noindex' in holidays.text  # на каникулы поездок в данных нет
+        assert client.get('/kuda/moskva/do-7000').status_code == 404 and client.get('/kuda/minsk/do-5000').status_code == 404
+        assert client.get('/kuda/moskva', follow_redirects=False).headers['location'] == '/kuda/#moskva'
+        assert 'Из Москвы' in client.get('/kuda/').text

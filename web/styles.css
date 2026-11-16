@@ -572,6 +572,24 @@ a.month:hover .month-bar rect { fill: var(--cobalt); }
   .photo-credit { margin-top: calc(-1 * var(--s-3)); }
 }
 
+/* --- Страницы-сценарии «Куда улететь …» --- */
+.scenario { display: grid; gap: var(--s-5); }
+.scenario .page-head { padding-bottom: 0; }
+.scenario .page-head p { font-size: var(--fs-body); }
+.scenario > * { min-width: 0; }
+.scenario-block { display: grid; gap: var(--s-2); }
+.scenario-list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-3); }
+.scenario-item { display: grid; gap: 0; background: var(--card); border-radius: var(--r-pass); box-shadow: var(--sh-pass); overflow: hidden; }
+.scenario-open { display: grid; grid-template-columns: 76px minmax(0, 1fr) auto; align-items: center; gap: var(--s-3); padding: var(--s-3); color: var(--ink); text-decoration: none; }
+.scenario-open:hover .scenario-price { color: var(--cobalt); }
+.scenario-open .stamp { --hole: 2.5px; --step: 8px; padding: 4px; display: block; }
+.scenario-open .photo { display: block; aspect-ratio: 1; }
+.scenario-text { display: grid; gap: var(--s-0); font-size: var(--fs-small); }
+.scenario-text b { font-family: var(--f-head); font-weight: 800; font-size: var(--fs-body); overflow-wrap: anywhere; }
+.scenario-price { font: 700 var(--fs-small) var(--f-mono); letter-spacing: -.03em; white-space: nowrap; transition: color var(--t-fast) var(--ease); }
+.scenario-city { display: flex; align-items: center; min-height: var(--tap); padding: 0 var(--s-3) 0 calc(76px + 2 * var(--s-3)); border-top: 1px solid var(--line); font-size: var(--fs-cap); font-weight: 600; }
+@media (min-width: 900px) { .scenario-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
 /* --- Уведомление о cookie: в потоке страницы, не поверх неё --- */
 .consent { display: grid; gap: var(--s-3); margin: var(--s-3) 0; padding: var(--s-4); border: 1px dashed var(--line-strong); border-radius: var(--r-pass); font-size: var(--fs-small); }
 .consent-actions { display: flex; flex-wrap: wrap; gap: var(--s-2); }

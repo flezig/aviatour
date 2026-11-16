@@ -2,6 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://aviatour.vercel.app/</loc></url>
   <url><loc>https://aviatour.vercel.app/city/</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/</loc></url>
   <url><loc>https://aviatour.vercel.app/how-we-count.html</loc></url>
   <url><loc>https://aviatour.vercel.app/how-we-earn.html</loc></url>
   <url><loc>https://aviatour.vercel.app/about.html</loc></url>
@@ -74,4 +75,64 @@
   <url><loc>https://aviatour.vercel.app/city/baku</loc></url>
   <url><loc>https://aviatour.vercel.app/city/magas</loc></url>
   <url><loc>https://aviatour.vercel.app/city/sharm-esh-sheykh</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/moskva/do-5000</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/moskva/do-10000</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/moskva/do-15000</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/moskva/do-20000</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/moskva/na-vykhodnye</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/moskva/na-prazdniki</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/sankt-peterburg/do-5000</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/sankt-peterburg/do-10000</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/sankt-peterburg/do-15000</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/sankt-peterburg/do-20000</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/sankt-peterburg/na-vykhodnye</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/sankt-peterburg/na-prazdniki</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/ekaterinburg/do-5000</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/ekaterinburg/do-10000</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/ekaterinburg/do-15000</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/ekaterinburg/do-20000</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/ekaterinburg/na-vykhodnye</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/ekaterinburg/na-prazdniki</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/kazan/do-5000</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/kazan/do-10000</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/kazan/do-15000</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/kazan/do-20000</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/kazan/na-vykhodnye</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/kazan/na-prazdniki</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/novosibirsk/do-5000</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/novosibirsk/do-10000</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/novosibirsk/do-15000</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/novosibirsk/do-20000</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/novosibirsk/na-vykhodnye</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/novosibirsk/na-prazdniki</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/krasnodar/do-5000</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/krasnodar/do-10000</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/krasnodar/do-15000</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/krasnodar/do-20000</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/krasnodar/na-vykhodnye</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/krasnodar/na-prazdniki</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/sochi/do-5000</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/sochi/do-10000</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/sochi/do-15000</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/sochi/do-20000</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/sochi/na-vykhodnye</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/sochi/na-prazdniki</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/ufa/do-5000</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/ufa/do-10000</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/ufa/do-15000</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/ufa/do-20000</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/ufa/na-vykhodnye</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/ufa/na-prazdniki</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/samara/do-5000</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/samara/do-10000</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/samara/do-15000</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/samara/do-20000</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/samara/na-vykhodnye</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/samara/na-prazdniki</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/nizhniy-novgorod/do-5000</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/nizhniy-novgorod/do-10000</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/nizhniy-novgorod/do-15000</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/nizhniy-novgorod/do-20000</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/nizhniy-novgorod/na-vykhodnye</loc></url>
+  <url><loc>https://aviatour.vercel.app/kuda/nizhniy-novgorod/na-prazdniki</loc></url>
 </urlset>

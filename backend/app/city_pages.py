@@ -296,6 +296,7 @@ FOOT = '''
   <footer class="wrap footer">
     <nav aria-label="Информация">
       <a href="/city/">Города</a>
+      <a href="/kuda/">Куда улететь</a>
       <a href="/how-we-count.html">Как мы считаем</a>
       <a href="/how-we-earn.html">Как мы зарабатываем</a>
       <a href="/about.html">О проекте</a>

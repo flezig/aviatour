@@ -2,6 +2,7 @@
 import './lib/measure.js';
 import { mountSky } from './lib/sky.js';
 import { esc } from './lib/ui.js';
+import { fmtDay, fmtTime, localZone } from './lib/format.js';
 
 const config = window.AVIATOR ?? {};
 const safeLink = (value) => /^(https:\/\/|mailto:)/.test(value ?? '') ? value : null;
@@ -45,3 +46,9 @@ if (credits) {
 }
 
 mountSky();
+
+// Страницы с готовым HTML с сервера пишут время цен по Москве; показываем по часам посетителя.
+for (const time of document.querySelectorAll('time[data-local]')) {
+  const moment = new Date(time.dateTime);
+  if (!Number.isNaN(moment.getTime())) time.textContent = `${fmtDay(moment, localZone)}, ${fmtTime(moment, localZone)}`;
+}

@@ -22,7 +22,7 @@ from .runtime import TTLCache, RateLimiter
 from .settings import Settings
 from .upstream import Travelpayouts
 from .rules import matches, safe_search_url, safe_hotel_url, safe_listed_url, longer_stays
-from . import city_pages, showcase
+from . import city_pages, scenario_pages, showcase
 from .regions import includes, REGION_CITIES
 from .rating import evaluate, round_int
 from .rating_sources import RatingSources, load_reviewed_data
@@ -288,6 +288,8 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
                                           ('food', 'Гастрономия', 'Где стоит попробовать местную кухню'))}
         city_break = dict(key='city2', title='Город на два дня', hint='1–2 ночи, перелёт до 4 часов, есть наши заметки о городе', items=showcase.city_break(offers, guides))
         rows += [budget[0], goals['sea'], budget[1], goals['mountains'], city_break, goals['food'], budget[2], budget[3]]
+        # Страницам «Куда улететь» нужны и короткие подборки (честно с пометкой «мало вариантов») — до отбора по порогу.
+        scenario_rows = {row['key']: row for row in rows if row['key'] in ('weekend1', 'weekend2', 'holidays')}
         rows = [row for row in rows if len(row['items']) >= showcase.ROW_MIN]
         # Вторая ступень: поиск маршрута на месяц — для кандидатов в «Горячие билеты» и первых карточек подборок.
         targets = {}
@@ -313,7 +315,13 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
             'usual': {f'{city}|{month}|{part}': list(value) for (city, month, part), value in usual.items()},
         }
         prices = {offer.id: (offer.price_minor, offer.received_at.isoformat()) for offer in pool.values()}
-        return body, prices
+        # Страницы «Куда улететь до N ₽»: все города, где лучшая поездка на 1–7 ночей укладывается в бюджет (до 40, дешевле — выше).
+        best = showcase.one_per_city([offer for offer in pool.values() if showcase.row_trip(offer)])
+        dump = lambda offer: offer.model_dump(mode='json', exclude=compact) | {'q': web_query(origin, origin_of[offer.id], offer.price_minor)}
+        pages = {'budget': {upper: [dump(offer) for offer in best if offer.price_minor <= upper * 100][:40] for upper in showcase.BUDGET_TIERS},
+                 'rows': {key: {'title': row['title'], 'hint': row['hint'], 'items': [dump(offer) for offer in row['items'][:showcase.ROW_MAX]]} for key, row in scenario_rows.items()},
+                 'notes': notes}
+        return body, prices, pages
 
     # Готовая главная живёт дольше, чем считается свежей: первые 10 минут — свежая; до 6 часов (в пределах тех же суток)
     # её отдают сразу, а новую собирают в фоне. Сборка без кеша — 4–8 секунд; ждёт её только первый посетитель
@@ -326,9 +334,9 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
             async def run():
                 try:
                     limiter.check()  # одна сборка главной — одно действие посетителя
-                    body, prices = await build_home(origin)
+                    body, prices, pages = await build_home(origin)
                     home_store.pop(key, None)
-                    home_store[key] = (now(), today, body, prices)
+                    home_store[key] = (now(), today, body, prices, pages)
                     while len(home_store) > HOME_ORIGINS:
                         home_store.pop(next(iter(home_store)))
                 finally:
@@ -345,19 +353,19 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
         entry = home_store.get(key)
         usable = entry is not None and entry[1] == today and now() - entry[0] < HOME_KEEP
         if usable and now() - entry[0] < HOME_FRESH:
-            return entry[2], entry[3]
+            return entry[2:]
         task = rebuild_home(origin, key, today)
         if usable:
-            return entry[2], entry[3]  # устаревшая, но сегодняшняя — сразу; дата цен в ней своя и показывается
+            return entry[2:]  # устаревшая, но сегодняшняя — сразу; дата цен в ней своя и показывается
         await asyncio.shield(task)
-        return home_store[key][2], home_store[key][3]
+        return home_store[key][2:]
 
     @app.get('/api/v1/home')
     async def home_endpoint(origin: str = Query(alias='from'), fc: str | None = None):
         chosen = origin_for(origin, fc)
         if not chosen:
             raise SearchError('validation', 'Выберите город вылета из справочника.', 422)
-        body, _ = await home_for(chosen)
+        body, _, _ = await home_for(chosen)
         # CDN: 10 минут свежая, потом сутки отдаёт прежнюю и сам обновляет её в фоне.
         cache_control = 'public, max-age=60, s-maxage=600, stale-while-revalidate=86400' if body['complete'] else 'public, max-age=30, s-maxage=60, stale-while-revalidate=600'
         return JSONResponse(body, headers={'Cache-Control': cache_control})
@@ -368,12 +376,12 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
         chosen, wanted = origin_for(origin, fc), [value for value in ids.split(',') if value][:8]
         if not chosen or not wanted or not all(re.fullmatch(r'[0-9a-f]{32}', value) for value in wanted):
             raise SearchError('validation', 'Проверьте список поездок.', 422)
-        _, prices = await home_for(chosen)
+        _, prices, _ = await home_for(chosen)
         found = {value: {'price_minor': prices[value][0], 'received_at': prices[value][1]} for value in wanted if value in prices}
         return JSONResponse({'prices': found}, headers={'Cache-Control': 'private, max-age=300'})
 
     # --- Страницы городов и маршрутов: готовый HTML (этап 4) ---
-    page_cache = 'public, max-age=60, s-maxage=600, stale-while-revalidate=600'
+    page_cache = 'public, max-age=60, s-maxage=600, stale-while-revalidate=86400'
     def not_found():
         missing = WEB_DIR / '404.html'
         return HTMLResponse(missing.read_text() if missing.exists() else 'Не найдено', status_code=404)
@@ -440,6 +448,34 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
         parts, cache_control = await city_fares(city, chosen)
         return JSONResponse({'origin': city_pages.origin_public(chosen), **{key: parts[key] for key in ('price', 'months', 'stay', 'has_prices')}},
                             headers={'Cache-Control': cache_control})
+
+    # --- Страницы-сценарии: «Куда улететь из Москвы до 10 000 ₽», «на выходные», «на праздники» ---
+    manifest = WEB_DIR / 'photos' / 'manifest.json'
+    photos = frozenset(json.loads(manifest.read_text())) if manifest.exists() else frozenset()
+    scenario_origins = [catalog.origin_by_code[code] for code in scenario_pages.ORIGINS if code in catalog.origin_by_code]
+
+    @app.get('/kuda/', response_class=HTMLResponse)
+    async def scenario_index():
+        return HTMLResponse(scenario_pages.index_page(scenario_origins), headers={'Cache-Control': page_cache})
+
+    @app.get('/kuda/{place}')
+    async def scenario_origin(place: str):
+        origin = catalog.origin_by_slug.get(place)
+        return RedirectResponse(f'/kuda/#{place}', status_code=301) if origin and origin in scenario_origins else not_found()
+
+    @app.get('/kuda/{place}/{scenario}', response_class=HTMLResponse)
+    async def scenario_page(place: str, scenario: str):
+        origin = catalog.origin_by_slug.get(place)
+        if not origin or origin not in scenario_origins or scenario not in scenario_pages.SCENARIOS:
+            return not_found()
+        try:
+            body, _, pages = await home_for(origin)
+        except SearchError:
+            return HTMLResponse('<!doctype html><meta charset="utf-8"><title>Подборки временно недоступны — Aviator</title><p>Подборки временно недоступны. Попробуйте через минуту или <a href="/">поиск на главной</a>.</p>',
+                                status_code=503, headers={'Cache-Control': 'no-store', 'Retry-After': '60'})
+        kind, upper = scenario_pages.SCENARIOS[scenario]
+        html, _ = scenario_pages.page(kind, upper, origin, body, pages, photos, catalog.by_code)
+        return HTMLResponse(html, headers={'Cache-Control': page_cache if body['complete'] else 'public, max-age=30, s-maxage=60, stale-while-revalidate=600'})
 
     @app.get('/api/v1/origin')
     async def visitor_origin(request: Request):
