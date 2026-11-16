@@ -355,7 +355,9 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
         today = now().astimezone(ZoneInfo(BY_IATA[origin['iata']]['timezone'])).date().isoformat()
         entry = home_store.get(key)
         usable = entry is not None and entry[1] == today and now() - entry[0] < HOME_KEEP
-        if usable and now() - entry[0] < HOME_FRESH:
+        # Неполная сборка (источник не успел ответить) свежа только минуту — потом пересобираем в фоне.
+        fresh = HOME_FRESH if usable and entry[2]['complete'] else timedelta(minutes=1)
+        if usable and now() - entry[0] < fresh:
             return entry[2:]
         task = rebuild_home(origin, key, today)
         if usable:

@@ -33,6 +33,7 @@
   --on-cobalt: #fff;
   --low: #17703a;  --low-soft: #e3f1e7;   /* «цена ниже обычной», «прямой» */
   --high: #a12d2d; --high-soft: #f7e6e4;  /* «цена выше обычной», ошибки */
+  --heart: #e8243c;          /* избранное: ярко-красное сердечко (бордовое владелец счёл тусклым) */
   --scrim: rgba(15, 27, 61, .42);
   --card-veil: rgba(255, 255, 255, .92); /* подложка кнопки поверх фото */
   --on-photo: #fff;          /* текст поверх фото шапки */
@@ -117,7 +118,7 @@ img { display: block; max-width: 100%; }
 .brand-mark .icon { width: 18px; height: 18px; }
 .nav { display: none; }
 .top-fav { margin-left: auto; width: var(--tap); height: var(--tap); display: grid; place-items: center; border-radius: var(--r-field); color: var(--ink); }
-.top-fav[aria-current="page"] { color: var(--high); }
+.top-fav[aria-current="page"] { color: var(--heart); }
 .top-fav[aria-current="page"] .icon { fill: currentColor; }
 .footer { display: grid; gap: var(--s-3); margin-top: var(--s-7); padding-top: var(--s-5); padding-bottom: var(--s-6); border-top: 1px solid var(--line); }
 .footer nav { display: flex; flex-wrap: wrap; gap: 0 var(--s-5); }
@@ -185,10 +186,15 @@ img { display: block; max-width: 100%; }
 @media (min-width: 900px) {
   .search { padding: var(--s-2) var(--s-2) var(--s-2) var(--s-5); grid-template-columns: 1fr auto; align-items: end; gap: var(--s-4); }
   .search-fields { grid-template-columns: 1fr 1.15fr 1.35fr 1.1fr; }
-  .field-group { align-content: start; padding: var(--s-3) var(--s-5) var(--s-3) 0; margin-right: var(--s-5); border-bottom: 0; border-right: 2px dashed var(--line); }
+  .field-group { align-content: start; gap: var(--s-1); padding: var(--s-2) var(--s-4) var(--s-2) 0; margin-right: var(--s-4); border-bottom: 0; border-right: 2px dashed var(--line); }
   .field-group:last-child { margin-right: 0; border-right: 0; }
   .search-go { width: auto; align-self: center; min-height: 48px; padding: 0 var(--s-5); }
-  .field-group .pick-value { white-space: normal; }
+  .field-group .pick-value { white-space: nowrap; }
+  /* Раскрытая форма на компьютере — плотнее: подписи в одну строку, без пояснения под ползунком. */
+  .search:not(.search--collapsed) .budget .caption { display: none; }
+  .search:not(.search--collapsed) .toggle { font-size: var(--fs-cap); }
+  .search:not(.search--collapsed) .segmented span { min-height: 34px; }
+  .search:not(.search--collapsed) .when-fields { min-height: 88px; }
   .sort-menus { margin: 0; padding: 0; }
 }
 
@@ -235,6 +241,14 @@ img { display: block; max-width: 100%; }
 .tile { position: relative; flex: none; width: 168px; display: grid; gap: var(--s-2); align-content: start; scroll-snap-align: start; }
 .tile--pass { width: min(330px, calc(100vw - 2 * var(--gutter) - var(--s-6))); }
 @media (min-width: 900px) { .tile { width: 200px; } .tile--pass { width: 340px; } }
+.tile-more { flex: none; width: 140px; scroll-snap-align: start; display: grid; place-content: center; justify-items: center; gap: var(--s-2); min-height: 160px;
+  border: 2px dashed var(--line-strong); border-radius: var(--r-pass); background: rgba(255, 255, 255, .45); color: var(--cobalt); font-weight: 600; text-align: center; }
+.tile-more:hover { background: rgba(255, 255, 255, .75); border-color: var(--cobalt); }
+.tile-more b { font: 700 var(--fs-h3) var(--f-mono); }
+.tile-more .icon { width: 22px; height: 22px; }
+.strip--pass .tile-more { align-self: stretch; }
+.intro-lead { margin-top: var(--s-2); max-width: 46em; font-size: var(--fs-small); }
+.has-hero .intro-lead { color: rgba(255, 255, 255, .9); text-shadow: 0 1px 8px rgba(15, 27, 61, .4); }
 .tile .stamp { transition: transform var(--t-fast) var(--ease); }
 .tile:hover .stamp { transform: rotate(-1deg) translateY(-2px); }
 .tile-body { display: grid; gap: var(--s-0); }
@@ -289,7 +303,7 @@ img { display: block; max-width: 100%; }
 }
 
 /* --- Фото в шапке главной: полоса за заголовком и формой, снизу растворяется в небе --- */
-.hero-photo { position: absolute; left: 0; right: 0; top: 0; z-index: -1; height: 254px; overflow: hidden; pointer-events: none; }
+.hero-photo { position: absolute; left: 0; right: 0; top: 0; z-index: -1; height: var(--hero-h, 300px); overflow: hidden; pointer-events: none; }
 .hero-photo img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 45%; }
 .hero-photo::after { content: ''; position: absolute; inset: 0;
   background: linear-gradient(180deg, var(--photo-shade) 0, rgba(15, 27, 61, .32) 55%, rgba(15, 27, 61, 0) 80%), linear-gradient(0deg, var(--paper) 0, rgba(238, 243, 249, 0) 22%); }
@@ -301,7 +315,6 @@ img { display: block; max-width: 100%; }
 .has-hero .ai { border-color: rgba(255, 255, 255, .55); background: rgba(15, 27, 61, .28); color: var(--on-photo); }
 .has-hero .ai-note { background: rgba(255, 255, 255, .18); }
 .photo-credit-line { margin-top: var(--s-2); font-size: var(--fs-micro); color: var(--ink-2); }
-@media (min-width: 900px) { .hero-photo { height: 252px; } }
 
 /* --- Загрузка: самолёт летит сквозь облака --- */
 .flyby { display: grid; gap: var(--s-3); justify-items: center; padding: var(--s-2) 0 var(--s-4); }
@@ -345,7 +358,7 @@ img { display: block; max-width: 100%; }
 .chip:hover { border-color: var(--line-strong); }
 .chip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--card); }
 .chip .icon { width: 18px; height: 18px; }
-.chip--fav .icon { color: var(--high); }
+.chip--fav .icon { color: var(--heart); }
 .results-head .sort-menus { order: 3; flex-basis: 100%; }
 .sort-menus { display: flex; gap: var(--s-2); overflow-x: auto; margin: 0 calc(-1 * var(--gutter)); padding: var(--s-0) var(--gutter); scrollbar-width: none; }
 .sort-menus::-webkit-scrollbar { display: none; }
@@ -362,7 +375,7 @@ img { display: block; max-width: 100%; }
 .photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .photo > .icon { width: 36px; height: 36px; opacity: .5; }
 .fav { position: absolute; top: var(--s-2); right: var(--s-2); z-index: 2; width: var(--tap); height: var(--tap); display: grid; place-items: center; border-radius: var(--r-field); background: var(--card-veil); color: var(--ink); }
-.fav[aria-pressed="true"] { color: var(--high); }
+.fav[aria-pressed="true"] { color: var(--heart); }
 /* Фото с рамкой — свой слой (фильтр тени): кладём его над кнопкой карточки, нажатия пропускаем к ней — кроме сердечка. */
 .offer .stamp, .tile .stamp { position: relative; z-index: 2; pointer-events: none; }
 .offer .fav, .tile .fav { pointer-events: auto; }
@@ -371,7 +384,7 @@ img { display: block; max-width: 100%; }
 @media (prefers-reduced-motion: reduce) { .sky-cloud { transform: translateX(var(--x)); } .sky-plane { display: none; } }
 .fav.pop .icon { animation: fav-pop 460ms cubic-bezier(.2, 1.6, .4, 1); }
 .fav.pop::before { content: ''; position: absolute; left: 50%; top: 50%; width: 6px; height: 6px; margin: -3px 0 0 -3px; border-radius: 50%; pointer-events: none;
-  box-shadow: 0 -17px var(--high), 15px -8px var(--cobalt), 15px 8px var(--high), 0 17px var(--cobalt), -15px 8px var(--high), -15px -8px var(--cobalt);
+  box-shadow: 0 -17px var(--heart), 15px -8px var(--cobalt), 15px 8px var(--heart), 0 17px var(--cobalt), -15px 8px var(--heart), -15px -8px var(--cobalt);
   animation: fav-burst 520ms var(--ease) forwards; }
 @keyframes fav-pop { 0% { transform: scale(.5); } 55% { transform: scale(1.3); } 100% { transform: scale(1); } }
 @keyframes fav-burst { from { opacity: 1; transform: scale(.35); } to { opacity: 0; transform: scale(1.25); } }

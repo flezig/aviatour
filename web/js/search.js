@@ -530,10 +530,10 @@ function stampTile(offer, row, note = '') {
       ${note ? `<p class="tile-note">${note}</p>` : ''}
     </div>${openButton(offer, row)}</article>`;
 }
-function rowSection(key, title, hint, tiles, action) {
+function rowSection(key, title, hint, tiles, action, pass = false) {
   return `<section class="row" aria-labelledby="row-${key}">
     <div class="row-head"><h2 id="row-${key}">${esc(title)}</h2><p class="row-hint">${esc(hint)}</p>${action}</div>
-    <div class="strip">${tiles}</div>
+    <div class="strip${pass ? ' strip--pass' : ''}">${tiles}</div>
   </section>`;
 }
 // «Продолжить планирование»: изменение цены — только если сегодня найден тот же самый вариант (тот же рейс и даты).
@@ -565,13 +565,15 @@ function renderShowcase() {
       + `<div class="status-actions">${action('retryHome', 'Загрузить подборки')}</div>`;
     return;
   }
-  const visible = state.allRows ? state.home.rows : state.home.rows.slice(0, 8), hidden = state.home.rows.length - visible.length;
+  const visible = state.allRows ? state.home.rows : state.home.rows.slice(0, 5), hidden = state.home.rows.length - visible.length;
   const rows = visible.map((row) => {
     const offers = rowOffers(row);
     if (offers.length < 3) return '';
     const note = (offer) => state.home.notes[offer.id] ? esc(leaveLine(state.home.notes[offer.id].leave, state.home.notes[offer.id].trip)) : '';
-    const tiles = offers.slice(0, 12).map((offer) => row.kind === 'pass' ? passTile(offer, row.key) : stampTile(offer, row.key, note(offer))).join('');
-    return rowSection(row.key, row.title, row.hint, tiles, `<button type="button" class="row-all" data-row-all="${esc(row.key)}">Все · ${offers.length}${icon('arrow-right')}</button>`);
+    // В ленте — до шести карточек, дальше полупрозрачная карточка «Ещё N»: лента не тянется бесконечно.
+    const tiles = offers.slice(0, 6).map((offer) => row.kind === 'pass' ? passTile(offer, row.key) : stampTile(offer, row.key, note(offer))).join('')
+      + (offers.length > 6 ? `<button type="button" class="tile-more" data-row-all="${esc(row.key)}"><b>+${offers.length - 6}</b><span>Показать все</span>${icon('arrow-right')}</button>` : '');
+    return rowSection(row.key, row.title, row.hint, tiles, `<button type="button" class="row-all" data-row-all="${esc(row.key)}">Все · ${offers.length}${icon('arrow-right')}</button>`, row.kind === 'pass');
   }).join('');
   section.innerHTML = recentRow() + (rows ? rows + (hidden > 0 ? `<button type="button" class="btn-inline more-rows" data-more-rows>Ещё подборки · ${hidden}</button>` : '') : statusPanel('send', 'Подборок пока нет', 'Для этого города вылета не нашлось поездок на ближайшие недели. Попробуйте поиск в форме выше.'))
     + `<p class="source">Цены Aviasales на ${esc(receivedLabel(state.home.received_at))} · туда и обратно на одного · <a href="/how-we-count.html#home">Как мы считаем подборки</a></p>`;
@@ -975,9 +977,17 @@ async function restore() {
   else { if (months(originZone()).includes(params.get('month'))) q.month = params.get('month'); q.weekend = params.get('weekend') !== '0'; }
   return true;
 }
+// Фото в шапке — до низа свёрнутой формы (+ немного воздуха): тёмные заголовки ниже не попадают на фото.
+function fitHero() {
+  if (!$('search').classList.contains('search--collapsed')) return;
+  document.documentElement.style.setProperty('--hero-h', `${Math.round($('search').getBoundingClientRect().bottom + scrollY + 28)}px`);
+}
+addEventListener('resize', fitHero);
+document.fonts?.ready.then(fitHero);
 (async () => {
   mountSky();
   renderForm();
+  fitHero();
   // Список фото меняется с каждой выкладкой; /photos/* кешируются на сутки, поэтому сам список перепроверяется.
   fetch('/photos/manifest.json', { cache: 'no-cache' }).then((response) => response.ok ? response.json() : []).then((codes) => { state.photos = new Set(codes); if (state.status === 'done') renderResults(); }).catch(() => {});
   fetch('/data/hotel-locations.json').then((response) => response.ok ? response.json() : {}).then((hotels) => { state.hotels = hotels; }).catch(() => {});
@@ -996,6 +1006,7 @@ async function restore() {
     }
   }
   renderForm();
+  fitHero();
   // Прочитать до поиска: поиск переписывает адрес и убирает хеш.
   const linked = restored && /^#trip=([0-9a-f]{32})$/.exec(location.hash)?.[1];
   // Вариант A эксперимента — голая форма: ничего не грузится, пока посетитель не начнёт поиск.
