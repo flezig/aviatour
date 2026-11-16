@@ -189,7 +189,7 @@ img { display: block; max-width: 100%; }
   .field-group { align-content: start; gap: var(--s-1); padding: var(--s-2) var(--s-4) var(--s-2) 0; margin-right: var(--s-4); border-bottom: 0; border-right: 2px dashed var(--line); }
   .field-group:last-child { margin-right: 0; border-right: 0; }
   .search-go { width: auto; align-self: center; min-height: 48px; padding: 0 var(--s-5); }
-  .field-group .pick-value { white-space: nowrap; }
+  .field-group .pick-value { white-space: normal; }
   /* Раскрытая форма на компьютере — плотнее: подписи в одну строку, без пояснения под ползунком. */
   .search:not(.search--collapsed) .budget .caption { display: none; }
   .search:not(.search--collapsed) .toggle { font-size: var(--fs-cap); }
