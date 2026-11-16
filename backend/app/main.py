@@ -327,13 +327,16 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
     # её отдают сразу, а новую собирают в фоне. Сборка без кеша — 4–8 секунд; ждёт её только первый посетитель
     # после перезапуска сервера (после выкладки сайт прогревается: scripts/warm_home.sh).
     HOME_FRESH, HOME_KEEP, HOME_ORIGINS = timedelta(minutes=10), timedelta(hours=6), 20
+    # Свой предел сборок: их запрашивают и посетители, и страницы «Куда улететь» (поисковики обходят их пачками).
+    # Одна сборка — до ~40 обращений к источнику, 20 сборок в минуту укладываются в его предел вместе с поиском.
+    home_limiter = RateLimiter(20)
     home_store, home_builds = {}, {}
 
     def rebuild_home(origin, key, today):
         if key not in home_builds:
             async def run():
                 try:
-                    limiter.check()  # одна сборка главной — одно действие посетителя
+                    home_limiter.check()
                     body, prices, pages = await build_home(origin)
                     home_store.pop(key, None)
                     home_store[key] = (now(), today, body, prices, pages)
