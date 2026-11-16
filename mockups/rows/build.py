@@ -77,7 +77,7 @@ def line_icon(key):
 
 
 PIXEL = {
-    'hot': ['.....X......', '.....XX.....', '....XXX.....', '....XXXX....', '...XXXXX.X..', '...XXXXXXX..', '..XXX.XXXXX.', '..XX...XXXX.', '..XX....XXX.', '..XXX..XXXX.', '...XXXXXXX..', '....XXXXX...'],
+    'hot': ['....X.......', '....XX......', '...XXX...X..', '...XXXX..X..', '..XXXXX.XX..', '..XXXXXXXX..', '.XXXXXXXXXX.', '.XXXX.XXXXX.', '.XXX...XXXX.', '.XXX....XXX.', '..XXX..XXX..', '...XXXXXX...'],
     'weekend': ['..X.....X...', '.XXXXXXXXXX.', '.XXXXXXXXXX.', '.X........X.', '.X.XX.XX..X.', '.X........X.', '.X.XX.XX..X.', '.X........X.', '.X.XX.....X.', '.X........X.', '.XXXXXXXXXX.', '............'],
     'holidays': ['.....XX.....', '....XXXX....', '...XXXXXX...', '....XXXX....', '...XXXXXX...', '..XXXXXXXX..', '....XXXX....', '..XXXXXXXX..', '.XXXXXXXXXX.', '.....XX.....', '.....XX.....', '....XXXX....'],
     'budget': ['............', '..XXXXXXX...', '.X.......X..', '.XXXXXXXXXX.', '.X........X.', '.X.....XXXX.', '.X.....X.XX.', '.X.....XXXX.', '.X........X.', '.XXXXXXXXXX.', '............', '............'],
@@ -195,3 +195,36 @@ html = f'''<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name
 <main class="grid">{"".join(panels)}</main></body></html>'''
 (HERE / 'index.html').write_text(html)
 print('ok', len(html))
+
+
+# --- Сравнение крупно: значки по строкам, варианты по столбцам; ниже рамка фото и плашка цены ---
+def big(mark):
+    return f'<div class="big">{mark}</div>'
+
+
+sample = offers[rows['weekend1']['items'][1]]
+low_diff = -19
+cells = []
+for key, title, _ in SECTIONS:
+    cells.append(f'<div class="name">{title}</div>' + ''.join(big(f(key)) for f in (sticker, pixel, line_icon)))
+frames = ''.join(f'<div class="frame"><div class="ph ph-{s}"><img src="../../web/photos/s/{sample["city_code"]}.jpg" alt=""><span class="fav on">{HEART}</span></div></div>' for s in 'abc')
+tags = ''.join(f'<div class="tagcell">{tag(low_diff, s)}<br>{tag(18, s)}<br>{tag(3, s)}</div>' for s in 'abc')
+COMPARE_CSS = CSS + '''
+.cmp { display: grid; grid-template-columns: 210px repeat(3, 1fr); gap: 0; margin: 12px 24px 40px; background: rgba(255,255,255,.45); border: 1px solid rgba(15,27,61,.12); border-radius: 18px; overflow: hidden; }
+.cmp > div { padding: 14px 16px; border-bottom: 1px solid rgba(15,27,61,.08); display: grid; place-items: center; }
+.cmp .hd { font: 800 17px/1.2 G; background: rgba(255,255,255,.6); text-align: center; }
+.cmp .hd small { display: block; font: 400 12.5px/1.35 T; color: #565d70; margin-top: 4px; }
+.cmp .name { justify-items: start; place-items: center start; font: 800 16px/1.2 G; }
+.big .st, .big .px, .big .sq { transform: scale(1.7); }
+.big { height: 92px; }
+.frame { width: 100%; } .frame .ph { width: 220px; margin: 6px auto; }
+.tagcell { line-height: 2.4; text-align: center; }
+'''
+head_row = '<div class="hd">Что выбираем</div>' + ''.join(f'<div class="hd">{n}<small>{w}</small></div>' for n, w in (
+    ('A. Наклейки', 'цветные, с белой вырубкой, чуть повёрнуты'), ('B. Пиксели', 'однотонные, как у стажировок Яндекса'), ('C. Значки в квадратах', 'тонкие линии в цветном квадрате')))
+compare = f'''<!doctype html><html lang="ru"><head><meta charset="utf-8"><title>Сравнение значков, рамок и плашек</title><style>{COMPARE_CSS}</style></head><body>
+<header class="top"><h1>Между чем выбор: значки подборок, рамка фото, плашка уровня цены</h1>
+<p>Значок стоит слева от названия подборки. Рамка — у фото городов в лентах. Плашка — рядом с ценой: «ниже обычной», «выше обычной», «обычная».</p></header>
+<main class="cmp">{head_row}{"".join(cells)}<div class="name">Рамка фото</div>{frames}<div class="name">Плашка уровня цены</div>{tags}</main></body></html>'''
+(HERE / 'compare.html').write_text(compare)
+print('compare ok')

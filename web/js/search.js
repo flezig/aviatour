@@ -7,6 +7,7 @@ import { currentOrigin, saveOrigin } from './lib/origin.js';
 import { priceLevel, usualKey, hotLine, leaveLine, levelNote, priceChange } from './lib/levels.js';
 import { mountSky } from './lib/sky.js';
 import { flightLoader } from './lib/art.js';
+import { sticker, rowSticker } from './lib/stickers.js';
 
 const EUROPE = new Set('AL AD AT BE BA BG HR CY CZ DK EE FI FR DE GR HU IS IE IT LV LI LT LU MT MD MC ME NL MK NO PL PT RO SM RS SK SI ES SE CH TR UA GB VA XK'.split(' '));
 const REGIONS = { any: 'Куда угодно', russia: 'По России', europe: 'Поездка в Европу', usa: 'Поездка в США' };
@@ -530,9 +531,9 @@ function stampTile(offer, row, note = '') {
       ${note ? `<p class="tile-note">${note}</p>` : ''}
     </div>${openButton(offer, row)}</article>`;
 }
-function rowSection(key, title, hint, tiles, action, pass = false) {
+function rowSection(key, title, hint, tiles, action, pass = false, mark = 'weekend') {
   return `<section class="row" aria-labelledby="row-${key}">
-    <div class="row-head"><h2 id="row-${key}">${esc(title)}</h2><p class="row-hint">${esc(hint)}</p>${action}</div>
+    <div class="row-head"><span class="row-mark">${sticker(mark)}</span><h2 id="row-${key}">${esc(title)}</h2><p class="row-hint">${esc(hint)}</p>${action}</div>
     <div class="strip${pass ? ' strip--pass' : ''}">${tiles}</div>
   </section>`;
 }
@@ -551,7 +552,7 @@ function recentRow() {
     return stampTile(offer, 'recent', note);
   }).join('');
   return rowSection('recent', 'Продолжить планирование', 'Поездки, которые вы открывали. Хранятся только в этом браузере.', tiles,
-    '<button type="button" class="row-all" data-clear-recent>Очистить</button>');
+    '<button type="button" class="row-all" data-clear-recent>Очистить</button>', false, 'recent');
 }
 function renderShowcase() {
   const section = $('showcase');
@@ -573,7 +574,7 @@ function renderShowcase() {
     // В ленте — до шести карточек, дальше полупрозрачная карточка «Ещё N»: лента не тянется бесконечно.
     const tiles = offers.slice(0, 6).map((offer) => row.kind === 'pass' ? passTile(offer, row.key) : stampTile(offer, row.key, note(offer))).join('')
       + (offers.length > 6 ? `<button type="button" class="tile-more" data-row-all="${esc(row.key)}"><b>+${offers.length - 6}</b><span>Показать все</span>${icon('arrow-right')}</button>` : '');
-    return rowSection(row.key, row.title, row.hint, tiles, `<button type="button" class="row-all" data-row-all="${esc(row.key)}">Все · ${offers.length}${icon('arrow-right')}</button>`, row.kind === 'pass');
+    return rowSection(row.key, row.title, row.hint, tiles, `<button type="button" class="row-all" data-row-all="${esc(row.key)}">Все · ${offers.length}${icon('arrow-right')}</button>`, row.kind === 'pass', rowSticker(row));
   }).join('');
   section.innerHTML = recentRow() + (rows ? rows + (hidden > 0 ? `<button type="button" class="btn-inline more-rows" data-more-rows>Ещё подборки · ${hidden}</button>` : '') : statusPanel('send', 'Подборок пока нет', 'Для этого города вылета не нашлось поездок на ближайшие недели. Попробуйте поиск в форме выше.'))
     + `<p class="source">Цены Aviasales на ${esc(receivedLabel(state.home.received_at))} · туда и обратно на одного · <a href="/how-we-count.html#home">Как мы считаем подборки</a></p>`;
