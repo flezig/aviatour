@@ -1,4 +1,5 @@
 import asyncio
+import os
 import json
 import math
 import re
@@ -49,7 +50,11 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
                 app.state.rating_data.setdefault(item.city_code, []).append(item)
             yield
     app = FastAPI(title='Aviator', lifespan=lifespan)
-    app.add_middleware(GZipMiddleware, minimum_size=1024)
+    # Сжатие — только вне Vercel. На Vercel ответы сжимает его CDN; если сжимать здесь, ответ получает «Vary: Accept-Encoding»
+    # и CDN хранит отдельную копию на каждую строку Accept-Encoding (у Chrome, Safari и curl они разные) — прогретая копия
+    # не достаётся другим браузерам, и они ждут сборку главной заново.
+    if not os.getenv('VERCEL'):
+        app.add_middleware(GZipMiddleware, minimum_size=1024)
     @app.exception_handler(SearchError)
     async def search_error(_, error):
         return JSONResponse(status_code=error.status, content={'error': {'code': error.code, 'message': error.message}}, headers={'Retry-After': str(error.retry_after)} if error.retry_after else None)
