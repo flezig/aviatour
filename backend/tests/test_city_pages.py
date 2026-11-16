@@ -134,9 +134,9 @@ def test_visitor_origin_from_hosting_headers_is_private():
     app, _ = app_with([])
     with TestClient(app) as client:
         response = client.get('/api/v1/origin', headers={'x-vercel-ip-latitude': '56.84', 'x-vercel-ip-longitude': '60.6'})
-        assert response.json() == {'code': 'SVX', 'iata': 'SVX', 'all': False, 'name': 'Екатеринбург', 'from': 'Екатеринбурга', 'detected': True}
+        assert response.json() == {'code': 'SVX', 'iata': 'SVX', 'all': False, 'name': 'Екатеринбург', 'from': 'Екатеринбурга', 'detected': True, 'located': True}
         assert response.headers['Cache-Control'] == 'private, no-store'
-        assert client.get('/api/v1/origin').json()['code'] == 'MOW'
+        assert client.get('/api/v1/origin').json() | {} == {'code': 'MOW', 'iata': 'SVO', 'all': True, 'name': 'Москва', 'from': 'Москвы', 'detected': False, 'located': False}
 
 
 def test_go_accepts_only_listed_ostrovok_pages():

@@ -268,7 +268,9 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
         # Город по IP определяет хостинг (заголовки Vercel); мы берём только ближайший город вылета и ничего не храним.
         origin, detected = city_pages.nearest_origin(request.headers.get('x-vercel-ip-latitude'), request.headers.get('x-vercel-ip-longitude'),
                                                      catalog.origins, catalog.radius_km, catalog.default_origin)
-        return JSONResponse(city_pages.origin_public(origin) | {'detected': detected}, headers={'Cache-Control': 'private, no-store'})
+        # located — пришло ли местоположение от хостинга вообще (без координат): так видно, работает ли подсказка на тарифе.
+        located = bool(request.headers.get('x-vercel-ip-latitude'))
+        return JSONResponse(city_pages.origin_public(origin) | {'detected': detected, 'located': located}, headers={'Cache-Control': 'private, no-store'})
 
     # Registered last so the site never shadows API routes.
     if WEB_DIR.is_dir():
