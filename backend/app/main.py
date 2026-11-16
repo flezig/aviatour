@@ -1,7 +1,10 @@
 import asyncio
+import json
+import math
 import re
+from urllib.parse import urlencode
 from contextlib import asynccontextmanager
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
 import httpx
@@ -18,7 +21,7 @@ from .runtime import TTLCache, RateLimiter
 from .settings import Settings
 from .upstream import Travelpayouts
 from .rules import matches, safe_search_url, safe_hotel_url, safe_listed_url, longer_stays
-from . import city_pages
+from . import city_pages, showcase
 from .regions import includes, REGION_CITIES
 from .rating import evaluate, round_int
 from .rating_sources import RatingSources, load_reviewed_data
@@ -194,6 +197,146 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
         label = s if re.fullmatch(r'[a-z0-9-]{1,32}', s) else ''
         return RedirectResponse(await app.state.upstream.partner_link(url, label) or url, status_code=302, headers={'Cache-Control': 'no-store'})
 
+    # --- Главная-витрина (этап 3): один адрес на город вылета, кешируется как поиск ---
+    def data_file(name, default):
+        path = WEB_DIR / 'data' / name
+        return json.loads(path.read_text()) if path.exists() else default
+    holidays = data_file('holidays.json', None)
+    calendar_ru = showcase.load_calendar(holidays) if holidays else showcase.Calendar()
+    city_tags, guides = data_file('city-tags.json', {}), data_file('city-guides.json', {})
+    home_cache = TTLCache(settings.ttl, 40)
+    compact = {'outbound_segments', 'inbound_segments', 'trip_rating', 'partner_url', 'source', 'currency', 'availability', 'expires_at'}
+
+    def web_query(origin, request, price_minor):
+        """Параметры поиска сайта, который находит эту поездку: для «Поделиться» и открытия по ссылке."""
+        params = {'from': origin['iata']}
+        if origin['all']:
+            params['fc'] = origin['code']
+        if request.destination:
+            params.update(to=request.destination, tc=request.destination_city_code)
+        if request.departure_date:
+            params.update(dep=request.departure_date, ret=request.return_date)
+        else:
+            params.update(month=request.month, weekend='0')
+        params['budget'] = min(500000, max(5000, math.ceil(price_minor / 100000) * 1000))
+        return urlencode(params)
+
+    async def build_home(origin):
+        moment = now()
+        airport = BY_IATA[origin['iata']]
+        today = moment.astimezone(ZoneInfo(airport['timezone'])).date()
+        calendar = calendar_ru if airport['country_code'] == 'RU' else showcase.Calendar()
+        base = dict(origin=origin['iata'], origin_city_code=origin['code'] if origin['all'] else None, max_budget_minor=50000000, weekend_only=False)
+        horizon = today.year * 12 + today.month + 5
+        def exact(start, end):
+            if start < today or start.year * 12 + start.month > horizon:
+                return None
+            return SearchRequest(month=start.strftime('%Y-%m'), departure_date=start.isoformat(), return_date=end.isoformat(), **base)
+        fridays = showcase.upcoming_fridays(today)
+        window = showcase.next_window(calendar, today) if calendar.period else None
+        requests = [SearchRequest(month=month, **base) for month in city_pages.month_keys(today)[:2]]
+        requests += [exact(a, b) for friday in fridays for a, b in showcase.weekend_pairs(friday)]
+        requests += [exact(a, b) for a, b in (showcase.window_pairs(window, calendar) if window else [])]
+        slots = asyncio.Semaphore(6)
+        async def fetch(request):
+            async with slots:
+                try:
+                    return request, await source(request)
+                except SearchError:
+                    return request, None
+        async def run(batch, timeout):
+            done, pending = await asyncio.wait([asyncio.create_task(fetch(request)) for request in batch if request], timeout=timeout)
+            return [task.result() for task in done], bool(pending)
+        found, late = await run(requests, 15)
+        if not any(result for _, result in found):
+            raise SearchError('upstream_http', 'Не удалось собрать подборки. Попробуйте позже.', 503)
+        live = lambda offer: offer.departure_at > moment and offer.availability != 'unavailable' and (offer.expires_at is None or offer.expires_at > moment)
+        pool, origin_of, received = {}, {}, []
+        def collect(results):
+            for request, result in results:
+                if not result:
+                    continue
+                received.append(result.received_at)
+                for offer in result.offers:
+                    if live(offer) and (offer.id not in pool or offer.price_minor < pool[offer.id].price_minor):
+                        pool[offer.id], origin_of[offer.id] = offer, request
+        collect(found)
+        offers = list(pool.values())
+        rows, notes = [], {}
+        for number, friday in enumerate(fridays):
+            title = ('На эти выходные' if today.weekday() < 5 else 'На ближайшие выходные') if number == 0 else 'На следующие выходные'
+            rows.append(dict(key=f'weekend{number + 1}', title=title, hint=f'{showcase.date_span(friday, friday + timedelta(days=2))}, без отпуска',
+                             items=showcase.one_per_city(showcase.weekend_trips(offers, friday, calendar))))
+        if window:
+            trips = showcase.window_trips(offers, window, calendar)
+            leave = {offer.id: days for offer, days in trips}
+            items = showcase.one_per_city([offer for offer, _ in trips])
+            notes.update({offer.id: {'leave': leave[offer.id], 'trip': showcase.nights(offer) + 1} for offer in items})
+            length = (window[1] - window[0]).days + 1
+            title = 'Новогодние каникулы' if any(day.month == 1 and day.day == 1 for day in (window[0] + timedelta(days=n) for n in range(length))) else 'Длинные выходные'
+            rows.append(dict(key='holidays', title=title, hint=f'{showcase.date_span(*window)}: {length} {showcase.plural(length, "день", "дня", "дней")} отдыха подряд', items=items))
+        tiers = showcase.budget_tiers(offers)
+        budget = [dict(key=f'budget{upper}', title=f'До {upper:,} ₽'.replace(',', '\u00a0'),
+                       hint='Туда и обратно на одного' if not lower else f'От {lower:,} до {upper:,} ₽ туда и обратно'.replace(',', '\u00a0'), items=items)
+                  for lower, upper, items in tiers]
+        goals = {key: dict(key=key, title=title, hint=hint, items=showcase.tagged(offers, set(city_tags.get(key, []))))
+                 for key, title, hint in (('sea', 'К морю', 'Города на морском побережье'), ('mountains', 'Горы и природа', 'Горы, озёра, заповедная природа рядом'),
+                                          ('food', 'Гастрономия', 'Где стоит попробовать местную кухню'))}
+        city_break = dict(key='city2', title='Город на два дня', hint='1–2 ночи, перелёт до 4 часов, есть наши заметки о городе', items=showcase.city_break(offers, guides))
+        rows += [budget[0], goals['sea'], budget[1], goals['mountains'], city_break, goals['food'], budget[2], budget[3]]
+        rows = [row for row in rows if len(row['items']) >= showcase.ROW_MIN]
+        # Вторая ступень: поиск маршрута на месяц — для кандидатов в «Горячие билеты» и первых карточек подборок.
+        targets = {}
+        for offer in showcase.hot_candidates(offers, today) + [offer for depth in range(6) for row in rows for offer in row['items'][depth:depth + 1]]:
+            key = (offer.city_code, offer.departure_at.strftime('%Y-%m'))
+            if key not in targets and len(targets) < 24:
+                targets[key] = SearchRequest(month=key[1], destination=offer.destination_airport, destination_city_code=offer.city_code, **base)
+        routes, late_routes = await run(list(targets.values()), 6)
+        route_offers = [offer for _, result in routes if result for offer in result.offers if live(offer)]
+        usual = showcase.usual_prices(route_offers)
+        collect(routes)
+        hot = showcase.hot_tickets(list(pool.values()), usual, today)
+        if len(hot) >= showcase.ROW_MIN:
+            rows.insert(0, dict(key='hot', title='Горячие билеты', hint='Вылет в ближайшие две недели, цена заметно ниже обычной', items=hot, kind='pass'))
+        shown = {offer.id: offer for row in rows for offer in row['items'][:showcase.ROW_MAX]}
+        body = {
+            'origin': city_pages.origin_public(origin), 'today': today.isoformat(), 'complete': not late and not late_routes,
+            'received_at': min(received).isoformat(),
+            'rows': [{'key': row['key'], 'title': row['title'], 'hint': row['hint'], 'kind': row.get('kind', 'stamp'),
+                      'items': [offer.id for offer in row['items'][:showcase.ROW_MAX]]} for row in rows],
+            'offers': {offer_id: offer.model_dump(mode='json', exclude=compact) | {'q': web_query(origin, origin_of[offer_id], offer.price_minor)} for offer_id, offer in shown.items()},
+            'notes': {offer_id: note for offer_id, note in notes.items() if offer_id in shown},
+            'usual': {f'{city}|{month}|{part}': list(value) for (city, month, part), value in usual.items()},
+        }
+        prices = {offer.id: (offer.price_minor, offer.received_at.isoformat()) for offer in pool.values()}
+        return body, prices
+
+    async def home_for(origin):
+        today = now().astimezone(ZoneInfo(BY_IATA[origin['iata']]['timezone'])).date().isoformat()
+        async def load():
+            limiter.check()  # одна сборка главной — одно действие посетителя
+            return await build_home(origin)
+        return await home_cache.get_or_create((origin['iata'], origin['all'], today), load)
+
+    @app.get('/api/v1/home')
+    async def home_endpoint(origin: str = Query(alias='from'), fc: str | None = None):
+        chosen = origin_for(origin, fc)
+        if not chosen:
+            raise SearchError('validation', 'Выберите город вылета из справочника.', 422)
+        body, _ = await home_for(chosen)
+        cache_control = 'public, max-age=60, s-maxage=600, stale-while-revalidate=600' if body['complete'] else 'public, max-age=30, s-maxage=60'
+        return JSONResponse(body, headers={'Cache-Control': cache_control})
+
+    @app.get('/api/v1/home/prices')
+    async def home_prices(origin: str = Query(alias='from'), fc: str | None = None, ids: str = ''):
+        """Цены тех же самых поездок сейчас — для «Продолжить планирование». Не найдена — значит, её нет в свежих находках."""
+        chosen, wanted = origin_for(origin, fc), [value for value in ids.split(',') if value][:8]
+        if not chosen or not wanted or not all(re.fullmatch(r'[0-9a-f]{32}', value) for value in wanted):
+            raise SearchError('validation', 'Проверьте список поездок.', 422)
+        _, prices = await home_for(chosen)
+        found = {value: {'price_minor': prices[value][0], 'received_at': prices[value][1]} for value in wanted if value in prices}
+        return JSONResponse({'prices': found}, headers={'Cache-Control': 'private, max-age=300'})
+
     # --- Страницы городов и маршрутов: готовый HTML (этап 4) ---
     page_cache = 'public, max-age=60, s-maxage=600, stale-while-revalidate=600'
     def not_found():
@@ -271,6 +414,11 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
         # located — пришло ли местоположение от хостинга вообще (без координат): так видно, работает ли подсказка на тарифе.
         located = bool(request.headers.get('x-vercel-ip-latitude'))
         return JSONResponse(city_pages.origin_public(origin) | {'detected': detected, 'located': located}, headers={'Cache-Control': 'private, no-store'})
+
+    @app.get('/favicon.ico', include_in_schema=False)
+    async def favicon():
+        # Браузеры сами спрашивают /favicon.ico; значок сайта — SVG.
+        return RedirectResponse('/favicon.svg', status_code=301)
 
     # Registered last so the site never shadows API routes.
     if WEB_DIR.is_dir():

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Aviator — куда улететь дешево</title>
-  <meta name="description" content="Aviator подбирает поездки под ваш бюджет: сравнивает цену билета и время на месте. Покупка проходит на Aviasales.">
+  <meta name="description" content="Куда улететь дешево: горячие билеты, поездки на выходные и длинные праздники, подборки по бюджету. Цены Aviasales, покупка — на Aviasales.">
   <meta name="theme-color" content="#f5f4f0">
   <link rel="canonical" href="https://aviatour.vercel.app/">
   <meta property="og:type" content="website">
@@ -26,6 +26,7 @@
   <link rel="modulepreload" href="/js/lib/links.js">
   <link rel="modulepreload" href="/js/lib/measure.js">
   <link rel="modulepreload" href="/js/lib/origin.js">
+  <link rel="modulepreload" href="/js/lib/levels.js">
 </head>
 <body>
   <a class="skip" href="#search">К поиску</a>
@@ -43,14 +44,22 @@
   <main class="wrap">
     <section class="intro">
       <h1>Куда улететь <button type="button" class="origin" id="originTitle" aria-label="Город вылета. Изменить">из&nbsp;Москвы</button></h1>
+      <!-- Место под поиск словами: функция выключена, языковые модели сайт не вызывает. -->
+      <p class="ai" aria-disabled="true"><svg class="icon" aria-hidden="true"><use href="/icons.svg#pen"></use></svg><span>Опишите поездку словами</span><span class="ai-note">пока недоступно</span></p>
     </section>
 
-    <form class="search" id="search" novalidate aria-label="Поиск поездок">
+    <form class="search search--collapsed" id="search" novalidate aria-label="Поиск поездок">
       <button type="button" class="search-summary" id="searchSummary" aria-controls="searchFields" aria-expanded="false">
         <b class="code" id="summaryCode"></b>
         <span class="pick-text"><span class="pick-value" id="summaryRoute"></span><span class="caption" id="summaryDetails"></span></span>
         <span class="search-summary-edit">Изменить</span>
       </button>
+      <div class="search-line" id="searchLine">
+        <button type="button" class="line-field" data-field="origin"><span class="label">Откуда</span><span class="line-value"><b class="code" id="lineCode">MOW</b> <span id="lineOrigin">Москва</span></span></button>
+        <button type="button" class="line-field" data-field="region"><span class="label">Куда</span><span class="line-value" id="lineTo">Куда угодно</span></button>
+        <button type="button" class="line-field" data-field="when"><span class="label">Когда</span><span class="line-value" id="lineWhen"></span></button>
+        <button type="button" class="line-field" data-field="budget"><span class="label">Бюджет на билеты</span><span class="line-value" id="lineBudget">до 25 000 ₽</span></button>
+      </div>
       <div class="search-fields" id="searchFields">
         <div class="field-group">
           <button type="button" class="pick" id="originPick">
@@ -108,6 +117,7 @@
       <button class="btn-primary search-go" type="submit" id="searchButton"><svg class="icon" aria-hidden="true"><use href="/icons.svg#search"></use></svg>Найти варианты</button>
     </form>
 
+    <div class="showcase" id="showcase" hidden></div>
     <p class="sr-only" role="status" id="resultsStatus"></p>
     <section class="results" id="results" aria-label="Варианты" hidden></section>
   </main>
