@@ -350,6 +350,60 @@ img { display: block; max-width: 100%; }
 .steps li::before { content: counter(step); flex: none; width: 28px; height: 28px; display: grid; place-items: center; border-radius: var(--r-tag); background: var(--cobalt-soft); color: var(--cobalt); font: 700 var(--fs-cap) var(--f-mono); }
 .credits { padding-left: 1.2em; display: grid; gap: var(--s-1); font-size: var(--fs-small); overflow-wrap: anywhere; }
 
+/* --- Страница города и список городов (готовый HTML с сервера) --- */
+.crumbs { display: flex; flex-wrap: wrap; align-items: center; gap: 0 var(--s-2); font-size: var(--fs-cap); color: var(--ink-2); }
+.crumbs a { display: inline-flex; align-items: center; min-height: var(--tap); color: var(--ink-2); }
+.city { display: grid; gap: var(--s-4); }
+.city > * { min-width: 0; }
+.city-hero { display: grid; gap: var(--s-4); }
+.city-head { display: grid; gap: var(--s-3); align-content: start; }
+.city-head h1 { overflow-wrap: anywhere; }
+.city-code { font-size: var(--fs-cap); color: var(--ink-2); }
+.city-code b { font: 700 var(--fs-small) var(--f-mono); color: var(--cobalt); }
+.photo-credit { overflow-wrap: anywhere; }
+.fares { display: grid; gap: var(--s-2); justify-items: start; padding: var(--s-4); background: var(--card); border-radius: var(--r-pass); box-shadow: var(--sh-pass); }
+.fares-from { font-weight: 600; }
+.fares-from .origin { text-decoration-thickness: 1px; text-underline-offset: 4px; padding: 10px 0; margin: -10px 0; }
+.fares-from .origin .icon { width: 18px; height: 18px; }
+.fares-price { display: flex; align-items: baseline; gap: var(--s-2); }
+.fares-price span { color: var(--ink-2); }
+.fares-price b { font: 700 var(--fs-code)/1.1 var(--f-mono); letter-spacing: -.03em; }
+.fares-none { color: var(--ink-2); }
+.fares .btn-primary { margin-top: var(--s-2); }
+[aria-busy="true"] .fares, [aria-busy="true"] .months { opacity: .6; transition: opacity var(--t-fast) var(--ease); }
+.city .card h2 { display: flex; align-items: center; gap: var(--s-2); font-size: var(--fs-h3); line-height: 1.25; }
+.city .card h2 .icon { color: var(--cobalt); }
+.city .card h3 { font-family: var(--f-text); font-size: var(--fs-small); font-weight: 600; margin-top: var(--s-1); }
+.months-list { list-style: none; padding: 0 !important; display: grid !important; gap: 0 !important; }
+.month { display: grid; grid-template-columns: 5.5em minmax(0, 1fr) auto; column-gap: var(--s-3); align-items: center; min-height: var(--tap); padding: var(--s-2) 0; border-top: 1px solid var(--line); color: var(--ink); text-decoration: none; }
+.months-list li:first-child .month { border-top: 0; }
+.month .caption { grid-column: 2 / 4; }
+.month b { font: 700 var(--fs-small) var(--f-mono); white-space: nowrap; }
+.month-bar { display: block; width: 100%; height: 8px; }
+.month-bar rect { fill: var(--line-strong); transition: fill var(--t-fast) var(--ease); }
+a.month:hover .month-bar rect { fill: var(--cobalt); }
+.month.best .month-bar rect { fill: var(--low); }
+.month.best b { color: var(--low); }
+.month--none .caption { grid-column: auto; }
+.stay-links { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+.route-links { list-style: none; padding: 0 !important; display: flex !important; flex-wrap: wrap; gap: var(--s-2) !important; }
+.route-links a { display: inline-flex; align-items: center; min-height: var(--tap); padding: 0 var(--s-4); border: 1px solid var(--line); border-radius: var(--r-chip); background: var(--card); color: var(--ink); font-size: var(--fs-small); font-weight: 600; text-decoration: none; }
+.route-links a:hover { border-color: var(--line-strong); }
+.city-group { display: grid; gap: var(--s-4); margin-bottom: var(--s-6); }
+.city-grid { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--s-5) var(--s-4); grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr)); }
+.city-card { display: grid; gap: var(--s-0); color: var(--ink); text-decoration: none; }
+.city-card .stamp { display: block; transition: transform var(--t-fast) var(--ease); }
+.city-card .photo { display: block; }
+.city-card:hover .stamp { transform: rotate(-1deg) translateY(-2px); }
+.city-card b { margin-top: var(--s-2); font-family: var(--f-head); font-weight: 800; overflow-wrap: anywhere; }
+.city-link { justify-self: start; }
+@media (min-width: 900px) {
+  .city { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; column-gap: var(--s-5); }
+  .city > .crumbs, .city > .city-hero, .city > .photo-credit { grid-column: 1 / -1; }
+  .city-hero { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: var(--s-6); align-items: start; }
+  .photo-credit { margin-top: calc(-1 * var(--s-3)); }
+}
+
 /* --- Уведомление о cookie: в потоке страницы, не поверх неё --- */
 .consent { display: grid; gap: var(--s-3); margin: var(--s-3) 0; padding: var(--s-4); border: 1px dashed var(--line-strong); border-radius: var(--r-pass); font-size: var(--fs-small); }
 .consent-actions { display: flex; flex-wrap: wrap; gap: var(--s-2); }

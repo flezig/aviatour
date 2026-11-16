@@ -52,6 +52,16 @@ def safe_hotel_url(link):
     return link
 
 
+def safe_listed_url(link, allowed, host):
+    """Страница партнёра из заранее проверенного списка (web/data/cities.json): точное совпадение, https, нужный домен."""
+    if not isinstance(link, str) or link not in allowed:
+        raise ValueError('link')
+    parts = urlsplit(link)
+    if parts.scheme != 'https' or parts.hostname != host or parts.username or parts.password or parts.port not in (None, 443) or parts.query or parts.fragment:
+        raise ValueError('link')
+    return link
+
+
 def count(value):
     if value is None:
         return None

@@ -1,8 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://aviatour.vercel.app/</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/</loc></url>
   <url><loc>https://aviatour.vercel.app/how-we-count.html</loc></url>
   <url><loc>https://aviatour.vercel.app/how-we-earn.html</loc></url>
   <url><loc>https://aviatour.vercel.app/about.html</loc></url>
   <url><loc>https://aviatour.vercel.app/credits.html</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/moskva</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/sankt-peterburg</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/ufa</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/samara</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/sochi</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/mineralnye-vody</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/makhachkala</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/kazan</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/kaliningrad</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/minsk</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/omsk</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/ekaterinburg</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/erevan</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/ulyanovsk</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/tomsk</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/astana</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/saratov</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/nizhniy-novgorod</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/orenburg</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/tyumen</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/chelyabinsk</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/naberezhnye-chelny</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/arkhangelsk</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/perm</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/volgograd</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/barnaul</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/stambul</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/gorno-altaysk</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/krasnoyarsk</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/novokuznetsk</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/surgut</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/kemerovo</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/cheboksary</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/izhevsk</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/antalya</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/tbilisi</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/krasnodar</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/almaty</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/khanty-mansiysk</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/nizhnevartovsk</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/sukhum</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/murmansk</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/yaroslavl</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/kirov</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/nalchik</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/magnitogorsk</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/irkutsk</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/tashkent</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/batumi</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/pskov</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/bishkek</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/karaganda</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/saransk</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/ust-kamenogorsk</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/astrakhan</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/tobolsk</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/penza</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/fergana</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/dubay</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/noyabrsk</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/abakan</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/kyzyl</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/brest</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/nyagan</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/novosibirsk</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/baku</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/magas</loc></url>
+  <url><loc>https://aviatour.vercel.app/city/sharm-esh-sheykh</loc></url>
 </urlset>

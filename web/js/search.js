@@ -3,18 +3,21 @@ import { $, esc, icon, adMark } from './lib/ui.js';
 import { DEFAULT_ZONE, localZone, zoned, fmtDate, fmtDay, fmtTime, fmtMoney, fmtRange, monthLabel, months, defaultMonth, addDays, duration, daysLabel, nightsLabel, countLabel } from './lib/format.js';
 import { partnerLink } from './lib/links.js';
 import { goal } from './lib/measure.js';
+import { currentOrigin, saveOrigin } from './lib/origin.js';
 
 const EUROPE = new Set('AL AD AT BE BA BG HR CY CZ DK EE FI FR DE GR HU IS IE IT LV LI LT LU MT MD MC ME NL MK NO PL PT RO SM RS SK SI ES SE CH TR UA GB VA XK'.split(' '));
 const REGIONS = { any: 'Куда угодно', russia: 'По России', europe: 'Поездка в Европу', usa: 'Поездка в США' };
 // Регионы, которые ищутся по списку городов; остальные — одним поиском с отбором по стране.
 const CITY_REGIONS = new Set(['europe', 'usa']);
-const LENGTHS = { any: 'Любая длина', short: '1–2 дня', mid: '3–4 дня', week: '5–7 дней', long: 'Дольше недели' };
+// По умолчанию — поездки на 1–14 ночей: «туда и обратно в один день» и поездки на месяц в общей выдаче только мешали.
+const LENGTHS = { any: '1–14 ночей', short: '1–2 ночи', mid: '3–4 ночи', week: '5–7 ночей', long: '8–14 ночей', more: 'Больше 14 ночей', day: 'В тот же день', all: 'Любая длина' };
+const FITS = { any: (d) => d >= 1 && d <= 14, short: (d) => d >= 1 && d <= 2, mid: (d) => d >= 3 && d <= 4, week: (d) => d >= 5 && d <= 7, long: (d) => d >= 8 && d <= 14, more: (d) => d > 14, day: (d) => d === 0, all: () => true };
 const SORTS = { price: 'Сначала дешевле', priceDescending: 'Сначала дороже', departure: 'Ближайший вылет', duration: 'Меньше времени в пути', stay: 'Больше времени на месте', value: 'Выгоднее час поездки', flightRating: 'По оценке перелёта' };
 const CHIPS = { cheap: 'До 20 000 ₽', direct: 'Прямые', noLeave: 'Без отпуска', comfy: 'Удобное время вылета', near: 'В пути до 3 ч', russia: 'Россия', unique: 'Один вариант на город' };
 const TAGS = { sea: 'Море', culture: 'Музеи и культура', food: 'Гастрономия', architecture: 'Архитектура', nature: 'Природа', nightlife: 'Вечерняя жизнь' };
 const POPULAR = ['MOW', 'LED', 'SVX', 'OVB', 'KZN', 'GOJ', 'KUF', 'UFA', 'AER', 'KGD'];
 // «Куда улететь из …»: родительный падеж для частых городов вылета; для остальных — «Вылет: город».
-const FROM = { MOW: 'Москвы', LED: 'Петербурга', SVX: 'Екатеринбурга', OVB: 'Новосибирска', KZN: 'Казани', GOJ: 'Нижнего Новгорода', KUF: 'Самары', UFA: 'Уфы', AER: 'Сочи', KGD: 'Калининграда', KRR: 'Краснодара', ROV: 'Ростова-на-Дону', PEE: 'Перми', CEK: 'Челябинска', KJA: 'Красноярска', IKT: 'Иркутска', VVO: 'Владивостока', KHV: 'Хабаровска', TJM: 'Тюмени', OMS: 'Омска', VOG: 'Волгограда', MRV: 'Минеральных Вод', MSQ: 'Минска' };
+// Подписи «из Москвы» — из web/data/origins.json; для остальных городов «из города …».
 const PAGE = 60;
 const config = window.AVIATOR ?? {};
 // A/B: вариант выбирается один раз на браузер и хранится. #ab=A или #ab=B показывает вариант без записи.
@@ -41,7 +44,7 @@ const state = {
   performed: null, performedLabels: null, performedSummary: null, performedLabel: '', status: 'idle', error: '', result: null,
   // Новичок спрашивает «куда», поэтому по умолчанию один лучший вариант на город; «Все» показывает каждую дату и рейс.
   filters: { cheap: false, direct: false, noLeave: false, comfy: false, near: false, russia: false, unique: true }, length: 'any', sort: 'price', limit: PAGE,
-  airports: null, cities: null, byIata: new Map(), photos: new Set(), guides: {}, hotels: {}, view: 'results', favs: readFavs(), pickerTarget: 'origin', shown: new Map(), detail: null, backFrom: null, nudged: new Set(),
+  airports: null, cities: null, byIata: new Map(), fromNames: new Map([['MOW', 'Москвы']]), cityPages: new Map(), photos: new Set(), guides: {}, hotels: {}, view: 'results', favs: readFavs(), pickerTarget: 'origin', shown: new Map(), detail: null, backFrom: null, nudged: new Set(),
 };
 let request = null;
 // Избранное прежних версий читается как есть; битая запись не ломает страницу.
@@ -82,8 +85,9 @@ function accepts(offer) {
   // Удобное время: оба вылета с 06:00 до 22:59 местного. В пути до 3 ч: каждое плечо известно и не дольше трёх часов.
   if (f.comfy && (x.out.hour < 6 || x.out.hour > 22 || x.back.hour < 6 || x.back.hour > 22)) return false;
   if (f.near && !(offer.duration_to > 0 && offer.duration_to <= 180 && offer.duration_back > 0 && offer.duration_back <= 180)) return false;
-  const days = x.days, length = state.length;
-  if (length !== 'any' && !(length === 'short' ? days <= 2 : length === 'mid' ? days >= 3 && days <= 4 : length === 'week' ? days >= 5 && days <= 7 : days > 7)) return false;
+  // Точные даты посетитель выбрал сам — длина поездки по умолчанию их не прячет.
+  const length = state.length === 'any' && state.performed?.exact ? 'all' : state.length;
+  if (!FITS[length](x.days)) return false;
   if (f.noLeave) {
     const departureOK = (x.out.weekday === 6 && x.out.hour >= 18) || x.out.weekday === 7;
     const returnOK = x.homeZone && (x.homeZone.weekday === 1 || (x.homeZone.weekday === 2 && x.homeZone.hour < 9));
@@ -168,6 +172,8 @@ function photo(code, extra = '', sizes = '(min-width: 900px) 270px, calc(100vw -
 }
 // Билеты: только HTTPS-поиск Aviasales и только через /go (links.js).
 const handoff = (offer) => partnerLink(offer.search_url, { kind: 'tickets', city: offer.city_code, page: 'trip', block: 'tickets', variant: testVariant });
+// Цена часа — до рубля: копейки здесь только шумят.
+const hourCost = (x) => fmtMoney(Math.round(x.cost / 100) * 100);
 const receivedLabel = (iso) => { const date = new Date(iso); return `${fmtDay(date, localZone)}, ${fmtTime(date, localZone)}`; };
 
 const favButton = (offer) => `<button type="button" class="fav" data-fav="${esc(offer.id)}" aria-pressed="${state.favs.has(offer.id)}" aria-label="В избранное: ${esc(offer.city)}">${icon('heart')}</button>`;
@@ -214,7 +220,7 @@ function compareTable(offers) {
       ${row('Цена', (offer) => `<b class="${offer.price_minor === cheapest ? 'best' : ''}">${esc(fmtMoney(offer.price_minor))}</b>`)}
       ${row('Даты', (offer, x) => esc(fmtRange(x.dep, x.ret, offer.origin_timezone, offer.destination_timezone)))}
       ${row('На месте', (offer, x) => x.stay ? `≈ ${Math.floor(x.stay)} ч` : '—')}
-      ${row('Час поездки', (offer, x) => x.stay ? esc(fmtMoney(x.cost)) : '—')}
+      ${row('Час поездки', (offer, x) => x.stay ? esc(hourCost(x)) : '—')}
       ${row('В пути', (offer, x) => Number.isFinite(x.flight) ? esc(duration(x.flight)) : '—')}
       ${row('Пересадки', (offer, x) => x.direct ? 'Прямые' : 'Есть')}
       ${row('Авиакомпания', (offer) => esc(airlineLabel(offer)))}
@@ -278,6 +284,7 @@ function renderResults() {
       } else {
         body += statusPanel('send', 'Пока без вариантов', 'В найденных ценах нет поездок под эти даты и бюджет. Это не значит, что билетов нет. Увеличьте бюджет или выберите другой месяц.' + (q.direct ? ' Или разрешите пересадки.' : ''))
           + `<div class="status-actions">
+            ${(state.result?.offers ?? []).some((offer) => facts(offer).dep > Date.now() && !FITS.any(facts(offer).days)) ? action('allLengths', 'Показать поездки любой длины') : ''}
             ${!q.exact && q.weekend ? action('allTrips', 'Показать не только короткие выходные') : ''}
             ${q.budget < 500000 ? action('moreBudget', 'Увеличить бюджет на 10 000 ₽') : ''}
             ${q.direct ? action('allowTransfers', 'Разрешить пересадки') : ''}
@@ -341,6 +348,7 @@ function openDetail(offer) {
   $('detailBody').innerHTML = `<div class="detail">
     <div class="stamp stamp--wide">${photo(offer.city_code, favButton(offer), '(min-width: 700px) 640px, 100vw')}</div>
     <div class="detail-head"><h2>${esc(offer.city)}</h2><p class="caption">${esc(offer.country ?? '')}</p></div>
+    ${state.cityPages.has(offer.city_code) ? `<a class="btn-inline city-link" href="/city/${esc(state.cityPages.get(offer.city_code))}">Когда лететь дешевле и где жить${icon('arrow-right')}</a>` : ''}
     ${past ? '<p class="caption">Даты прошли. Выполните новый поиск.</p>' : ''}
     <article class="pass">
       <div class="pass-main">
@@ -373,7 +381,7 @@ function openDetail(offer) {
     ${routeCard(offer, false)}
     ${x.stay ? `<section class="card stay">
       <h3>${icon('sun')}Время на месте</h3>
-      <p><b>≈ ${Math.floor(x.stay)} ч</b> · ${esc(fmtMoney(x.cost))} за час поездки</p>
+      <p><b>≈ ${Math.floor(x.stay)} ч</b> · ≈ ${esc(hourCost(x))} за час поездки</p>
       <p class="caption">От расчётного прилёта до обратного вылета, включая ночи.</p>
     </section>` : ''}
     ${hotel ? hotelBlock(offer, hotel) : ''}
@@ -433,7 +441,8 @@ function renderForm() {
   if (!q.exact && !list.includes(q.month)) q.month = list[0];
   $('originLabel').textContent = state.labels.origin;
   const city = q.originCity ?? state.byIata.get(q.origin)?.city_code;
-  $('originTitle').innerHTML = `${FROM[city] ? `из&nbsp;${esc(FROM[city])}` : esc(state.labels.origin.split(' · ')[0])}${icon('chevron-down')}`;
+  const from = state.fromNames.get(city);
+  $('originTitle').innerHTML = `${from ? `из&nbsp;${esc(from)}` : `из&nbsp;города ${esc(state.labels.origin.split(' · ')[0])}`}${icon('chevron-down')}`;
   $('destinationLabel').textContent = state.labels.destination ?? (CITY_REGIONS.has(q.region) ? 'Все основные города' : 'Любой город');
   $('destinationClear').hidden = !q.destination;
   $('region').value = q.region;
@@ -580,6 +589,9 @@ function choose(iata, cityCode) {
   const q = state.query;
   if (state.pickerTarget === 'origin') {
     q.origin = iata; q.originCity = cityCode; state.labels.origin = airportLabel(iata, cityCode);
+    const airport = state.byIata.get(iata);
+    // Выбор запоминается: в следующий раз и на страницах городов цены будут из этого города.
+    if (airport) saveOrigin({ code: airport.city_code, iata, all: Boolean(cityCode), name: airport.city, from: state.fromNames.get(airport.city_code) ?? null }, true);
   } else {
     q.destination = iata; q.destinationCity = cityCode; state.labels.destination = airportLabel(iata, cityCode);
   }
@@ -671,6 +683,7 @@ $('results').addEventListener('click', (event) => {
     if (name === 'favorites') { showFavorites(); return; }
     if (name === 'results') { state.view = 'results'; if (location.hash === '#fav') history.replaceState(history.state, '', location.pathname + location.search); renderResults(); $('results').scrollIntoView({ block: 'start' }); return; }
     if (name === 'more') { state.limit += PAGE; renderResults(); return; }
+    if (name === 'allLengths') { state.length = 'all'; state.limit = PAGE; renderResults(); return; }
     if (name === 'resetFilters') { for (const key of Object.keys(state.filters)) state.filters[key] = false; state.length = 'any'; renderResults(); return; }
     if (name === 'edit') { collapseForm(false); $('search').scrollIntoView({ block: 'start' }); return; }
     if (name !== 'retry') { Object.assign(q, state.performed); state.labels = { ...state.performedLabels }; }
@@ -716,9 +729,20 @@ async function restore() {
   // Список фото меняется с каждой выкладкой; /photos/* кешируются на сутки, поэтому сам список перепроверяется.
   fetch('/photos/manifest.json', { cache: 'no-cache' }).then((response) => response.ok ? response.json() : []).then((codes) => { state.photos = new Set(codes); if (state.status === 'done') renderResults(); }).catch(() => {});
   fetch('/data/hotel-locations.json').then((response) => response.ok ? response.json() : {}).then((hotels) => { state.hotels = hotels; }).catch(() => {});
+  fetch('/data/origins.json').then((response) => response.ok ? response.json() : null).then((data) => { for (const origin of data?.cities ?? []) state.fromNames.set(origin.code, origin.from); renderForm(); }).catch(() => {});
+  fetch('/data/cities.json').then((response) => response.ok ? response.json() : null).then((data) => { state.cityPages = new Map((data?.cities ?? []).map((city) => [city.code, city.slug])); }).catch(() => {});
   fetch('/data/city-guides.json').then((response) => response.ok ? response.json() : {}).then((guides) => { state.guides = guides; if (state.status === 'done') renderResults(); }).catch(() => {});
   const wantFav = location.hash === '#fav';
   const restored = await restore();
+  // Без параметров поиска в адресе — город вылета посетителя: его выбор или ближайший город по местоположению.
+  if (!restored) {
+    const origin = await currentOrigin();
+    if (origin) {
+      Object.assign(state.query, { origin: origin.iata, originCity: origin.all ? origin.code : null });
+      state.labels.origin = `${origin.name} · ${origin.all ? 'все аэропорты' : origin.iata}`;
+      if (origin.from) state.fromNames.set(origin.code, origin.from);
+    }
+  }
   renderForm();
   // Прочитать до поиска: поиск переписывает адрес и убирает хеш.
   const linked = restored && /^#trip=([0-9a-f]{32})$/.exec(location.hash)?.[1];

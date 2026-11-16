@@ -5,11 +5,11 @@ from datetime import datetime, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
 import httpx
-from fastapi import FastAPI, Query
+from fastapi import FastAPI, Query, Request
 from fastapi.exceptions import RequestValidationError
 from pydantic import ValidationError
 from fastapi.middleware.gzip import GZipMiddleware
-from fastapi.responses import JSONResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from .catalog import AIRPORTS, BY_IATA
 from .errors import SearchError
@@ -17,7 +17,8 @@ from .models import SearchRequest, SearchResponse, BatchSearchRequest, BatchSear
 from .runtime import TTLCache, RateLimiter
 from .settings import Settings
 from .upstream import Travelpayouts
-from .rules import matches, safe_search_url, safe_hotel_url, longer_stays
+from .rules import matches, safe_search_url, safe_hotel_url, safe_listed_url, longer_stays
+from . import city_pages
 from .regions import includes, REGION_CITIES
 from .rating import evaluate, round_int
 from .rating_sources import RatingSources, load_reviewed_data
@@ -30,6 +31,8 @@ WEB_DIR = Path(__file__).resolve().parents[2] / 'web'
 def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.utc)):
     settings = settings or Settings.env()
     cache, limiter = TTLCache(settings.ttl, settings.capacity), RateLimiter(settings.rate)
+    # Страницы городов читают поисковики: свой предел обращений к источнику, чтобы не отнимать его у посетителей.
+    catalog, pages_limiter = city_pages.load(), RateLimiter(120)
     @asynccontextmanager
     async def lifespan(app):
         async with httpx.AsyncClient(transport=transport, follow_redirects=False, timeout=5, headers={'Accept-Encoding': 'gzip, deflate'}) as client:
@@ -56,7 +59,8 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
     @app.get('/api/v1/airports')
     async def airports():
         return JSONResponse(AIRPORTS, headers={'Cache-Control': 'public, max-age=3600, s-maxage=86400'})
-    async def search(request: SearchRequest, check=None, pool=None):
+    async def source(request: SearchRequest, check=None):
+        """Проверенный запрос → кешированный ответ источника без фильтров посетителя (бюджет, прямые, выходные)."""
         airport = BY_IATA.get(request.origin)
         if not airport or not airport['timezone']:
             raise SearchError('validation', 'Выберите аэропорт из справочника.', 422)
@@ -87,7 +91,10 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
                 check()
             # Russia is one ordinary search filtered by country; Europe and the USA go city by city.
             return app.state.upstream.search_region(broad) if request.region in REGION_CITIES and not request.destination else app.state.upstream.search(broad)
-        result = await cache.get_or_create(key, load, refresh=request.force_refresh)
+        return await cache.get_or_create(key, load, refresh=request.force_refresh)
+
+    async def search(request: SearchRequest, check=None, pool=None):
+        result = await source(request, check)
         if pool is not None:
             # Unfiltered trips of this search (any budget, length or transfers), for hints beyond the visitor's filters.
             pool.extend(result.offers)
@@ -178,11 +185,90 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
             try:
                 url = safe_search_url(u)
             except ValueError:
-                url = safe_hotel_url(u)
+                try:
+                    url = safe_hotel_url(u)
+                except ValueError:
+                    url = safe_listed_url(u, catalog.ostrovok_urls, 'ostrovok.ru')
         except ValueError:
             raise SearchError('validation', 'Ссылка должна вести на поиск Aviasales.', 422) from None
         label = s if re.fullmatch(r'[a-z0-9-]{1,32}', s) else ''
         return RedirectResponse(await app.state.upstream.partner_link(url, label) or url, status_code=302, headers={'Cache-Control': 'no-store'})
+
+    # --- Страницы городов и маршрутов: готовый HTML (этап 4) ---
+    page_cache = 'public, max-age=60, s-maxage=600, stale-while-revalidate=600'
+    def not_found():
+        missing = WEB_DIR / '404.html'
+        return HTMLResponse(missing.read_text() if missing.exists() else 'Не найдено', status_code=404)
+
+    def origin_for(iata, fc=None):
+        airport = BY_IATA.get(iata or '')
+        if not airport or not airport['timezone'] or (fc and fc != airport['city_code']):
+            return None
+        known = catalog.origin_by_code.get(airport['city_code'])
+        if known and known['iata'] == iata and known['all'] == bool(fc):
+            return known
+        return {'code': airport['city_code'], 'iata': iata, 'all': bool(fc), 'name': airport['city'], 'from': (known or {}).get('from') or f'города {airport["city"]}'}
+
+    async def city_fares(city, origin, fixed=False):
+        moment = now()
+        months = city_pages.month_keys(moment.astimezone(ZoneInfo(BY_IATA[origin['iata']]['timezone'])))
+        async def one(month):
+            request = SearchRequest(origin=origin['iata'], origin_city_code=origin['code'] if origin['all'] else None, destination=city['airport'],
+                                    destination_city_code=city['code'], month=month, weekend_only=False, max_budget_minor=50000000)
+            try:
+                return month, await source(request, pages_limiter.check)
+            except SearchError:
+                return month, None
+        done, pending = await asyncio.wait([asyncio.create_task(one(month)) for month in months], timeout=8)
+        results = dict(task.result() for task in done)
+        found = {month: result.offers for month, result in results.items() if result}
+        received = [result.received_at for result in results.values() if result]
+        parts = city_pages.fares(catalog, city, origin, city_pages.cheapest_by_month(found, moment), min(received) if received else moment, fixed)
+        # Не все месяцы ответили — короткий кеш, чтобы недостающее появилось быстро.
+        return parts, page_cache if not pending and len(found) == len(results) == len(months) else 'public, max-age=30, s-maxage=60'
+
+    def default_origin(city):
+        return catalog.origin_by_code['LED' if city['code'] == catalog.default_origin else catalog.default_origin]
+
+    @app.get('/city/', response_class=HTMLResponse)
+    async def city_index():
+        return HTMLResponse(city_pages.index_page(catalog), headers={'Cache-Control': page_cache})
+
+    @app.get('/city/{name}', response_class=HTMLResponse)
+    async def city_page(name: str):
+        city = catalog.by_slug.get(name)
+        if not city:
+            return not_found()
+        origin = default_origin(city)
+        parts, cache_control = await city_fares(city, origin)
+        return HTMLResponse(city_pages.page(catalog, city, origin, parts), headers={'Cache-Control': cache_control})
+
+    @app.get('/route/{path}', response_class=HTMLResponse)
+    async def route_page(path: str):
+        found = catalog.route(path)
+        if not found:
+            return not_found()
+        origin, city = found
+        parts, cache_control = await city_fares(city, origin, fixed=True)
+        return HTMLResponse(city_pages.page(catalog, city, origin, parts, route=True), headers={'Cache-Control': cache_control})
+
+    @app.get('/api/v1/city/{code}')
+    async def city_fares_endpoint(code: str, origin: str = Query(alias='from'), fc: str | None = None):
+        city, chosen = catalog.by_code.get(code), origin_for(origin, fc)
+        if not city or not chosen:
+            raise SearchError('validation', 'Выберите город из списка.', 422)
+        if chosen['code'] == city['code']:
+            raise SearchError('validation', 'Города вылета и назначения должны различаться.', 422)
+        parts, cache_control = await city_fares(city, chosen)
+        return JSONResponse({'origin': city_pages.origin_public(chosen), **{key: parts[key] for key in ('price', 'months', 'stay', 'has_prices')}},
+                            headers={'Cache-Control': cache_control})
+
+    @app.get('/api/v1/origin')
+    async def visitor_origin(request: Request):
+        # Город по IP определяет хостинг (заголовки Vercel); мы берём только ближайший город вылета и ничего не храним.
+        origin, detected = city_pages.nearest_origin(request.headers.get('x-vercel-ip-latitude'), request.headers.get('x-vercel-ip-longitude'),
+                                                     catalog.origins, catalog.radius_km, catalog.default_origin)
+        return JSONResponse(city_pages.origin_public(origin) | {'detected': detected}, headers={'Cache-Control': 'private, no-store'})
 
     # Registered last so the site never shadows API routes.
     if WEB_DIR.is_dir():

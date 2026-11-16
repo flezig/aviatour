@@ -8,8 +8,10 @@ const KINDS = {
   tickets: (url) => AVIASALES_HOSTS.has(url.hostname) && url.pathname.startsWith('/search/'),
   // Поиск отелей по городу и датам: https://(www.)aviasales.(ru|com)/hotels/search?location_id=…
   hotels: (url) => AVIASALES_HOSTS.has(url.hostname) && url.pathname === '/hotels/search',
+  // Страница города на Островке: только адреса из web/data/cities.json, сервер сверяет ссылку со списком целиком.
+  ostrovok: (url) => url.hostname === 'ostrovok.ru' && /^\/hotel\/[a-z_]+\/[a-z0-9._-]+\/?$/.test(url.pathname) && !url.search && !url.hash,
 };
-export const PARTNER = { tickets: 'aviasales', hotels: 'aviasales' };
+export const PARTNER = { tickets: 'aviasales', hotels: 'aviasales', ostrovok: 'ostrovok' };
 
 const slug = (value) => String(value ?? '').toLowerCase().replace(/[^a-z0-9]/g, '');
 export function clickLabel({ city, page, block, variant } = {}) {

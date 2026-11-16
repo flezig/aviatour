@@ -34,3 +34,12 @@ test('чужие и подозрительные адреса не превра�
   assert.equal(partnerLink(TICKETS, { kind: 'hotels' }), null);
   assert.equal(partnerLink(TICKETS, { kind: 'unknown' }), null);
 });
+
+test('Островок: только страница города, без параметров', () => {
+  const page = 'https://ostrovok.ru/hotel/russia/kazan/';
+  assert.equal(partnerLink(page, { kind: 'ostrovok', city: 'KZN', page: 'city', block: 'stay' }), `/go?s=kzn-city-stay&u=${encodeURIComponent(page)}`);
+  for (const url of ['https://ostrovok.ru/hotel/russia/kazan/?utm=1', 'http://ostrovok.ru/hotel/russia/kazan/', 'https://ostrovok.ru.example.com/hotel/russia/kazan/',
+    'https://ostrovok.ru/', 'https://ostrovok.ru/hotel/russia/kazan/#x', 'https://www.aviasales.ru/hotels/search?location_id=1']) {
+    assert.equal(partnerLink(url, { kind: 'ostrovok', city: 'KZN' }), null, url);
+  }
+});
