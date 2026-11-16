@@ -94,12 +94,14 @@ def test_window_search_dates():
 def test_weekend_and_window_trips():
     friday = date(2026, 11, 20)
     good, day, late = trip(), trip(dep='2026-11-20T10:00:00+03:00'), trip(ret='2026-11-24T18:00:00+03:00')
-    assert s.weekend_trips([good, day, late], friday, CALENDAR) == [good]
+    same_day = trip(dep='2026-11-21T06:00:00+03:00', ret='2026-11-21T22:30:00+03:00', duration_back=120)  # дома в вс в 00:30, но ночей нет
+    assert s.weekend_trips([good, day, late, same_day], friday, CALENDAR) == [good]
     window = (date(2026, 12, 31), date(2027, 1, 10))
     inside = trip(dep='2027-01-02T10:00:00+03:00', ret='2027-01-08T18:00:00+03:00')
+    too_long = trip(dep='2026-12-31T10:00:00+03:00', ret='2027-01-10T18:00:00+03:00')  # 10 ночей — длиннее недели
     edge = trip(dep='2027-01-10T10:00:00+03:00', ret='2027-01-14T18:00:00+03:00')   # один день окна
     long_leave = trip(dep='2027-01-08T10:00:00+03:00', ret='2027-01-20T18:00:00+03:00')  # 8 дней отпуска
-    assert [(offer.id, leave) for offer, leave in s.window_trips([inside, edge, long_leave], window, CALENDAR)] == [(inside.id, 0)]
+    assert [(offer.id, leave) for offer, leave in s.window_trips([inside, edge, long_leave, too_long], window, CALENDAR)] == [(inside.id, 0)]
 
 
 def test_budget_tiers_one_city_once_and_city_break():

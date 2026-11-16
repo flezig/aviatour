@@ -17,7 +17,7 @@ from zoneinfo import ZoneInfo
 SITE = 'https://aviatour.vercel.app'
 DATA = Path(__file__).resolve().parents[2] / 'web' / 'data'
 MONTHS_AHEAD = 6
-MIN_NIGHTS, MAX_NIGHTS = 1, 14
+MIN_NIGHTS, MAX_NIGHTS = 1, 7  # поездки до недели — как в подборках главной
 MONTH_NAMES = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь']
 MONTH_SHORT = ['янв.', 'февр.', 'мар.', 'апр.', 'мая', 'июн.', 'июл.', 'авг.', 'сент.', 'окт.', 'нояб.', 'дек.']
 TAGS = {'sea': 'Море', 'culture': 'Музеи и культура', 'food': 'Гастрономия', 'architecture': 'Архитектура', 'nature': 'Природа', 'nightlife': 'Вечерняя жизнь'}
@@ -110,7 +110,7 @@ def nights(offer):
 
 
 def cheapest_by_month(results, now):
-    """Месяц → самая дешёвая поездка на 1–14 ночей с вылетом в будущем. results: месяц → список предложений."""
+    """Месяц → самая дешёвая поездка на 1–7 ночей с вылетом в будущем. results: месяц → список предложений."""
     found = {}
     for month, offers in results.items():
         usable = [offer for offer in offers if offer.departure_at > now and MIN_NIGHTS <= nights(offer) <= MAX_NIGHTS
@@ -209,7 +209,7 @@ def fares(catalog, city, origin, cheapest, received_at, fixed=False):
             rows.append(f'<li><span class="month month--none"><span class="month-name">{name}</span><span class="caption">цен не нашли</span></span></li>')
     months = f'''<h2 id="monthsTitle">Когда лететь дешевле</h2>
 <ol class="months-list">{''.join(rows)}</ol>
-<p class="caption">Самая низкая найденная цена в месяце: туда и обратно на одного, поездки на 1–14 ночей, вылет {pick if fixed else 'из&nbsp;' + esc(origin['from'])}. <a href="/how-we-count.html#city">Как мы считаем</a></p>''' if cheapest else ''
+<p class="caption">Самая низкая найденная цена в месяце: туда и обратно на одного, поездки на 1–7 ночей, вылет {pick if fixed else 'из&nbsp;' + esc(origin['from'])}. <a href="/how-we-count.html#city">Как мы считаем</a></p>''' if cheapest else ''
     links = []
     location = catalog.hotels.get(city['code'])
     dates = stay_dates(best) if best and location else None
@@ -257,7 +257,7 @@ HEAD = '''<!doctype html>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>{title}</title>
   <meta name="description" content="{description}">
-  <meta name="theme-color" content="#f5f4f0">{robots}
+  <meta name="theme-color" content="#eef3f9">{robots}
   <link rel="canonical" href="{url}">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Aviator">

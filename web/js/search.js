@@ -5,21 +5,23 @@ import { partnerLink } from './lib/links.js';
 import { goal } from './lib/measure.js';
 import { currentOrigin, saveOrigin } from './lib/origin.js';
 import { priceLevel, usualKey, hotLine, leaveLine, levelNote, priceChange } from './lib/levels.js';
+import { mountSky } from './lib/sky.js';
+import { flightLoader } from './lib/art.js';
 
 const EUROPE = new Set('AL AD AT BE BA BG HR CY CZ DK EE FI FR DE GR HU IS IE IT LV LI LT LU MT MD MC ME NL MK NO PL PT RO SM RS SK SI ES SE CH TR UA GB VA XK'.split(' '));
 const REGIONS = { any: 'Куда угодно', russia: 'По России', europe: 'Поездка в Европу', usa: 'Поездка в США' };
 // Регионы, которые ищутся по списку городов; остальные — одним поиском с отбором по стране.
 const CITY_REGIONS = new Set(['europe', 'usa']);
-// По умолчанию — поездки на 1–14 ночей: «туда и обратно в один день» и поездки на месяц в общей выдаче только мешали.
-const LENGTHS = { any: '1–14 ночей', short: '1–2 ночи', mid: '3–4 ночи', week: '5–7 ночей', long: '8–14 ночей', more: 'Больше 14 ночей', day: 'В тот же день', all: 'Любая длина' };
-const FITS = { any: (d) => d >= 1 && d <= 14, short: (d) => d >= 1 && d <= 2, mid: (d) => d >= 3 && d <= 4, week: (d) => d >= 5 && d <= 7, long: (d) => d >= 8 && d <= 14, more: (d) => d > 14, day: (d) => d === 0, all: () => true };
+// По умолчанию — поездки до недели (1–7 ночей): «туда и обратно в один день» и поездки на две недели и дольше в общей выдаче мешали.
+const LENGTHS = { any: 'До 7 ночей', short: '1–2 ночи', mid: '3–4 ночи', week: '5–7 ночей', long: '8–14 ночей', more: 'Больше 14 ночей', day: 'В тот же день', all: 'Любая длина' };
+const FITS = { any: (d) => d >= 1 && d <= 7, short: (d) => d >= 1 && d <= 2, mid: (d) => d >= 3 && d <= 4, week: (d) => d >= 5 && d <= 7, long: (d) => d >= 8 && d <= 14, more: (d) => d > 14, day: (d) => d === 0, all: () => true };
 const SORTS = { price: 'Сначала дешевле', priceDescending: 'Сначала дороже', departure: 'Ближайший вылет', duration: 'Меньше времени в пути', stay: 'Больше времени на месте', value: 'Выгоднее час поездки', flightRating: 'По оценке перелёта' };
 const CHIPS = { cheap: 'До 20 000 ₽', direct: 'Прямые', noLeave: 'Без отпуска', comfy: 'Удобное время вылета', near: 'В пути до 3 ч', russia: 'Россия', unique: 'Один вариант на город' };
 const TAGS = { sea: 'Море', culture: 'Музеи и культура', food: 'Гастрономия', architecture: 'Архитектура', nature: 'Природа', nightlife: 'Вечерняя жизнь' };
 const POPULAR = ['MOW', 'LED', 'SVX', 'OVB', 'KZN', 'GOJ', 'KUF', 'UFA', 'AER', 'KGD'];
 // «Куда улететь из …»: родительный падеж для частых городов вылета; для остальных — «Вылет: город».
 // Подписи «из Москвы» — из web/data/origins.json; для остальных городов «из города …».
-const PAGE = 60;
+const PAGE = 24; // карточек на странице выдачи
 const config = window.AVIATOR ?? {};
 // A/B: вариант выбирается один раз на браузер и хранится. #ab=A или #ab=B показывает вариант без записи.
 function variant(name) {
@@ -44,7 +46,7 @@ const state = {
   labels: { origin: 'Москва · все аэропорты', destination: null },
   performed: null, performedLabels: null, performedSummary: null, performedLabel: '', status: 'idle', error: '', result: null,
   // Новичок спрашивает «куда», поэтому по умолчанию один лучший вариант на город; «Все» показывает каждую дату и рейс.
-  filters: { cheap: false, direct: false, noLeave: false, comfy: false, near: false, russia: false, unique: true }, length: 'any', sort: 'price', limit: PAGE,
+  filters: { cheap: false, direct: false, noLeave: false, comfy: false, near: false, russia: false, unique: true }, length: 'any', sort: 'price', page: 1, allRows: false,
   home: null, homeStatus: 'idle', recent: readRecent(), recentPrices: {}, recentOffers: new Map(), collection: null,
   airports: null, cities: null, byIata: new Map(), fromNames: new Map([['MOW', 'Москвы']]), cityPages: new Map(), photos: new Set(), guides: {}, hotels: {}, view: 'results', favs: readFavs(), pickerTarget: 'origin', shown: new Map(), detail: null, backFrom: null, nudged: new Set(),
 };
@@ -211,7 +213,7 @@ function offerCard(offer) {
 // Избранное хранится только в этом браузере: целые варианты, новые в конце, не больше 30.
 function saveFavs() { try { localStorage.setItem('aviator.favorites', JSON.stringify([...state.favs.values()])); } catch { /* частный режим: до конца визита */ } }
 function toggleFav(id) {
-  const offer = state.favs.get(id) ?? state.shown.get(id) ?? (state.detail?.id === id ? state.detail : null);
+  const offer = state.favs.get(id) ?? state.shown.get(id) ?? (state.detail?.id === id ? state.detail : null) ?? homeOffer(id) ?? state.recentOffers.get(id);
   if (!offer) return;
   if (state.favs.has(id)) state.favs.delete(id);
   else {
@@ -220,7 +222,13 @@ function toggleFav(id) {
     goal('save_trip', { city: offer.city_code, nights: facts(offer).days, people: 1 });
   }
   saveFavs();
-  for (const button of document.querySelectorAll('[data-fav]')) if (button.dataset.fav === id) button.setAttribute('aria-pressed', String(state.favs.has(id)));
+  for (const button of document.querySelectorAll('[data-fav]')) {
+    if (button.dataset.fav !== id) continue;
+    button.setAttribute('aria-pressed', String(state.favs.has(id)));
+    // Сердечко «подпрыгивает» и разлетается искрами, только когда поездку добавили.
+    button.classList.remove('pop');
+    if (state.favs.has(id)) { void button.offsetWidth; button.classList.add('pop'); setTimeout(() => button.classList.remove('pop'), 600); }
+  }
   if (state.view === 'fav') renderResults();
   else if ($('favCount')) $('favCount').textContent = state.favs.size;
 }
@@ -249,6 +257,13 @@ function renderFavorites() {
       : statusPanel('heart', 'Пока пусто', 'Нажмите на сердечко на карточке поездки — она появится здесь, и поездки можно будет сравнить.')}`;
 }
 
+// Номера страниц: первая, соседние с текущей, последняя; между ними — «…».
+function pager(pages) {
+  if (pages <= 1) return '';
+  const shown = [...new Set([1, state.page - 1, state.page, state.page + 1, pages])].filter((n) => n >= 1 && n <= pages).sort((a, b) => a - b);
+  const button = (n, label = n, extra = '') => `<button type="button" data-page="${n}" ${n === state.page && label === n ? 'aria-current="page"' : ''} ${extra}>${label}</button>`;
+  return `<nav class="pager" aria-label="Страницы выдачи">${button(state.page - 1, '‹', `aria-label="Предыдущая страница" ${state.page === 1 ? 'disabled' : ''}`)}${shown.map((n, i) => (i && n - shown[i - 1] > 1 ? '<span class="gap">…</span>' : '') + button(n)).join('')}${button(state.page + 1, '›', `aria-label="Следующая страница" ${state.page === pages ? 'disabled' : ''}`)}</nav>`;
+}
 function statusPanel(symbol, title, message) {
   return `<div class="status">${icon(symbol)}<h3>${esc(title)}</h3><p>${esc(message)}</p></div>`;
 }
@@ -268,7 +283,7 @@ function renderResults() {
   const announce = (text) => { $('resultsStatus').textContent = text; };
   if (status === 'loading') {
     // Заготовки карточек: страница держит форму, пока грузятся цены.
-    body = `<div class="grid" aria-hidden="true">${'<div class="offer skeleton"><div class="stamp"><div class="photo"></div></div><div class="offer-body"><i></i><i></i><i></i></div></div>'.repeat(4)}</div>`;
+    body = flightLoader('Ищем варианты поездки…');
     announce('Ищем варианты поездки');
   } else if (status === 'error') {
     body = statusPanel('alert', 'Поиск не завершён', state.error) + `<div class="status-actions">${action('retry', 'Попробовать ещё раз')}</div>`;
@@ -310,8 +325,9 @@ function renderResults() {
           </div>`;
       }
     } else {
-      body += `<div class="grid">${offers.slice(0, state.limit).map(offerCard).join('')}</div>`
-        + (state.limit < offers.length ? `<div class="status-actions">${action('more', `Ещё варианты · ${offers.length - state.limit}`)}</div>` : '');
+      const pages = Math.ceil(offers.length / PAGE);
+      state.page = Math.min(Math.max(1, state.page), pages);
+      body += `<div class="grid">${offers.slice((state.page - 1) * PAGE, state.page * PAGE).map(offerCard).join('')}</div>${pager(pages)}`;
     }
   }
   const back = homeVariant === 'B' ? `<button type="button" class="chip" data-action="showcase">${icon('arrow-left')}Подборки</button>` : '';
@@ -496,7 +512,7 @@ function passTile(offer, row) {
       <div class="legs"><span><small>Туда</small><b>${esc(fmtDay(x.dep, offer.origin_timezone, true))}</b></span><span><small>Обратно</small><b>${esc(fmtDay(x.ret, offer.destination_timezone, true))}</b></span><span><small>На месте</small><b>${esc(stayLabel(offer))}</b></span></div>
     </div>
     <div class="pass-stub">
-      <div class="tile-price-row"><p class="pass-price">${esc(fmtMoney(offer.price_minor))}</p>${levelTag(offer)}</div>
+      <div class="tile-price-row"><p class="pass-price">${esc(fmtMoney(offer.price_minor))}</p>${levelTag(offer)}${favButton(offer).replace('class="fav"', 'class="fav fav--inline"')}</div>
       ${level && level.diff < 0 ? `<p class="caption">${esc(hotLine(daysFromToday(offer), level.diff, level.month))}</p>` : ''}
       <p class="caption">${x.direct ? 'прямые' : 'с пересадками'} · ${esc(airlineLabel(offer))}</p>
     </div></div>${openButton(offer, row)}</article>`;
@@ -505,7 +521,7 @@ function passTile(offer, row) {
 function stampTile(offer, row, note = '') {
   const x = facts(offer);
   return `<article class="tile">
-    <div class="stamp">${photo(offer.city_code, '', '(min-width: 900px) 200px, 168px')}</div>
+    <div class="stamp">${photo(offer.city_code, favButton(offer), '(min-width: 900px) 200px, 168px')}</div>
     <div class="tile-body">
       <h3 class="tile-city">${esc(offer.city)}</h3>
       <div class="tile-price-row"><b class="tile-price">${esc(fmtMoney(offer.price_minor))}</b>${levelTag(offer)}</div>
@@ -539,8 +555,7 @@ function recentRow() {
 function renderShowcase() {
   const section = $('showcase');
   if (state.homeStatus === 'loading') {
-    const skeleton = `<div class="strip" aria-hidden="true">${'<div class="tile skeleton"><div class="stamp"><div class="photo"></div></div><div class="tile-body"><i></i><i></i></div></div>'.repeat(6)}</div>`;
-    section.innerHTML = `<section class="row"><div class="row-head"><h2>Подбираем билеты</h2></div>${skeleton}</section>` + recentRow();
+    section.innerHTML = flightLoader('Подбираем билеты из вашего города…') + recentRow();
     $('resultsStatus').textContent = 'Подбираем билеты';
     return;
   }
@@ -549,14 +564,15 @@ function renderShowcase() {
       + `<div class="status-actions">${action('retryHome', 'Загрузить подборки')}</div>`;
     return;
   }
-  const rows = state.home.rows.map((row) => {
+  const visible = state.allRows ? state.home.rows : state.home.rows.slice(0, 8), hidden = state.home.rows.length - visible.length;
+  const rows = visible.map((row) => {
     const offers = rowOffers(row);
     if (offers.length < 3) return '';
     const note = (offer) => state.home.notes[offer.id] ? esc(leaveLine(state.home.notes[offer.id].leave, state.home.notes[offer.id].trip)) : '';
     const tiles = offers.slice(0, 12).map((offer) => row.kind === 'pass' ? passTile(offer, row.key) : stampTile(offer, row.key, note(offer))).join('');
     return rowSection(row.key, row.title, row.hint, tiles, `<button type="button" class="row-all" data-row-all="${esc(row.key)}">Все · ${offers.length}${icon('arrow-right')}</button>`);
   }).join('');
-  section.innerHTML = recentRow() + (rows || statusPanel('send', 'Подборок пока нет', 'Для этого города вылета не нашлось поездок на ближайшие недели. Попробуйте поиск в форме выше.'))
+  section.innerHTML = recentRow() + (rows ? rows + (hidden > 0 ? `<button type="button" class="btn-inline more-rows" data-more-rows>Ещё подборки · ${hidden}</button>` : '') : statusPanel('send', 'Подборок пока нет', 'Для этого города вылета не нашлось поездок на ближайшие недели. Попробуйте поиск в форме выше.'))
     + `<p class="source">Цены Aviasales на ${esc(receivedLabel(state.home.received_at))} · туда и обратно на одного · <a href="/how-we-count.html#home">Как мы считаем подборки</a></p>`;
   $('resultsStatus').textContent = 'Подборки загружены';
 }
@@ -582,8 +598,16 @@ async function loadHome() {
       .then((data) => { state.recentPrices = data?.prices ?? {}; if (state.view === 'showcase') renderShowcase(); }).catch(() => {});
   }
 }
+// Активная вкладка шапки: «Избранное» — когда показано избранное, иначе «Билеты».
+function markNav(view) {
+  for (const link of document.querySelectorAll('.nav a, .top-fav')) {
+    const href = link.getAttribute('href'), active = view === 'fav' ? href === '/#fav' : href === '/';
+    if (active) link.setAttribute('aria-current', 'page'); else link.removeAttribute('aria-current');
+  }
+}
 function setView(view) {
   state.view = view;
+  markNav(view);
   $('showcase').hidden = view !== 'showcase';
   if (view === 'showcase') $('results').hidden = true;
 }
@@ -596,7 +620,7 @@ function showShowcase() {
 }
 function showCollection(key, push = true) {
   if (!homeRow(key)) return;
-  Object.assign(state, { collection: key, limit: PAGE });
+  Object.assign(state, { collection: key, page: 1 });
   if (push) history.pushState({ row: key }, '', `${location.pathname}#row=${key}`);
   setView('collection');
   renderResults();
@@ -701,7 +725,7 @@ async function search({ scroll = true, auto = false } = {}) {
   request?.abort();
   request = new AbortController();
   const q = { ...state.query }, signal = request.signal, label = summary(q), fromShowcase = state.view === 'showcase' || state.view === 'collection';
-  Object.assign(state, { performed: q, performedLabels: { ...state.labels }, performedSummary: label, performedLabel: `${state.labels.origin} → ${state.labels.destination ?? REGIONS[q.region]} · ${label.details}`, status: 'loading', limit: PAGE, view: 'results' });
+  Object.assign(state, { performed: q, performedLabels: { ...state.labels }, performedSummary: label, performedLabel: `${state.labels.origin} → ${state.labels.destination ?? REGIONS[q.region]} · ${label.details}`, status: 'loading', page: 1, view: 'results' });
   if (!auto) {
     history[fromShowcase ? 'pushState' : 'replaceState'](null, '', '?' + toParams(q));
     goal('search', { from: q.originCity ?? q.origin, region: q.region });
@@ -856,6 +880,9 @@ $('showcase').addEventListener('click', (event) => {
     return;
   }
   if (event.target.closest('[data-action="retryHome"]')) { loadHome(); return; }
+  const fav = event.target.closest('[data-fav]');
+  if (fav) { toggleFav(fav.dataset.fav); return; }
+  if (event.target.closest('[data-more-rows]')) { state.allRows = true; renderShowcase(); return; }
   const open = event.target.closest('[data-open]');
   const offer = open && (open.dataset.row === 'recent' ? state.recentOffers.get(open.dataset.open) : homeOffer(open.dataset.open));
   if (offer) { goal('select_idea', { idea: `row-${open.dataset.row}` }); openFromCard(offer, open.closest('.tile')); }
@@ -889,24 +916,24 @@ $('detailBody').addEventListener('click', (event) => {
 
 $('results').addEventListener('click', (event) => {
   const chip = event.target.closest('[data-chip]'), act = event.target.closest('[data-action]'), open = event.target.closest('[data-offer]'), fav = event.target.closest('[data-fav]');
-  const level = event.target.closest('[data-level]');
+  const level = event.target.closest('[data-level]'), page = event.target.closest('[data-page]');
   if (level) { toggleLevel(level); return; }
   if (fav) { toggleFav(fav.dataset.fav); return; }
+  if (page && !page.disabled) { state.page = Number(page.dataset.page); renderResults(); $('results').scrollIntoView({ block: 'start' }); return; }
   if (chip) {
     if (chip.dataset.chip === 'all') { for (const name of Object.keys(state.filters)) state.filters[name] = false; state.length = 'any'; }
     else {
       state.filters[chip.dataset.chip] = !state.filters[chip.dataset.chip];
       if (state.filters[chip.dataset.chip]) goal('select_idea', { idea: `filter-${chip.dataset.chip}` });
     }
-    state.limit = PAGE;
+    state.page = 1;
     renderResults();
   } else if (act) {
     const name = act.dataset.action, q = state.query;
     if (name === 'favorites') { showFavorites(); return; }
     if (name === 'showcase' || (name === 'results' && !state.performed && homeVariant === 'B')) { history.pushState(null, '', location.pathname); showShowcase(); window.scrollTo({ top: 0 }); return; }
     if (name === 'results') { setView(state.collection && !state.performed ? 'collection' : 'results'); if (location.hash === '#fav') history.replaceState(history.state, '', location.pathname + location.search); renderResults(); $('results').scrollIntoView({ block: 'start' }); return; }
-    if (name === 'more') { state.limit += PAGE; renderResults(); return; }
-    if (name === 'allLengths') { state.length = 'all'; state.limit = PAGE; renderResults(); return; }
+    if (name === 'allLengths') { state.length = 'all'; state.page = 1; renderResults(); return; }
     if (name === 'resetFilters') { for (const key of Object.keys(state.filters)) state.filters[key] = false; state.length = 'any'; renderResults(); return; }
     if (name === 'edit') { collapseForm(false); $('search').scrollIntoView({ block: 'start' }); return; }
     if (name !== 'retry') { Object.assign(q, state.performed); state.labels = { ...state.performedLabels }; }
@@ -920,8 +947,8 @@ $('results').addEventListener('click', (event) => {
   }
 });
 $('results').addEventListener('change', (event) => {
-  if (event.target.id === 'sort') { state.sort = event.target.value; state.limit = PAGE; renderResults(); }
-  if (event.target.id === 'length') { state.length = event.target.value; state.limit = PAGE; if (state.length !== 'any') goal('select_idea', { idea: `length-${state.length}` }); renderResults(); }
+  if (event.target.id === 'sort') { state.sort = event.target.value; state.page = 1; renderResults(); }
+  if (event.target.id === 'length') { state.length = event.target.value; state.page = 1; if (state.length !== 'any') goal('select_idea', { idea: `length-${state.length}` }); renderResults(); }
 });
 for (const dialog of document.querySelectorAll('dialog')) {
   dialog.addEventListener('click', (event) => { if (event.target === dialog || event.target.closest('[data-close]')) { dialog.close(); if (dialog.id === 'detail') leaveTrip(); } });
@@ -948,6 +975,7 @@ async function restore() {
   return true;
 }
 (async () => {
+  mountSky();
   renderForm();
   // Список фото меняется с каждой выкладкой; /photos/* кешируются на сутки, поэтому сам список перепроверяется.
   fetch('/photos/manifest.json', { cache: 'no-cache' }).then((response) => response.ok ? response.json() : []).then((codes) => { state.photos = new Set(codes); if (state.status === 'done') renderResults(); }).catch(() => {});

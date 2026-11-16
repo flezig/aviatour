@@ -5,7 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Aviator — куда улететь дешево</title>
   <meta name="description" content="Куда улететь дешево: горячие билеты, поездки на выходные и длинные праздники, подборки по бюджету. Цены Aviasales, покупка — на Aviasales.">
-  <meta name="theme-color" content="#f5f4f0">
+  <meta name="theme-color" content="#eef3f9">
+  <link rel="preload" href="/photos/hero-960.jpg" as="image" media="(max-width: 699px)">
+  <link rel="preload" href="/photos/hero-1920.jpg" as="image" media="(min-width: 700px)">
   <link rel="canonical" href="https://aviatour.vercel.app/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Aviator">
@@ -27,9 +29,12 @@
   <link rel="modulepreload" href="/js/lib/measure.js">
   <link rel="modulepreload" href="/js/lib/origin.js">
   <link rel="modulepreload" href="/js/lib/levels.js">
+  <link rel="modulepreload" href="/js/lib/sky.js">
+  <link rel="modulepreload" href="/js/lib/art.js">
 </head>
-<body>
+<body class="has-hero">
   <a class="skip" href="#search">К поиску</a>
+  <div class="hero-photo" aria-hidden="true"><picture><source media="(min-width: 700px)" srcset="/photos/hero-1920.jpg"><img src="/photos/hero-960.jpg" alt="" fetchpriority="high" decoding="async"></picture></div>
   <header class="top wrap">
     <a class="brand" href="/"><span class="brand-mark"><svg class="icon" aria-hidden="true"><use href="/icons.svg#plane"></use></svg></span>Aviator</a>
     <nav class="nav" aria-label="Разделы сайта">
@@ -93,14 +98,16 @@
             <label><input type="radio" name="dateMode" value="month" checked><span>Месяц</span></label>
             <label><input type="radio" name="dateMode" value="exact"><span>Точные даты</span></label>
           </div>
-          <div class="stack" id="monthFields">
+          <div class="stack when-fields" id="monthFields">
             <select class="menu" id="month" aria-label="Месяц"></select>
             <label class="toggle"><span>Только короткие выходные</span><input type="checkbox" class="switch" id="weekendOnly"></label>
           </div>
-          <div class="stack" id="exactFields" hidden>
-            <label class="date-row"><span>Туда</span><input type="date" id="departureDate"></label>
-            <label class="date-row"><span>Обратно</span><input type="date" id="returnDate"></label>
-            <p class="caption">Даты по местному времени аэропортов</p>
+          <div class="stack when-fields" id="exactFields" hidden>
+            <div class="date-pair">
+              <label class="date-cell"><span class="label">Туда</span><input type="date" id="departureDate"></label>
+              <label class="date-cell"><span class="label">Обратно</span><input type="date" id="returnDate"></label>
+            </div>
+            <p class="caption">Местное время аэропортов</p>
           </div>
         </div>
 
@@ -114,7 +121,7 @@
           <label class="toggle"><span>Только прямые рейсы</span><input type="checkbox" class="switch" id="directOnly"></label>
         </div>
       </div>
-      <button class="btn-primary search-go" type="submit" id="searchButton"><svg class="icon" aria-hidden="true"><use href="/icons.svg#search"></use></svg>Найти варианты</button>
+      <button class="btn-primary search-go" type="submit" id="searchButton"><svg class="icon" aria-hidden="true"><use href="/icons.svg#search"></use></svg>Найти</button>
     </form>
 
     <div class="showcase" id="showcase" hidden></div>
@@ -132,6 +139,7 @@
       <a href="/credits.html">Авторы фото</a>
     </nav>
     <p class="caption">Цены — находки Aviasales, окончательную цену и наличие мест показывает Aviasales. Билеты продаёт Aviasales, мы получаем комиссию.</p>
+    <p class="caption">Фото в шапке: Атрани, побережье Амальфи — <a href="https://commons.wikimedia.org/wiki/File:Atrani_(Costiera_Amalfitana,_23-8-2011).jpg" target="_blank" rel="noopener">Paolo Costa Baldi</a>, <a href="https://creativecommons.org/licenses/by/3.0" target="_blank" rel="noopener">CC BY 3.0</a>, уменьшено и кадрировано.</p>
   </footer>
 
   <dialog class="sheet" id="picker" aria-labelledby="pickerTitle">

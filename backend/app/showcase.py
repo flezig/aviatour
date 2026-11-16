@@ -10,7 +10,8 @@ from dataclasses import dataclass
 from datetime import date, timedelta
 from zoneinfo import ZoneInfo
 
-MIN_NIGHTS, MAX_NIGHTS = 1, 14   # подборки не предлагают «туда и обратно в один день» и поездки дольше двух недель
+MIN_NIGHTS, MAX_NIGHTS = 1, 14   # обычная цена считается для поездок на 1–14 ночей
+ROW_NIGHTS = 7                   # в подборки — поездки до недели: дольше владелец счёл неадекватным (16.11.2026)
 HOT_DAYS = 14                    # «горячий» билет: вылет через 1–14 дней …
 HOT_DISCOUNT = 20                # … и цена ниже обычной минимум на 20 %
 LEVEL_BAND = 15                  # ±15 % от обычной — «обычная цена»
@@ -45,6 +46,10 @@ def short_trip(offer):
     return MIN_NIGHTS <= nights(offer) <= MAX_NIGHTS
 
 
+def row_trip(offer):
+    return MIN_NIGHTS <= nights(offer) <= ROW_NIGHTS
+
+
 def cheapest_per_dates(offers):
     """Одна цена на пару дат — самая низкая. Разные рейсы на одни даты — не разные наблюдения."""
     best = {}
@@ -74,7 +79,7 @@ def discounted(offers, usual, today, discount, days=HOT_DAYS):
     for offer in offers:
         ahead = (offer.departure_at.date() - today).days
         found = usual.get(usual_key(offer))
-        if not short_trip(offer) or not 1 <= ahead <= days or not found:
+        if not row_trip(offer) or not 1 <= ahead <= days or not found:
             continue
         diff = price_level(offer.price_minor, found[0])[1]
         rank = (diff, offer.price_minor, offer.id)
@@ -177,10 +182,11 @@ def weekend_pairs(friday):
 
 
 def weekend_trips(offers, friday, calendar):
-    """Вылет в пятницу или субботу, дома в воскресенье или понедельник, и ни одного дня отпуска."""
+    """Вылет в пятницу или субботу, дома в воскресенье или понедельник, ни одного дня отпуска и хотя бы одна ночь на месте
+    (туда и обратно в субботу с прилётом домой после полуночи — не поездка на выходные)."""
     leave_on = {friday, friday + timedelta(days=1)}
     back_on = {friday + timedelta(days=2), friday + timedelta(days=3)}
-    return [offer for offer in offers if offer.departure_at.date() in leave_on and home_arrival(offer)[0].date() in back_on
+    return [offer for offer in offers if nights(offer) >= 1 and offer.departure_at.date() in leave_on and home_arrival(offer)[0].date() in back_on
             and leave_days(offer, calendar) == 0]
 
 
@@ -217,12 +223,12 @@ def window_pairs(window, calendar):
 
 
 def window_trips(offers, window, calendar):
-    """Поездки на 2–14 ночей, которые захватывают хотя бы два дня окна и требуют не больше MAX_LEAVE дней отпуска.
+    """Поездки на 2–7 ночей, которые захватывают хотя бы два дня окна и требуют не больше MAX_LEAVE дней отпуска.
     Возвращает (поездка, дней отпуска)."""
     start, end = window
     found = []
     for offer in offers:
-        if not 2 <= nights(offer) <= MAX_NIGHTS:
+        if not 2 <= nights(offer) <= ROW_NIGHTS:
             continue
         overlap = (min(offer.return_at.date(), end) - max(offer.departure_at.date(), start)).days + 1
         if overlap >= 2 and (leave := leave_days(offer, calendar)) <= MAX_LEAVE:
@@ -238,8 +244,8 @@ def one_per_city(offers, key=lambda offer: offer.price_minor):
 
 
 def budget_tiers(offers):
-    """Лучшая поездка каждого города на 1–14 ночей → ступени бюджета: до 5 000, 5–10 тысяч и так далее."""
-    best = one_per_city([offer for offer in offers if short_trip(offer)])
+    """Лучшая поездка каждого города на 1–7 ночей → ступени бюджета: до 5 000, 5–10 тысяч и так далее."""
+    best = one_per_city([offer for offer in offers if row_trip(offer)])
     tiers, lower = [], 0
     for upper in BUDGET_TIERS:
         tiers.append((lower, upper, [offer for offer in best if lower * 100 < offer.price_minor <= upper * 100]))
@@ -248,7 +254,7 @@ def budget_tiers(offers):
 
 
 def tagged(offers, cities):
-    return one_per_city([offer for offer in offers if short_trip(offer) and offer.city_code in cities])
+    return one_per_city([offer for offer in offers if row_trip(offer) and offer.city_code in cities])
 
 
 def city_break(offers, guides):
