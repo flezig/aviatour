@@ -33,6 +33,12 @@ async function show(origin, refocus = false) {
     $('fares').innerHTML = data.price;
     for (const id of ['months', 'stay']) { $(id).innerHTML = data[id] ?? ''; $(id).hidden = !data[id]; }
     shown = origin.code;
+    for (const link of main.querySelectorAll('a[href^="/season/"]')) {
+      const url = new URL(link.href);
+      url.searchParams.set('from', origin.iata);
+      if (origin.all) url.searchParams.set('fc', origin.code); else url.searchParams.delete('fc');
+      link.href = url.href;
+    }
     polish(main);
     // Кнопку выбора города заменили новой — фокус возвращается на неё, а не в начало страницы.
     if (refocus) $('fares').querySelector('[data-origin-pick]')?.focus();

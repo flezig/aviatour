@@ -347,6 +347,8 @@ def population(city):
 
 
 def page(catalog, city, origin, parts, route=False):
+    from .season_pages import badge
+    month = datetime.now(ZoneInfo(city['timezone'] or 'UTC')).month
     name = city['name']
     url = f'{SITE}/route/{slug(origin["name"])}-{city["slug"]}' if route else f'{SITE}/city/{city["slug"]}'
     best = parts['best']
@@ -370,11 +372,13 @@ def page(catalog, city, origin, parts, route=False):
     body = f'''
   <main class="wrap city" id="main" data-city="{esc(city['code'])}" data-origin="{esc(origin['code'])}" data-fixed="{int(route)}">
     {visible}
+    <nav class="season-tabs" aria-label="Разделы города"><a href="{esc(url)}" aria-current="page">О городе</a><a id="citySeason" href="/season/{esc(city['code'])}?from={esc(origin['iata'])}{'&amp;fc='+esc(origin['code']) if origin['all'] else ''}">Сезонный рейтинг</a></nav>
     <section class="city-hero">
       <div class="stamp stamp--hero"><div class="photo"><img src="/photos/{esc(city['code'])}.jpg" alt="{esc(name)}" width="720" height="480" fetchpriority="high"></div></div>
       <div class="city-head">
         <p class="city-code"><b>{esc(city['code'])}</b> · {esc(city['country'])}{population(city)}</p>
         <h1>{heading}</h1>
+        {badge(city['code'],month,origin)}
         <div class="fares" id="fares" aria-live="polite">{parts['price']}</div>
       </div>
     </section>
@@ -394,16 +398,19 @@ def country_caption(city):
 
 
 def index_page(catalog):
+    from .season_pages import badge
+    month = datetime.now(ZoneInfo('Europe/Moscow')).month
     groups = {'Россия': [city for city in catalog.cities if city['country_code'] == 'RU'], 'Другие страны': [city for city in catalog.cities if city['country_code'] != 'RU']}
     sections = ''.join(f'''<section class="city-group"><h2>{title}</h2><ul class="city-grid">{''.join(
         f'<li><a class="city-card" href="/city/{esc(city["slug"])}"><span class="stamp"><span class="photo"><img src="/photos/s/{esc(city["code"])}.webp" alt="" loading="lazy" decoding="async"></span></span>'
-        f'<b>{esc(city["name"])}</b>{country_caption(city)}</a></li>' for city in sorted(items, key=lambda city: city['name']))}</ul></section>'''
+        f'<b>{esc(city["name"])}</b>{country_caption(city)}</a>{badge(city['code'],month)}</li>' for city in sorted(items, key=lambda city: city['name']))}</ul></section>'''
         for title, items in groups.items() if items)
     ld, visible = breadcrumbs([('Aviator', '/'), ('Города', '/city/')])
     body = f'''
   <main class="wrap" id="main">
     {visible}
     <header class="page-head"><h1>Города</h1><p>Цены на билеты по месяцам, заметки о городе и жильё. Сейчас здесь {len(catalog.cities)} городов, куда есть рейсы из больших городов России.</p></header>
+    <a class="btn-inline" href="/season/">Сезонный рейтинг · найти свой город</a>
     {sections}
   </main>'''
     return (HEAD.format(title='Города: когда лететь дешевле · Aviator', description='Страницы городов: цены на билеты туда и обратно по месяцам, что посмотреть и где жить.',

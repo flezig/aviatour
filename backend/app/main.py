@@ -22,7 +22,7 @@ from .runtime import TTLCache, RateLimiter
 from .settings import Settings
 from .upstream import Travelpayouts
 from .rules import matches, safe_search_url, safe_hotel_url, safe_stay_url, safe_tour_url, longer_stays
-from . import city_pages, scenario_pages, showcase
+from . import city_pages, scenario_pages, season_pages, showcase
 from .regions import includes, REGION_CITIES
 from .rating import evaluate, round_int
 from .rating_sources import RatingSources, load_reviewed_data
@@ -411,7 +411,7 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
             return known
         return {'code': airport['city_code'], 'iata': iata, 'all': bool(fc), 'name': airport['city'], 'from': (known or {}).get('from') or f'города {airport["city"]}'}
 
-    async def city_fares(city, origin, fixed=False):
+    async def city_quotes(city, origin):
         moment = now()
         months = city_pages.month_keys(moment.astimezone(ZoneInfo(BY_IATA[origin['iata']]['timezone'])))
         async def one(month):
@@ -425,12 +425,61 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
         results = dict(task.result() for task in done)
         found = {month: result.offers for month, result in results.items() if result}
         received = [result.received_at for result in results.values() if result]
-        parts = city_pages.fares(catalog, city, origin, city_pages.cheapest_by_month(found, moment), min(received) if received else moment, fixed)
+        cheapest = city_pages.cheapest_by_month(found, moment)
         # Не все месяцы ответили — короткий кеш, чтобы недостающее появилось быстро.
-        return parts, page_cache if not pending and len(found) == len(results) == len(months) else 'public, max-age=30, s-maxage=60'
+        cache = page_cache if not pending and len(found) == len(results) == len(months) else 'public, max-age=30, s-maxage=60'
+        return cheapest, min(received) if received else moment, cache
+
+    async def city_fares(city, origin, fixed=False):
+        cheapest, received, cache = await city_quotes(city, origin)
+        return city_pages.fares(catalog, city, origin, cheapest, received, fixed), cache
 
     def default_origin(city):
         return catalog.origin_by_code['LED' if city['code'] == catalog.default_origin else catalog.default_origin]
+
+    @app.get('/season/', response_class=HTMLResponse)
+    async def season_index(month: int | None = Query(None, ge=1, le=12), q: str = Query('', max_length=100)):
+        current = month or now().astimezone(ZoneInfo('Europe/Moscow')).month
+        return HTMLResponse(season_pages.directory(catalog, current, q), headers={'Cache-Control': page_cache})
+
+    @app.get('/season/{code}', response_class=HTMLResponse)
+    async def season_city(code: str, month: int | None = Query(None, ge=1, le=12), mode: str = '',
+                          departure: str | None = Query(None, alias='from'), fc: str | None = None):
+        city = season_pages.CITIES.get(code)
+        if not city:
+            return not_found()
+        origin = origin_for(departure, fc)
+        if not origin or origin['code'] == code:
+            origin = default_origin({'code': code})
+        current = month or now().astimezone(ZoneInfo(city['timezone'] or 'UTC')).month
+        return HTMLResponse(season_pages.city_page(catalog, code, current, mode, origin),
+                            headers={'Cache-Control': page_cache})
+
+    @app.get('/api/v1/season/{code}/fares')
+    async def season_fares(code: str, origin: str = Query(alias='from'), fc: str | None = None):
+        airport, chosen = season_pages.CITIES.get(code), origin_for(origin, fc)
+        if not airport or not chosen or code == chosen['code']:
+            raise SearchError('validation', 'Выберите два разных города.', 422)
+        city = catalog.by_code.get(code) or {'code': code, 'airport': airport['iata']}
+        if not all(re.fullmatch('[A-Z]{3}', value) for value in (city['airport'], code, chosen['iata'], chosen['code'])):
+            return JSONResponse({'origin': city_pages.origin_public(chosen), 'month_fares': {}}, headers={'Cache-Control': page_cache})
+        cheapest, _, cache = await city_quotes(city, chosen)
+        rows = {month: {'minor': o.price_minor, 'url': city_pages.search_link(chosen, city, month, o.price_minor),
+                        'received': o.received_at.isoformat()} for month, o in cheapest.items()}
+        return JSONResponse({'origin': city_pages.origin_public(chosen), 'month_fares': rows}, headers={'Cache-Control': cache})
+
+    @app.get('/api/v1/season-scores')
+    async def season_scores():
+        return JSONResponse(season_pages.score_index(), headers={'Cache-Control': 'public, max-age=86400'})
+
+    @app.get('/api/v1/season/{code}/advice')
+    async def season_advice(code: str):
+        city = season_pages.CITIES.get(code)
+        slug = season_pages.ADVICE.get((city or {}).get('country_code'), {}).get('fcdo')
+        if not slug:
+            return JSONResponse({'status': 'unavailable'})
+        result = await app.state.city_insights.safety({'advice_slug': slug})
+        return JSONResponse(result, headers={'Cache-Control': 'public, max-age=60, s-maxage=600'})
 
     @app.get('/city/', response_class=HTMLResponse)
     async def city_index():

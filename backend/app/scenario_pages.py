@@ -3,7 +3,11 @@
 Готовый HTML для людей и поисковиков. Данные — та же сборка главной для города вылета (/api/v1/home), новых
 запросов к источнику нет. Страница, где сейчас меньше трёх вариантов, закрыта от индексации (noindex).
 """
-from datetime import datetime
+from datetime import datetime, timedelta
+from urllib.parse import parse_qs
+from zoneinfo import ZoneInfo
+
+from .season_pages import badge
 
 from .city_pages import FOOT, HEAD, SITE, breadcrumbs, date_range, esc, money, nights_label, received_html, slug
 from .showcase import BUDGET_TIERS, ROW_MIN, plural
@@ -57,6 +61,12 @@ def item(offer, note, photos, cities):
     dep, ret = datetime.fromisoformat(offer['departure_at']), datetime.fromisoformat(offer['return_at'])
     nights = (ret.date() - dep.date()).days
     city = cities.get(offer['city_code'])
+    arriving = dep + timedelta(minutes=offer.get("duration_to") or 0)
+    query = parse_qs(offer['q'])
+    departure = query.get('from', [None])[0]
+    fc = query.get('fc', [None])[0]
+    origin = {'iata': departure, 'all': bool(fc), 'code': fc} if departure else None
+    month = arriving.astimezone(ZoneInfo(offer.get("destination_timezone") or "UTC")).month
     thumb = (f'<span class="stamp"><span class="photo"><img src="/photos/s/{esc(offer["city_code"])}.webp" alt="" loading="lazy" decoding="async"></span></span>'
              if offer['city_code'] in photos else '<span class="stamp"><span class="photo"></span></span>')
     extra = f'<span class="caption">{esc(leave_text(note))}</span>' if note else ''
@@ -65,7 +75,7 @@ def item(offer, note, photos, cities):
   <a class="scenario-open" href="/?{esc(offer['q'])}#trip={esc(offer['id'])}">{thumb}
     <span class="scenario-text"><b>{esc(offer['city'])}</b><span class="caption">{esc(offer.get('country') or '')}</span>
       <span>{date_range(dep, ret)}, {nights_label(nights)}</span>{extra}</span>
-    <b class="scenario-price">{money(offer['price_minor'])}</b></a>{about}
+    <b class="scenario-price">{money(offer['price_minor'])}</b></a>{about}{badge(offer["city_code"],month,origin)}
 </li>'''
 
 
