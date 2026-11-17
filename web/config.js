@@ -4,7 +4,8 @@ window.AVIATOR = {
   // Эксперименты. true — посетители делятся пополам на варианты A и B, false — все видят вариант B.
   // home: A — прежняя главная (форма и сразу список вариантов); B — витрина с подборками (этап 3).
   // Пока эксперимент идёт, вариант попадает в конец метки перехода (led-trip-tickets-a / -b), её видно в отчётах Travelpayouts.
-  experiments: { home: false },
+  // afterTicket: A — подсказка об отелях по возвращении; B — план поездки.
+  experiments: { home: false, afterTicket: false },
   // Блок «Кто мы» на странице «О проекте» появится, когда здесь будут люди.
   // Пример: { name: 'Имя Фамилия', role: 'продукт и разработка', link: 'https://t.me/username' }
   team: [],
@@ -14,7 +15,7 @@ window.AVIATOR = {
   metrika: '',
   // Пометка «Реклама» у партнёрских блоков. Сведения о рекламодателе для каждой программы — в кабинете
   // Travelpayouts («Инструменты → Ссылки»). Пока поля пустые, показывается «Реклама · Aviasales».
-  ads: { aviasales: { advertiser: '', inn: '', erid: '' }, ostrovok: { advertiser: '', inn: '', erid: '' } },
+  ads: { tripster: { advertiser: '', inn: '', erid: '' }, aviasales: { advertiser: '', inn: '', erid: '' }, ostrovok: { advertiser: '', inn: '', erid: '' } },
   // Оператор для страницы «Конфиденциальность»: название и почта для обращений. Пустые поля не показываются.
   operator: { name: '', email: '' },
 };

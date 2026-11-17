@@ -1,6 +1,6 @@
 import hashlib
 import json
-from datetime import datetime
+from datetime import date, datetime
 from decimal import Decimal, DecimalException, ROUND_CEILING
 from urllib.parse import parse_qs, urlsplit
 from zoneinfo import ZoneInfo
@@ -49,6 +49,33 @@ def safe_hotel_url(link):
     query = parse_qs(parts.query, keep_blank_values=True, strict_parsing=True)
     if set(query) != set(HOTEL_PARAMS) or any(len(values) != 1 or not re.fullmatch(HOTEL_PARAMS[key], values[0]) for key, values in query.items()):
         raise ValueError('link')
+    return link
+
+
+def safe_tour_url(link, cities):
+    parts = urlsplit(link)
+    if (parts.scheme != 'https' or parts.netloc != 'experience.tripster.ru' or parts.fragment
+            or parts.path not in cities):
+        raise ValueError('link')
+    query = parse_qs(parts.query, keep_blank_values=True, strict_parsing=True)
+    if set(query) != {'start_date', 'end_date'} or any(len(v) != 1 or not re.fullmatch(r'\d{4}-\d{2}-\d{2}', v[0]) for v in query.values()):
+        raise ValueError('dates')
+    if date.fromisoformat(query['end_date'][0]) < date.fromisoformat(query['start_date'][0]):
+        raise ValueError('dates')
+    return link
+
+
+def safe_stay_url(link, allowed):
+    parts = urlsplit(link)
+    if not parts.query:
+        return safe_listed_url(link, allowed, 'ostrovok.ru')
+    safe_listed_url(parts._replace(query='').geturl(), allowed, 'ostrovok.ru')
+    query = parse_qs(parts.query, keep_blank_values=True, strict_parsing=True)
+    if set(query) != {'dates', 'guests'} or len(query['dates']) != 1 or query['guests'] not in (['1'], ['2'], ['3'], ['4']):
+        raise ValueError('parameters')
+    dates = re.fullmatch(r'(\d{2}\.\d{2}\.\d{4})-(\d{2}\.\d{2}\.\d{4})', query['dates'][0])
+    if not dates or datetime.strptime(dates[1], '%d.%m.%Y') >= datetime.strptime(dates[2], '%d.%m.%Y'):
+        raise ValueError('dates')
     return link
 
 

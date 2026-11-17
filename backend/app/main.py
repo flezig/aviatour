@@ -21,12 +21,13 @@ from .models import SearchRequest, SearchResponse, BatchSearchRequest, BatchSear
 from .runtime import TTLCache, RateLimiter
 from .settings import Settings
 from .upstream import Travelpayouts
-from .rules import matches, safe_search_url, safe_hotel_url, safe_listed_url, longer_stays
+from .rules import matches, safe_search_url, safe_hotel_url, safe_stay_url, safe_tour_url, longer_stays
 from . import city_pages, scenario_pages, showcase
 from .regions import includes, REGION_CITIES
 from .rating import evaluate, round_int
 from .rating_sources import RatingSources, load_reviewed_data
 from .hotel_source import AmadeusHotels
+from .trip_weather import TripWeather
 from .city_insights import CityInsights, InsightRequest
 
 WEB_DIR = Path(__file__).resolve().parents[2] / 'web'
@@ -44,6 +45,7 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
             app.state.hotel_source = AmadeusHotels(client, settings.amadeus_client_id, settings.amadeus_client_secret)
             app.state.rating_sources = RatingSources(client, settings.gpm_key)
             app.state.city_insights = CityInsights(client, now)
+            app.state.trip_weather = TripWeather(client, catalog.origins)
             data, app.state.rating_data_status = load_reviewed_data(settings.rating_data_file)
             app.state.rating_data = {}
             for item in data:
@@ -137,6 +139,11 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
                 'gpm_city_configured': bool(settings.gpm_key),
                 'entry_status': 'Условия въезда не проверены'}
 
+    @app.get('/api/v1/trip-weather/{code}')
+    async def trip_weather(code: str):
+        forecast = await app.state.trip_weather.forecast(code)
+        return JSONResponse(forecast, headers={'Cache-Control': 'public, max-age=900, s-maxage=10800' if forecast else 'public, max-age=60'})
+
     @app.post('/api/v1/cities/insights')
     async def city_insights(request: InsightRequest):
         limiter.check()
@@ -196,9 +203,12 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
                 try:
                     url = safe_hotel_url(u)
                 except ValueError:
-                    url = safe_listed_url(u, catalog.ostrovok_urls, 'ostrovok.ru')
+                    if u.startswith('https://experience.tripster.ru/'):
+                        url = safe_tour_url(u, tour_paths)
+                    else:
+                        url = safe_stay_url(u, catalog.ostrovok_urls)
         except ValueError:
-            raise SearchError('validation', 'Ссылка должна вести на поиск Aviasales.', 422) from None
+            raise SearchError('validation', 'Эта партнёрская ссылка не поддерживается.', 422) from None
         label = s if re.fullmatch(r'[a-z0-9-]{1,32}', s) else ''
         return RedirectResponse(await app.state.upstream.partner_link(url, label) or url, status_code=302, headers={'Cache-Control': 'no-store'})
 
@@ -206,6 +216,7 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
     def data_file(name, default):
         path = WEB_DIR / 'data' / name
         return json.loads(path.read_text()) if path.exists() else default
+    tour_paths = frozenset(f'/experience/{slug}/' for slug in data_file('tripster-cities.json', {}).values())
     holidays = data_file('holidays.json', None)
     calendar_ru = showcase.load_calendar(holidays) if holidays else showcase.Calendar()
     city_tags, guides = data_file('city-tags.json', {}), data_file('city-guides.json', {})

@@ -1,6 +1,7 @@
 // Поиск поездок (главная). Правила повторяют приложение iOS (Aviator/Utilities/SearchRules.swift); источник истины — сервер.
 import { $, esc, icon, adMark } from './lib/ui.js';
 import { DEFAULT_ZONE, localZone, zoned, fmtDate, fmtDay, fmtTime, fmtMoney, fmtRange, monthLabel, months, defaultMonth, addDays, duration, daysLabel, nightsLabel, countLabel } from './lib/format.js';
+import { snapshot, tripPath, savedTrips, firstPrompt, saveTrip, tripDates } from './lib/trip.js';
 import { partnerLink } from './lib/links.js';
 import { goal } from './lib/measure.js';
 import { currentOrigin, saveOrigin } from './lib/origin.js';
@@ -27,8 +28,9 @@ const PAGE = 24; // карточек на странице выдачи
 const config = window.AVIATOR ?? {};
 // A/B: вариант выбирается один раз на браузер и хранится. #ab=A или #ab=B показывает вариант без записи.
 function variant(name) {
-  const preview = /[#&]ab=([AB])\b/.exec(location.hash)?.[1];
-  if (preview) return preview;
+  const key = name === 'home' ? 'ab' : 'tripab';
+  const preview = new URLSearchParams(location.hash.slice(1)).get(key);
+  if (preview === 'A' || preview === 'B') return preview;
   if (!config.experiments?.[name]) return 'B';
   try {
     let value = localStorage.getItem('aviator.ab.' + name);
@@ -36,9 +38,18 @@ function variant(name) {
     return value;
   } catch { return 'B'; }
 }
+function showSavedLink() {
+  $('myPlans').hidden = savedTrips().length === 0;
+}
+window.addEventListener('pageshow', showSavedLink);
+window.addEventListener('storage', showSavedLink);
+showSavedLink();
 const homeVariant = variant('home');
 // Пока идёт эксперимент, вариант попадает в метку перехода: led-trip-tickets-b.
-const testVariant = config.experiments?.home ? homeVariant.toLowerCase() : '';
+const afterTicket = variant('afterTicket');
+const testVariant = (config.experiments?.home ? homeVariant.toLowerCase() : '')
+  + (config.experiments?.afterTicket ? 'p' + afterTicket.toLowerCase() : '');
+if (config.experiments?.afterTicket) goal('trip_variant', { variant: afterTicket });
 const inRegion = (region, country) => region === 'any' || (region === 'usa' ? country === 'US' : region === 'russia' ? country === 'RU' : EUROPE.has(country));
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
 
@@ -378,6 +389,7 @@ function hotelBlock(offer, hotel) {
   </section>`;
 }
 function openDetail(offer) {
+  state.backFrom = null;
   const x = facts(offer), past = x.dep <= Date.now(), link = past ? null : handoff(offer), hint = past ? null : longer(offer), hotel = lodging(offer, 'hotel');
   const alike = past ? [] : similar(offer), nearby = past ? null : shifted(offer), level = past ? null : levelOf(offer);
   if (!past) rememberTrip(offer);
@@ -462,12 +474,17 @@ function openFromCard(offer, card) {
 async function shareTrip() {
   const offer = state.detail;
   if (!offer) return;
-  const url = location.href, title = `${offer.city} за ${fmtMoney(offer.price_minor)} туда-обратно`;
+  const saved = savedTrips().find(p => p.id === offer.id);
+  const url = new URL(tripPath(saved ?? snapshot(offer)), location.href).href, title = `${offer.city} за ${fmtMoney(offer.price_minor)} туда-обратно`;
   goal('share', { city: offer.city_code });
   if (navigator.share) {
     try { await navigator.share({ title, text: title, url }); return; } catch (error) { if (error.name === 'AbortError') return; }
   }
-  try { await navigator.clipboard.writeText(url); $('share').textContent = 'Ссылка скопирована'; } catch { $('share').textContent = 'Скопируйте адрес страницы'; }
+  try { await navigator.clipboard.writeText(url); $('share').textContent = 'Ссылка скопирована'; } catch {
+    $('portableLink')?.remove();
+    $('detailBody').insertAdjacentHTML('afterbegin', `<a class="btn-inline" id="portableLink" href="${esc(url)}">Открыть ссылку на поездку</a>`);
+    $('portableLink').focus();
+  }
 }
 // Ссылка на поездку: когда её поиск загрузился, открыть эту поездку (если рейс ещё есть в ответе).
 function openLinked(id) {
@@ -494,8 +511,8 @@ function levelTag(offer) {
   const level = levelOf(offer);
   if (!level) return '';
   const id = `level-${++levelSeq}`;
-  const text = level.kind === 'usual' ? 'обычная цена' : `${level.diff < 0 ? '−' : '+'}${Math.abs(level.diff)}% к обычной`;
-  return `<div class="level-wrap"><button type="button" class="level level--${level.kind}" data-level aria-expanded="false" aria-controls="${id}"><span>${text}</span></button>
+  const text = level.kind === 'usual' ? 'Обычная цена' : `${Math.abs(level.diff)}% ${level.diff < 0 ? 'ниже' : 'выше'} обычной`;
+  return `<div class="level-wrap"><button type="button" class="level level--${level.kind}" data-level aria-expanded="false" aria-controls="${id}"><span><i aria-hidden="true">${level.kind === 'usual' ? '≈' : level.diff < 0 ? '↘' : '↗'}</i>${text}</span></button>
     <p class="level-note" id="${id}" hidden>${esc(levelNote({ ...level, usualText: fmtMoney(level.usual) }))} <a href="/how-we-count.html#home">Как мы считаем</a></p></div>`;
 }
 function toggleLevel(button) {
@@ -851,11 +868,38 @@ $('returnDate').addEventListener('change', (event) => { if (event.target.value) 
 $('budget').addEventListener('input', (event) => { state.query.budget = +event.target.value; renderForm(); });
 $('directOnly').addEventListener('change', (event) => { state.query.direct = event.target.checked; });
 $('search').addEventListener('submit', (event) => { event.preventDefault(); search(); });
-// Вернулся с вкладки Aviasales, а карточка поездки открыта: одна тихая строка про жильё над кнопкой, один раз на поездку.
-document.addEventListener('visibilitychange', () => {
+function planFor(offer) {
+  return savedTrips().find(p => p.id === offer.id) ?? snapshot(offer);
+}
+function showWaiting(offer) {
+  if (!$('detail').open || state.detail !== offer || $('waiting')) return;
+  const plan = planFor(offer);
+  $('detailTitle').textContent = 'Моя поездка';
+  $('detailBody').innerHTML = `<div class="detail waiting" id="waiting">
+    <header class="plan-hero"><div><p class="label">Пока смотрите билет</p><h2>${esc(plan.city)}</h2>
+    <p>${esc(plan.from)} → ${esc(plan.city)} · ${esc(tripDates(plan).label)}</p></div>
+    ${state.photos.has(plan.cityCode) ? `<div class="plan-photo"><img src="/photos/s/${esc(plan.cityCode)}.jpg" alt=""></div>` : ''}</header>
+    <div id="returnPrompt"></div><div id="waitingOptions" class="plan-options"></div>
+    <a class="btn-inline" href="${esc(tripPath(plan))}">Открыть план поездки ${icon('arrow-right')}</a>
+    <button type="button" class="btn-inline" data-ticket-details>Вернуться к билету</button></div>`;
+  $('detailBody').scrollTop = 0;
+  const options = $('waitingOptions');
+  import('./lib/plan-links.js').then(async ({planCatalog, localActivities}) => {
+    options.innerHTML = localActivities(plan, await planCatalog(), 'wait', testVariant);
+  }).catch(() => {});
+}
+function onReturn() {
   const offer = state.detail;
-  if (document.visibilityState !== 'visible' || !offer || state.backFrom !== offer.id || !$('detail').open || state.nudged.has(offer.id)) return;
+  if (document.visibilityState !== 'visible' || !offer || state.backFrom !== offer.id || !$('detail').open) return;
   state.backFrom = null;
+  if (afterTicket === 'B') {
+    showWaiting(offer);
+    if (firstPrompt(offer.id)) $('returnPrompt').innerHTML = `<section class="card plan-prompt" aria-label="Сохранение поездки">
+      <h3>Купили билет?</h3><button class="btn-primary" data-save-plan type="button">Сохранить поездку</button>
+      <button class="btn-inline" type="button" data-dismiss-plan>Скрыть</button></section>`;
+    return;
+  }
+  if (state.nudged.has(offer.id)) return;
   const hotel = lodging(offer, 'hotelback'), cta = $('detailBody').querySelector('.detail-cta');
   if (!hotel || !cta) return;
   state.nudged.add(offer.id);
@@ -863,7 +907,9 @@ document.addEventListener('visibilitychange', () => {
     <a class="cta-hotel-link" href="${esc(hotel.link)}" target="_blank" rel="noopener" data-partner="aviasales" data-block="hotelback">${icon('bed')}<span>Билеты — на Aviasales. А жильё? <b>Отели: ${esc(offer.city)}, ${esc(hotel.dates)}</b><small class="ad-mark">Реклама · Aviasales</small></span></a>
     <button type="button" class="cta-hotel-close" aria-label="Скрыть подсказку про жильё" data-hotel-close>${icon('close')}</button>
   </div>`);
-});
+}
+document.addEventListener('visibilitychange', onReturn);
+window.addEventListener('focus', onReturn);
 $('share').addEventListener('click', shareTrip);
 $('searchLine').addEventListener('click', (event) => {
   const field = event.target.closest('[data-field]')?.dataset.field;
@@ -905,10 +951,27 @@ $('detailBody').addEventListener('click', (event) => {
   const fav = event.target.closest('[data-fav]');
   if (fav) { toggleFav(fav.dataset.fav); return; }
   if (event.target.closest('[data-hotel-close]')) { event.target.closest('.cta-hotel').remove(); return; }
+  if (event.target.closest('[data-dismiss-plan]')) {
+    $('returnPrompt').replaceChildren();
+    $('waiting').querySelector('a[href^="/trip.html"]').focus();
+    return;
+  }
+  if (event.target.closest('[data-ticket-details]')) { openDetail(state.detail); return; }
+  if (event.target.closest('[data-save-plan]')) {
+    const plan = planFor(state.detail);
+    saveTrip(plan);
+    goal('save_trip', { city: plan.cityCode, page:'waiting', variant:afterTicket });
+    location.assign(tripPath(plan));
+    return;
+  }
   const partner = event.target.closest('a[data-partner]');
   if (partner) {
-    goal('affiliate_click', { partner: partner.dataset.partner, block: partner.dataset.block, city: state.detail?.city_code });
-    if (partner.dataset.block === 'tickets') state.backFrom = state.detail?.id ?? null;
+    goal('affiliate_click', { partner: partner.dataset.partner, block: partner.dataset.block, city: state.detail?.city_code, variant:afterTicket });
+    if (partner.dataset.block === 'tickets') {
+      const offer = state.detail;
+      state.backFrom = offer.id;
+      if (afterTicket === 'B') setTimeout(() => { if (state.backFrom === offer.id) showWaiting(offer); }, 0);
+    }
   }
   const hint = event.target.closest('[data-longer]') && longer(state.detail);
   if (hint) { goal('select_idea', { idea: 'longer' }); openDetail(hint.trip); return; }

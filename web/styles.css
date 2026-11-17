@@ -276,10 +276,11 @@ img { display: block; max-width: 100%; }
 /* Уровень цены: плашка, по нажатию — объяснение в карточке. Область нажатия 44 px, плашка внутри. */
 .level-wrap { display: contents; }
 .level { position: relative; z-index: 2; display: inline-flex; align-items: center; min-height: var(--tap); }
-.level span { padding: var(--s-0) var(--s-2); border-radius: var(--r-tag); font-size: var(--fs-micro); font-weight: 600; white-space: nowrap; }
-.level--low span { background: var(--low-soft); color: var(--low); }
-.level--usual span { background: var(--fill); color: var(--ink-2); }
-.level--high span { background: var(--high-soft); color: var(--high); }
+.level span { display: inline-flex; align-items: baseline; gap: 5px; font-size: var(--fs-cap); color: var(--ink-2); }
+.level i { color: var(--ink); font: 600 1.15em var(--f-text); }
+.level--low i { color: var(--low); }
+.level--high i { color: var(--high); }
+.level:hover span { text-decoration: underline; text-underline-offset: 3px; }
 .level:focus-visible { outline: none; }
 .level:focus-visible span { outline: 2px solid var(--cobalt); outline-offset: 2px; }
 .level-note { position: relative; z-index: 2; flex-basis: 100%; margin-bottom: var(--s-1); padding: var(--s-2) var(--s-3); border: 1px solid var(--line); border-radius: var(--r-tag); background: var(--card); font-size: var(--fs-cap); color: var(--ink-2); }
@@ -375,7 +376,7 @@ img { display: block; max-width: 100%; }
 .status-actions { display: flex; flex-wrap: wrap; gap: var(--s-2); justify-content: center; }
 
 /* Марка: фото в рамке с зубчиками — рамка рисуется маской, файлы фото не меняются. */
-.stamp { padding: 5px; background: var(--card); border-radius: var(--r-frame); box-shadow: var(--sh-frame); }
+.stamp { padding: 3px; background: var(--card); border-radius: var(--r-frame); box-shadow: var(--sh-frame); }
 .photo { position: relative; aspect-ratio: 3 / 2; overflow: hidden; border-radius: var(--r-photo); background: var(--cobalt-soft); display: grid; place-items: center; color: var(--cobalt); }
 .photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .photo > .icon { width: 36px; height: 36px; opacity: .5; }
@@ -615,3 +616,52 @@ a.month:hover .month-bar rect { fill: var(--cobalt); }
   *, *::before, *::after { animation: none !important; transition: none !important; }
   ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
 }
+
+/* A trip remains readable with just its saved route, before optional city details arrive. */
+.trip-main { max-width: 780px; display: grid; gap: var(--s-4); margin-top: var(--s-5); }
+.trip-main > *, .plan-inputs > *, .plan-list-item span { min-width: 0; }
+.plan-back { width: fit-content; padding: 8px 0; color: var(--ink-2); }
+.plan-hero { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); overflow-wrap: anywhere; }
+.plan-hero h1 { margin: var(--s-1) 0; }
+.plan-photo img { display: block; width: clamp(88px, 20vw, 160px); aspect-ratio: 4 / 3; border-radius: var(--r-pass); object-fit: cover; }
+.plan-actions { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+#planStatus:empty, .plan-options:empty, #returnPrompt:empty { display: none; }
+.plan-route, .plan-inputs, .plan-options, .weather-days { display: grid; gap: var(--s-3); }
+.plan-route { grid-template-columns: repeat(2, minmax(0,1fr)); margin: 0; }
+.plan-route dt, .plan-inputs label { font-size: var(--fs-cap); color: var(--ink-2); }
+.plan-route dd { margin: 4px 0 0; font-weight: 600; }
+.plan-inputs { grid-template-columns: repeat(auto-fit, minmax(min(155px,100%),1fr)); }
+.plan-inputs label { display: grid; align-content: end; gap: 4px; }
+.plan-inputs input { width: 100%; border: 1px solid var(--line); border-radius: var(--r-chip); min-height: var(--tap); padding: 0 var(--s-3); font: inherit; color: var(--ink); }
+.plan-option { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 4px 12px; padding: var(--s-3) var(--s-4); border-radius: var(--r-pass); background: var(--card); box-shadow: var(--sh-pass); }
+.plan-option .ad-mark { grid-column: 1 / -1; }
+.plan-list-item { display: flex; align-items: center; justify-content: space-between; color: var(--ink); text-decoration: none; }
+.plan-list-item small { display: block; color: var(--ink-2); }
+.plan-prompt { display: flex; flex-wrap: wrap; gap: var(--s-2); align-items: center; }
+.plan-prompt h3 { flex-basis: 100%; }
+.waiting { align-content: start; padding-bottom: var(--s-4); }
+.waiting > .btn-inline, .lodging > .btn-inline { justify-self: start; }
+.weather-days { display: flex; flex-wrap: wrap; padding: 0; list-style: none; }
+.weather-days li { display: grid; }
+.trip-main ul:not(.weather-days) { padding-inline-start: 1.2rem; }
+@media (max-width: 520px) {
+  .plan-option { grid-template-columns: 1fr; }
+  .plan-option a { justify-self: start; }
+  .plan-inputs { grid-template-columns: 1fr; }
+}
+@media (min-width: 900px) {
+  .search:not(.search--collapsed) .field-group { padding-block: 0; }
+  .search:not(.search--collapsed) .when-fields { min-height: 0; }
+  .search:not(.search--collapsed) .field-group:has(#datesLabel) { grid-template-columns: auto minmax(0,1fr); align-items: center; }
+  .search:not(.search--collapsed) .when-fields { grid-column: 1 / -1; }
+  .search:not(.search--collapsed) .segmented { margin: 0; }
+  .search:not(.search--collapsed) .segmented span { font-size: var(--fs-cap); }
+  .search:not(.search--collapsed) .toggle { min-height: 38px; }
+  .search:not(.search--collapsed) .field-group { min-width: 0; }
+}
+.trip-main { margin-inline: auto; }
+.plan-flight { width: fit-content; padding-block: 8px; }
+
+.mobile-plans { margin-left: auto; padding: 12px 4px; font-size: var(--fs-cap); }
+.mobile-plans:not([hidden]) + .top-fav { margin-left: var(--s-2); }
+@media (min-width: 900px) { .mobile-plans { display: none; } }
