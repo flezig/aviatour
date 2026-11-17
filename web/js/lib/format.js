@@ -14,9 +14,9 @@ export function zoned(date, zone) {
   const p = Object.fromEntries(formatter(zone, { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', hourCycle: 'h23', weekday: 'short' }, 'en-US').formatToParts(date).map((part) => [part.type, part.value]));
   return { year: +p.year, month: +p.month, hour: +p.hour % 24, weekday: WEEKDAYS.indexOf(p.weekday) + 1, key: `${p.year}-${p.month}-${p.day}` };
 }
-export const fmtDate = (date, zone, time = false) => formatter(zone, { day: 'numeric', month: 'short', year: 'numeric', ...(time ? { hour: '2-digit', minute: '2-digit', hourCycle: 'h23' } : {}) }).format(date).replace(' г.', '');
-// Без года: «17 нояб.»; с днём недели: «вт, 17 нояб.».
-export const fmtDay = (date, zone, weekday = false) => formatter(zone, { day: 'numeric', month: 'short', ...(weekday ? { weekday: 'short' } : {}) }).format(date);
+export const fmtDate = (date, zone, time = false) => formatter(zone, { day: 'numeric', month: 'long', year: 'numeric', ...(time ? { hour: '2-digit', minute: '2-digit', hourCycle: 'h23' } : {}) }).format(date).replace(' г.', '');
+// Без года: «17 ноября»; с днём недели: «вт, 17 ноября».
+export const fmtDay = (date, zone, weekday = false) => formatter(zone, { day: 'numeric', month: 'long', ...(weekday ? { weekday: 'short' } : {}) }).format(date);
 export const fmtTime = (date, zone) => formatter(zone, { hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(date);
 export const fmtMoney = (minor) => new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB', minimumFractionDigits: minor % 100 ? 2 : 0, maximumFractionDigits: 2 }).format(minor / 100);
 export function fmtRange(from, to, fromZone, toZone) {

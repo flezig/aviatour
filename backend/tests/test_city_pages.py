@@ -69,8 +69,8 @@ def test_route_paths_with_hyphenated_names():
 
 def test_money_and_dates_like_the_site():
     assert city_pages.money(318100) == '3 181 ₽' and city_pages.money(12345050) == '123 450,50 ₽'
-    assert city_pages.date_range(datetime(2026, 11, 20), datetime(2026, 11, 22)) == '20–22 нояб.'
-    assert city_pages.date_range(datetime(2026, 12, 30), datetime(2027, 1, 3)) == '30 дек. – 3 янв.'
+    assert city_pages.date_range(datetime(2026, 11, 20), datetime(2026, 11, 22)) == '20–22 ноября'
+    assert city_pages.date_range(datetime(2026, 12, 30), datetime(2027, 1, 3)) == '30 декабря – 3 января'
 
 
 def app_with(rows):

@@ -13,6 +13,14 @@
       ]
     },
     {
+      "source": "/icons.svg",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=86400" }]
+    },
+    {
+      "source": "/airlines/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=86400" }]
+    },
+    {
       "source": "/photos/(.*)",
       "headers": [{ "key": "Cache-Control", "value": "public, max-age=86400" }]
     }

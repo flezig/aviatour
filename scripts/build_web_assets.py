@@ -21,7 +21,20 @@ def longest_side(path):
     return max(int(line.split(':')[1]) for line in out.splitlines() if 'pixel' in line)
 
 
+def inline_home_icons():
+    """Keep first-paint controls independent of a separate icon request."""
+    web = ROOT / 'web'
+    page = web / 'index.html'
+    start, end = '<!-- icons:start -->', '<!-- icons:end -->'
+    before, block = page.read_text().split(start, 1)
+    _, after = block.split(end, 1)
+    svg = (web / 'icons.svg').read_text().replace('<svg ', '<svg class="symbol-bank" id="home-icons" width="0" height="0" aria-hidden="true" ', 1)
+    svg = svg.replace('<symbol id="', '<symbol id="ui-')
+    page.write_text(before + start + '\n' + svg.rstrip() + '\n' + end + after)
+
+
 def main():
+    inline_home_icons()
     OUT.mkdir(parents=True, exist_ok=True)
     for source in sorted(ASSETS.glob('*.imageset/photo.*')):
         name = CITY_CODES.get(source.parent.stem, source.parent.stem)
@@ -30,7 +43,7 @@ def main():
         subprocess.run(['sips', '-s', 'format', 'jpeg', '-s', 'formatOptions', '62', '-Z', str(limit), str(source), '--out', str(OUT / f'{name}.jpg')],
                        check=True, capture_output=True)
     # Web-only city photos (scripts/download_web_photos.py) stay next to the app's and share the manifest and credits page.
-    cities = sorted(path.stem for path in OUT.glob('*.jpg') if path.stem != 'hero')
+    cities = sorted(path.stem for path in OUT.glob('*.jpg') if len(path.stem) == 3 and path.stem.isupper())
     (OUT / 'manifest.json').write_text(json.dumps(cities) + '\n')
     web_credits = OUT / 'credits-web.md'
     credits = (ROOT / 'Aviator/Resources/credits.md').read_text().replace('**GYD**', '**BAK**')

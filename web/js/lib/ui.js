@@ -1,7 +1,8 @@
 // Общие элементы интерфейса: экранирование, значки, пометка «Реклама».
 export const $ = (id) => document.getElementById(id);
 export const esc = (value) => String(value ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-export const icon = (name, cls = 'icon') => `<svg class="${cls}" aria-hidden="true"><use href="/icons.svg#${name}"></use></svg>`;
+const icons = document.getElementById('home-icons') ? '#ui-' : '/icons.svg#';
+export const icon = (name, cls = 'icon') => `<svg class="${cls}" aria-hidden="true"><use href="${icons}${name}"></use></svg>`;
 
 // Партнёрская ссылка в России — реклама. Пометка стоит у каждого партнёрского блока.
 // Сведения о рекламодателе берутся из настроек (config.js → ads), а не из вёрстки; пустые поля не показываются.

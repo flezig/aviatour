@@ -49,7 +49,23 @@ document.addEventListener('click', (event) => {
 
 const sheet = $('originSheet');
 if (!fixed && sheet) {
-  main.addEventListener('click', (event) => { if (event.target.closest('[data-origin-pick]')) sheet.showModal(); });
+  const filter = $('originFilter'), options = [...sheet.querySelectorAll('[data-origin]')];
+  const filterOrigins = () => {
+    const term = filter.value.toLocaleLowerCase('ru').trim();
+    for (const row of options) {
+      row.hidden = ![row.dataset.name, row.dataset.iata, row.dataset.origin].some(s => s.toLocaleLowerCase('ru').includes(term));
+      if (row.dataset.origin === shown) row.setAttribute('aria-current', 'true'); else row.removeAttribute('aria-current');
+    }
+    $('noOrigins').hidden = options.some(row => !row.hidden);
+  };
+  filter.addEventListener('input', filterOrigins);
+  main.addEventListener('click', event => {
+    if (!event.target.closest('[data-origin-pick]')) return;
+    filter.value = '';
+    filterOrigins();
+    sheet.showModal();
+    filter.focus();
+  });
   sheet.addEventListener('click', (event) => {
     const row = event.target.closest('[data-origin]');
     if (row) {

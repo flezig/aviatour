@@ -19,7 +19,7 @@ DATA = Path(__file__).resolve().parents[2] / 'web' / 'data'
 MONTHS_AHEAD = 6
 MIN_NIGHTS, MAX_NIGHTS = 1, 7  # поездки до недели — как в подборках главной
 MONTH_NAMES = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь']
-MONTH_SHORT = ['янв.', 'февр.', 'мар.', 'апр.', 'мая', 'июн.', 'июл.', 'авг.', 'сент.', 'окт.', 'нояб.', 'дек.']
+MONTH_GENITIVE = 'января февраля марта апреля мая июня июля августа сентября октября ноября декабря'.split()
 TAGS = {'sea': 'Море', 'culture': 'Музеи и культура', 'food': 'Гастрономия', 'architecture': 'Архитектура', 'nature': 'Природа', 'nightlife': 'Вечерняя жизнь'}
 # Цены на страницах маршрутов показываем из этих городов вылета (ссылки внизу страницы города).
 ROUTE_ORIGINS = ('MOW', 'LED', 'SVX', 'KZN', 'OVB', 'KRR')
@@ -134,7 +134,7 @@ def money(minor):
 
 
 def day(moment):
-    return f'{moment.day} {MONTH_SHORT[moment.month - 1]}'
+    return f'{moment.day} {MONTH_GENITIVE[moment.month - 1]}'
 
 
 def date_range(start, end):
@@ -287,9 +287,9 @@ HEAD = '''<!doctype html>
       <a href="/">Билеты</a>
       <a href="/city/"{cities_current}>Города</a>
       <a href="/#fav">Избранное</a>
+      <a href="/trip.html">Мои поездки</a>
       <a href="/how-we-count.html">Как мы считаем</a>
     </nav>
-    <a class="top-fav" href="/#fav" aria-label="Избранное"><svg class="icon" aria-hidden="true"><use href="/icons.svg#heart"></use></svg></a>
   </header>
 '''
 FOOT = '''
@@ -325,13 +325,18 @@ def breadcrumbs(items):
 
 def origin_dialog(catalog, city):
     buttons = ''.join(
-        f'<button type="button" class="picker-row" data-origin="{esc(origin["code"])}" data-iata="{esc(origin["iata"])}" data-all="{int(origin["all"])}" '
-        f'data-name="{esc(origin["name"])}" data-from="{esc(origin["from"])}"><b>{esc(origin["name"])}</b></button>'
+        f'<button type="button" class="airport-option" data-origin="{esc(origin["code"])}" data-iata="{esc(origin["iata"])}" data-all="{int(origin["all"])}" '
+        f'data-name="{esc(origin["name"])}" data-from="{esc(origin["from"])}"><svg class="icon" aria-hidden="true"><use href="/icons.svg#pin"></use></svg>'
+        f'<span><b>{esc(origin["name"])}</b><small>{"Все аэропорты города" if origin["all"] else "Аэропорт вылета"}</small></span>'
+        f'<span class="airport-code">{esc(origin["code"] if origin["all"] else origin["iata"])}</span></button>'
         for origin in sorted(catalog.origins, key=lambda origin: origin['name']) if origin['code'] != city['code'])
     return f'''  <dialog class="sheet" id="originSheet" aria-labelledby="originTitle">
-    <div class="sheet-bar"><h2 id="originTitle">Откуда летим</h2><button class="sheet-done" type="button" data-close>Готово</button></div>
-    <div class="sheet-body"><div class="picker-list">{buttons}</div></div>
+    <div class="sheet-bar"><h2 id="originTitle">Город вылета</h2><button class="sheet-done" type="button" data-close>Закрыть</button></div>
+    <div class="sheet-body"><div class="picker-search"><label class="picker-input"><svg class="icon" aria-hidden="true"><use href="/icons.svg#search"></use></svg>
+      <input type="search" id="originFilter" placeholder="Город или код аэропорта" aria-label="Поиск города вылета" autocomplete="off" autofocus></label></div>
+    <div class="picker-list">{buttons}<p id="noOrigins" class="picker-note" hidden>Подходящих городов нет.</p></div></div>
   </dialog>'''
+
 
 
 def population(city):
@@ -391,7 +396,7 @@ def country_caption(city):
 def index_page(catalog):
     groups = {'Россия': [city for city in catalog.cities if city['country_code'] == 'RU'], 'Другие страны': [city for city in catalog.cities if city['country_code'] != 'RU']}
     sections = ''.join(f'''<section class="city-group"><h2>{title}</h2><ul class="city-grid">{''.join(
-        f'<li><a class="city-card" href="/city/{esc(city["slug"])}"><span class="stamp"><span class="photo"><img src="/photos/s/{esc(city["code"])}.jpg" alt="" loading="lazy" decoding="async"></span></span>'
+        f'<li><a class="city-card" href="/city/{esc(city["slug"])}"><span class="stamp"><span class="photo"><img src="/photos/s/{esc(city["code"])}.webp" alt="" loading="lazy" decoding="async"></span></span>'
         f'<b>{esc(city["name"])}</b>{country_caption(city)}</a></li>' for city in sorted(items, key=lambda city: city['name']))}</ul></section>'''
         for title, items in groups.items() if items)
     ld, visible = breadcrumbs([('Aviator', '/'), ('Города', '/city/')])

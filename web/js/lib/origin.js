@@ -26,6 +26,8 @@ export async function currentOrigin() {
   try {
     const response = await fetch('/api/v1/origin');
     const origin = response.ok ? await response.json() : null;
+    const chosen = storedOrigin();
+    if (chosen?.manual) return chosen;
     if (validOrigin(origin)) { saveOrigin(origin, false); return origin; }
   } catch { /* нет связи — остаётся прежний выбор */ }
   return stored;

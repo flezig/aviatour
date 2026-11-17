@@ -34,7 +34,7 @@ function showCity() {
   $('activities').innerHTML = localActivities(plan, catalogue, 'plan', reportVariant());
   const city = catalogue.cities.get(plan.cityCode);
   if (city?.photo) {
-    $('planPhoto').innerHTML = `<img src="/photos/s/${esc(plan.cityCode)}.jpg" alt="">`;
+    $('planPhoto').innerHTML = `<img src="/photos/s/${esc(plan.cityCode)}.webp" alt="">`;
     $('planPhoto').hidden = false;
   }
   if (g?.places?.length) $('places').innerHTML = `<h2>Что посмотреть</h2><ul>${g.places.map(s => `<li>${esc(s)}</li>`).join('')}</ul><p class="caption">Заметки редакции · ${esc(fmtDate(new Date(g.editorial_updated + 'T00:00:00Z'), 'UTC'))}</p>`;

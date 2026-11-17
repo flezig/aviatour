@@ -57,14 +57,14 @@ def item(offer, note, photos, cities):
     dep, ret = datetime.fromisoformat(offer['departure_at']), datetime.fromisoformat(offer['return_at'])
     nights = (ret.date() - dep.date()).days
     city = cities.get(offer['city_code'])
-    thumb = (f'<span class="stamp"><span class="photo"><img src="/photos/s/{esc(offer["city_code"])}.jpg" alt="" loading="lazy" decoding="async"></span></span>'
+    thumb = (f'<span class="stamp"><span class="photo"><img src="/photos/s/{esc(offer["city_code"])}.webp" alt="" loading="lazy" decoding="async"></span></span>'
              if offer['city_code'] in photos else '<span class="stamp"><span class="photo"></span></span>')
     extra = f'<span class="caption">{esc(leave_text(note))}</span>' if note else ''
     about = f'<a class="scenario-city" href="/city/{esc(city["slug"])}">Всё о городе</a>' if city else ''
     return f'''<li class="scenario-item">
   <a class="scenario-open" href="/?{esc(offer['q'])}#trip={esc(offer['id'])}">{thumb}
     <span class="scenario-text"><b>{esc(offer['city'])}</b><span class="caption">{esc(offer.get('country') or '')}</span>
-      <span>{date_range(dep, ret)} · {nights_label(nights)}</span>{extra}</span>
+      <span>{date_range(dep, ret)}, {nights_label(nights)}</span>{extra}</span>
     <b class="scenario-price">{money(offer['price_minor'])}</b></a>{about}
 </li>'''
 
