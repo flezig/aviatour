@@ -25,6 +25,7 @@
   <link rel="preload" href="/fonts/geologica-cyrillic-800-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/golos-text-cyrillic-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/favorites.css">
   <link rel="modulepreload" href="/js/lib/ui.js">
   <link rel="modulepreload" href="/js/lib/format.js">
   <link rel="modulepreload" href="/js/lib/trip.js">
@@ -159,7 +160,7 @@
   <footer class="wrap footer">
     <nav aria-label="Информация">
       <a href="/city/">Города</a>
-      <a href="/season/">Погода по месяцам</a>
+      <a href="/season/">Рейтинги и погода по месяцам</a>
       <a href="/kuda/">Куда улететь</a>
       <a href="/trip.html">Мои поездки</a>
       <a href="/how-we-count.html">Как мы считаем</a>
@@ -169,7 +170,7 @@
       <a href="/credits.html">Авторы фото</a>
     </nav>
     <p class="caption">За покупки по ссылкам на Aviasales мы получаем комиссию.</p>
-    <p class="caption">Фото в шапке: Атрани, побережье Амальфи — <a href="https://commons.wikimedia.org/wiki/File:Atrani_(Costiera_Amalfitana,_23-8-2011).jpg" target="_blank" rel="noopener">Paolo Costa Baldi</a>, <a href="https://creativecommons.org/licenses/by/3.0" target="_blank" rel="noopener">CC BY 3.0</a>, уменьшено и кадрировано.</p>
+    <p class="caption hero-credit">Фото в шапке: Атрани, побережье Амальфи — <a href="https://commons.wikimedia.org/wiki/File:Atrani_(Costiera_Amalfitana,_23-8-2011).jpg" target="_blank" rel="noopener">Paolo Costa Baldi</a>, <a href="https://creativecommons.org/licenses/by/3.0" target="_blank" rel="noopener">CC BY 3.0</a>, уменьшено и кадрировано.</p>
   </footer>
 
   <dialog class="sheet" id="picker" aria-labelledby="pickerTitle">
@@ -186,6 +187,21 @@
         <dl id="pickerScopeCities"></dl>
       </details>
       <div class="picker-list" id="pickerList"></div>
+    </div>
+  </dialog>
+
+  <dialog class="sheet favorite-picker" id="favoritePicker" aria-labelledby="favoritePickerTitle">
+    <div class="sheet-bar">
+      <h2 id="favoritePickerTitle">Какие билеты сравнить?</h2>
+      <button class="sheet-done" type="button" data-close>Закрыть</button>
+    </div>
+    <div class="sheet-body">
+      <p class="caption">Выберите от двух до четырёх билетов.</p>
+      <div id="favoriteOptions"></div>
+    </div>
+    <div class="favorite-picker-actions">
+      <span class="caption" role="status" id="favoriteChoiceCount"></span>
+      <button class="btn-primary" type="button" id="applyFavoriteChoice">Сравнить</button>
     </div>
   </dialog>
 

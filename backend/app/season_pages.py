@@ -7,7 +7,7 @@ from pathlib import Path
 from urllib.parse import urlencode
 
 from .catalog import AIRPORTS, BY_IATA
-from .city_pages import FOOT, HEAD, MONTH_NAMES, SITE, breadcrumbs, esc, group
+from .city_pages import FOOT, HEAD, MONTH_NAMES, SITE, breadcrumbs, esc, group, slug
 
 HERE = Path(__file__).parent
 NORMALS = json.loads((HERE / "season_normals.json").read_text())
@@ -114,55 +114,100 @@ def layout(title, description, path, crumbs, main, script="/js/site.js", photo=N
     )
 
 
+def search_term(value):
+    return " ".join(value.casefold().replace("ё", "е").replace("-", " ").split())
+
+
+CITY_SEARCH_ALIASES = {
+    "LED": ("питер", "спб", "петербург", "saint petersburg", "pulkovo"),
+    "KZN": ("kazan", "казани"), "MOW": ("moscow", "москве"), "IST": ("istanbul", "стамбуле"),
+}
+
+
+@lru_cache(maxsize=1)
+def city_search_terms():
+    terms = {c: [a["city"], c, slug(a["city"]), *CITY_SEARCH_ALIASES.get(c, ())]
+             for c, a in CITIES.items()}
+    for airport in AIRPORTS:
+        if airport["city_code"] in terms:
+            terms[airport["city_code"]].extend((airport["iata"], airport["name"] or ""))
+    return {c: search_term(" ".join(words)) for c, words in terms.items()}
+
+
 def matching_codes(query):
-    def norm(s):
-        return s.casefold().replace("ё", "е").strip()
-
-    needle = norm(query)
-    matched_airport = BY_IATA.get(query.strip().upper(), {}).get("city_code")
-    return [
-        c
-        for c, a in CITIES.items()
-        if needle in norm(a["city"]) or needle in c.lower() or c == matched_airport
-    ]
+    needle = search_term(query)
+    if not needle:
+        return list(CITIES)
+    return [c for c, terms in city_search_terms().items() if needle in terms]
 
 
-def directory(catalog, month, query):
-    from .city_rating import badge
+def directory(catalog, month, query, today, photos, full=False, page=1, checked=None):
+    from .city_rating import badge, coverage_index, target_year
 
-    needle = query.casefold().replace("ё", "е").strip()
+    year = target_year(month, None, today)
+    coverage = coverage_index(year, today)
+    checked = checked or {}
     codes = matching_codes(query)
-    codes.sort(
-        key=lambda c: (
-            not CITIES[c]["city"].casefold().replace("ё", "е").startswith(needle),
-            c not in catalog.by_code,
-            c not in NORMALS,
-            CITIES[c]["city"],
-            c,
-        )
-    )
-    items = "".join(
-        f'<li><a class="season-city-link" href="{esc(link(c, month))}"><span><b>{esc(CITIES[c]["city"])}</b>'
-        f"<small>{esc(CITIES[c]['country'])} · {c}</small></span></a>{badge(c, month)}</li>"
-        for c in codes[:60]
-    )
+    if full:
+        codes = [c for c in codes if coverage[c][month - 1] == "4"
+                 and (CITIES[c]["country_code"] == "RU" or checked.get(c, {}).get("score") is not None)]
+    airport_match = BY_IATA.get(query.strip().upper(), {}).get("city_code")
+    needle = search_term(query)
+    featured = ("LED", "KZN", "MOW", "IST")
+    codes.sort(key=lambda c: (
+        bool(needle) and c != airport_match and needle not in (c.lower(), search_term(CITIES[c]["city"]), *CITY_SEARCH_ALIASES.get(c, ())),
+        bool(needle) and not search_term(CITIES[c]["city"]).startswith(needle),
+        featured.index(c) if c in featured else len(featured),
+        -int(coverage[c][month - 1]), c not in photos, c not in catalog.by_code,
+        CITIES[c]["city"], c,
+    ))
+    page_size = 24
+    pages = max(1, math.ceil(len(codes) / page_size))
+    page = min(page, pages)
+    items = []
+    for code in codes[(page - 1) * page_size:page * page_size]:
+        city = CITIES[code]
+        url = esc(link(code, month, year=year))
+        photo = (f'<img src="/photos/s/{esc(code)}.webp" alt="" width="320" height="155" loading="lazy">'
+                 if code in photos else "")
+        items.append(f'<article class="rating-tile"><a class="rating-tile-city" href="{url}">{photo}'
+                     f'<h2>{esc(city["city"])}</h2></a><p>{esc(city["country"])} · {esc(code)}</p>'
+                     f'{badge(code, month, year=year, today=today, checked_report=checked.get(code))}</article>')
+    params = {"month": month}
+    if query:
+        params["q"] = query
+    if full:
+        params["full"] = 1
+    navigation = []
+    for target, label in ((page - 1, "Назад"), (page + 1, "Дальше")):
+        if 1 <= target <= pages:
+            href = "/season/?" + urlencode({**params, "page": target})
+            navigation.append(f'<a href="{esc(href)}">{label}</a>')
     options = "".join(
-        f'<option value="{i}"{" selected" if i == month else ""}>{n}</option>'
-        for i, n in enumerate(MONTH_NAMES, 1)
+        f'<option value="{i}"{" selected" if i == month else ""}>{name} {target_year(i, None, today)}</option>'
+        for i, name in enumerate(MONTH_NAMES, 1)
     )
-    body = f'''<header class="page-head"><h1>Города по месяцам</h1></header>
-<form class="season-find" action="/season/"><label>Город или код аэропорта<input type="search" name="q" maxlength="100" value="{esc(query)}" placeholder="Например, Казань или DXB"></label>
-<label>Месяц<select name="month">{options}</select></label><button class="btn-inline" type="submit">Найти город</button></form>
-<p><a href="/season/compare/">Сравнить города за ноябрь и декабрь 2026</a></p>
-<h2>{"Результаты поиска" if query else "Города"} · {MONTH_NAMES[month - 1].lower()}</h2><ul class="season-directory">{items}</ul>
-{("<p>Уточните название города, чтобы сузить список.</p>" if len(codes) > 60 else "") if codes else "<p>Такого города в справочнике пока нет.</p>"}'''
-    return layout(
-        "Города по месяцам",
-        "Погода для прогулок, турпоток и цены по месяцам.",
-        "/season/",
-        [("Aviator", "/"), ("Города", "/city/"), ("Сезонный рейтинг", "/season/")],
-        body,
-    )
+    results = ('<div class="rating-tiles">' + "".join(items) + '</div>') if items else (
+        '<div class="rating-empty"><h2>Город не найден</h2><p>'
+        + ("Попробуйте снять фильтр общей оценки или изменить запрос." if full
+           else "Попробуйте название города или код аэропорта.")
+        + f'</p><a href="/season/?month={month}">Сбросить поиск</a></div>')
+    pagination = (f'<nav class="rating-pages" aria-label="Страницы каталога"><span>{page} из {pages}</span>'
+                  + "".join(navigation) + '</nav>') if pages > 1 else ""
+    body = f'''<header class="rating-directory-head"><p id="rating-period">{MONTH_NAMES[month - 1]} {year}</p>
+<h1>Рейтинги городов</h1></header><div class="rating-directory">
+<section aria-label="Поиск по городам"><form class="rating-filters" action="/season/">
+<label class="rating-query"><svg class="icon" aria-hidden="true"><use href="/icons.svg#search"></use></svg>
+<span class="sr-only">Город или код аэропорта</span><input type="search" name="q" maxlength="100" value="{esc(query)}" placeholder="Город или код аэропорта"></label>
+<label><span class="sr-only">Месяц</span><select name="month">{options}</select></label>
+<label class="rating-only"><input type="checkbox" name="full" value="1"{" checked" if full else ""}>Только с общей оценкой</label>
+<button type="submit" class="btn-inline">Найти город</button></form>
+<div id="rating-results"><p class="sr-only" role="status">Найдено городов: {len(codes)}</p>{results}{pagination}</div></section>
+<aside class="rating-slot" aria-label="Подробности рейтинга"></aside></div>
+<a class="rating-compare-link" href="/season/compare/">Сравнить города за ноябрь и декабрь 2026</a>'''
+    return layout("Рейтинги городов", "Рейтинг на выходные по городу и месяцу, цены, погода и источники.",
+                  "/season/", [("Aviator", "/"), ("Города", "/city/"), ("Рейтинги городов", "/season/")], body,
+                  script="/js/rating-directory.js")
 
 
 def source_info(n):

@@ -10,6 +10,7 @@ import { priceLevel, usualKey, hotLine, leaveLine, levelNote, priceChange } from
 import { mountSky } from './lib/sky.js';
 import { flightLoader } from './lib/art.js';
 import { sticker, rowSticker } from './lib/stickers.js';
+import { favoriteList, favoriteComparison, favoriteOptions, hoursMinutes } from './lib/favorites.js';
 import { DESTINATION_SCOPES } from './lib/destination-scopes.js';
 
 const SCOPE_TERMS = {
@@ -81,9 +82,26 @@ function readRecent() {
 function readFavs() {
   try {
     const list = JSON.parse(localStorage.getItem('aviator.favorites') ?? '[]');
-    return new Map((Array.isArray(list) ? list : []).filter((offer) => offer?.id && offer.departure_at && offer.return_at && Number.isFinite(offer.price_minor)).map((offer) => [offer.id, offer]));
+    return new Map((Array.isArray(list) ? list : []).filter((offer) => offer?.id && Number.isFinite(Date.parse(offer.departure_at)) && Number.isFinite(Date.parse(offer.return_at)) && Number.isFinite(offer.price_minor)).map((offer) => [offer.id, offer]));
   } catch { return new Map(); }
 }
+const choiceKey = 'aviator.favoriteComparison';
+function readChoice() {
+  try {
+    const ids = JSON.parse(localStorage.getItem(choiceKey));
+    return Array.isArray(ids) ? [...new Set(ids)].filter(id => state.favs.has(id)).slice(0, 4) : [];
+  } catch { return []; }
+}
+let favoriteChoice = readChoice(), removedFavorite = null;
+function saveChoice(ids) {
+  favoriteChoice = ids;
+  try { localStorage.setItem(choiceKey, JSON.stringify(ids)); } catch { /* до конца визита */ }
+}
+function selectedFavorites(offers) {
+  const selection = favoriteChoice.map(id => state.favs.get(id)).filter(Boolean);
+  return selection.length >= 2 ? selection : offers.slice(0, 2);
+}
+const favoritesHash = () => location.hash === '#fav' || location.hash === '#fav/compare';
 const originZone = () => state.byIata.get(state.query.origin)?.timezone || DEFAULT_ZONE;
 // Два последних новых сердечка каждой ленты живут до смены города вылета или перезагрузки.
 const rowPicks = new Map();
@@ -260,15 +278,35 @@ function toggleFav(id, rowKey) {
   const visibleOffer = rowKey ? feedOffer(rowKey, id) : state.shown.get(id);
   const offer = state.favs.get(id) ?? visibleOffer ?? (state.detail?.id === id ? state.detail : null) ?? homeOffer(id) ?? state.recentOffers.get(id);
   if (!offer) return;
-  if (state.favs.has(id)) state.favs.delete(id);
-  else {
+  if (state.favs.has(id)) {
+    if (state.view === 'fav') {
+      removedFavorite = { offer, index: [...state.favs.keys()].indexOf(id), choice: favoriteChoice };
+    }
+    state.favs.delete(id);
+  } else {
+    removedFavorite = null;
     state.favs.set(id, offer);
     if (state.favs.size > 30) state.favs.delete(state.favs.keys().next().value);
     if (rowKey) rowPicks.set(rowKey, [...(rowPicks.get(rowKey) ?? []), id].slice(-2));
     goal('save_trip', { city: offer.city_code, nights: facts(offer).days, people: 1 });
   }
   saveFavs();
+  if (favoriteChoice.some(key => !state.favs.has(key))) saveChoice(favoriteChoice.filter(key => state.favs.has(key)));
   refreshFavorites(id);
+  if (!$('detail').open && removedFavorite?.offer.id === id) $('undoFavorite')?.focus({ preventScroll: true });
+}
+function undoFavorite() {
+  if (!removedFavorite) return;
+  const { offer, index, choice } = removedFavorite;
+  const entries = [...state.favs.entries()];
+  entries.splice(index, 0, [offer.id, offer]);
+  state.favs = new Map(entries);
+  removedFavorite = null;
+  saveFavs();
+  saveChoice(choice.filter(id => state.favs.has(id)));
+  refreshFavorites(offer.id);
+  $('results').querySelector(`[data-fav="${CSS.escape(offer.id)}"]`)?.focus({ preventScroll: true });
+  $('resultsStatus').textContent = 'Билет вернули на прежнее место.';
 }
 function refreshFavorites(changedId) {
   for (const [key, ids] of rowPicks) {
@@ -309,15 +347,19 @@ function compareTable(offers, distinguishFlights = false) {
     return `${esc(offer.city)}<small>${esc(flight.join(' · '))}</small>`;
   };
   const row = (title, cell) => `<tr><th scope="row">${title}</th>${offers.map((offer) => `<td>${cell(offer, facts(offer))}</td>`).join('')}</tr>`;
-  return `<div class="compare"><table>
+  const changes = offer => {
+    if (offer.transfers == null || offer.return_transfers == null) return 'Нет данных';
+    return offer.transfers === 0 && offer.return_transfers === 0 ? 'Прямые' : `Туда: ${esc(offer.transfers)}, обратно: ${esc(offer.return_transfers)}`;
+  };
+  return `<div class="compare"${offers.length > 2 ? ' tabindex="0" role="region" aria-label="Сравнение выбранных билетов"' : ''}><table data-count="${offers.length}">
     <thead><tr><td></td>${offers.map(offer => `<th scope="col">${heading(offer)}</th>`).join('')}</tr></thead>
     <tbody>
       ${row('Цена', priceCell)}
       ${row('Даты', (offer, x) => esc(fmtRange(x.dep, x.ret, offer.origin_timezone, offer.destination_timezone)))}
-      ${row('На месте', (offer, x) => x.stay ? `≈ ${Math.floor(x.stay)} ч` : '—')}
-      ${row('Час поездки', (offer, x) => x.stay ? esc(hourCost(x)) : '—')}
-      ${row('В пути', (offer, x) => Number.isFinite(x.flight) ? esc(duration(x.flight)) : '—')}
-      ${row('Пересадки', (offer, x) => x.direct ? 'Прямые' : 'Есть')}
+      ${row('На месте', (offer, x) => hoursMinutes(x.stay == null ? null : Math.round(x.stay * 60)))}
+      ${row('Час поездки', (offer, x) => x.stay ? esc(hourCost(x)) : 'Нет данных')}
+      ${row('В пути', (offer, x) => hoursMinutes(Number.isFinite(x.flight) ? x.flight : null))}
+      ${row('Пересадки', changes)}
       ${row('Авиакомпания', (offer) => esc(airlineLabel(offer)))}
     </tbody></table></div>`;
 }
@@ -331,13 +373,32 @@ function syncComparison() {
   else if (key) history.replaceState(null, '');
 }
 function renderFavorites() {
-  const section = $('results'), offers = [...state.favs.values()].filter((offer) => facts(offer).dep > Date.now()).reverse();
-  state.shown = new Map(offers.map((offer) => [offer.id, offer]));
+  const section = $('results'), offers = [...state.favs.values()].reverse(), chosen = selectedFavorites(offers);
+  state.shown = state.favs;
+  if (chosen.length < 2 && state.favoriteDetails) {
+    state.favoriteDetails = false;
+    if (location.hash === '#fav/compare') history.replaceState(null, '', '#fav');
+  }
   section.hidden = false;
-  section.innerHTML = `<div class="results-head"><h2>Избранное</h2><button type="button" class="chip" data-action="results">${icon('arrow-left')}К вариантам</button></div>
-    ${offers.length > 1 ? `<p class="caption">${offers.length > 4 ? 'Сравнение последних четырёх сохранённых поездок' : 'Сравнение поездок'}</p>${compareTable(offers.slice(0, 4))}` : ''}
-    ${offers.length ? `<div class="grid">${offers.map(offerCard).join('')}</div>`
-      : statusPanel('heart', 'Пока пусто', 'Нажмите на сердечко на карточке поездки — она появится здесь, и поездки можно будет сравнить.')}`;
+  section.innerHTML = state.favoriteDetails
+    ? favoriteComparison(chosen, offers.length > 2, compareTable(chosen, true), removedFavorite?.offer)
+    : favoriteList(offers, chosen, removedFavorite?.offer, facts, photo);
+  document.title = $('favoriteTitle').textContent + ' · Aviator';
+  if ($('favoritePicker').open && offers.length < 3) $('favoritePicker').close();
+}
+
+function updateFavoriteOptions() {
+  const inputs = [...$('favoriteOptions').querySelectorAll('input')];
+  const count = inputs.filter(input => input.checked).length;
+  for (const input of inputs) input.disabled = count >= 4 && !input.checked;
+  $('favoriteChoiceCount').textContent = `Выбрано ${count} из 4`;
+  $('applyFavoriteChoice').disabled = count < 2 || count > 4;
+}
+function openFavoritePicker() {
+  const offers = [...state.favs.values()].reverse();
+  $('favoriteOptions').innerHTML = favoriteOptions(offers, selectedFavorites(offers).map(offer => offer.id));
+  updateFavoriteOptions();
+  $('favoritePicker').showModal();
 }
 
 // Номера страниц: первая, соседние с текущей, последняя; между ними — «…».
@@ -578,7 +639,7 @@ function levelTag(offer) {
   const id = `level-${++levelSeq}`;
   const text = level.kind === 'usual' ? 'Обычная цена' : `${Math.abs(level.diff)}% ${level.diff < 0 ? 'ниже' : 'выше'} обычной`;
   return `<div class="level-wrap"><button type="button" class="level level--${level.kind}" data-level aria-expanded="false" aria-controls="${id}"><span><i aria-hidden="true">${level.kind === 'usual' ? '≈' : level.diff < 0 ? '↘' : '↗'}</i>${text}</span></button>
-    <p class="level-note" id="${id}" hidden>${esc(levelNote({ ...level, usualText: fmtMoney(level.usual) }))} <a href="/how-we-count.html#home">Как мы считаем</a></p></div>`;
+    <p class="level-note" id="${id}" hidden>${esc(levelNote({ ...level, usualText: fmtMoney(level.usual) }))} <a href="/how-we-count.html#level">Как мы считаем</a></p></div>`;
 }
 function toggleLevel(button) {
   const open = button.getAttribute('aria-expanded') !== 'true';
@@ -717,8 +778,18 @@ function markNav(view) {
     if (active) link.setAttribute('aria-current', 'page'); else link.removeAttribute('aria-current');
   }
 }
+const homeTitle = document.title;
 function setView(view) {
+  const fromFavorites = state.view === 'fav';
+  if ($('favoritePicker').open) $('favoritePicker').close();
   state.view = view;
+  document.body.classList.toggle('has-hero', view !== 'fav');
+  document.body.classList.toggle('favorites-page', view === 'fav');
+  document.querySelector('.skip').textContent = view === 'fav' ? 'К избранному' : 'К поиску';
+  if (view !== 'fav') {
+    document.title = homeTitle;
+    if (fromFavorites) { removedFavorite = null; fitHero(); }
+  }
   markNav(view);
   $('showcase').hidden = view !== 'showcase';
   if (view === 'showcase') $('results').hidden = true;
@@ -748,9 +819,10 @@ function rememberTrip(offer) {
 function syncView() {
   const row = /^#row=([a-z0-9]+)$/.exec(location.hash)?.[1];
   if (row && homeRow(row)) { if (state.view !== 'collection' || state.collection !== row) showCollection(row, false); return; }
-  if (location.hash === '#fav') return;
+  if (favoritesHash()) { showFavorites(); return; }
   if (homeVariant === 'B' && !location.search) { if (state.view !== 'showcase') showShowcase(); return; }
-  if (location.search && state.view !== 'results' && state.performed) { setView('results'); renderResults(); }
+  if (state.view === 'fav' && !location.search && !state.performed) { search({ scroll: false, auto: true }); return; }
+  if ((location.search || state.view === 'fav') && state.view !== 'results' && state.performed) { setView('results'); renderResults(); }
 }
 
 // --- форма ---
@@ -1002,10 +1074,14 @@ function choose(iata, cityCode) {
   // Подборки — из нового города вылета.
   if (state.pickerTarget === 'origin' && state.view === 'showcase') showShowcase();
 }
-function showFavorites() {
+function showFavorites(focusTitle = true) {
+  const detailed = location.hash === '#fav/compare';
+  if (state.view === 'fav' && detailed === state.favoriteDetails) return;
+  state.favoriteDetails = detailed;
   setView('fav');
-  renderResults();
-  $('results').scrollIntoView({ block: 'start' });
+  renderFavorites();
+  window.scrollTo({ top: 0 });
+  if (focusTitle) $('favoriteTitle').focus({ preventScroll: true });
 }
 
 // --- события ---
@@ -1141,12 +1217,27 @@ $('pairComparison').addEventListener('close', () => {
   if (!$('pairComparison').open && history.state?.compareRow) history.back();
 });
 window.addEventListener('storage', (event) => {
-  if (event.storageArea === localStorage && (event.key === 'aviator.favorites' || event.key === null)) {
-    state.favs = readFavs();
-    refreshFavorites();
-  }
+  if (event.storageArea !== localStorage || ![null, 'aviator.favorites', choiceKey].includes(event.key)) return;
+  state.favs = readFavs();
+  favoriteChoice = readChoice();
+  removedFavorite = null;
+  if ($('favoritePicker').open) $('favoritePicker').close();
+  refreshFavorites();
 });
-window.addEventListener('hashchange', () => { if (location.hash === '#fav') showFavorites(); });
+window.addEventListener('hashchange', () => { if (favoritesHash()) showFavorites(); });
+document.querySelector('.skip').addEventListener('click', event => {
+  if (state.view === 'fav') { event.preventDefault(); $('favoriteTitle').focus(); }
+});
+$('favoriteOptions').addEventListener('change', updateFavoriteOptions);
+$('applyFavoriteChoice').addEventListener('click', () => {
+  const ids = [...$('favoriteOptions').querySelectorAll('input:checked')].map(input => input.value).filter(id => state.favs.has(id));
+  if (ids.length < 2 || ids.length > 4) return;
+  saveChoice(ids);
+  removedFavorite = null;
+  $('favoritePicker').close();
+  if (location.hash !== '#fav/compare') location.hash = 'fav/compare';
+  else { renderFavorites(); $('favoriteTitle').focus({ preventScroll: true }); }
+});
 $('searchSummary').addEventListener('click', () => { collapseForm(false); $('originPick').focus(); });
 $('detailBody').addEventListener('click', (event) => {
   const fav = event.target.closest('[data-fav]');
@@ -1183,6 +1274,8 @@ $('detailBody').addEventListener('click', (event) => {
 });
 
 $('results').addEventListener('click', (event) => {
+  if (event.target.closest('[data-choose-favorites]')) { openFavoritePicker(); return; }
+  if (event.target.closest('#undoFavorite')) { undoFavorite(); return; }
   const chip = event.target.closest('[data-chip]'), act = event.target.closest('[data-action]'), open = event.target.closest('[data-offer]'), fav = event.target.closest('[data-fav]');
   const level = event.target.closest('[data-level]'), page = event.target.closest('[data-page]');
   if (level) { toggleLevel(level); return; }
@@ -1198,7 +1291,7 @@ $('results').addEventListener('click', (event) => {
     renderResults();
   } else if (act) {
     const name = act.dataset.action, q = state.query;
-    if (name === 'favorites') { showFavorites(); return; }
+    if (name === 'favorites') { history.pushState(null, '', '/#fav'); showFavorites(); return; }
     if (name === 'showcase' || (name === 'results' && !state.performed && homeVariant === 'B')) { history.pushState(null, '', location.pathname); showShowcase(); window.scrollTo({ top: 0 }); return; }
     if (name === 'results') { setView(state.collection && !state.performed ? 'collection' : 'results'); if (location.hash === '#fav') history.replaceState(history.state, '', location.pathname + location.search); renderResults(); $('results').scrollIntoView({ block: 'start' }); return; }
     if (name === 'allLengths') { state.length = 'all'; state.page = 1; renderResults(); return; }
@@ -1244,7 +1337,7 @@ async function restore() {
 }
 // Фото в шапке — до низа свёрнутой формы (+ немного воздуха): тёмные заголовки ниже не попадают на фото.
 function fitHero() {
-  if (!$('search').classList.contains('search--collapsed')) return;
+  if (state.view === 'fav' || !$('search').classList.contains('search--collapsed')) return;
   document.documentElement.style.setProperty('--hero-h', `${Math.round($('search').getBoundingClientRect().bottom + scrollY + 28)}px`);
 }
 addEventListener('resize', fitHero);
@@ -1265,7 +1358,7 @@ document.fonts?.ready.then(fitHero);
   fetch('/data/origins.json').then((response) => response.ok ? response.json() : null).then((data) => { for (const origin of data?.cities ?? []) state.fromNames.set(origin.code, origin.from); renderForm(); }).catch(() => {});
   fetch('/data/cities.json').then((response) => response.ok ? response.json() : null).then((data) => { state.cityPages = new Map((data?.cities ?? []).map((city) => [city.code, city.slug])); }).catch(() => {});
   fetch('/data/city-guides.json').then((response) => response.ok ? response.json() : {}).then((guides) => { state.guides = guides; if (state.status === 'done') renderResults(); }).catch(() => {});
-  const wantFav = location.hash === '#fav';
+  if (favoritesHash()) showFavorites(false);
   const restored = await restore();
   // Без параметров поиска в адресе — город вылета посетителя: его выбор или ближайший город по местоположению.
   if (!restored) {
@@ -1278,6 +1371,7 @@ document.fonts?.ready.then(fitHero);
   }
   renderForm();
   fitHero();
+  if (favoritesHash()) return;
   if (restored && $('picker').open) { renderScopeCoverage(); renderPicker(); }
   // Прочитать до поиска: поиск переписывает адрес и убирает хеш.
   const tripId = new URLSearchParams(location.search).get('trip') ?? location.hash.replace(/^#trip=/, '');
@@ -1288,5 +1382,4 @@ document.fonts?.ready.then(fitHero);
   // Эксперимент home: A — прежняя главная (форма и сразу список), B — витрина с подборками.
   else if (homeVariant === 'A') search({ scroll: false, auto: true });
   else { showShowcase(); if (wantRow) loadHomeThen(() => showCollection(wantRow, false)); }
-  if (wantFav) showFavorites();
 })();
