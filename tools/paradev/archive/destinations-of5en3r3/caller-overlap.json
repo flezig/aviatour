@@ -1,0 +1,11 @@
+{
+  "start": 1795035352.048205,
+  "finish": 1795035488.0513558,
+  "overlapping_responses": 5,
+  "total": 1015663,
+  "uncached_plus_output": 10095,
+  "input_tokens": 1011851,
+  "cached_input_tokens": 1005568,
+  "output_tokens": 3812,
+  "reasoning_output_tokens": 1431
+}

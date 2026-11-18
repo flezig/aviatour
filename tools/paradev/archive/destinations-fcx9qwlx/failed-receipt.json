@@ -1,0 +1,28 @@
+{
+  "state": "failed",
+  "error": "Достигнут порог роли: 1 ответов или 26000 новых входных + выходных токенов",
+  "agents": {
+    "interface": {
+      "input_tokens": 18430,
+      "cached_input_tokens": 3968,
+      "output_tokens": 352,
+      "reasoning_output_tokens": 285,
+      "requests": 1,
+      "uncached": 14462,
+      "total": 18782,
+      "model": "gpt-6.2-sol",
+      "effort": "xhigh"
+    },
+    "datajudge": {
+      "input_tokens": 18549,
+      "cached_input_tokens": 4992,
+      "output_tokens": 258,
+      "reasoning_output_tokens": 90,
+      "requests": 1,
+      "uncached": 13557,
+      "total": 18807,
+      "model": "gpt-6.2-astra",
+      "effort": "xhigh"
+    }
+  }
+}

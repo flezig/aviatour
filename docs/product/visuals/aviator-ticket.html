@@ -1,0 +1,66 @@
+<div id="aviator-ticket" class="viz-dotted-background" lang="ru">
+  <article class="at-ticket" aria-label="Вариант посадочного талона в подборке">
+    <div class="at-main">
+      <div class="at-route"><span>ИЗ МОСКВЫ</span><span>MOW <i data-lucide="plane" aria-hidden="true"></i> PKV</span></div>
+      <h2>Псков</h2>
+      <div class="at-dates"><span>23–26 ноября</span><span>3 ночи</span></div>
+      <div class="at-days">Понедельник — четверг · прямой рейс</div>
+    </div>
+    <div class="at-stub">
+      <div class="at-fare"><div><strong>3 945 ₽</strong><small>туда и обратно за одного</small></div>
+        <button class="at-heart cursor-interaction" aria-label="Сохранить Псков в избранное" aria-pressed="false" type="button"><i data-lucide="heart" aria-hidden="true"></i></button>
+      </div>
+      <details><summary class="cursor-interaction">На 44% ниже обычной цены</summary><p>Сравниваем с ценами на поездки из Москвы в Псков той же длительности в ноябре. Цену на ваши даты можно уточнить на Aviasales.</p></details>
+    </div>
+  </article>
+</div>
+<style>
+#aviator-ticket { --ink:light-dark(#101e3e,#f1f5ff); --soft:light-dark(#495773,#b8c8e3); --paper:light-dark(#fff,#202c42); --seam:light-dark(#cdd5e1,#495971); --cobalt:light-dark(#2447cd,#a5b8ff); padding:24px 12px;display:grid;place-items:center;font-family:"Golos Text",system-ui,sans-serif;color:var(--ink); }
+#aviator-ticket * {box-sizing:border-box}
+#aviator-ticket .at-ticket {width:min(100%,355px);background:var(--paper);border-radius:16px;box-shadow:0 5px 23px light-dark(#162c5521,#0005);overflow:hidden}
+#aviator-ticket .at-main {padding:20px 21px 17px}
+#aviator-ticket .at-route,#aviator-ticket .at-fare {display:flex;align-items:center;justify-content:space-between;gap:10px}
+#aviator-ticket .at-route {font:600 12px ui-monospace,monospace;color:var(--soft)}
+#aviator-ticket .at-route span:last-child {display:flex;gap:6px;align-items:center} #aviator-ticket .at-route svg {width:15px;height:15px;color:var(--cobalt)}
+#aviator-ticket h2 {font:800 40px/1.1 "Geologica",system-ui,sans-serif;margin:13px 0;color:var(--ink);letter-spacing:-.035em}
+#aviator-ticket .at-dates {display:flex;align-items:baseline;flex-wrap:wrap;gap:8px;font-size:17px;font-weight:650}
+#aviator-ticket .at-dates span+span:before {content:"·";margin-right:8px}
+#aviator-ticket .at-days,#aviator-ticket small {display:block;font-size:13px;color:var(--soft);margin-top:4px}
+#aviator-ticket .at-stub {position:relative; padding:16px 21px 13px;border-top:2px dashed var(--seam)}
+#aviator-ticket .at-stub:before,#aviator-ticket .at-stub:after {content:"";position:absolute;top:-9px;height:16px;width:16px;border-radius:50%;background:light-dark(#edf1f7,#172236)}
+#aviator-ticket .at-stub:before {left:-8px} #aviator-ticket .at-stub:after {right:-8px}
+#aviator-ticket strong {color:var(--ink);font:750 31px/1.15 "Martian Mono",ui-monospace,monospace}
+#aviator-ticket .at-heart {width:44px;height:44px;padding:0;display:grid;place-items:center;border:1px solid var(--seam);background:var(--paper);color:var(--ink);border-radius:50%}
+#aviator-ticket .at-heart[aria-pressed=true] {color:light-dark(#c82141,#ff97a9)}
+#aviator-ticket .at-heart[aria-pressed=true] svg {fill:currentColor}
+#aviator-ticket .at-heart svg {width:20px;height:20px}
+#aviator-ticket details {margin-top:5px} #aviator-ticket summary {padding:13px 0;font-size:14px;color:var(--cobalt);font-weight:600}
+#aviator-ticket details p {margin:0;font-size:14px;line-height:1.45;color:var(--soft)}
+</style>
+<script>
+(() => {
+  const root = document.getElementById('aviator-ticket');
+  const heart = root.querySelector('.at-heart');
+  const details = root.querySelector('details');
+  const restore = state => {
+    const saved = state?.privateContent?.saved === true;
+    heart.setAttribute('aria-pressed',String(saved));
+    heart.setAttribute('aria-label',saved ? 'Убрать Псков из избранного' : 'Сохранить Псков в избранное');
+    details.open = state?.privateContent?.explanation === true;
+  };
+  const remember = (saved, explanation) => {
+    const state = {privateContent:{saved,explanation}};
+    restore(state);
+    window.openai?.setWidgetState?.(state)?.catch(() => {});
+  };
+  restore(window.openai?.widgetState);
+  heart.addEventListener('click', () => remember(heart.getAttribute('aria-pressed') !== 'true',details.open));
+  details.querySelector('summary').addEventListener('click', event => {
+    event.preventDefault();
+    remember(heart.getAttribute('aria-pressed') === 'true',!details.open);
+  });
+  window.addEventListener('openai:set_globals', event => {
+    if (event.detail?.globals?.widgetState) restore(event.detail.globals.widgetState);
+  });
+})();
+</script>

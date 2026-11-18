@@ -1,0 +1,11 @@
+{
+  "input_tokens": 19081,
+  "cached_input_tokens": 4992,
+  "output_tokens": 822,
+  "reasoning_output_tokens": 500,
+  "requests": 1,
+  "uncached": 14089,
+  "total": 19903,
+  "model": "gpt-6.2-astra",
+  "effort": "xhigh"
+}
