@@ -1,0 +1,11 @@
+{
+  "input_tokens": 18623,
+  "cached_input_tokens": 0,
+  "output_tokens": 745,
+  "reasoning_output_tokens": 503,
+  "requests": 1,
+  "uncached": 18623,
+  "total": 19368,
+  "model": "gpt-6.2-sol",
+  "effort": "xhigh"
+}

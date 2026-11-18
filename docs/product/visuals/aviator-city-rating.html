@@ -1,0 +1,396 @@
+<div id="aviator-city-rating" lang="ru">
+  <p class="ar-example">Пример · условные баллы</p>
+  <div class="viz-carousel viz-dotted-background" aria-label="Варианты плашки рейтинга города" data-previous-label="Предыдущий вариант" data-next-label="Следующий вариант">
+    <section class="ar-stage" data-variant="Индекс" aria-label="Компактный индекс">
+      <button class="ar-badge ar-index cursor-interaction" type="button" aria-label="Рейтинг города, 7,8 из 10">
+        <span class="ar-index-label"><i data-lucide="plane" aria-hidden="true"></i>Рейтинг города</span>
+        <span class="ar-score">7,8<small>/10</small></span>
+        <i class="ar-affordance" data-lucide="info" aria-hidden="true"></i>
+      </button>
+    </section>
+    <section class="ar-stage" data-variant="Авиаштамп" aria-label="Авиаштамп" hidden>
+      <button class="ar-badge ar-stamp cursor-interaction" type="button" aria-label="Рейтинг города Aviator, 7,8 из 10">
+        <span class="ar-stamp-seal" aria-hidden="true">
+          <span class="ar-stamp-wing"><i data-lucide="plane" aria-hidden="true"></i></span>
+          <span class="ar-score">7,8<small>/10</small></span>
+        </span>
+        <span class="ar-stamp-label"><strong>Aviator</strong><small>Рейтинг города</small></span>
+        <i class="ar-affordance" data-lucide="chevron-down" aria-hidden="true"></i>
+      </button>
+    </section>
+    <section class="ar-stage" data-variant="Шкала" aria-label="Сегментная шкала" hidden>
+      <button class="ar-badge ar-scale cursor-interaction" type="button" aria-label="Рейтинг города Aviator, 7,8 из 10">
+        <span class="ar-scale-title">Рейтинг Aviator</span>
+        <span class="ar-score">7,8<small>/10</small></span>
+        <span class="ar-scale-track" aria-hidden="true"></span>
+        <i class="ar-affordance" data-lucide="chevron-down" aria-hidden="true"></i>
+      </button>
+    </section>
+    <section class="ar-stage" data-variant="Корешок" aria-label="Отрывной корешок" hidden>
+      <button class="ar-badge ar-stub cursor-interaction" type="button" aria-label="Рейтинг города Aviator, 7,8 из 10">
+        <span class="ar-stub-label"><i data-lucide="ticket" aria-hidden="true"></i><span><strong>Aviator</strong><small>Рейтинг города</small></span></span>
+        <span class="ar-stub-score"><span class="ar-score">7,8<small>/10</small></span><i class="ar-affordance" data-lucide="chevron-down" aria-hidden="true"></i></span>
+      </button>
+    </section>
+  </div>
+
+  <template data-ticket-template>
+    <article class="ar-ticket" aria-label="Талон из Москвы в Казань на июнь">
+      <div class="ar-route">
+        <div class="ar-route-line">
+          <div class="ar-airport"><span>MOW</span><small>Москва</small></div>
+          <div class="ar-flight-line" aria-hidden="true"><i data-lucide="plane" aria-hidden="true"></i></div>
+          <div class="ar-airport"><span>KZN</span><small>Казань</small></div>
+        </div>
+        <div class="ar-month"><i data-lucide="calendar-days" aria-hidden="true"></i>Июнь</div>
+      </div>
+      <div class="ar-rating">
+        <div class="ar-badge-slot"></div>
+        <section class="ar-details" hidden>
+          <div class="ar-details-heading">
+            <div><h2>Рейтинг города</h2><p>Казань · июнь</p></div>
+            <span class="ar-score">7,8<small>/10</small></span>
+          </div>
+          <table class="ar-metrics">
+            <thead><tr><th scope="col">Критерий</th><th scope="col">Балл</th><th scope="col">Вес</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">Чем заняться <small>Музеи, природа и события</small></th><td>8,5</td><td>35%</td></tr>
+              <tr><th scope="row">Расходы на месте <small>Жильё, питание и транспорт</small></th><td>7,0</td><td>25%</td></tr>
+              <tr><th scope="row">Комфорт сезона <small>Температура и осадки в июне</small></th><td>7,5</td><td>25%</td></tr>
+              <tr><th scope="row">Передвижение <small>Время в пути пешком и на транспорте</small></th><td>8,0</td><td>15%</td></tr>
+            </tbody>
+          </table>
+        </section>
+      </div>
+    </article>
+  </template>
+</div>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Geologica:wght@600;700;800&family=Golos+Text:wght@400;500;600;700&family=Roboto+Mono:wght@500;600;700&display=swap');
+
+  #aviator-city-rating .ar-example {
+    margin: 0 0 8px;
+    color: color-mix(in srgb, var(--foreground) 70%, var(--background));
+    font-size: 12px;
+    text-align: center;
+  }
+  #aviator-city-rating .ar-stage {
+    --ar-cobalt: #2346d8;
+    --ar-ink: #0f1b3d;
+    --ar-muted: #565d70;
+    --ar-paper: #fff;
+    --ar-surface: #eef3f9;
+    --ar-line: #d7deeb;
+    --ar-tint: #edf2ff;
+    --ar-mono: 'Roboto Mono', ui-monospace, monospace;
+    --ar-display: 'Geologica', system-ui, sans-serif;
+    --ar-body: 'Golos Text', system-ui, sans-serif;
+    color-scheme: light;
+    box-sizing: border-box;
+    min-height: 232px;
+    padding: 15px 12px 14px;
+    color: var(--ar-ink);
+    font: 14px/1.4 var(--ar-body);
+  }
+  #aviator-city-rating .ar-stage [hidden],
+  #aviator-city-rating .ar-stage[hidden] { display: none; }
+  #aviator-city-rating .ar-stage * { box-sizing: border-box; }
+  #aviator-city-rating .ar-ticket { width: min(100%, 358px); margin: 0 auto; }
+  #aviator-city-rating .ar-route {
+    padding: 17px 20px 15px;
+    border: 1px solid var(--ar-line);
+    border-bottom: 0;
+    border-radius: 16px 16px 0 0;
+    background: var(--ar-paper);
+    box-shadow: 0 -4px 14px #21365b0b;
+  }
+  #aviator-city-rating .ar-route-line { display: grid; grid-template-columns: auto 1fr auto; align-items: start; gap: 10px; }
+  #aviator-city-rating .ar-airport { display: grid; gap: 3px; }
+  #aviator-city-rating .ar-airport:last-child { text-align: right; }
+  #aviator-city-rating .ar-airport span { font: 700 30px/1.05 var(--ar-mono); letter-spacing: -.08em; }
+  #aviator-city-rating .ar-airport small { font-size: 13px; color: var(--ar-muted); }
+  #aviator-city-rating .ar-airport:last-child small { font-weight: 600; color: var(--ar-ink); }
+  #aviator-city-rating .ar-flight-line { display: flex; align-items: center; gap: 5px; margin: 8px 0 0; color: var(--ar-cobalt); }
+  #aviator-city-rating .ar-flight-line::before,
+  #aviator-city-rating .ar-flight-line::after { content: ''; flex: 1; border-top: 1px dashed #aebbd4; }
+  #aviator-city-rating .ar-flight-line svg { width: 16px; height: 16px; flex: 0 0 auto; transform: rotate(45deg); }
+  #aviator-city-rating .ar-month { display: flex; align-items: center; gap: 7px; margin-top: 12px; font-weight: 500; }
+  #aviator-city-rating .ar-month svg { width: 15px; height: 15px; color: var(--ar-muted); }
+  #aviator-city-rating .ar-rating { position: relative; }
+  #aviator-city-rating .ar-badge-slot {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 94px;
+    padding: 10px 20px;
+    border: 1px solid var(--ar-line);
+    border-top: 1px dashed #bec9dd;
+    border-radius: 0 0 16px 16px;
+    background: var(--ar-paper);
+    box-shadow: 0 9px 14px -7px #21365b24;
+  }
+  #aviator-city-rating .ar-badge-slot::before,
+  #aviator-city-rating .ar-badge-slot::after {
+    position: absolute;
+    top: -8px;
+    width: 8px;
+    height: 15px;
+    background: var(--ar-surface);
+    border: 1px solid var(--ar-line);
+    content: '';
+  }
+  #aviator-city-rating .ar-badge-slot::before { left: -1px; border-left: 0; border-radius: 0 12px 12px 0; }
+  #aviator-city-rating .ar-badge-slot::after { right: -1px; border-right: 0; border-radius: 12px 0 0 12px; }
+  #aviator-city-rating .ar-badge {
+    min-width: 44px;
+    min-height: 44px;
+    max-width: 100%;
+    margin: 0;
+    color: var(--ar-ink);
+    font: inherit;
+    text-align: left;
+    border: 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+  #aviator-city-rating .ar-score {
+    font: 700 23px/1 var(--ar-mono);
+    letter-spacing: -.07em;
+    white-space: nowrap;
+  }
+  #aviator-city-rating .ar-score small { margin-left: 2px; font: 600 12px/1 var(--ar-mono); letter-spacing: -.08em; }
+  #aviator-city-rating svg.ar-affordance { width: 16px; height: 16px; flex: 0 0 auto; }
+  #aviator-city-rating .ar-badge[aria-expanded="true"] svg.ar-affordance.lucide-chevron-down { transform: rotate(180deg); }
+
+  #aviator-city-rating .ar-index {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 5px 11px;
+    border: 1px solid #cfdaff;
+    border-radius: 8px;
+    background: #f6f8ff;
+    color: var(--ar-cobalt);
+  }
+  #aviator-city-rating .ar-index[aria-expanded="true"] { background: #e9eeff; border-color: #a9b9f5; }
+  #aviator-city-rating .ar-index-label { display: inline-flex; align-items: center; gap: 6px; font: 700 13px/1 var(--ar-display); }
+  #aviator-city-rating .ar-index-label svg { width: 13px; height: 13px; }
+  #aviator-city-rating .ar-index .ar-score { font-size: 20px; }
+
+  #aviator-city-rating .ar-stamp {
+    display: inline-flex;
+    align-items: center;
+    gap: 11px;
+    padding: 0 7px 0 0;
+    background: transparent;
+    border-radius: 12px;
+  }
+  #aviator-city-rating .ar-stamp-seal {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 4px;
+    width: 78px;
+    height: 68px;
+    color: var(--ar-cobalt);
+  }
+  #aviator-city-rating .ar-stamp-seal::before,
+  #aviator-city-rating .ar-stamp-seal::after {
+    position: absolute;
+    z-index: -1;
+    content: '';
+    clip-path: polygon(19% 0, 81% 0, 100% 23%, 100% 77%, 81% 100%, 19% 100%, 0 77%, 0 23%);
+  }
+  #aviator-city-rating .ar-stamp-seal::before { inset: 0; background: var(--ar-cobalt); }
+  #aviator-city-rating .ar-stamp-seal::after { inset: 2px; background: var(--ar-tint); }
+  #aviator-city-rating .ar-stamp[aria-expanded="true"] .ar-stamp-seal::after { background: #dce5ff; }
+  #aviator-city-rating .ar-stamp-wing { display: flex; align-items: center; gap: 4px; }
+  #aviator-city-rating .ar-stamp-wing::before,
+  #aviator-city-rating .ar-stamp-wing::after { content: ''; width: 12px; border-top: 1px solid #8399f1; }
+  #aviator-city-rating .ar-stamp-wing svg { width: 15px; height: 15px; transform: rotate(-45deg); }
+  #aviator-city-rating .ar-stamp-label { display: grid; gap: 3px; }
+  #aviator-city-rating .ar-stamp-label strong { font: 700 15px/1.2 var(--ar-display); }
+  #aviator-city-rating .ar-stamp-label small { color: var(--ar-muted); font-size: 12px; }
+  #aviator-city-rating .ar-stamp .ar-affordance { color: var(--ar-cobalt); }
+
+  #aviator-city-rating .ar-scale {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    grid-template-rows: auto auto;
+    align-items: center;
+    gap: 6px 10px;
+    width: 100%;
+    padding: 11px 12px;
+    background: var(--ar-tint);
+    border-radius: 10px;
+  }
+  #aviator-city-rating .ar-scale[aria-expanded="true"] { background: #e2eaff; }
+  #aviator-city-rating .ar-scale-title { font-weight: 600; }
+  #aviator-city-rating .ar-scale .ar-score { color: var(--ar-cobalt); }
+  #aviator-city-rating .ar-scale-track { grid-column: 1 / -2; display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 4px; }
+  #aviator-city-rating .ar-scale-track span { height: 6px; overflow: hidden; border-radius: 2px; background: #cdd8f0; }
+  #aviator-city-rating .ar-scale-track span::before { content: ''; display: block; height: 100%; width: var(--ar-fraction); background: var(--ar-cobalt); }
+  #aviator-city-rating .ar-scale .ar-affordance { grid-column: 3; grid-row: 1 / 3; color: var(--ar-cobalt); }
+
+  #aviator-city-rating .ar-stub {
+    --ar-stub-edge: 67%;
+    position: relative;
+    display: grid;
+    grid-template-columns: var(--ar-stub-edge) 1fr;
+    align-items: stretch;
+    width: 100%;
+    min-height: 58px;
+    overflow: hidden;
+    padding: 0;
+    border-radius: 8px;
+    background: var(--ar-ink);
+    color: var(--ar-paper);
+  }
+  #aviator-city-rating .ar-stub-label { display: flex; align-items: center; gap: 8px; padding: 8px 9px 8px 12px; }
+  #aviator-city-rating .ar-stub-label > span { display: grid; gap: 2px; }
+  #aviator-city-rating .ar-stub-label strong { font: 700 14px/1.2 var(--ar-display); }
+  #aviator-city-rating .ar-stub-label small { color: #d9e2ff; font-size: 11px; }
+  #aviator-city-rating .ar-stub-label svg { width: 19px; height: 19px; flex: 0 0 auto; color: #b7c7ff; }
+  #aviator-city-rating .ar-stub-score {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 3px;
+    padding: 8px 8px 8px 9px;
+    border-left: 1px dashed #889adb;
+    background: #2343ae;
+  }
+  #aviator-city-rating .ar-stub .ar-score { font-size: 19px; }
+  #aviator-city-rating .ar-stub .ar-score small { color: #e0e8ff; font-size: 11px; }
+  #aviator-city-rating .ar-stub .ar-affordance { width: 13px; height: 13px; }
+  #aviator-city-rating .ar-stub[aria-expanded="true"] .ar-stub-score { background: #2346d8; }
+  #aviator-city-rating .ar-stub::before,
+  #aviator-city-rating .ar-stub::after {
+    position: absolute;
+    left: calc(var(--ar-stub-edge) - 5px);
+    z-index: 1;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--ar-paper);
+    content: '';
+  }
+  #aviator-city-rating .ar-stub::before { top: -5px; }
+  #aviator-city-rating .ar-stub::after { bottom: -5px; }
+
+  #aviator-city-rating .ar-details {
+    position: relative;
+    margin-top: 10px;
+    padding: 14px 16px 11px;
+    border: 1px solid var(--ar-line);
+    border-radius: 13px;
+    background: var(--ar-paper);
+    box-shadow: 0 6px 16px #21365b18;
+  }
+  #aviator-city-rating .ar-details-heading { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 12px; }
+  #aviator-city-rating .ar-details-heading h2 { margin: 0; color: var(--ar-ink); font: 700 17px/1.2 var(--ar-display); }
+  #aviator-city-rating .ar-details-heading p { margin: 4px 0 0; color: var(--ar-muted); font-size: 13px; }
+  #aviator-city-rating .ar-details-heading .ar-score { color: var(--ar-cobalt); }
+  #aviator-city-rating .ar-metrics { width: 100%; border-collapse: collapse; text-align: left; }
+  #aviator-city-rating .ar-metrics :is(th, td) { padding: 7px 0; vertical-align: top; }
+  #aviator-city-rating .ar-metrics :is(th, td):not(:first-child) { padding-left: 10px; text-align: right; }
+  #aviator-city-rating .ar-metrics thead th { padding-top: 0; color: var(--ar-muted); font-size: 11px; font-weight: 500; }
+  #aviator-city-rating .ar-metrics tbody th { font-weight: 600; }
+  #aviator-city-rating .ar-metrics tbody tr { border-top: 1px solid #e9edf4; }
+  #aviator-city-rating .ar-metrics tbody td { font: 600 12px/1.65 var(--ar-mono); white-space: nowrap; }
+  #aviator-city-rating .ar-metrics tbody td:last-child { color: var(--ar-muted); }
+  #aviator-city-rating .ar-metrics small { display: block; color: var(--ar-muted); font-size: 11px; font-weight: 400; }
+
+  @media (max-width: 350px) {
+    #aviator-city-rating .ar-stage { padding-inline: 8px; }
+    #aviator-city-rating .ar-route,
+    #aviator-city-rating .ar-badge-slot { padding-inline: 16px; }
+    #aviator-city-rating .ar-stub { --ar-stub-edge: 62%; }
+  }
+</style>
+
+<script>
+(() => {
+  const root = document.getElementById('aviator-city-rating');
+  const template = root.querySelector('[data-ticket-template]');
+  const scale = root.querySelector('.ar-scale-track');
+  for (let index = 0; index < 10; index += 1) {
+    const segment = document.createElement('span');
+    const fill = Math.min(100, Math.max(0, 780 - index * 100));
+    segment.style.setProperty('--ar-fraction', `${fill}%`);
+    scale.append(segment);
+  }
+
+  root.querySelectorAll('[data-variant]').forEach((stage, index) => {
+    const badge = stage.querySelector('.ar-badge');
+    const ticket = template.content.cloneNode(true);
+    const rating = ticket.querySelector('.ar-rating');
+    const details = ticket.querySelector('.ar-details');
+    const heading = details.querySelector('h2');
+    details.id = `ar-details-${index}`;
+    heading.id = `ar-heading-${index}`;
+    details.setAttribute('aria-labelledby', heading.id);
+    badge.setAttribute('aria-controls', details.id);
+    ticket.querySelector('.ar-badge-slot').append(badge);
+    stage.append(ticket);
+
+    let pinned = false;
+    let hovered = false;
+    let focused = false;
+    let dismissed = false;
+
+    function update() {
+      const expanded = pinned || (!dismissed && (hovered || focused));
+      badge.setAttribute('aria-expanded', String(expanded));
+      details.hidden = !expanded;
+    }
+
+    function dismiss() {
+      pinned = false;
+      dismissed = true;
+      update();
+    }
+
+    // Closing the variant picker can reveal a badge under a stationary cursor.
+    badge.addEventListener('pointermove', event => {
+      if (event.pointerType !== 'mouse' || hovered) return;
+      hovered = true;
+      dismissed = false;
+      update();
+    });
+    rating.addEventListener('pointerleave', event => {
+      if (event.pointerType !== 'mouse') return;
+      hovered = false;
+      update();
+    });
+    badge.addEventListener('focus', () => {
+      focused = badge.matches(':focus-visible');
+      if (focused) dismissed = false;
+      update();
+    });
+    badge.addEventListener('blur', () => {
+      focused = false;
+      update();
+    });
+    badge.addEventListener('click', () => {
+      if (pinned) {
+        dismiss();
+        return;
+      }
+      pinned = true;
+      update();
+    });
+    document.addEventListener('click', event => {
+      if (!details.hidden && !badge.contains(event.target) && !details.contains(event.target)) dismiss();
+    });
+    document.addEventListener('keydown', event => {
+      if (event.key !== 'Escape' || stage.hidden || details.hidden) return;
+      event.preventDefault();
+      dismiss();
+    });
+    update();
+  });
+})();
+</script>
