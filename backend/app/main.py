@@ -439,9 +439,20 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
         return catalog.origin_by_code['LED' if city['code'] == catalog.default_origin else catalog.default_origin]
 
     @app.get('/season/', response_class=HTMLResponse)
-    async def season_index(month: int | None = Query(None, ge=1, le=12), q: str = Query('', max_length=100)):
-        current = month or now().astimezone(ZoneInfo('Europe/Moscow')).month
-        return HTMLResponse(season_pages.directory(catalog, current, q), headers={'Cache-Control': page_cache})
+    async def season_index(month: int | None = Query(None, ge=1, le=12), q: str = Query('', max_length=100),
+                           full: bool = False, page: int = Query(1, ge=1, le=10000)):
+        moment = now()
+        today = moment.date()
+        current = month or moment.astimezone(ZoneInfo('Europe/Moscow')).month
+        checked = {}
+        if full:
+            year = city_rating.target_year(current, None, today)
+            counts = city_rating.coverage_index(year, today)
+            for code in season_pages.matching_codes(q):
+                if counts[code][current - 1] == "4" and season_pages.CITIES[code]["country_code"] != "RU":
+                    checked[code] = await monthly_city_rating(code, current, year)
+        return HTMLResponse(season_pages.directory(catalog, current, q, today, photos, full, page, checked),
+                            headers={'Cache-Control': page_cache})
 
     async def monthly_city_rating(code, month, year):
         data = city_rating.report(code, month, year, now().date())
@@ -510,8 +521,9 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
         return JSONResponse(result, headers={'Cache-Control': 'public, max-age=60, s-maxage=600'})
 
     @app.get('/city/', response_class=HTMLResponse)
-    async def city_index():
-        return HTMLResponse(city_pages.index_page(catalog), headers={'Cache-Control': page_cache})
+    async def city_index(q: str = Query('', max_length=100), region: str = Query('all', pattern='^(all|ru|abroad)$'),
+                         guide: bool = False, page: int = Query(1, ge=1, le=10000)):
+        return HTMLResponse(city_pages.index_page(catalog, q, region, guide, page), headers={'Cache-Control': page_cache})
 
     @app.get('/city/{name}', response_class=HTMLResponse)
     async def city_page(name: str):

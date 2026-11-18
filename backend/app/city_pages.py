@@ -10,6 +10,7 @@ import math
 import re
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
+from functools import cached_property
 from pathlib import Path
 from urllib.parse import quote, urlencode
 from zoneinfo import ZoneInfo
@@ -47,6 +48,10 @@ class Catalog:
         self.by_code = {city['code']: city for city in self.cities}
         self.origin_by_code = {origin['code']: origin for origin in self.origins}
         self.origin_by_slug = {slug(origin['name']): origin for origin in self.origins}
+
+    @cached_property
+    def directory(self):
+        return build_directory(self)
 
     @property
     def ostrovok_urls(self):
@@ -393,26 +398,161 @@ def page(catalog, city, origin, parts, route=False):
             + body + FOOT.format(dialog='' if route else origin_dialog(catalog, city), script='/js/city.js'))
 
 
-def country_caption(city):
-    return '' if city['country_code'] == 'RU' else f'<span class="caption">{esc(city["country"])}</span>'
+# Common names that differ from the published city or airport name.
+CITY_ALIASES = {
+    'LED': ('Питер', 'СПб', 'Saint Petersburg'), 'MOW': ('Moscow',), 'AER': ('Адлер', 'Sochi'),
+    'KZN': ('Kazan',), 'IST': ('Istanbul',), 'HKT': ('Phuket',), 'DXB': ('Dubai',),
+    'BKK': ('Bangkok',), 'PAR': ('Paris',), 'LON': ('London',),
+}
+COUNTRY_ALIASES = {
+    'AE': ('ОАЭ', 'Эмираты', 'Объединённые Арабские Эмираты', 'UAE', 'United Arab Emirates'),
+    'TH': ('Таиланд', 'Тайланд', 'Thailand'),
+}
+REGIONS = {'all': 'Все', 'ru': 'Россия', 'abroad': 'За рубежом'}
+DIRECTORY_PAGE_SIZE = 8
 
 
-def index_page(catalog):
-    from .city_rating import badge
-    month = datetime.now(ZoneInfo('Europe/Moscow')).month
-    groups = {'Россия': [city for city in catalog.cities if city['country_code'] == 'RU'], 'Другие страны': [city for city in catalog.cities if city['country_code'] != 'RU']}
-    sections = ''.join(f'''<section class="city-group"><h2>{title}</h2><ul class="city-grid">{''.join(
-        f'<li><a class="city-card" href="/city/{esc(city["slug"])}"><span class="stamp"><span class="photo"><img src="/photos/s/{esc(city["code"])}.webp" alt="" loading="lazy" decoding="async"></span></span>'
-        f'<b>{esc(city["name"])}</b>{country_caption(city)}</a>{badge(city['code'],month)}</li>' for city in sorted(items, key=lambda city: city['name']))}</ul></section>'''
-        for title, items in groups.items() if items)
-    ld, visible = breadcrumbs([('Aviator', '/'), ('Города', '/city/')])
+def directory_term(text):
+    return re.sub(r'[-\s]+', ' ', text.casefold().replace('ё', 'е')).strip()
+
+
+@dataclass(frozen=True)
+class DirectoryCity:
+    name: str
+    code: str
+    country: str
+    domestic: bool
+    slug: str
+    guide: bool
+    places: tuple
+    terms: frozenset
+
+
+def build_directory(catalog):
+    from .catalog import AIRPORTS
+    from .season_pages import CITIES, NORMALS
+
+    airport_names = {}
+    for airport in AIRPORTS:
+        airport_names.setdefault(airport['city_code'], set()).update((airport['iata'], airport.get('name') or ''))
+
+    def entry(code, name, country, country_code, city_slug=''):
+        guide = catalog.guides.get(code) if city_slug else None
+        terms = (name, country, code, country_code, city_slug or slug(name), *airport_names.get(code, ()),
+                 *CITY_ALIASES.get(code, ()), *COUNTRY_ALIASES.get(country_code, ()))
+        return DirectoryCity(name, code, country, country_code == 'RU', city_slug, bool(guide),
+                             tuple((guide or {}).get('places', ())[:2]), frozenset(directory_term(t) for t in terms if t))
+
+    cities = [entry(c['code'], c['name'], c['country'], c['country_code'], c['slug']) for c in catalog.cities]
+    seasonal = [entry(code, a['city'], a['country'], a['country_code']) for code, a in CITIES.items()
+                if code not in catalog.by_code and code in NORMALS]
+    order = lambda c: (directory_term(c.name), c.code)
+    return sorted(cities, key=order), sorted(seasonal, key=order)
+
+
+def directory_matches(cities, query, region, guide):
+    matches = []
+    for city in cities:
+        if (region != 'all' and city.domestic != (region == 'ru')) or (guide and not city.guide):
+            continue
+        if not query or query in city.terms:
+            rank = 0
+        elif any(term.startswith(query) for term in city.terms):
+            rank = 1
+        elif any(query in term for term in city.terms):
+            rank = 2
+        else:
+            continue
+        matches.append((rank, city))
+    return [city for _, city in sorted(matches, key=lambda result: result[0])]
+
+
+def directory_url(query='', region='all', guide=False, page=1):
+    params = {}
+    if query:
+        params['q'] = query
+    if region != 'all':
+        params['region'] = region
+    if guide:
+        params['guide'] = 1
+    if page > 1:
+        params['page'] = page
+    return '/city/' + ('?' + urlencode(params) if params else '')
+
+
+def directory_row(city, show_places):
+    url = f'/city/{city.slug}' if city.slug else f'/season/{city.code}'
+    photo = (f'<img src="/photos/s/{esc(city.code)}.webp" width="76" height="55" alt="" loading="lazy" decoding="async">'
+             if city.slug else '')
+    qualifier = 'Погода по месяцам' if not city.slug else 'Путеводитель' if city.guide else ''
+    places = f'<span class="directory-places">{esc(" · ".join(city.places))}</span>' if show_places and city.places else ''
+    return f'''<li><a class="directory-city" data-city="{esc(city.code)}" href="{esc(url)}">{photo}
+    <span><strong>{esc(city.name)}</strong><small>{esc(city.country)}{' · ' + qualifier if qualifier else ''}</small>{places}</span>
+    <span class="directory-arrow" aria-hidden="true">→</span></a></li>'''
+
+
+def index_page(catalog, q='', region='all', guide=False, page=1):
+    query = directory_term(q)
+    cities, seasonal = catalog.directory
+    matches = directory_matches(cities, query, region, guide)
+    season_only = False
+    if query and not matches and not guide:
+        matches = directory_matches(seasonal, query, region, False)
+        season_only = bool(matches)
+
+    pages = max(1, math.ceil(len(matches) / DIRECTORY_PAGE_SIZE))
+    page = min(page, pages)
+    start = (page - 1) * DIRECTORY_PAGE_SIZE
+    rows = ''.join(directory_row(c, guide) for c in matches[start:start + DIRECTORY_PAGE_SIZE])
+    title = ('Города с данными по месяцам' if season_only else 'Результаты поиска' if query else
+             'Города с путеводителем' if guide else {'all': 'Все города', 'ru': 'Города России', 'abroad': 'Города за рубежом'}[region])
+    region_controls = ''.join(
+        f'<label><input type="radio" name="region" value="{key}"{" checked" if key == region else ""}><span>{label}</span></label>'
+        for key, label in REGIONS.items())
+    pager = ''
+    if pages > 1:
+        previous = (f'<a data-step="-1" rel="prev" href="{esc(directory_url(q, region, guide, page-1))}">Назад</a>' if page > 1 else '')
+        following = (f'<a data-step="1" rel="next" href="{esc(directory_url(q, region, guide, page+1))}">Дальше</a>' if page < pages else '')
+        pager = (f'<nav class="directory-pager" aria-label="Страницы каталога">{previous}'
+                 f'<span>Страница {page} из {pages}</span>{following}</nav>')
+    empty = ''
+    if not matches:
+        filtered = guide or region != 'all'
+        reset = directory_url(q) if filtered else '/city/'
+        message = f'По запросу «{esc(q)}» города не найдены.' if query else 'При этих фильтрах города не найдены.'
+        empty = (f'<div class="directory-empty"><p>{message}</p>'
+                 f'<a data-clear href="{esc(reset)}">{"Снять фильтры" if filtered else "Сбросить поиск"}</a></div>')
+
+    cover = catalog.by_code.get('IST')
+    figure = (f'<figure class="directory-cover"><img src="/photos/{esc(cover["code"])}.jpg" width="720" height="480" alt="">'
+              f'<a href="/city/{esc(cover["slug"])}">{esc(cover["name"])}, {esc(cover["country"])}</a></figure>') if cover else ''
+    ld, _ = breadcrumbs([('Aviator', '/'), ('Города', '/city/')])
     body = f'''
-  <main class="wrap" id="main">
-    {visible}
-    <header class="page-head"><h1>Города</h1><p>Цены на билеты по месяцам, заметки о городе и жильё. Сейчас здесь {len(catalog.cities)} городов, куда есть рейсы из больших городов России.</p></header>
-    <a class="btn-inline" href="/season/">Сезонный рейтинг · найти свой город</a>
-    {sections}
+  <main id="main" class="directory">
+    <form action="/city/" method="get" id="citySearch" role="search">
+      <div class="directory-hero"><div class="wrap directory-intro">
+        <div><h1>Города</h1><div class="directory-search">
+          <label><svg class="icon" aria-hidden="true"><use href="/icons.svg#search"></use></svg>
+            <input type="search" name="q" maxlength="100" value="{esc(q)}" autocomplete="off" aria-label="Город, страна или код аэропорта" placeholder="Город, страна или код"></label>
+          <button class="btn-primary" type="submit">Найти</button>
+        </div></div>{figure}
+      </div></div>
+      <div class="wrap"><div class="directory-controls">
+        <div class="directory-regions" role="group" aria-label="География">{region_controls}</div>
+        <label class="directory-guide"><input type="checkbox" name="guide" value="1"{' checked' if guide else ''}>С путеводителем</label>
+        <a class="directory-compare" href="/season/compare/">Сравнить рейтинги</a>
+      </div></div>
+    </form>
+    <div class="wrap"><section id="cityResults" aria-labelledby="resultsHeading">
+      <div class="directory-heading"><h2 id="resultsHeading" tabindex="-1">{title}</h2><span data-count>{len(matches)}</span></div>
+      <ul class="directory-list">{rows}</ul>{empty}{pager}
+    </section>
+    <p class="sr-only" id="cityStatus" role="status"></p>
+    <p class="directory-season"><a href="/season/">Рейтинги и погода по месяцам</a></p></div>
   </main>'''
-    return (HEAD.format(title='Города: когда лететь дешевле · Aviator', description='Страницы городов: цены на билеты туда и обратно по месяцам, что посмотреть и где жить.',
-                        url=f'{SITE}/city/', image=f'{SITE}/og.jpg', robots='', ld=ld, cities_current=' aria-current="page"')
-            + body + FOOT.format(dialog='', script='/js/site.js'))
+    canonical = directory_url(page=page if not (q or guide or region != 'all') else 1)
+    head = HEAD.format(title='Города: когда лететь дешевле · Aviator',
+                       description='Найдите город по названию, стране или коду аэропорта. Путеводители, цены на билеты и погода по месяцам.',
+                       url=esc(SITE + canonical), image=f'{SITE}/og.jpg', robots='', ld=ld, cities_current=' aria-current="page"')
+    head = head.replace('</head>', '  <link rel="stylesheet" href="/city-directory.css">\n</head>')
+    return head + body + FOOT.format(dialog='', script='/js/city-directory.js')

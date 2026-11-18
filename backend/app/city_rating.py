@@ -92,7 +92,12 @@ def activities(code, evidence, month, year, today):
         else:
             detail = "Проверяем, куда можно сходить в городе в обычные выходные."
     missing = ["Нужны подтверждённые расписания по категориям: " + ", ".join(missing_categories) + "."] if missing_categories else []
-    return result("activities", None if missing else len(items), detail, missing, links)
+    part = result("activities", None if missing else len(items), detail, missing, links)
+    if items:
+        part["fact"] = f'Подтверждено мест: {len(items)}. Например, {items[0]["name"]}.'
+    else:
+        part["fact"] = "Расписания мест на выбранные выходные требуют проверки."
+    return part
 
 
 def rubles(amount):
@@ -138,6 +143,7 @@ def survey_cost(city, year, month, today):
               'На уровне медианы расходы получают 5/10, вдвое дешевле — 10/10, вдвое дороже — 0/10.')
     part = result("cost", score, detail, sources=[source("Росстат · ЕМИСС", PRICES["source"])])
     part["budget_label"] = f"Росстат · {period} · {rubles(basket)}"
+    part["fact"] = f"{rubles(basket)} на человека за две ночи, четыре обеда и проезд. Росстат, {period}."
     part["comparison_period"] = period
     part["comparison"] = []
     for name, total in sorted(rows, key=lambda row: row[1]):
@@ -232,7 +238,10 @@ def climate(code, month):
     label, url = season.source_info(normal)
     detail = (f'Днём {"+" if temp > 0 else ""}{number(temp)} °C · {number(rain)} мм осадков за месяц. '
               'Нормы 1991–2020. Температура даёт 80% оценки, осадки — 20%.')
-    return result("climate", season.walk_score(temp, rain), detail, sources=[source(label, url)])
+    part = result("climate", season.walk_score(temp, rain), detail, sources=[source(label, url)])
+    signed_temp = f"{temp:+g}".replace(".", ",").replace("-", "−")
+    part["fact"] = f"{signed_temp} °C днём, {number(rain)} мм осадков. Норма 1991–2020."
+    return part
 
 
 def mobility(routes, month, year, today):
@@ -269,7 +278,10 @@ def mobility(routes, month, year, today):
         detail += " " + routes["transit_note"]
     links.extend(routes.get("transit_sources", []))
     missing = [] if len(checks) == 20 else [f"Время пути с учётом транспорта для {20 - len(checks)} из 20 маршрутов."]
-    return result("mobility", count / 2 if not missing else None, detail, missing, links)
+    part = result("mobility", count / 2 if not missing else None, detail, missing, links)
+    if not missing:
+        part["fact"] = f"За 30 минут или быстрее — {count} из 20 проверенных маршрутов."
+    return part
 
 
 def available_score(components):
@@ -286,12 +298,28 @@ def report(code, month, year, today):
                   costs(evidence, month, year, today, SURVEY_CITIES.get(code),
                         WORLD_PRICES["cities"].get(code, {}).get("observations", [])), climate(code, month),
                   mobility(ROUTES.get(code), month, year, today)]
+    for part in components:
+        if "fact" not in part:
+            part["fact"] = (part.get("gap") or part.get("budget_label")
+                            or next(iter(part["missing"]), part["detail"]))
     score = available_score(components)
     for c in components:
         if c["score"] is not None:
             c["score"] = math.floor(c["score"] * 10 + 0.5) / 10
+    available = sum(c["score"] is not None for c in components)
+    if score is None:
+        verdict = "Для общей оценки нужны все четыре показателя."
+    else:
+        highest = max(c["score"] for c in components)
+        leaders = [c["label"].lower() for c in components if c["score"] == highest]
+        if len(leaders) == len(components):
+            verdict = "У всех четырёх показателей одинаковая оценка."
+        elif len(leaders) == 1:
+            verdict = f"Лучший показатель — {leaders[0]}."
+        else:
+            verdict = f'Лучшие показатели — {", ".join(leaders[:-1])} и {leaders[-1]}.'
     return dict(city=season.CITIES[code]["city"], code=code, month=month, year=year, score=score,
-                available=sum(c["score"] is not None for c in components), components=components, notice=None)
+                available=available, components=components, notice=None, verdict=verdict)
 
 
 async def check_advice(data, insights):
@@ -336,15 +364,15 @@ def badge(code, month, origin=None, year=None, today=None, checked_report=None):
         value = str(checked_report["available"])
     elif value == "4" and season.CITIES[code]["country_code"] == "RU":
         numeric = report(code, month, year, today)["score"]
-    display = f"{number(numeric)}<small>/10</small>" if numeric is not None else f"{value} из 4"
+    display = f"{numeric:.1f}".replace(".", ",") + "<small>/10</small>" if numeric is not None else f"{value} из 4"
+    label = "Рейтинг города" if numeric is not None else "Данные о городе"
+    meaning = f"{numeric:.1f} из 10".replace(".", ",") if numeric is not None else f"{value} из 4 показателей"
+    aria = esc(f'{label} {season.CITIES[code]["city"]}, {meaning}')
     year_attr = f' data-rating-year="{year}"' if year is not None else ""
     href = season.link(code, month, origin, year=year) + "#city-rating"
     return (f'<a class="city-rating" data-rating-city="{esc(code)}" data-rating-month="{month}"{year_attr} '
-            f'data-rating-name="{esc(season.CITIES[code]["city"])}" href="{esc(href)}">'
-            '<svg class="icon" aria-hidden="true"><use href="/icons.svg#plane"></use></svg>'
-            '<span class="city-rating-label">Рейтинг города</span>'
-            f'<span class="city-rating-value">{display}</span>'
-            '<svg class="icon" aria-hidden="true"><use href="/icons.svg#chevron-down"></use></svg></a>')
+            f'data-rating-name="{esc(season.CITIES[code]["city"])}" aria-label="{aria}" href="{esc(href)}">'
+            f'<span class="city-rating-label">{label}</span><span class="city-rating-value">{display}</span></a>')
 
 
 def city_comparison_html(data, today, origin, other_month):
@@ -456,15 +484,26 @@ def report_html(data, today, origin, other_month):
                       f'<div class="rating-comparison-scroll"><table><caption id="rating-comparison">Стоимость одной корзины · {esc(cost["comparison_period"])}</caption>'
                       '<thead><tr><th scope="col">Город</th><th scope="col">2 ночи</th><th scope="col">4 обеда</th><th scope="col">4 поездки</th><th scope="col">Итого</th></tr></thead>'
                       f'<tbody>{items}</tbody></table></div></details>')
-    verdict = (f'Общий балл {number(data["score"])}/10 · 4 из 4 показателей' if data["score"] is not None
-               else f'Показателей с оценкой: {data["available"]} из 4')
     rows = "".join(row(c) for c in data["components"])
+    cells = []
+    for c in data["components"]:
+        score = f'{c["score"]:.1f}'.replace(".", ",") if c["score"] is not None else "—"
+        cells.append(f'<tr><th scope="row">{esc(c["label"])}<small>{esc(c["fact"])}</small></th>'
+                     f'<td>{score}</td><td>{c["weight"]}%</td></tr>')
+    numeric = data["score"]
+    value = f"{numeric:.1f}".replace(".", ",") + "<small>/10</small>" if numeric is not None else f'{data["available"]} из 4'
+    formula = (" + ".join(f'{c["score"]:.1f} × {c["weight"]}%'.replace(".", ",") for c in data["components"])
+               + f' ≈ {numeric:.1f}.'.replace(".", ",")) if numeric is not None else ""
     return (f'<section class="season-method city-rating-report" id="city-rating"><h2>Рейтинг города</h2>'
-            f'<p>{esc(data["city"])} · {MONTH_NAMES[data["month"] - 1].lower()} {data["year"]} · {verdict}</p>'
-            + city_comparison_html(data, today, origin, other_month)
-            + '<details open><summary>Из чего складывается балл</summary><p>Оценка для поездки на выходные. '
-            'Каждый показатель оцениваем от 0 до 10. Общий балл публикуем, когда собраны все четыре.</p>'
-            + (f'<p>{esc(data["notice"])}</p>' if data["notice"] else "") + f'<dl>{rows}</dl></details>{comparison}</section>')
+            f'<p>{esc(data["city"])} · {MONTH_NAMES[data["month"] - 1].lower()} {data["year"]}</p>'
+            f'<div class="rating-lead"><strong>{value}</strong><span>{esc(data["notice"] or data["verdict"])}</span></div>'
+            '<div class="city-rating-criteria"><table><thead><tr><th scope="col">Показатель</th>'
+            '<th scope="col">Балл /10</th><th scope="col">Вес</th></tr></thead>'
+            f'<tbody>{"".join(cells)}</tbody></table></div>'
+            '<details class="rating-evidence"><summary>Источники и расчёт</summary>'
+            '<p>Умножаем баллы на веса, складываем и округляем результат до десятых. '
+            f'{esc(formula)}</p><dl>{rows}</dl></details>{comparison}'
+            + city_comparison_html(data, today, origin, other_month) + '</section>')
 
 
 EVIDENCE = load_snapshot("city_rating_evidence.json")

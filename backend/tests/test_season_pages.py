@@ -50,3 +50,19 @@ def test_season_pages_serve_without_fare_requests():
             in client.get("/season/DXB?month=7&mode=quiet").text
         )
         assert 'id="seasonValue">—' in client.get("/season/DXB?month=1&mode=trip").text
+
+
+def test_rating_directory_search_filters_and_month_links():
+    with TestClient(create_app(now=lambda: datetime(2026, 11, 18, tzinfo=UTC))) as client:
+        cities = client.get("/season/", params={"q": "Питер", "month": 12}).text
+        assert cities.index('data-rating-city="LED"') < cities.index("Питерборо")
+        moscow = client.get("/season/?q=SVO&month=12&full=1").text
+        assert 'data-rating-city="MOW"' in moscow and '6,5<small>/10' in moscow
+        partial = client.get("/season/?q=SAW&month=12").text
+        assert 'data-rating-city="IST"' in partial and '3 из 4' in partial
+        assert 'data-rating-city="IST"' not in client.get("/season/?q=SAW&month=12&full=1").text
+        assert 'data-rating-year="2027"' in client.get("/season/?q=KZN&month=1").text
+        assert "Город не найден" in client.get("/season/?q=KZN&month=1&full=1").text
+        first = client.get("/season/?month=12").text
+        following = client.get("/season/?month=12&page=2").text
+        assert "Дальше" in first and "Назад" in following and 'data-rating-city="LED"' not in following
