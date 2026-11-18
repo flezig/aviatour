@@ -90,10 +90,14 @@ function sources(items) {
   return '<ul>' + links.map(item => `<li><a href="${esc(item.url)}">${esc(item.label)}</a>${item.note ? ' — ' + esc(item.note) : ''}</li>`).join('') + '</ul>';
 }
 
+function verdict(report) {
+  return report.notice || report.verdict || (hasScore(report)
+    ? 'Все четыре показателя вошли в оценку.' : 'Для общей оценки нужны все четыре показателя.');
+}
 function summary(report) {
-  const rows = report.components.map(item => `<tr><th scope="row">${esc(item.label)}<small>${esc(item.fact)}</small></th>
+  const rows = report.components.map(item => `<tr><th scope="row">${esc(item.label)}<small>${esc(item.fact || item.budget_label || item.gap || item.missing[0] || item.detail)}</small></th>
     <td>${Number.isFinite(item.score) ? scoreFormat.format(item.score) : '—'}</td><td>${esc(item.weight)}%</td></tr>`).join('');
-  return `<div class="rating-lead"><strong>${scoreValue(report)}</strong><p>${esc(report.notice || report.verdict)}</p></div>
+  return `<div class="rating-lead"><strong>${scoreValue(report)}</strong><p>${esc(verdict(report))}</p></div>
     <div class="city-rating-criteria"><table><thead><tr><th scope="col">Показатель</th><th scope="col">Балл /10</th>
     <th scope="col">Вес</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }
@@ -104,7 +108,7 @@ function evidence(report, pageUrl) {
   const formula = hasScore(report) ? report.components.map(item => scoreFormat.format(item.score) + ' × ' + item.weight + '%').join(' + ')
     + ' ≈ ' + scoreFormat.format(report.score) + '.' : '';
   return `<div class="rating-document" tabindex="0" aria-label="Расчёт и список источников"><h3>Общая оценка</h3>
-    <p>${hasScore(report) ? 'Умножаем баллы на веса, складываем и округляем результат до десятых. ' + formula : esc(report.notice || report.verdict)}</p>`
+    <p>${hasScore(report) ? 'Умножаем баллы на веса, складываем и округляем результат до десятых. ' + formula : esc(verdict(report))}</p>`
     + report.components.map(item => `<section><h3>${esc(item.label)} · ${esc(item.weight)}%</h3><p>${esc(item.detail)}</p>
       ${item.missing.length ? `<p><b>Чего не хватает.</b> ${esc(item.missing.join(' '))}</p>` : ''}
       ${item.trip_detail ? `<p><b>Цены на конкретные выходные.</b> ${esc(item.trip_detail)}</p>` : ''}
