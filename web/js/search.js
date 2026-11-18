@@ -682,10 +682,9 @@ function renderForm() {
   const city = q.originCity ?? state.byIata.get(q.origin)?.city_code;
   const from = state.fromNames.get(city);
   $('originTitle').innerHTML = `${from ? `из&nbsp;${esc(from)}` : `из&nbsp;города ${esc(state.labels.origin.split(' · ')[0])}`}${icon('chevron-down')}`;
-  $('destinationLabel').textContent = state.labels.destination ?? (CITY_REGIONS.has(q.region) ? 'Все основные города' : 'Любой город');
-  $('destinationClear').hidden = !q.destination;
-  $('region').value = q.region;
-  $('regionHint').hidden = !CITY_REGIONS.has(q.region);
+  $('destinationLabel').textContent = state.labels.destination ?? REGIONS[q.region];
+  $('regionHint').hidden = Boolean(q.destination) || !CITY_REGIONS.has(q.region);
+  $('searchAction').textContent = q.destination ? 'Найти билеты' : 'Показать направления';
   document.querySelector(`input[name="dateMode"][value="${q.exact ? 'exact' : 'month'}"]`).checked = true;
   $('monthFields').hidden = q.exact;
   $('exactFields').hidden = !q.exact;
@@ -811,14 +810,18 @@ function airportLabel(iata, cityCode) {
 const matchesText = (text, term) => text.toLocaleLowerCase('ru').replaceAll('ё', 'е').includes(term);
 function renderPicker() {
   const list = $('pickerList');
-  if (!state.cities) { list.innerHTML = '<p class="picker-note">Загружаем аэропорты…</p>'; return; }
   const term = $('pickerInput').value.trim().toLocaleLowerCase('ru').replaceAll('ё', 'е');
   const origin = state.pickerTarget === 'origin';
+  $('pickerRegions').hidden = origin || Boolean(term);
+  if (!state.cities) {
+    list.innerHTML = airportRequest ? '<p class="picker-note">Загружаем аэропорты…</p>'
+      : '<p class="picker-note">Не удалось загрузить аэропорты.</p><button class="btn-inline" type="button" data-retry-airports>Повторить</button>';
+    return;
+  }
   const current = origin ? state.query.origin : state.query.destination;
   const allAirports = origin ? state.query.originCity : state.query.destinationCity;
   const currentCity = allAirports ?? state.byIata.get(current)?.city_code;
-  const region = origin ? 'any' : state.query.region;
-  let cities = [...state.cities.values()].filter(city => inRegion(region, city.countryCode));
+  let cities = [...state.cities.values()];
   const cityMatch = city => matchesText(city.name, term) || matchesText(city.id, term);
   const airportMatch = a => matchesText(a.name, term) || matchesText(a.iata, term);
   if (term) {
@@ -827,6 +830,8 @@ function renderPicker() {
     cities = cities.filter(c => cityMatch(c) || c.airports.some(airportMatch))
       .sort((a, b) => rank(a) - rank(b) || a.name.localeCompare(b.name, 'ru')).slice(0, 40);
   } else {
+    const region = origin ? 'any' : state.query.region;
+    cities = cities.filter(city => inRegion(region, city.countryCode));
     const order = [...new Set([currentCity, ...POPULAR])];
     const popular = order.map(id => state.cities.get(id)).filter(c => c && inRegion(region, c.countryCode));
     cities = popular.length ? popular : cities.sort((a,b) => a.name.localeCompare(b.name, 'ru')).slice(0, 40);
@@ -846,15 +851,27 @@ function renderPicker() {
   list.innerHTML = groups.length ? `<p class="picker-section">${term ? 'Результаты поиска' : 'Города и аэропорты'}</p>` + groups.join('')
     : '<p class="picker-note">Ничего не найдено. Введите другое название или трёхбуквенный код.</p>';
 }
-async function openPicker(target) {
+async function loadPickerCities() {
+  const request = loadAirports();
+  renderPicker();
+  try { await request; } catch { /* renderPicker offers a retry while keeping region choices available. */ }
+  if ($('picker').open) renderPicker();
+}
+function openPicker(target) {
   state.pickerTarget = target;
+  $('picker').classList.toggle('destination-picker', target === 'destination');
   $('pickerTitle').textContent = target === 'origin' ? 'Откуда вылетаете?' : 'Куда летите?';
   $('pickerInput').value = '';
-  renderPicker();
+  if (target === 'destination') {
+    $('pickerRegions').innerHTML = Object.entries(REGIONS).map(([key, label]) => {
+      const selected = !state.query.destination && key === state.query.region;
+      return `<button type="button" class="region-option" data-region="${key}"${selected ? ' aria-current="true"' : ''}>${esc(label)}${selected ? icon('check') : ''}</button>`;
+    }).join('');
+  }
   $('picker').showModal();
+  $('picker').querySelector('.sheet-body').scrollTop = 0;
   $('pickerInput').focus({ preventScroll: true });
-  try { await loadAirports(); if ($('picker').open) renderPicker(); }
-  catch { $('pickerList').innerHTML = '<p class="picker-note">Не удалось загрузить аэропорты.</p><button class="btn-inline" type="button" data-retry-airports>Повторить</button>'; }
+  loadPickerCities();
 }
 function choose(iata, cityCode) {
   const q = state.query;
@@ -864,6 +881,7 @@ function choose(iata, cityCode) {
     // Выбор запоминается: в следующий раз и на страницах городов цены будут из этого города.
     if (airport) saveOrigin({ code: airport.city_code, iata, all: Boolean(cityCode), name: airport.city, from: state.fromNames.get(airport.city_code) ?? null }, true);
   } else {
+    if (!inRegion(q.region, state.byIata.get(iata).country_code)) q.region = 'any';
     q.destination = iata; q.destinationCity = cityCode; state.labels.destination = airportLabel(iata, cityCode);
   }
   $('picker').close();
@@ -881,24 +899,32 @@ function showFavorites() {
 $('originPick').addEventListener('click', () => openPicker('origin'));
 $('originTitle').addEventListener('click', () => openPicker('origin'));
 $('destinationPick').addEventListener('click', () => openPicker('destination'));
-$('destinationClear').addEventListener('click', () => { Object.assign(state.query, { destination: null, destinationCity: null }); state.labels.destination = null; renderForm(); });
-for (const trigger of document.querySelectorAll('#originTitle, #originPick, #destinationPick, [data-field="origin"]')) {
+for (const trigger of document.querySelectorAll('#originTitle, #originPick, #destinationPick, [data-field="origin"], [data-field="destination"]')) {
   const preload = () => loadAirports().catch(() => {});
   trigger.addEventListener('pointerenter', preload, { once:true });
   trigger.addEventListener('focus', preload, { once:true });
 }
 $('pickerInput').addEventListener('input', renderPicker);
+$('pickerInput').addEventListener('keydown', (event) => {
+  if (event.key === 'Escape' && !event.isComposing) {
+    event.preventDefault();
+    $('picker').close();
+  }
+});
 $('pickerList').addEventListener('click', (event) => {
-  if (event.target.closest('[data-retry-airports]')) { openPicker(state.pickerTarget); return; }
+  if (event.target.closest('[data-retry-airports]')) { loadPickerCities(); return; }
   const row = event.target.closest('[data-iata]');
   if (row) choose(row.dataset.iata, row.dataset.city ?? null);
 });
-$('region').addEventListener('change', (event) => {
+$('pickerRegions').addEventListener('click', (event) => {
+  const option = event.target.closest('[data-region]');
+  if (!option) return;
   const q = state.query;
-  q.region = event.target.value;
-  if (q.destination && !inRegion(q.region, state.byIata.get(q.destination)?.country_code)) { q.destination = q.destinationCity = null; state.labels.destination = null; }
-  // Региональный поиск идёт по горстке городов; только выходные оставили бы почти ничего.
-  if (CITY_REGIONS.has(q.region)) q.weekend = false;
+  const region = option.dataset.region;
+  if (region !== q.region && CITY_REGIONS.has(region)) q.weekend = false;
+  Object.assign(q, { region, destination: null, destinationCity: null });
+  state.labels.destination = null;
+  $('picker').close();
   renderForm();
 });
 for (const input of document.querySelectorAll('input[name="dateMode"]')) input.addEventListener('change', () => { setExact(input.value === 'exact'); renderForm(); });
@@ -957,9 +983,9 @@ $('share').addEventListener('click', shareTrip);
 $('searchLine').addEventListener('click', (event) => {
   const field = event.target.closest('[data-field]')?.dataset.field;
   if (!field) return;
-  if (field === 'origin') { openPicker('origin'); return; }
+  if (field === 'origin' || field === 'destination') { openPicker(field); return; }
   collapseForm(false);
-  ({ region: $('region'), when: state.query.exact ? $('departureDate') : $('month'), budget: $('budget') })[field]?.focus();
+  ({ when: state.query.exact ? $('departureDate') : $('month'), budget: $('budget') })[field]?.focus();
 });
 $('showcase').addEventListener('click', (event) => {
   const level = event.target.closest('[data-level]');

@@ -98,7 +98,7 @@
       </button>
       <div class="search-line" id="searchLine">
         <button type="button" class="line-field" data-field="origin"><span class="label">Откуда</span><span class="line-value"><b class="code" id="lineCode">MOW</b> <span id="lineOrigin">Москва</span></span></button>
-        <button type="button" class="line-field" data-field="region"><span class="label">Куда</span><span class="line-value" id="lineTo">Куда угодно</span></button>
+        <button type="button" class="line-field" data-field="destination" aria-haspopup="dialog" aria-controls="picker"><span class="label">Куда</span><span class="line-value" id="lineTo">Куда угодно</span></button>
         <button type="button" class="line-field" data-field="when"><span class="label">Когда</span><span class="line-value" id="lineWhen"></span></button>
         <button type="button" class="line-field" data-field="budget"><span class="label">Бюджет на билеты</span><span class="line-value" id="lineBudget">до 25 000 ₽</span></button>
       </div>
@@ -111,22 +111,11 @@
         </div>
 
         <div class="field-group">
-          <label class="label" for="region">Куда</label>
-          <select class="menu" id="region">
-            <option value="any">Куда угодно</option>
-            <option value="russia">По России</option>
-            <option value="europe">Поездка в Европу</option>
-            <option value="usa">Поездка в США</option>
-          </select>
-          <p class="caption" id="regionHint" hidden>Поиск по основным городам. Можно выбрать конкретный город ниже.</p>
-          <div class="pick-row">
-            <button type="button" class="pick" id="destinationPick">
-              <span class="pick-text"><span class="label">Город</span><span class="pick-value" id="destinationLabel">Любой город</span></span>
-            </button>
-            <button type="button" class="icon-button" id="destinationClear" aria-label="Искать все направления" hidden>
-              <svg class="icon" aria-hidden="true"><use href="#ui-close"></use></svg>
-            </button>
-          </div>
+          <button type="button" class="pick" id="destinationPick" aria-haspopup="dialog" aria-controls="picker">
+            <span class="pick-text"><span class="label">Куда</span><span class="pick-value" id="destinationLabel">Куда угодно</span></span>
+            <svg class="icon" aria-hidden="true"><use href="#ui-chevron-down"></use></svg>
+          </button>
+          <p class="caption" id="regionHint" hidden>Поиск по основным городам региона.</p>
         </div>
 
         <div class="field-group">
@@ -158,7 +147,7 @@
           <label class="toggle"><span>Только прямые рейсы</span><input type="checkbox" class="switch" id="directOnly"></label>
         </div>
       </div>
-      <button class="btn-primary search-go" type="submit" id="searchButton"><svg class="icon" aria-hidden="true"><use href="#ui-search"></use></svg>Найти</button>
+      <button class="btn-primary search-go" type="submit" id="searchButton"><svg class="icon" aria-hidden="true"><use href="#ui-search"></use></svg><span id="searchAction">Показать направления</span></button>
     </form>
 
     <div class="showcase" id="showcase" hidden></div>
@@ -189,6 +178,7 @@
     </div>
     <div class="sheet-body">
       <div class="picker-search"><label class="picker-input"><svg class="icon" aria-hidden="true"><use href="#ui-search"></use></svg><input type="search" id="pickerInput" placeholder="Город, аэропорт или код" aria-label="Название города, аэропорта или код IATA" autocomplete="off" autofocus></label></div>
+      <div id="pickerRegions" class="picker-regions" role="group" aria-label="Направления" hidden></div>
       <div class="picker-list" id="pickerList"></div>
     </div>
   </dialog>

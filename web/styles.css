@@ -151,7 +151,6 @@ img { display: block; max-width: 100%; }
 .pick { display: flex; align-items: center; gap: var(--s-2); width: 100%; min-height: var(--tap); text-align: left; }
 .pick-text { display: grid; flex: 1; min-width: 0; }
 .pick-value { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.pick-row { display: flex; align-items: center; gap: var(--s-2); }
 .menu { width: 100%; min-height: var(--tap); padding: 0 36px 0 var(--s-3); border: 1px solid var(--line); border-radius: var(--r-chip); background: var(--card) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230f1b3d' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M7 10l5 5 5-5'/%3E%3C/svg%3E") no-repeat right 10px center / 18px; appearance: none; font-weight: 600; font-size: var(--fs-small); }
 .menu--plain { width: auto; }
 .segmented { display: grid; grid-template-columns: 1fr 1fr; padding: 3px; gap: var(--s-1); margin-bottom: var(--s-1); background: var(--fill); border-radius: var(--r-chip); }
@@ -483,6 +482,22 @@ img { display: block; max-width: 100%; }
 .airport-group summary { padding: 11px 12px 11px 46px; min-height: var(--tap); cursor: pointer; color: var(--cobalt); font-size: var(--fs-cap); }
 .airport-group .airport-option { padding-left: 30px; }
 .picker-list { padding: 0 var(--s-4) var(--s-5); }
+.picker-regions { padding: 0 var(--s-4) var(--s-2); }
+.region-option { display: flex; align-items: center; justify-content: space-between; width: 100%; min-height: var(--tap); padding: var(--s-2) var(--s-3); border-radius: var(--r-chip); text-align: left; }
+.region-option:hover { background: var(--fill); }
+.region-option[aria-current] { color: var(--cobalt); background: var(--cobalt-soft); font-weight: 600; }
+@media (min-width: 900px) {
+  @supports (position-area: bottom span-right) {
+    [data-field="destination"], #destinationPick { anchor-name: --destination-field; }
+    .sheet.destination-picker {
+      position-anchor: --destination-field; position-area: bottom span-right; position-try-fallbacks: flip-block;
+      inset: auto; margin: var(--s-1) 0; align-self: start; justify-self: start;
+      width: 340px; max-height: min(430px, calc(100% - var(--s-2))); border: 1px solid var(--line); background: var(--card); border-radius: var(--r-field);
+    }
+    .destination-picker::backdrop { background: transparent; }
+    .destination-picker .picker-search { background: var(--card); }
+  }
+}
 .picker-note { padding: var(--s-5) 0; color: var(--ink-2); }
 
 /* --- Карточка поездки --- */
