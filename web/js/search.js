@@ -981,6 +981,7 @@ $('pickerRegions').addEventListener('click', (event) => {
   Object.assign(q, { region, destination: null, destinationCity: null });
   state.labels.destination = null;
   $('picker').close();
+  if (matchMedia('(max-width: 899px)').matches) collapseForm(false);
   renderForm();
 });
 for (const input of document.querySelectorAll('input[name="dateMode"]')) input.addEventListener('change', () => { setExact(input.value === 'exact'); renderForm(); });
