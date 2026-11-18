@@ -1,13 +1,13 @@
-# Europe means European destinations excluding Russia/Belarus; Turkey included.
-EUROPE_COUNTRIES = frozenset("AL AD AT BE BA BG HR CY CZ DK EE FI FR DE GR HU IS IE IT LV LI LT LU MT MD MC ME NL MK NO PL PT RO SM RS SK SI ES SE CH TR UA GB VA XK".split())
+import json
+from pathlib import Path
+
+
+DESTINATION_SCOPES = json.loads(Path(__file__).with_name('destination_scopes.json').read_text(encoding='utf-8'))
 REGION_CITIES = {
-    'europe': ('PAR', 'LON', 'ROM', 'MIL', 'BER', 'FRA', 'MUC', 'MAD', 'BCN', 'LIS', 'AMS', 'VIE', 'PRG', 'BUD', 'WAW', 'ATH', 'HEL', 'ZRH', 'CPH', 'STO', 'OSL', 'BEG', 'IST', 'LCA'),
-    'usa': ('NYC', 'LAX', 'SFO', 'CHI', 'MIA', 'WAS', 'BOS', 'LAS', 'SEA', 'ORL', 'HOU', 'DFW'),
+    region: tuple(scope['cities']) for region, scope in DESTINATION_SCOPES.items() if scope['cities']
 }
+_REGION_COUNTRIES = {region: frozenset(scope['countries']) for region, scope in DESTINATION_SCOPES.items()}
+
 
 def includes(region, country):
-    if region == 'any':
-        return True
-    if region in ('usa', 'russia'):
-        return country == ('US' if region == 'usa' else 'RU')
-    return country in EUROPE_COUNTRIES
+    return region == 'any' or country in _REGION_COUNTRIES.get(region, ())

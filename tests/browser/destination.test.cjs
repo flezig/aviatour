@@ -53,3 +53,39 @@ test('выбор региона, города и аэропорта в одно�
   assert.equal(await page.locator('#searchButton').innerText(), 'Показать направления');
   assert.deepEqual(await submit(), [null, null, null]);
 });
+
+test('на телефоне страна и город Тунис различимы, ссылка восстанавливает выбор', async (t) => {
+  const browser = await chromium.launch();
+  t.after(() => browser.close());
+  const page = await browser.newPage({ viewport: { width: 375, height: 667 }, isMobile: true, hasTouch: true });
+  const base = process.env.AVIATOR_TEST_URL ?? 'http://127.0.0.1:8000';
+  const airports = readFileSync(join(__dirname, '../../backend/app/airports.json'), 'utf8');
+  await page.route('**/api/v1/airports', route => route.fulfill({ contentType: 'application/json', body: airports }));
+  await page.route('**/api/v1/search/web?*', route => route.fulfill({ json: {
+    offers: [], incomplete: false, warnings: [], received_at: new Date().toISOString(),
+  } }));
+  await page.goto(base);
+  async function openDestination() {
+    if (!await page.locator('#destinationPick').isVisible()) await page.locator('#searchSummary').click();
+    await page.locator('#destinationPick').click();
+  }
+  await openDestination();
+  const menu = page.locator('#picker');
+  const input = menu.locator('#pickerInput');
+  assert.equal(await input.evaluate(el => el === document.activeElement), false);
+  await input.fill('Тунис');
+  await menu.getByText('Страны и регионы', { exact: true }).waitFor();
+  await menu.getByText('Города и аэропорты', { exact: true }).waitFor();
+  const city = menu.locator('[data-iata="TUN"]').first();
+  await city.waitFor();
+  await menu.locator('[data-region="tunisia"]').click();
+  const requested = page.waitForRequest(r => new URL(r.url()).pathname === '/api/v1/search/web');
+  await page.locator('#searchButton').click();
+  assert.equal(new URL((await requested).url()).searchParams.get('region'), 'tunisia');
+  await page.reload();
+  await openDestination();
+  await menu.locator('[data-region="tunisia"][aria-current]').waitFor();
+  await input.fill('Тунис');
+  await city.click();
+  assert.equal(await page.locator('#searchButton').innerText(), 'Найти билеты');
+});

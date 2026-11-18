@@ -11,7 +11,7 @@ from .errors import SearchError
 from .models import SearchResponse
 from .rules import normalize
 from .runtime import RateLimiter, TTLCache
-from .regions import REGION_CITIES
+from .regions import REGION_CITIES, includes
 from .catalog import AIRPORTS
 
 class Travelpayouts:
@@ -195,7 +195,11 @@ class Travelpayouts:
     async def search_region(self, request):
         # A bounded selection of popular cities, not a complete inventory of the region.
         cities = REGION_CITIES[request.region]
-        targets = {a['city_code']: a['iata'] for a in AIRPORTS if a['city_code'] in cities and a['timezone']}
+        targets = {
+            airport['city_code']: airport['iata']
+            for airport in AIRPORTS
+            if airport['city_code'] in cities and airport['timezone'] and includes(request.region, airport['country_code'])
+        }
         completed, errors = [], []
         async def fetch(city):
             async with self.region_slots:

@@ -144,14 +144,14 @@ def directory(catalog, month, query):
         f'<option value="{i}"{" selected" if i == month else ""}>{n}</option>'
         for i, n in enumerate(MONTH_NAMES, 1)
     )
-    body = f'''<header class="page-head"><h1>Сезонный рейтинг городов</h1><p>Выберите город и месяц, чтобы узнать, какая погода обычно бывает во время поездки.</p></header>
+    body = f'''<header class="page-head"><h1>Города по месяцам</h1></header>
 <form class="season-find" action="/season/"><label>Город или код аэропорта<input type="search" name="q" maxlength="100" value="{esc(query)}" placeholder="Например, Казань или DXB"></label>
-<label>Месяц<select name="month">{options}</select></label><button class="btn-inline" type="submit">Найти</button></form>
+<label>Месяц<select name="month">{options}</select></label><button class="btn-inline" type="submit">Найти город</button></form>
 <p><a href="/season/compare/">Сравнить города за ноябрь и декабрь 2026</a></p>
 <h2>{"Результаты поиска" if query else "Города"} · {MONTH_NAMES[month - 1].lower()}</h2><ul class="season-directory">{items}</ul>
 {("<p>Уточните название города, чтобы сузить список.</p>" if len(codes) > 60 else "") if codes else "<p>Такого города в справочнике пока нет.</p>"}'''
     return layout(
-        "Сезонный рейтинг городов",
+        "Города по месяцам",
         "Погода для прогулок, турпоток и цены по месяцам.",
         "/season/",
         [("Aviator", "/"), ("Города", "/city/"), ("Сезонный рейтинг", "/season/")],
@@ -236,17 +236,7 @@ def city_page(catalog, code, month, requested_mode, origin, rating, year, today,
         temp_label = f"{temp:+g}".replace(".", ",") + " °C"
         climate = f'''<article><h2>Погода днём</h2><strong>{temp_label}</strong><p>Средний дневной максимум. Осадки за месяц — {str(precip).replace(".", ",")} мм.</p>
         <small>1991–2020 · <a href="{esc(url)}">{esc(src)}</a></small></article>'''
-        note = (
-            "Обычно жарко для долгой прогулки."
-            if temp > 30
-            else "Днём часто нужна тёплая одежда."
-            if temp < 10
-            else "Обычно прохладно для долгой прогулки."
-            if temp < 16
-            else "Днём обычно тепло."
-        )
-        if precip >= 120:
-            note += " На этот месяц приходится много осадков."
+        note = f"Средний дневной максимум {temp_label}"
     else:
         climate = "<article><h2>Погода днём</h2><p>Для этого города пока нет полного климатического ряда.</p></article>"
         note = "Пока недостаточно данных для балла."

@@ -2,10 +2,14 @@ import asyncio
 from datetime import datetime, timezone
 from decimal import Decimal
 import json
+from pathlib import Path
+from zoneinfo import ZoneInfo
 import httpx
 import pytest
 from fastapi.testclient import TestClient
+from app.catalog import AIRPORTS
 from app.models import SearchRequest
+from app.regions import DESTINATION_SCOPES
 from app.rules import normalize, rubles_to_minor, safe_search_url
 from app.runtime import TTLCache, RateLimiter
 from app.settings import Settings
@@ -461,16 +465,70 @@ def test_exact_params_and_cache_separation():
         assert client.post('/api/v1/search', json=query | {'destination': 'DME', 'destination_city_code': 'MOW'}).status_code == 422
         assert client.post('/api/v1/search', json=query | {'departure_date': '2026-09-30', 'month': '2026-09'}).status_code == 422
 
-@pytest.mark.parametrize('region,airport,accepted', [('europe','CDG',True),('europe','JFK',False),('europe','LED',False),('usa','JFK',True),('usa','LAX',True),('usa','CDG',False)])
+@pytest.mark.parametrize('region,airport,accepted', [
+    ('europe', 'CDG', True), ('europe', 'JFK', False), ('europe', 'LED', False),
+    ('europe', 'IST', True), ('europe', 'LCA', True), ('europe', 'MSQ', False),
+    ('usa', 'JFK', True), ('usa', 'LAX', True), ('usa', 'CDG', False),
+    ('turkey', 'SAW', True), ('turkey', 'LCA', False),
+    ('egypt', 'HRG', True), ('egypt', 'IST', False),
+    ('tunisia', 'MIR', True), ('tunisia', 'CAI', False),
+    ('asia', 'DXB', True), ('asia', 'MNL', True), ('asia', 'JFK', False),
+])
 def test_region_country_filter(region, airport, accepted):
     row=record(); row['destination_airport']=airport
     assert (normalize(row,QUERY.model_copy(update={'region':region}),NOW) is not None) == accepted
 
 def test_region_invalid_value_and_destination():
-    with pytest.raises(ValueError): SearchRequest(origin='SVO',month='2026-10',region='asia')
+    with pytest.raises(ValueError): SearchRequest(origin='SVO',month='2026-10',region='antarctica')
     with TestClient(create_app(Settings(token='test'),now=lambda:NOW)) as client:
         response=client.post('/api/v1/search',json={'origin':'SVO','month':'2026-10','region':'usa','destination':'CDG'})
         assert response.status_code == 422
+
+def test_destination_scopes_match_web_schema_and_provider_catalog():
+    root = Path(__file__).resolve().parents[2]
+    module = root.joinpath('web/js/lib/destination-scopes.js').read_text(encoding='utf-8')
+    web_scopes = json.loads(module.split('export const DESTINATION_SCOPES = ', 1)[1].removesuffix(';\n'))
+    assert web_scopes == DESTINATION_SCOPES
+    assert list(web_scopes) == list(DESTINATION_SCOPES) == SearchRequest.model_json_schema()['properties']['region']['enum']
+    for scope in DESTINATION_SCOPES.values():
+        assert len(set(scope['cities'])) == len(scope['cities']) <= 24
+        for city in scope['cities']:
+            eligible = [
+                airport for airport in AIRPORTS
+                if airport['city_code'] == city and airport['country_code'] in scope['countries'] and airport['timezone']
+            ]
+            assert eligible, city
+            for airport in eligible:
+                ZoneInfo(airport['timezone'])
+
+
+@pytest.mark.parametrize('region,city,airport,country', [
+    ('turkey', 'IZM', 'ADB', 'TR'), ('egypt', 'CAI', 'SPX', 'EG'),
+    ('tunisia', 'DJE', 'DJE', 'TN'), ('asia', 'DXB', 'DWC', 'AE'),
+])
+def test_new_region_web_search_targets_and_country_filter(region, city, airport, country):
+    calls = []
+
+    def handler(request):
+        target = request.url.params['destination']
+        calls.append(target)
+        assert request.url.params['limit'] == '100'
+        rows = [
+            record() | {'price': 8500, 'destination': city, 'destination_airport': airport},
+            record() | {'price': 8500, 'destination': city, 'destination_airport': 'LED'},
+        ] if target == city else []
+        return httpx.Response(200, json={'success': True, 'data': rows})
+
+    transport = httpx.MockTransport(handler)
+    with TestClient(create_app(Settings(token='fixture'), transport=transport, now=lambda: NOW)) as client:
+        response = client.get('/api/v1/search/web', params={
+            'from': 'SVO', 'month': '2026-10', 'budget': 25000, 'weekend': '0', 'region': region,
+        })
+        assert response.status_code == 200
+        assert sorted(calls) == sorted(DESTINATION_SCOPES[region]['cities'])
+        body = response.json()
+        assert [(o['city_code'], o['destination_airport'], o['country_code']) for o in body['offers']] == [(city, airport, country)]
+        assert body['offers'][0]['received_at'] == '2026-10-01T09:00:00Z'
 
 def test_regional_search_targets_and_price_order():
     seen=[]
@@ -497,6 +555,25 @@ def test_regional_search_partial_failure_keeps_results():
         data=client.post('/api/v1/search',json={'origin':'SVO','month':'2026-10','region':'usa','weekend_only':False}).json()
         assert len(data['offers'])==1 and data['incomplete']
         assert len(data['warnings'])==2
+
+
+@pytest.mark.parametrize('failed', [False, True])
+def test_regional_search_distinguishes_empty_from_total_failure(failed):
+    def handler(request):
+        if failed:
+            return httpx.Response(401)
+        return httpx.Response(200, json={'success': True, 'data': []})
+
+    transport = httpx.MockTransport(handler)
+    with TestClient(create_app(Settings(token='fixture'), transport=transport, now=lambda: NOW)) as client:
+        response = client.get('/api/v1/search/web', params={
+            'from': 'SVO', 'month': '2026-10', 'budget': 25000, 'region': 'egypt',
+        })
+        if failed:
+            assert response.status_code == 502 and response.json()['error']['code'] == 'upstream_auth'
+        else:
+            assert response.status_code == 200 and response.json()['offers'] == []
+            assert len(response.json()['warnings']) == 1
 
 def test_regional_deadline_reports_timeout_without_results():
     async def handler(request):

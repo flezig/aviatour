@@ -10,11 +10,16 @@ import { priceLevel, usualKey, hotLine, leaveLine, levelNote, priceChange } from
 import { mountSky } from './lib/sky.js';
 import { flightLoader } from './lib/art.js';
 import { sticker, rowSticker } from './lib/stickers.js';
+import { DESTINATION_SCOPES } from './lib/destination-scopes.js';
 
-const EUROPE = new Set('AL AD AT BE BA BG HR CY CZ DK EE FI FR DE GR HU IS IE IT LV LI LT LU MT MD MC ME NL MK NO PL PT RO SM RS SK SI ES SE CH TR UA GB VA XK'.split(' '));
-const REGIONS = { any: 'Куда угодно', russia: 'По России', europe: 'Поездка в Европу', usa: 'Поездка в США' };
-// Регионы, которые ищутся по списку городов; остальные — одним поиском с отбором по стране.
-const CITY_REGIONS = new Set(['europe', 'usa']);
+const SCOPE_TERMS = {
+  russia: 'Россию России Россией',
+  turkey: 'Турцию Турции Турцией',
+  egypt: 'Египта Египте Египтом Египту',
+  tunisia: 'Туниса Тунисе Тунисом Тунису',
+  europe: 'Европу Европе Европой Европы',
+  asia: 'Азию Азии Азией',
+};
 // По умолчанию — поездки на 1–14 ночей: «туда и обратно в один день» и поездки на месяц в выдаче мешали. Предел 7 ночей — только в подборках:
 // в поиске он срезал половину городов (из Москвы на декабрь — 11 вместо 25).
 const LENGTHS = { any: '1–14 ночей', short: '1–2 ночи', mid: '3–4 ночи', week: '5–7 ночей', long: '8–14 ночей', more: 'Больше 14 ночей', day: 'В тот же день', all: 'Любая длина' };
@@ -45,7 +50,6 @@ const afterTicket = variant('afterTicket');
 const testVariant = (config.experiments?.home ? homeVariant.toLowerCase() : '')
   + (config.experiments?.afterTicket ? 'p' + afterTicket.toLowerCase() : '');
 if (config.experiments?.afterTicket) goal('trip_variant', { variant: afterTicket });
-const inRegion = (region, country) => region === 'any' || (region === 'usa' ? country === 'US' : region === 'russia' ? country === 'RU' : EUROPE.has(country));
 
 // --- состояние ---
 const state = {
@@ -100,7 +104,7 @@ function accepts(offer) {
   if (x.dep <= Date.now()) return false;
   if (f.direct && !x.direct) return false;
   if (f.cheap && offer.price_minor > 2000000) return false;
-  if (f.russia && offer.country_code !== 'RU') return false;
+  if (f.russia && (state.view === 'collection' || state.performed?.region === 'any') && offer.country_code !== 'RU') return false;
   // Удобное время: оба вылета с 06:00 до 22:59 местного. В пути до 3 ч: каждое плечо известно и не дольше трёх часов.
   if (f.comfy && (x.out.hour < 6 || x.out.hour > 22 || x.back.hour < 6 || x.back.hour > 22)) return false;
   if (f.near && !(offer.duration_to > 0 && offer.duration_to <= 180 && offer.duration_back > 0 && offer.duration_back <= 180)) return false;
@@ -204,6 +208,7 @@ const handoff = (offer) => partnerLink(offer.search_url, { kind: 'tickets', city
 // Цена часа — до рубля: копейки здесь только шумят.
 const hourCost = (x) => fmtMoney(Math.round(x.cost / 100) * 100);
 const receivedLabel = (iso) => { const date = new Date(iso); return `${fmtDay(date, localZone)}, ${fmtTime(date, localZone)}`; };
+const cachedPriceLabel = iso => 'Цены из кеша Aviasales' + (iso ? ` · получены ${receivedLabel(iso)}` : '');
 
 const favButton = (offer) => `<button type="button" class="fav" data-fav="${esc(offer.id)}" aria-pressed="${state.favs.has(offer.id)}" aria-label="В избранное: ${esc(offer.city)}">${icon('heart')}</button>`;
 // Карточка отвечает на три вопроса: куда, сколько, когда. Время рейсов и подробности — в карточке поездки.
@@ -314,9 +319,11 @@ function renderResults() {
     body = statusPanel('offline', 'Нет связи', 'Не удалось связаться с сервером. Проверьте подключение.') + `<div class="status-actions">${action('retry', 'Повторить поиск')}</div>`;
     announce('Нет связи с сервером');
   } else {
-    const offers = visibleOffers(collection ? rowOffers(collection) : undefined), active = Object.values(state.filters).some(Boolean) || state.length !== 'any';
+    const offers = visibleOffers(collection ? rowOffers(collection) : undefined);
+    const filters = Object.entries(state.filters).filter(([name]) => name !== 'russia' || q.region === 'any');
+    const active = filters.some(([, on]) => on) || state.length !== 'any';
     // «Один вариант на город» ничего не прячет целиком, поэтому пустую выдачу объясняют только остальные фильтры.
-    const hiding = Object.entries(state.filters).some(([name, on]) => on && name !== 'unique') || state.length !== 'any';
+    const hiding = filters.some(([name, on]) => on && name !== 'unique') || state.length !== 'any';
     state.shown = new Map(offers.map((offer) => [offer.id, offer]));
     title = collection ? `${collection.title} · ${countLabel(offers.length)}` : countLabel(offers.length);
     announce(offers.length ? `Найдено: ${countLabel(offers.length)}` : 'Подходящих вариантов нет');
@@ -325,19 +332,20 @@ function renderResults() {
       .map(([name, title]) => `<button type="button" class="chip" data-chip="${name}" aria-pressed="${state.filters[name]}">${title}</button>`).join('');
     const menu = (id, label, options, value) => `<select class="menu menu--plain" id="${id}" aria-label="${label}">${Object.entries(options).map(([name, title]) => `<option value="${name}" ${value === name ? 'selected' : ''}>${title}</option>`).join('')}</select>`;
     tools = `<div class="sort-menus">${menu('sort', 'Сортировка', SORTS, state.sort)}${menu('length', 'Длительность поездки', LENGTHS, state.length)}</div>`;
-    body = collection ? `<p class="source">${esc(collection.hint)}. Цены Aviasales на ${esc(receivedLabel(state.home.received_at))} · туда и обратно на одного · <a href="/how-we-count.html#home">Как мы считаем</a></p>`
-      : `<p class="source"><span class="summary">${esc(state.performedLabel)}. </span>Цены Aviasales на ${esc(receivedLabel(state.result.received_at ?? new Date().toISOString()))} · туда и обратно на одного · <a href="/how-we-count.html">Как мы считаем</a></p>`;
+    body = collection ? `<p class="source">${esc(collection.hint)}. ${esc(cachedPriceLabel(state.home.received_at))} · туда и обратно на одного · <a href="/how-we-count.html#home">Как мы считаем</a></p>`
+      : `<p class="source"><span class="summary">${esc(state.performedLabel)}. </span>${esc(cachedPriceLabel(state.result.received_at))} · туда и обратно на одного · <a href="/how-we-count.html">Как мы считаем</a></p>`;
     body += `
       <div class="chips" role="group" aria-label="Быстрые фильтры">${chips}</div>
       ${state.sort === 'flightRating' ? '<p class="caption">Оценка перелёта — цена и дорога, 0–100. Варианты без оценки идут в конце.</p>' : ''}
       ${state.sort === 'stay' || state.sort === 'value' ? '<p class="caption">Время на месте — от расчётного прилёта до обратного вылета, включая ночи.</p>' : ''}
-      ${!collection && state.result.incomplete ? `<p class="caption">Источник вернул часть вариантов, выдача может быть неполной.</p>${state.result.warnings.map((text) => `<p class="caption">${esc(text)}</p>`).join('')}` : ''}`;
+      ${!collection && state.result.incomplete ? (state.result.warnings?.length ? state.result.warnings : ['Удалось проверить только часть вариантов.']).map(text => `<p class="caption">${esc(text)}</p>`).join('') : ''}`;
     if (!offers.length) {
-      if (hiding || collection) {
+      if (collection || (hiding && state.result.offers.length)) {
         body += statusPanel('send', 'Пока без вариантов', 'Фильтры скрыли все найденные варианты. Сбросьте их, чтобы увидеть результаты поиска.')
           + `<div class="status-actions">${action('resetFilters', 'Сбросить фильтры')}</div>`;
       } else {
-        body += statusPanel('send', 'Пока без вариантов', 'В найденных ценах нет поездок под эти даты и бюджет. Это не значит, что билетов нет. Увеличьте бюджет или выберите другой месяц.' + (q.direct ? ' Или разрешите пересадки.' : ''))
+        const message = state.result.offers.length ? 'Попробуйте изменить длительность поездки.' : 'Среди проверенных городов предложений не найдено';
+        body += statusPanel('send', 'Пока без вариантов', message)
           + `<div class="status-actions">
             ${(state.result?.offers ?? []).some((offer) => facts(offer).dep > Date.now() && !FITS.any(facts(offer).days)) ? action('allLengths', 'Показать поездки любой длины') : ''}
             ${!q.exact && q.weekend ? action('allTrips', 'Показать не только короткие выходные') : ''}
@@ -422,7 +430,7 @@ function openDetail(offer) {
       </div>
       <div class="pass-stub">
         <p class="pass-price">${esc(fmtMoney(offer.price_minor))}</p>
-        <p class="caption">билеты туда и обратно на одного · цена Aviasales на ${esc(receivedLabel(offer.received_at))} · <a href="/how-we-count.html">как мы считаем</a></p>
+        <p class="caption">Билеты туда и обратно на одного · ${esc(cachedPriceLabel(offer.received_at))} · <a href="/how-we-count.html">Как мы считаем</a></p>
         ${level ? `<p class="caption level-line level-line--${level.kind}">${esc(levelNote({ ...level, usualText: fmtMoney(level.usual) }))}</p>` : ''}
       </div>
     </article>
@@ -520,7 +528,7 @@ function toggleLevel(button) {
 const tripLabel = offer => `${offer.city}: ${fmtMoney(offer.price_minor)}, ${fmtRange(facts(offer).dep, facts(offer).ret, offer.origin_timezone, offer.destination_timezone)}`;
 const openButton = (offer, row) => `<button type="button" class="tile-open" data-open="${esc(offer.id)}" data-row="${esc(row)}" aria-label="${esc(tripLabel(offer))}"></button>`;
 
-// «Горячие билеты» — посадочные талоны: коды, даты, цена и почему она горячая.
+// Ближайшие вылеты показываем как посадочные талоны с датами и сравнением цены.
 function passTile(offer, row) {
   const x = facts(offer), level = levelOf(offer);
   return `<article class="tile tile--pass"><div class="pass">
@@ -597,7 +605,7 @@ function renderShowcase() {
     return rowSection(row.key, row.title, row.hint, tiles, `<button type="button" class="row-all" data-row-all="${esc(row.key)}">Все · ${offers.length}${icon('arrow-right')}</button>`, row.kind === 'pass', rowSticker(row));
   }).join('');
   section.innerHTML = recentRow() + (rows ? rows + (hidden > 0 ? `<button type="button" class="btn-inline more-rows" data-more-rows>Ещё подборки · ${hidden}</button>` : '') : statusPanel('send', 'Подборок пока нет', 'Для этого города вылета не нашлось поездок на ближайшие недели. Попробуйте поиск в форме выше.'))
-    + `<p class="source">Цены Aviasales на ${esc(receivedLabel(state.home.received_at))} · туда и обратно на одного · <a href="/how-we-count.html#home">Как мы считаем подборки</a></p>`;
+    + `<p class="source">${esc(cachedPriceLabel(state.home.received_at))} · туда и обратно на одного · <a href="/how-we-count.html#home">Как мы считаем подборки</a></p>`;
   $('resultsStatus').textContent = 'Подборки загружены';
 }
 const homeWaiters = [];
@@ -618,7 +626,10 @@ async function loadHome() {
     const data = response.ok ? await response.json() : null;
     if (controller.signal.aborted) return;
     if (!Array.isArray(data?.rows)) throw new Error('home');
-    state.home = { ...data, offers: new Map(Object.entries(data.offers)) };
+    const rows = data.rows.map(row => row.key === 'hot'
+      ? { ...row, title: 'Ближайшие вылеты', hint: 'Вылет через 1–14 дней, цена минимум на 20 % ниже обычной' }
+      : row);
+    state.home = { ...data, rows, offers: new Map(Object.entries(data.offers)) };
     state.homeStatus = 'done';
   } catch { if (controller.signal.aborted) return; state.homeStatus = 'error'; state.home = null; }
   if (state.view === 'showcase') renderShowcase();
@@ -684,8 +695,7 @@ function renderForm() {
   const city = q.originCity ?? state.byIata.get(q.origin)?.city_code;
   const from = state.fromNames.get(city);
   $('originTitle').innerHTML = `${from ? `из&nbsp;${esc(from)}` : `из&nbsp;города ${esc(state.labels.origin.split(' · ')[0])}`}${icon('chevron-down')}`;
-  $('destinationLabel').textContent = state.labels.destination ?? REGIONS[q.region];
-  $('regionHint').hidden = Boolean(q.destination) || !CITY_REGIONS.has(q.region);
+  $('destinationLabel').textContent = state.labels.destination ?? DESTINATION_SCOPES[q.region].label;
   $('searchAction').textContent = q.destination ? 'Найти билеты' : 'Показать направления';
   document.querySelector(`input[name="dateMode"][value="${q.exact ? 'exact' : 'month'}"]`).checked = true;
   $('monthFields').hidden = q.exact;
@@ -732,7 +742,7 @@ function summary(q) {
   const day = (key) => fmtDay(new Date(key + 'T00:00:00Z'), 'UTC');
   const dates = q.exact ? `${day(q.departure)} – ${day(q.returning)}` : monthLabel(q.month);
   // Свёрнутая форма: код города вылета, куда и когда — как на талоне.
-  return { code: q.originCity ?? q.origin, route: state.labels.destination ?? REGIONS[q.region], details: `${dates} · до ${fmtMoney(q.budget * 100)}` };
+  return { code: q.originCity ?? q.origin, route: state.labels.destination ?? DESTINATION_SCOPES[q.region].label, details: `${dates} · до ${fmtMoney(q.budget * 100)}` };
 }
 // Телефон: когда пошёл поиск, форма сворачивается в строку, чтобы первые карточки были на первом экране.
 // Класс меняет раскладку только уже 900 px; на широком экране форма видна целиком.
@@ -759,7 +769,7 @@ async function search({ scroll = true, auto = false } = {}) {
   request?.abort();
   request = new AbortController();
   const q = { ...state.query }, signal = request.signal, label = summary(q), fromShowcase = state.view === 'showcase' || state.view === 'collection';
-  Object.assign(state, { performed: q, performedLabels: { ...state.labels }, performedSummary: label, performedLabel: `${state.labels.origin} → ${state.labels.destination ?? REGIONS[q.region]} · ${label.details}`, status: 'loading', page: 1, view: 'results' });
+  Object.assign(state, { performed: q, performedLabels: { ...state.labels }, performedSummary: label, performedLabel: `${state.labels.origin} → ${label.route} · ${label.details}`, status: 'loading', page: 1, view: 'results' });
   if (!auto) {
     history[fromShowcase ? 'pushState' : 'replaceState'](null, '', '?' + toParams(q));
     goal('search', { from: q.originCity ?? q.origin, region: q.region });
@@ -800,7 +810,7 @@ async function fetchAirports() {
   state.cities = new Map();
   for (const airport of state.airports) {
     state.byIata.set(airport.iata, airport);
-    if (!state.cities.has(airport.city_code)) state.cities.set(airport.city_code, { id: airport.city_code, name: airport.city, country: airport.country, countryCode: airport.country_code, airports: [] });
+    if (!state.cities.has(airport.city_code)) state.cities.set(airport.city_code, { id: airport.city_code, name: airport.city, country: airport.country, airports: [] });
     state.cities.get(airport.city_code).airports.push(airport);
   }
 }
@@ -810,11 +820,27 @@ function airportLabel(iata, cityCode) {
   return cityCode ? `${airport.city} · все аэропорты` : `${airport.city} · ${airport.iata}`;
 }
 const matchesText = (text, term) => text.toLocaleLowerCase('ru').replaceAll('ё', 'е').includes(term);
+function renderScopeCoverage() {
+  $('pickerScopeCities').innerHTML = Object.values(DESTINATION_SCOPES)
+    .filter(({ cities }) => cities.length)
+    .map(({ label, cities }) => `<div><dt>${esc(label)}</dt><dd>${esc(cities.map(code => state.cities?.get(code)?.name ?? code).join(', '))}</dd></div>`)
+    .join('');
+}
 function renderPicker() {
   const list = $('pickerList');
   const term = $('pickerInput').value.trim().toLocaleLowerCase('ru').replaceAll('ё', 'е');
   const origin = state.pickerTarget === 'origin';
-  $('pickerRegions').hidden = origin || Boolean(term);
+  if (!origin) {
+    for (const option of $('pickerRegions').querySelectorAll('[data-region]')) {
+      const { region } = option.dataset;
+      option.hidden = !matchesText(DESTINATION_SCOPES[region].label, term) && !matchesText(SCOPE_TERMS[region] ?? '', term);
+    }
+  }
+  const matchedScope = !origin && Boolean($('pickerRegions').querySelector('[data-region]:not([hidden])'));
+  $('pickerScopeHeading').hidden = !term || !matchedScope;
+  $('pickerRegions').hidden = !matchedScope;
+  $('pickerRegions').classList.toggle('scope-matches', Boolean(term));
+  $('pickerCoverage').hidden = origin || Boolean(term);
   if (!state.cities) {
     list.innerHTML = airportRequest ? '<p class="picker-note">Загружаем аэропорты…</p>'
       : '<p class="picker-note">Не удалось загрузить аэропорты.</p><button class="btn-inline" type="button" data-retry-airports>Повторить</button>';
@@ -823,7 +849,8 @@ function renderPicker() {
   const current = origin ? state.query.origin : state.query.destination;
   const allAirports = origin ? state.query.originCity : state.query.destinationCity;
   const currentCity = allAirports ?? state.byIata.get(current)?.city_code;
-  let cities = [...state.cities.values()];
+  const fromCity = state.query.originCity ?? state.byIata.get(state.query.origin)?.city_code;
+  let cities = [...state.cities.values()].filter(city => origin || city.id !== fromCity);
   const cityMatch = city => matchesText(city.name, term) || matchesText(city.id, term);
   const airportMatch = a => matchesText(a.name, term) || matchesText(a.iata, term);
   if (term) {
@@ -832,10 +859,11 @@ function renderPicker() {
     cities = cities.filter(c => cityMatch(c) || c.airports.some(airportMatch))
       .sort((a, b) => rank(a) - rank(b) || a.name.localeCompare(b.name, 'ru')).slice(0, 40);
   } else {
-    const region = origin ? 'any' : state.query.region;
-    cities = cities.filter(city => inRegion(region, city.countryCode));
-    const order = [...new Set([currentCity, ...POPULAR])];
-    const popular = order.map(id => state.cities.get(id)).filter(c => c && inRegion(region, c.countryCode));
+    const scope = DESTINATION_SCOPES[origin ? 'any' : state.query.region];
+    if (scope.countries.length) cities = cities.filter(city => scope.countries.includes(city.airports[0].country_code));
+    const eligible = new Map(cities.map(city => [city.id, city]));
+    const order = [...new Set([currentCity, ...(scope.cities.length ? scope.cities : POPULAR)])];
+    const popular = order.map(id => eligible.get(id)).filter(Boolean);
     cities = popular.length ? popular : cities.sort((a,b) => a.name.localeCompare(b.name, 'ru')).slice(0, 40);
   }
   const row = (title, subtitle, code, iata, group, selected, glyph) => `<button class="airport-option" type="button" data-iata="${esc(iata)}"${group ? ` data-city="${esc(group)}"` : ''}${selected ? ' aria-current="true"' : ''}>
@@ -850,29 +878,38 @@ function renderPicker() {
     return group + `<details class="airport-group"${term || (currentCity === c.id && !allAirports) ? ' open' : ''}><summary>Выбрать аэропорт (${c.airports.length})</summary>
       ${c.airports.map(individual).join('')}</details>`;
   });
-  list.innerHTML = groups.length ? `<p class="picker-section">${term ? 'Результаты поиска' : 'Города и аэропорты'}</p>` + groups.join('')
-    : '<p class="picker-note">Ничего не найдено. Введите другое название или трёхбуквенный код.</p>';
+  list.innerHTML = groups.length ? '<p class="picker-section">Города и аэропорты</p>' + groups.join('')
+    : matchedScope ? '' : '<p class="picker-note">Ничего не найдено. Введите другое название или трёхбуквенный код.</p>';
 }
 async function loadPickerCities() {
+  if (state.cities) { renderPicker(); return; }
   const request = loadAirports();
   renderPicker();
   try { await request; } catch { /* renderPicker offers a retry while keeping region choices available. */ }
-  if ($('picker').open) renderPicker();
+  if ($('picker').open) { renderScopeCoverage(); renderPicker(); }
 }
 function openPicker(target) {
   state.pickerTarget = target;
-  $('picker').classList.toggle('destination-picker', target === 'destination');
-  $('pickerTitle').textContent = target === 'origin' ? 'Откуда вылетаете?' : 'Куда летите?';
-  $('pickerInput').value = '';
-  if (target === 'destination') {
-    $('pickerRegions').innerHTML = Object.entries(REGIONS).map(([key, label]) => {
+  const picker = $('picker'), input = $('pickerInput'), destination = target === 'destination';
+  picker.classList.toggle('destination-picker', destination);
+  $('pickerTitle').textContent = destination ? 'Куда летите?' : 'Откуда вылетаете?';
+  const placeholder = destination ? 'Страна, город или аэропорт' : 'Город, аэропорт или код';
+  input.placeholder = placeholder;
+  input.setAttribute('aria-label', placeholder);
+  input.value = '';
+  if (destination) {
+    $('pickerRegions').innerHTML = Object.entries(DESTINATION_SCOPES).map(([key, { label }]) => {
       const selected = !state.query.destination && key === state.query.region;
       return `<button type="button" class="region-option" data-region="${key}"${selected ? ' aria-current="true"' : ''}>${esc(label)}${selected ? icon('check') : ''}</button>`;
     }).join('');
+    $('pickerCoverage').open = false;
+    renderScopeCoverage();
   }
-  $('picker').showModal();
-  $('picker').querySelector('.sheet-body').scrollTop = 0;
-  $('pickerInput').focus({ preventScroll: true });
+  const focusSearch = matchMedia('(hover: hover) and (pointer: fine)').matches;
+  input.toggleAttribute('autofocus', focusSearch);
+  picker.querySelector('[data-close]').toggleAttribute('autofocus', !focusSearch);
+  picker.showModal();
+  picker.querySelector('.sheet-body').scrollTop = 0;
   loadPickerCities();
 }
 function choose(iata, cityCode) {
@@ -883,7 +920,8 @@ function choose(iata, cityCode) {
     // Выбор запоминается: в следующий раз и на страницах городов цены будут из этого города.
     if (airport) saveOrigin({ code: airport.city_code, iata, all: Boolean(cityCode), name: airport.city, from: state.fromNames.get(airport.city_code) ?? null }, true);
   } else {
-    if (!inRegion(q.region, state.byIata.get(iata).country_code)) q.region = 'any';
+    const { countries } = DESTINATION_SCOPES[q.region];
+    if (countries.length && !countries.includes(state.byIata.get(iata).country_code)) q.region = 'any';
     q.destination = iata; q.destinationCity = cityCode; state.labels.destination = airportLabel(iata, cityCode);
   }
   $('picker').close();
@@ -906,7 +944,10 @@ for (const trigger of document.querySelectorAll('#originTitle, #originPick, #des
   trigger.addEventListener('pointerenter', preload, { once:true });
   trigger.addEventListener('focus', preload, { once:true });
 }
-$('pickerInput').addEventListener('input', renderPicker);
+$('pickerInput').addEventListener('input', () => {
+  $('picker').querySelector('.sheet-body').scrollTop = 0;
+  renderPicker();
+});
 $('pickerInput').addEventListener('keydown', (event) => {
   if (event.key === 'Escape' && !event.isComposing) {
     event.preventDefault();
@@ -923,7 +964,6 @@ $('pickerRegions').addEventListener('click', (event) => {
   if (!option) return;
   const q = state.query;
   const region = option.dataset.region;
-  if (region !== q.region && CITY_REGIONS.has(region)) q.weekend = false;
   Object.assign(q, { region, destination: null, destinationCity: null });
   state.labels.destination = null;
   $('picker').close();
@@ -1097,7 +1137,7 @@ async function restore() {
   if (!state.byIata.has(code('from'))) return false;
   q.origin = code('from'); q.originCity = code('fc');
   state.labels.origin = airportLabel(q.origin, q.originCity);
-  if (params.get('region') in REGIONS) q.region = params.get('region');
+  if (Object.hasOwn(DESTINATION_SCOPES, params.get('region'))) q.region = params.get('region');
   if (code('to') && state.byIata.has(code('to'))) { q.destination = code('to'); q.destinationCity = code('tc'); state.labels.destination = airportLabel(q.destination, q.destinationCity); }
   const budget = Number(params.get('budget'));
   if (Number.isInteger(budget) && budget >= 5000 && budget <= 500000) q.budget = budget;

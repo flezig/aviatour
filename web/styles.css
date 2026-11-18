@@ -380,6 +380,7 @@ img { display: block; max-width: 100%; }
 .results-head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3); }
 .results-head h2 { margin-right: auto; }
 .source { font-size: var(--fs-cap); color: var(--ink-2); }
+.search-warning { padding: var(--s-2) var(--s-3); border-left: 3px solid var(--cobalt); background: var(--card); font-size: var(--fs-small); }
 .chips { display: flex; gap: var(--s-2); overflow-x: auto; margin: 0 calc(-1 * var(--gutter)); padding: var(--s-0) var(--gutter); scrollbar-width: none; }
 .chips::-webkit-scrollbar { display: none; }
 .chip { flex: none; display: inline-flex; align-items: center; gap: var(--s-2); min-height: var(--tap); padding: 0 var(--s-4); border-radius: var(--r-chip); border: 1px solid var(--line); background: var(--card); font-size: var(--fs-small); font-weight: 600; white-space: nowrap; transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease); }
@@ -470,9 +471,9 @@ img { display: block; max-width: 100%; }
 .picker-search { position: sticky; top: 0; z-index: 1; padding: var(--s-3) var(--s-4); background: var(--paper); }
 .picker-input { display: flex; align-items: center; gap: var(--s-2); padding: 0 var(--s-3); background: var(--card); border: 1px solid var(--line-strong); border-radius: var(--r-field); }
 .picker-input:focus-within { outline: 2px solid var(--cobalt); }
-.picker-input input { flex: 1; min-width: 0; min-height: var(--tap); border: 0; background: transparent; color: var(--ink); outline: none; }
+.picker-input input { flex: 1; min-width: 0; min-height: var(--tap); border: 0; background: transparent; color: var(--ink); font-size: 1rem; outline: none; }
 .picker-section { padding: 4px 0 8px; font-size: var(--fs-cap); font-weight: 600; color: var(--ink-2); }
-.airport-option { width: 100%; display: grid; grid-template-columns: 22px minmax(0,1fr) auto; align-items: center; gap: 12px; padding: 9px 12px; text-align: left; border-bottom: 1px solid var(--line); background: var(--card); }
+.airport-option { width: 100%; min-height: var(--tap); display: grid; grid-template-columns: 22px minmax(0,1fr) auto; align-items: center; gap: 12px; padding: 9px 12px; text-align: left; border-bottom: 1px solid var(--line); background: var(--card); }
 .airport-option b, .airport-option small { display: block; }
 .airport-option small { color: var(--ink-2); font-size: var(--fs-cap); }
 .airport-option:hover, .airport-option[aria-current] { background: var(--fill); }
@@ -482,17 +483,25 @@ img { display: block; max-width: 100%; }
 .airport-group summary { padding: 11px 12px 11px 46px; min-height: var(--tap); cursor: pointer; color: var(--cobalt); font-size: var(--fs-cap); }
 .airport-group .airport-option { padding-left: 30px; }
 .picker-list { padding: 0 var(--s-4) var(--s-5); }
+.picker-scope-heading { margin-inline: var(--s-4); }
 .picker-regions { padding: 0 var(--s-4) var(--s-2); }
 .region-option { display: flex; align-items: center; justify-content: space-between; width: 100%; min-height: var(--tap); padding: var(--s-2) var(--s-3); border-radius: var(--r-chip); text-align: left; }
+.picker-regions:not([hidden]):not(.scope-matches) { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--s-2); }
+.region-option[data-region="any"] { grid-column: 1 / -1; }
 .region-option:hover { background: var(--fill); }
 .region-option[aria-current] { color: var(--cobalt); background: var(--cobalt-soft); font-weight: 600; }
+.picker-coverage { margin: 0 var(--s-4) var(--s-2); border-top: 1px solid var(--line); font-size: var(--fs-small); }
+.picker-coverage summary { min-height: var(--tap); padding: 11px var(--s-3); color: var(--cobalt); cursor: pointer; }
+.picker-coverage dl { display: grid; gap: var(--s-2); margin: 0; padding: 0 var(--s-3) var(--s-2); }
+.picker-coverage dt { font-weight: 600; }
+.picker-coverage dd { margin: 0; color: var(--ink-2); }
 @media (min-width: 900px) {
   @supports (position-area: bottom span-right) {
     [data-field="destination"], #destinationPick { anchor-name: --destination-field; }
     .sheet.destination-picker {
       position-anchor: --destination-field; position-area: bottom span-right; position-try-fallbacks: flip-block;
       inset: auto; margin: var(--s-1) 0; align-self: start; justify-self: start;
-      width: 340px; max-height: min(430px, calc(100% - var(--s-2))); border: 1px solid var(--line); background: var(--card); border-radius: var(--r-field);
+      width: 340px; max-height: min(530px, calc(100% - var(--s-2))); border: 1px solid var(--line); background: var(--card); border-radius: var(--r-field);
     }
     .destination-picker::backdrop { background: transparent; }
     .destination-picker .picker-search { background: var(--card); }
