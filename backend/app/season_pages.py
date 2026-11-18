@@ -91,14 +91,20 @@ def link(code, month, origin=None, mode=None, year=None):
     return "/season/" + code + "?" + urlencode(query)
 
 
-def layout(title, description, path, crumbs, main, script="/js/site.js"):
+# Published city photos have varying dimensions. The shared default cover is 1200 × 630.
+PHOTO_HEAD = '\n'.join(line for line in HEAD.splitlines()
+                      if '"og:image:width"' not in line and '"og:image:height"' not in line)
+
+
+def layout(title, description, path, crumbs, main, script="/js/site.js", photo=None):
     ld, visible = breadcrumbs(crumbs)
+    head = PHOTO_HEAD if photo else HEAD
     return (
-        HEAD.format(
+        head.format(
             title=esc(title + " · Aviator"),
             description=esc(description),
             url=esc(SITE + path),
-            image=SITE + "/og.jpg",
+            image=SITE + (f"/photos/{photo}.jpg" if photo else "/og.jpg"),
             robots="",
             ld=ld,
             cities_current="",
@@ -178,7 +184,7 @@ def source_info(n):
     return f"Станция {n['name']} · {n['km']} км от координат города · ВМО", WMO
 
 
-def city_page(catalog, code, month, requested_mode, origin, rating, year, today, other_month):
+def city_page(catalog, code, month, requested_mode, origin, rating, year, today, other_month, *, photo=False):
     from .city_rating import badge, report_html
 
     city = CITIES[code]
@@ -287,4 +293,5 @@ def city_page(catalog, code, month, requested_mode, origin, rating, year, today,
         [("Aviator", "/"), ("Сезонный рейтинг", "/season/"), (title, path)],
         body,
         "/js/season.js",
+        photo=code if photo else None,
     )

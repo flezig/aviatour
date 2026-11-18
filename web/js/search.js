@@ -478,8 +478,11 @@ function openDetail(offer) {
   if (!$('detail').open) $('detail').showModal();
   // У поездки свой адрес: «Назад» закрывает карточку, а ссылкой можно поделиться.
   // Поездка из подборки знает свой поиск (q с сервера): по этой ссылке её найдёт и откроет любой браузер.
-  const hash = `?${offer.q ?? toParams(state.performed ?? state.query)}#trip=${offer.id}`;
-  if (history.state?.trip) history.replaceState({ trip: offer.id }, '', hash); else history.pushState({ trip: offer.id }, '', hash);
+  const params = new URLSearchParams(offer.q ?? toParams(state.performed ?? state.query));
+  params.set('city', offer.city_code);
+  params.set('trip', offer.id);
+  const href = '/?' + params;
+  if (history.state?.trip) history.replaceState({ trip: offer.id }, '', href); else history.pushState({ trip: offer.id }, '', href);
   $('share').textContent = 'Поделиться';
   goal('view_city', { city: offer.city_code, from: offer.origin_city_code, page: 'trip' });
 }
@@ -609,7 +612,7 @@ function renderShowcase() {
     // В ленте — до шести карточек, дальше полупрозрачная карточка «Ещё N»: лента не тянется бесконечно.
     const tiles = offers.slice(0, 6).map((offer) => row.kind === 'pass' ? passTile(offer, row.key) : stampTile(offer, row.key, note(offer))).join('')
       + (offers.length > 6 ? `<button type="button" class="tile-more" data-row-all="${esc(row.key)}"><b>+${offers.length - 6}</b><span>Показать все</span>${icon('arrow-right')}</button>` : '');
-    return rowSection(row.key, row.title, row.hint, tiles, `<button type="button" class="row-all" data-row-all="${esc(row.key)}">Все · ${offers.length}${icon('arrow-right')}</button>`, row.kind === 'pass', rowSticker(row));
+    return rowSection(row.key, row.title, row.hint, tiles, `<button type="button" class="row-all" data-row-all="${esc(row.key)}">Все${icon('arrow-right')}</button>`, row.kind === 'pass', rowSticker(row));
   }).join('');
   section.innerHTML = recentRow() + (rows ? rows + (hidden > 0 ? `<button type="button" class="btn-inline more-rows" data-more-rows>Ещё подборки · ${hidden}</button>` : '') : statusPanel('send', 'Подборок пока нет', 'Для этого города вылета не нашлось поездок на ближайшие недели. Попробуйте поиск в форме выше.'))
     + `<p class="source">${esc(cachedPriceLabel(state.home.received_at))} · туда и обратно на одного · <a href="/how-we-count.html#home">Как мы считаем подборки</a></p>`;
@@ -1199,7 +1202,8 @@ document.fonts?.ready.then(fitHero);
   fitHero();
   if (restored && $('picker').open) { renderScopeCoverage(); renderPicker(); }
   // Прочитать до поиска: поиск переписывает адрес и убирает хеш.
-  const linked = restored && /^#trip=([0-9a-f]{32})$/.exec(location.hash)?.[1];
+  const tripId = new URLSearchParams(location.search).get('trip') ?? location.hash.replace(/^#trip=/, '');
+  const linked = restored && /^[0-9a-f]{32}$/.test(tripId) && tripId;
   // Вариант A эксперимента — голая форма: ничего не грузится, пока посетитель не начнёт поиск.
   const wantRow = !restored && /^#row=([a-z0-9]+)$/.exec(location.hash)?.[1];
   if (restored) search({ scroll: false }).then(() => { if (linked && state.status === 'done') openLinked(linked); });

@@ -9,7 +9,8 @@ const offer = { id: '0'.repeat(32), city_code:'LED', city:'Санкт-Петер
 
 test('ссылка переносит маршрут и бюджет, включая ночь перелёта и часовые пояса', () => {
   const p = { ...snapshot(offer), people:2, food:1000, stay:2500 };
-  assert.deepEqual(decodeTrip(tripPath(p).split('html')[1]), p);
+  assert.equal(new URL(tripPath(p), 'https://example.org').searchParams.get('city'), p.cityCode);
+  assert.deepEqual(decodeTrip(new URL(tripPath(p), 'https://example.org').hash), p);
   assert.equal(tripDates(p).start,'2026-12-04');
   assert.equal(tripDates(p).nights,3);
   assert.deepEqual(budget(p),{ tickets:1004700, complete:true, total:2554700 });
@@ -20,7 +21,7 @@ test('ссылка переносит маршрут и бюджет, включ
 });
 test('сломанная ссылка и неподдерживаемый часовой пояс не прерывают страницу', () => {
   for (const hash of ['#v1=e30', '#v1=%', '#v1=' + 'x'.repeat(6100),
-    tripPath({...snapshot(offer),zone:'Invalid/City'}).split('html')[1]]) assert.equal(decodeTrip(hash),null);
+    new URL(tripPath({...snapshot(offer),zone:'Invalid/City'}), 'https://example.org').hash]) assert.equal(decodeTrip(hash),null);
 });
 test('подсказка однократная, сохранённый план обновляется без дублей', () => {
   const data = new Map();

@@ -675,3 +675,18 @@ def test_force_refresh_refetches_source_without_changing_cache_key():
         fresh = client.post('/api/v1/search', json=dict(query, force_refresh=True)).json()['offers'][0]
         assert calls == 2 and first['price_minor'] == second['price_minor'] < fresh['price_minor']
         assert first['id'] == fresh['id']
+
+@pytest.mark.parametrize('url, photo', [
+    ('/?from=SVO&region=usa&city=LAS&trip=' + 'e' * 32, '/photos/LAS.jpg'),
+    ('/trip.html?city=LAS&trip=' + 'e' * 32, '/photos/LAS.jpg'),
+    ('/?from=SVO&to=JFK', '/photos/NYC.jpg'),
+    ('/?region=usa', '/og.jpg'),
+    ('/trip.html?city=INVALID', '/og.jpg'),
+])
+def test_destination_photo_in_initial_html(url, photo):
+    with TestClient(create_app(Settings(token='test'))) as client:
+        page = client.get(url, headers={'User-Agent': 'TelegramBot'})
+        assert page.status_code == 200
+        assert page.text.count('property="og:image"') == 1
+        assert f'property="og:image" content="https://aviatour.vercel.app{photo}"' in page.text
+        assert client.get(photo).headers['content-type'] == 'image/jpeg'

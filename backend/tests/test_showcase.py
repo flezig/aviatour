@@ -207,7 +207,7 @@ def test_scenario_pages_budget_weekend_holidays():
         assert '<link rel="canonical" href="https://aviatour.vercel.app/kuda/moskva/do-10000">' in html and 'noindex' not in html
         # Дешевле — выше; ссылка открывает поездку на главной по её поиску.
         assert html.index('Казань') < html.index('Санкт-Петербург') < html.index('Уфа') < html.index('Сочи')
-        assert re.search(r'href="/\?from=SVO&amp;fc=MOW&amp;[^"]*#trip=[0-9a-f]{32}"', html)
+        assert re.search(r'href="/\?from=SVO&amp;fc=MOW&amp;[^"]*&amp;city=[A-Z]{3}&amp;trip=[0-9a-f]{32}"', html)
         assert 'href="/city/kazan"' in html and '"@type": "BreadcrumbList"' in html
         five = client.get('/kuda/moskva/do-5000').text  # два города — мало: страница честно говорит и закрыта от поисковиков
         assert 'noindex' in five and 'Пока мало вариантов' in five and 'Казань' in five and 'Уфа' not in five

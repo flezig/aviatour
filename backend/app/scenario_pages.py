@@ -72,7 +72,7 @@ def item(offer, note, photos, cities):
     extra = f'<span class="caption">{esc(leave_text(note))}</span>' if note else ''
     about = f'<a class="scenario-city" href="/city/{esc(city["slug"])}">Всё о городе</a>' if city else ''
     return f'''<li class="scenario-item">
-  <a class="scenario-open" href="/?{esc(offer['q'])}#trip={esc(offer['id'])}">{thumb}
+  <a class="scenario-open" href="/?{esc(offer['q'])}&amp;city={esc(offer['city_code'])}&amp;trip={esc(offer['id'])}">{thumb}
     <span class="scenario-text"><b>{esc(offer['city'])}</b><span class="caption">{esc(offer.get('country') or '')}</span>
       <span>{date_range(dep, ret)}, {nights_label(nights)}</span>{extra}</span>
     <b class="scenario-price">{money(offer['price_minor'])}</b></a>{about}{badge(offer["city_code"],local_arrival.month,origin,local_arrival.year)}

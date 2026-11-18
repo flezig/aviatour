@@ -13,7 +13,7 @@ from fastapi import FastAPI, Query, Request
 from fastapi.exceptions import RequestValidationError
 from pydantic import ValidationError
 from fastapi.middleware.gzip import GZipMiddleware
-from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from .catalog import AIRPORTS, BY_IATA
 from .errors import SearchError
@@ -27,6 +27,7 @@ from .regions import includes, REGION_CITIES
 from .rating import evaluate, round_int
 from .rating_sources import RatingSources, load_reviewed_data
 from .hotel_source import AmadeusHotels
+from .social_preview import city_metadata
 from .trip_weather import TripWeather
 from .city_insights import CityInsights, InsightRequest
 
@@ -479,7 +480,7 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
         other_month = None
         if rating["year"] == 2026 and current in (11, 12):
             other_month = await monthly_city_rating(code, 12 if current == 11 else 11, 2026)
-        return HTMLResponse(season_pages.city_page(catalog, code, current, mode, origin, rating, year, now().date(), other_month),
+        return HTMLResponse(season_pages.city_page(catalog, code, current, mode, origin, rating, year, now().date(), other_month, photo=code in photos),
                             headers={'Cache-Control': page_cache})
 
     @app.get('/api/v1/season/{code}/fares')
@@ -585,6 +586,21 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
 
     # Registered last so the site never shadows API routes.
     if WEB_DIR.is_dir():
+        templates = {path: (WEB_DIR / filename) for path, filename in [('/', 'index.html'), ('/trip.html', 'trip.html')]}
+        preview_templates = {path: file.read_text(encoding='utf-8') for path, file in templates.items()}
+
+        @app.api_route('/', methods=['GET', 'HEAD'], include_in_schema=False)
+        @app.api_route('/trip.html', methods=['GET', 'HEAD'], include_in_schema=False)
+        async def shareable_page(request: Request):
+            path, params = request.url.path, request.query_params
+            city = season_pages.CITIES.get(params.get('city'))
+            if path == '/' and not city:
+                city = season_pages.CITIES.get(params.get('tc')) or BY_IATA.get(params.get('to'))
+            if not city:
+                return FileResponse(templates[path])
+            markup = city_metadata(preview_templates[path], path, params, city, city['city_code'] in photos)
+            return HTMLResponse(markup, headers={'Cache-Control': 'public, max-age=300'})
+
         app.mount('/', StaticFiles(directory=WEB_DIR, html=True), name='web')
 
     return app

@@ -50,7 +50,8 @@ export function snapshot(offer) {
 export function tripPath(plan) {
   const bytes = new TextEncoder().encode(JSON.stringify(plan));
   const data = btoa(String.fromCharCode(...bytes)).replaceAll('+','-').replaceAll('/','_').replace(/=+$/, '');
-  return '/trip.html#v1=' + data;
+  const params = new URLSearchParams({ city: plan.cityCode, trip: plan.id });
+  return '/trip.html?' + params + '#v1=' + data;
 }
 export function decodeTrip(hash) {
   if (!/^#v1=[a-zA-Z0-9_-]{1,6000}$/.test(hash)) return null;
