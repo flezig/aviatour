@@ -53,7 +53,7 @@ for (const [engine, viewport] of [[chromium, { width: 1280, height: 800 }], [web
     assert.deepEqual(await heads.allTextContents(), ['Псков', 'Мурманск']);
     const cells = name => sheet.getByRole('rowheader', { name, exact: true }).locator('..').locator('td').allTextContents();
     const prices = await cells('Цена');
-    assert.deepEqual(prices.map(s => s.replace(/\s/g, '')), ['10000₽', '11000₽']);
+    assert.deepEqual(prices.map(s => s.replace(/\s/g, '')), ['10000₽На1000₽дешевле', '11000₽']);
     assert.deepEqual(await cells('Даты'), ['10–28 июня', '11–28 июня']);
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
     await page.goBack();
