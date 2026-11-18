@@ -85,6 +85,16 @@ function readFavs() {
   } catch { return new Map(); }
 }
 const originZone = () => state.byIata.get(state.query.origin)?.timezone || DEFAULT_ZONE;
+// Два последних новых сердечка каждой ленты живут до смены города вылета или перезагрузки.
+const rowPicks = new Map();
+function pairOffers(key) {
+  return (rowPicks.get(key) ?? []).map(id => state.favs.get(id)).filter(Boolean);
+}
+function pairLabel(key) {
+  const [first, second] = pairOffers(key);
+  if (!second) return '';
+  return first.city === second.city ? `Сравнить два рейса · ${first.city}` : `Сравнить ${first.city} и ${second.city}`;
+}
 
 // --- варианты ---
 const factCache = new WeakMap();
@@ -246,27 +256,44 @@ function offerCard(offer) {
 
 // Избранное хранится только в этом браузере: целые варианты, новые в конце, не больше 30.
 function saveFavs() { try { localStorage.setItem('aviator.favorites', JSON.stringify([...state.favs.values()])); } catch { /* частный режим: до конца визита */ } }
-function toggleFav(id) {
-  const offer = state.favs.get(id) ?? state.shown.get(id) ?? (state.detail?.id === id ? state.detail : null) ?? homeOffer(id) ?? state.recentOffers.get(id);
+function toggleFav(id, rowKey) {
+  const visibleOffer = rowKey ? feedOffer(rowKey, id) : state.shown.get(id);
+  const offer = state.favs.get(id) ?? visibleOffer ?? (state.detail?.id === id ? state.detail : null) ?? homeOffer(id) ?? state.recentOffers.get(id);
   if (!offer) return;
   if (state.favs.has(id)) state.favs.delete(id);
   else {
     state.favs.set(id, offer);
     if (state.favs.size > 30) state.favs.delete(state.favs.keys().next().value);
+    if (rowKey) rowPicks.set(rowKey, [...(rowPicks.get(rowKey) ?? []), id].slice(-2));
     goal('save_trip', { city: offer.city_code, nights: facts(offer).days, people: 1 });
   }
   saveFavs();
+  refreshFavorites(id);
+}
+function refreshFavorites(changedId) {
+  for (const [key, ids] of rowPicks) {
+    const remaining = ids.filter(id => state.favs.has(id));
+    if (remaining.length) rowPicks.set(key, remaining);
+    else rowPicks.delete(key);
+  }
   for (const button of document.querySelectorAll('[data-fav]')) {
-    if (button.dataset.fav !== id) continue;
-    button.setAttribute('aria-pressed', String(state.favs.has(id)));
+    const id = button.dataset.fav, pressed = state.favs.has(id);
+    button.setAttribute('aria-pressed', String(pressed));
+    if (id !== changedId) continue;
     // Сердечко «подпрыгивает» и разлетается искрами, только когда поездку добавили.
     button.classList.remove('pop');
-    if (state.favs.has(id)) { void button.offsetWidth; button.classList.add('pop'); setTimeout(() => button.classList.remove('pop'), 600); }
+    if (pressed) { void button.offsetWidth; button.classList.add('pop'); setTimeout(() => button.classList.remove('pop'), 600); }
   }
+  for (const button of $('showcase').querySelectorAll('[data-compare-row]')) {
+    const label = pairLabel(button.dataset.compareRow);
+    button.querySelector('span').textContent = label;
+    button.closest('.compare-prompt').hidden = !label;
+  }
+  if ($('pairComparison').open) syncComparison();
   if (state.view === 'fav') renderResults();
   else if ($('favCount')) $('favCount').textContent = state.favs.size;
 }
-function compareTable(offers) {
+function compareTable(offers, distinguishFlights = false) {
   const prices = offers.map(offer => offer.price_minor);
   const lowest = Math.min(...prices), highest = Math.max(...prices);
   const priceCell = offer => {
@@ -275,9 +302,15 @@ function compareTable(offers) {
     const note = offers.length === 2 ? `На ${fmtMoney(highest - lowest)} дешевле` : 'Минимальная цена';
     return `${price}<small class="compare-price-note">${esc(note)}</small>`;
   };
+  const heading = (offer) => {
+    if (!distinguishFlights) return esc(offer.city);
+    const dep = facts(offer).dep, zone = offer.origin_timezone;
+    const flight = [`${fmtDay(dep, zone)}, ${fmtTime(dep, zone)}`, `${offer.origin_airport} → ${offer.destination_airport}`, offer.flight_number].filter(Boolean);
+    return `${esc(offer.city)}<small>${esc(flight.join(' · '))}</small>`;
+  };
   const row = (title, cell) => `<tr><th scope="row">${title}</th>${offers.map((offer) => `<td>${cell(offer, facts(offer))}</td>`).join('')}</tr>`;
   return `<div class="compare"><table>
-    <thead><tr><td></td>${offers.map((offer) => `<th scope="col">${esc(offer.city)}</th>`).join('')}</tr></thead>
+    <thead><tr><td></td>${offers.map(offer => `<th scope="col">${heading(offer)}</th>`).join('')}</tr></thead>
     <tbody>
       ${row('Цена', priceCell)}
       ${row('Даты', (offer, x) => esc(fmtRange(x.dep, x.ret, offer.origin_timezone, offer.destination_timezone)))}
@@ -287,6 +320,15 @@ function compareTable(offers) {
       ${row('Пересадки', (offer, x) => x.direct ? 'Прямые' : 'Есть')}
       ${row('Авиакомпания', (offer) => esc(airlineLabel(offer)))}
     </tbody></table></div>`;
+}
+function syncComparison() {
+  const dialog = $('pairComparison'), key = history.state?.compareRow;
+  const offers = pairOffers(key);
+  if (offers.length === 2 && state.view === 'showcase') {
+    $('pairBody').innerHTML = compareTable(offers, offers[0].city === offers[1].city);
+    if (!dialog.open) dialog.showModal();
+  } else if (dialog.open) dialog.close();
+  else if (key) history.replaceState(null, '');
 }
 function renderFavorites() {
   const section = $('results'), offers = [...state.favs.values()].filter((offer) => facts(offer).dep > Date.now()).reverse();
@@ -516,6 +558,7 @@ function openLinked(id) {
 
 // --- главная-витрина (этап 3): подборки с сервера, /api/v1/home ---
 const homeOffer = (id) => state.home?.offers.get(id);
+const feedOffer = (key, id) => key === 'recent' ? state.recentOffers.get(id) : homeOffer(id);
 const homeRow = (key) => state.home?.rows.find((row) => row.key === key) ?? null;
 const rowOffers = (row) => row.items.map(homeOffer).filter((offer) => offer && facts(offer).dep > Date.now());
 const daysFromToday = (offer) => Math.round((Date.parse(facts(offer).out.key) - Date.parse(zoned(new Date(), offer.origin_timezone).key)) / 86400000);
@@ -575,9 +618,14 @@ function stampTile(offer, row, note = '') {
     </div>${openButton(offer, row)}</article>`;
 }
 function rowSection(key, title, hint, tiles, action, pass = false, mark = 'weekend') {
-  return `<section class="row" aria-labelledby="row-${key}">
+  const label = pairLabel(key);
+  return `<section class="row" data-feed="${esc(key)}" aria-labelledby="row-${key}">
     <div class="row-head"><span class="row-mark">${sticker(mark)}</span><h2 id="row-${key}">${esc(title)}</h2>${hint ? `<p class="row-hint">${esc(hint)}</p>` : ''}${action}</div>
     <div class="strip${pass ? ' strip--pass' : ''}">${tiles}</div>
+    <div class="compare-prompt"${label ? '' : ' hidden'}>
+      <span class="compare-count">${icon('heart')}Выбрано 2 поездки</span>
+      <button type="button" class="btn-primary" data-compare-row="${esc(key)}" aria-haspopup="dialog" aria-controls="pairComparison"><span>${esc(label)}</span>${icon('arrow-right')}</button>
+    </div>
   </section>`;
 }
 // «Продолжить планирование»: изменение цены — только если сегодня найден тот же самый вариант (тот же рейс и даты).
@@ -633,6 +681,7 @@ async function loadHome() {
   if (q.originCity) params.set('fc', q.originCity);
   const key = params.toString();
   if (state.homeStatus === 'loading' && homeRequest?.key === key) return;
+  if (homeRequest?.key !== key) rowPicks.clear();
   homeRequest?.controller.abort();
   const controller = new AbortController();
   homeRequest = { key, controller };
@@ -1055,16 +1104,28 @@ $('searchLine').addEventListener('click', (event) => {
   ({ when: state.query.exact ? $('departureDate') : $('month'), budget: $('budget') })[field]?.focus();
 });
 $('showcase').addEventListener('click', (event) => {
+  const compare = event.target.closest('[data-compare-row]');
+  if (compare) {
+    compare.focus({ preventScroll: true });
+    history.pushState({ compareRow: compare.dataset.compareRow }, '');
+    syncComparison();
+    return;
+  }
   const level = event.target.closest('[data-level]');
   if (level) { toggleLevel(level); return; }
   const all = event.target.closest('[data-row-all]');
   if (all) { goal('select_idea', { idea: `row-${all.dataset.rowAll}` }); showCollection(all.dataset.rowAll); return; }
   if (event.target.closest('[data-action="retryHome"]')) { loadHome(); return; }
   const fav = event.target.closest('[data-fav]');
-  if (fav) { toggleFav(fav.dataset.fav); return; }
+  if (fav) {
+    const key = fav.closest('[data-feed]').dataset.feed;
+    toggleFav(fav.dataset.fav, key);
+    $('resultsStatus').textContent = pairLabel(key);
+    return;
+  }
   if (event.target.closest('[data-more-rows]')) { state.allRows = true; renderShowcase(); return; }
   const open = event.target.closest('[data-open]');
-  const offer = open && (open.dataset.row === 'recent' ? state.recentOffers.get(open.dataset.open) : homeOffer(open.dataset.open));
+  const offer = open && feedOffer(open.dataset.row, open.dataset.open);
   if (offer) { goal('select_idea', { idea: `row-${open.dataset.row}` }); openDetail(offer); }
 });
 // Закрытие карточки рукой отступает на её запись в истории, один раз: сюда приходят и щелчок, и событие закрытия диалога.
@@ -1072,8 +1133,18 @@ let leaving = false;
 function leaveTrip() { if (!leaving && history.state?.trip) { leaving = true; history.back(); } }
 window.addEventListener('popstate', () => {
   leaving = false;
+  if (history.state?.compareRow || $('pairComparison').open) syncComparison();
   if (!history.state?.trip && $('detail').open) $('detail').close();
   if (!history.state?.trip) syncView();
+});
+$('pairComparison').addEventListener('close', () => {
+  if (!$('pairComparison').open && history.state?.compareRow) history.back();
+});
+window.addEventListener('storage', (event) => {
+  if (event.storageArea === localStorage && (event.key === 'aviator.favorites' || event.key === null)) {
+    state.favs = readFavs();
+    refreshFavorites();
+  }
 });
 window.addEventListener('hashchange', () => { if (location.hash === '#fav') showFavorites(); });
 $('searchSummary').addEventListener('click', () => { collapseForm(false); $('originPick').focus(); });
