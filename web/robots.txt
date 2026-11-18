@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /go
+Sitemap: https://aviatour.vercel.app/sitemap.xml

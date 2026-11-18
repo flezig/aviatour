@@ -1,0 +1,11 @@
+{
+  "topic": "Сравнение после второго сердечка в веб-ленте Aviator",
+  "decision": "Владелец одобрил макет кнопки под лентой после выбора Пскова и Мурманска. Сравнение показывает именно эти поездки. Редизайн талонов отклонён. Код не менять.",
+  "excerpts": {
+    "shared": {"web/js/search.js": [[233,277]]},
+    "research": {"web/index.html": [[164,166]], "web/js/search.js": [[550,556]]},
+    "data": {"backend/app/rules.py": [[159,171]], "web/config.js": [[5,17]], "web/js/lib/measure.js": [[1,21],[35,39]], "web/js/search.js": [[996,1003]]},
+    "review": {"backend/app/rules.py": [[159,171]], "web/js/search.js": [[65,74],[522,542],[550,556],[960,984]], "backend/app/showcase.py": [[73,88]]},
+    "editor": {}
+  }
+}

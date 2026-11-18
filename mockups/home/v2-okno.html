@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Макет 2 · Иллюминатор — Aviator</title>
+<link rel="icon" href="../../web/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="fonts/fonts.css">
+<style>
+:root {
+  --paper: #f5f4f0; --paper-2: #ebe8df; --card: #fffefb; --ink: #0f1b3d; --cobalt: #2346d8; --cobalt-soft: #e6eafb;
+  --muted: #575d6e; --line: rgba(15, 27, 61, .12); --low: #17703a; --high: #9a4a00;
+  --f-head: 'Literata', Georgia, serif; --f-text: 'Onest', system-ui, sans-serif; --f-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  --r-window: 46% / 38%; --r-field: 12px; --r-tab: 10px; --r-thumb: 40% / 32%;
+  --t-fast: 180ms; --ease: cubic-bezier(.2, .7, .2, 1);
+  --gutter: 16px; --page: 1184px;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 400 16px/1.5 var(--f-text); -webkit-font-smoothing: antialiased; }
+h1, h2, h3, p, ol { margin: 0; }
+a { color: inherit; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 2px; border-radius: 4px; }
+.ic { width: 20px; height: 20px; flex: none; }
+.wrap { max-width: var(--page); margin: 0 auto; padding: 0 var(--gutter); }
+
+.top { display: flex; align-items: center; gap: 20px; height: 56px; }
+.brand { min-height: 44px; font: 600 22px/1 var(--f-head); text-decoration: none; letter-spacing: -.01em; display: flex; align-items: center; gap: 8px; }
+.brand .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--cobalt); }
+.nav { display: none; gap: 22px; margin-left: 28px; font-size: 15px; }
+.nav a { display: flex; align-items: center; min-height: 44px; text-decoration: none; color: var(--muted); }
+.nav a[aria-current] { color: var(--ink); box-shadow: inset 0 -2px var(--cobalt); }
+.from { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 4px; font-weight: 600; font-size: 15px; }
+.from .ic { width: 18px; height: 18px; color: var(--cobalt); }
+
+/* поиск: одна строка, над ней строка ИИ */
+.find { margin-top: 4px; }
+.ai { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 14px; min-height: 36px; }
+.ai .ic { width: 16px; height: 16px; }
+.ai i { font-style: normal; font-size: 12px; border: 1px solid var(--line); border-radius: 999px; padding: 0 7px; }
+.bar { display: flex; align-items: center; background: var(--card); border: 1px solid var(--line); border-radius: var(--r-field); min-height: 52px; }
+.bar-sum { flex: 1; min-width: 0; padding: 6px 14px; text-align: left; display: grid; }
+.bar-sum b { font-weight: 600; font-size: 15px; }
+.bar-sum small { color: var(--muted); font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bar-go { align-self: stretch; margin: 5px; padding: 0 16px; border-radius: 8px; background: var(--cobalt); color: #fff; display: flex; align-items: center; gap: 8px; font-weight: 600; }
+.bar-field { display: none; }
+.go-label { display: none; }
+
+/* главный материал */
+.lead { margin-top: 22px; display: grid; grid-template-columns: 1fr 120px; gap: 14px; align-items: start; }
+.kicker { grid-column: 1 / -1; font-size: 13px; color: var(--muted); display: flex; gap: 8px; align-items: center; }
+.kicker b { color: var(--low); font-weight: 600; }
+.lead h1 { font: 600 27px/1.12 var(--f-head); letter-spacing: -.015em; }
+.lead h1 .num { white-space: nowrap; color: var(--cobalt); }
+.dek { grid-column: 1; color: var(--muted); font-size: 15px; }
+.lead-act { grid-column: 1 / -1; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.btn { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px; border-radius: 10px; background: var(--ink); color: #fff; text-decoration: none; font-weight: 600; font-size: 15px; transition: background var(--t-fast) var(--ease); }
+.btn:hover { background: var(--cobalt); }
+.btn .ic { width: 18px; height: 18px; }
+.link { display: inline-flex; align-items: center; min-height: 44px; color: var(--cobalt); font-weight: 600; font-size: 15px; text-decoration: none; padding: 0 4px; }
+
+/* иллюминатор: рамка — стилями, фото не трогаем */
+.window { position: relative; grid-row: 2 / 4; grid-column: 2; aspect-ratio: 4 / 5; padding: 9px; border-radius: var(--r-window); background: linear-gradient(160deg, #fbfaf6, var(--paper-2)); box-shadow: inset 0 0 0 1px var(--line), 0 10px 24px -14px rgba(15, 27, 61, .45); }
+.window-in { position: relative; height: 100%; border-radius: var(--r-window); overflow: hidden; box-shadow: inset 0 0 0 3px rgba(15, 27, 61, .08); background: var(--cobalt-soft); }
+.window-in img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.window-in::before { content: ''; position: absolute; inset: 0 0 auto; height: 16%; background: linear-gradient(#e9e5da, #dcd7ca); box-shadow: 0 2px 6px rgba(0, 0, 0, .18); z-index: 1; }
+.window-in::after { content: ''; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 22px rgba(15, 27, 61, .28); }
+
+/* подборки вкладками */
+.shelf { margin-top: 28px; }
+.shelf h2 { font: 600 22px/1.2 var(--f-head); }
+.tabs { display: flex; gap: 6px; overflow-x: auto; margin: 12px calc(-1 * var(--gutter)) 0; padding: 0 var(--gutter) 2px; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab { flex: none; min-height: 44px; padding: 0 14px; border-radius: var(--r-tab); border: 1px solid var(--line); background: var(--card); font-weight: 600; font-size: 15px; display: inline-flex; align-items: center; gap: 8px; transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease); }
+.tab span { font: 500 12px/1 var(--f-mono); color: var(--muted); }
+.tab[aria-selected="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
+.tab[aria-selected="true"] span { color: rgba(255, 255, 255, .7); }
+.shelf-hint { margin-top: 10px; font-size: 14px; color: var(--muted); }
+.list { list-style: none; padding: 0; margin-top: 6px; counter-reset: n; }
+.item { counter-increment: n; border-top: 1px solid var(--line); }
+.item a { display: grid; grid-template-columns: 22px 48px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 12px 0; text-decoration: none; }
+.item a::before { content: counter(n, decimal-leading-zero); font: 500 12px/1 var(--f-mono); color: var(--muted); align-self: start; padding-top: 6px; }
+.thumb { width: 48px; height: 58px; border-radius: var(--r-thumb); overflow: hidden; background: var(--cobalt-soft); box-shadow: 0 0 0 3px var(--card), 0 0 0 4px var(--line); }
+.thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.item h3 { font: 600 18px/1.2 var(--f-head); overflow-wrap: anywhere; }
+.meta { font-size: 13px; color: var(--muted); }
+.pr { text-align: right; }
+.pr b { font: 500 17px/1.2 var(--f-mono); white-space: nowrap; display: block; }
+.pr small { font-size: 12px; font-weight: 600; white-space: nowrap; }
+.pr small.low { color: var(--low); } .pr small.high { color: var(--high); } .pr small.usual { color: var(--muted); }
+.item a:hover h3 { color: var(--cobalt); }
+.more { display: inline-flex; margin-top: 8px; }
+
+.foot { margin: 40px auto 32px; color: var(--muted); font-size: 13px; display: flex; flex-wrap: wrap; gap: 6px 18px; border-top: 1px solid var(--line); padding-top: 16px; }
+.foot a { color: var(--muted); display: inline-flex; align-items: center; min-height: 44px; }
+
+@media (min-width: 900px) {
+  :root { --gutter: 48px; }
+  .top { height: 72px; }
+  .nav { display: flex; }
+  .find { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 0 16px; margin-top: 0; }
+  .ai { grid-column: 1 / -1; order: -1; }
+  .bar { grid-column: 1 / -1; min-height: 60px; }
+  .bar-sum { display: none; }
+  .bar-field { display: grid; flex: 1; padding: 8px 18px; text-align: left; border-right: 1px solid var(--line); }
+  .bar-field:nth-last-child(2) { border-right: 0; }
+  .bar-field small { color: var(--muted); font-size: 12px; }
+  .bar-field span { font-weight: 600; font-size: 15px; white-space: nowrap; }
+  .bar-go { padding: 0 24px; }
+  .go-label { display: inline; }
+  .lead { grid-template-columns: minmax(0, 1fr) 300px; gap: 14px 64px; margin-top: 32px; align-items: center; }
+  .lead > :not(.window) { grid-column: 1; }
+  .kicker { grid-row: 1; }
+  .lead h1 { grid-row: 2; font-size: 46px; line-height: 1.06; }
+  .dek { grid-row: 3; font-size: 18px; max-width: 34em; }
+  .lead-act { grid-row: 4; }
+  .window { grid-column: 2; grid-row: 1 / 6; width: 300px; padding: 12px; }
+  .shelf { margin-top: 36px; }
+  .shelf-top { display: flex; align-items: center; gap: 24px; }
+  .tabs { margin: 0; padding: 0; }
+  .list { columns: 2; column-gap: 56px; }
+  .item { break-inside: avoid; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<header class="wrap top">
+  <a class="brand" href="#"><span class="dot" aria-hidden="true"></span>Aviator</a>
+  <nav class="nav" aria-label="Разделы"><a href="#" aria-current="page">Билеты</a><a href="#">Города</a><a href="#">Избранное</a></nav>
+  <button class="from" type="button" aria-label="Город вылета: Москва. Изменить"><svg class="ic" aria-hidden="true"><use href="#i-pin"></use></svg>Москва<svg class="ic" aria-hidden="true"><use href="#i-chev"></use></svg></button>
+</header>
+
+<main class="wrap">
+  <section class="find" aria-label="Поиск">
+    <p class="ai" aria-disabled="true"><svg class="ic" aria-hidden="true"><use href="#i-pen"></use></svg>Опишите поездку словами <i>скоро</i></p>
+    <form class="bar" onsubmit="return false">
+      <button class="bar-sum" type="button"><b>Москва → куда угодно</b><small>ноябрь – декабрь · до 25&#8239;000&nbsp;₽</small></button>
+      <button class="bar-field" type="button"><small>Откуда</small><span>Москва</span></button>
+      <button class="bar-field" type="button"><small>Куда</small><span>Куда угодно</span></button>
+      <button class="bar-field" type="button"><small>Когда</small><span>Ноябрь – декабрь</span></button>
+      <button class="bar-field" type="button"><small>Бюджет на билеты</small><span>до 25&#8239;000&nbsp;₽</span></button>
+      <button class="bar-go" type="submit" aria-label="Найти"><svg class="ic" aria-hidden="true"><use href="#i-search"></use></svg><span class="go-label">Найти</span></button>
+    </form>
+  </section>
+  <article class="lead" id="lead"></article>
+  <section class="shelf" aria-labelledby="shelfTitle">
+    <div class="shelf-top"><h2 id="shelfTitle">Подборки</h2><div class="tabs" role="tablist" id="tabs"></div></div>
+    <p class="shelf-hint" id="hint"></p>
+    <ol class="list" id="list"></ol>
+    <a class="link more" href="#" id="more"></a>
+  </section>
+  <footer class="foot" id="foot"></footer>
+</main>
+
+<script src="data.js"></script>
+<script src="common.js"></script>
+<script>
+(() => {
+  const { M, F, ROWS, icon } = window.MK;
+  const top = M.rows.hot[0];
+  const nightsWord = { 1: 'одну ночь', 2: 'две ночи', 3: 'три ночи', 4: 'четыре ночи', 5: 'пять ночей', 6: 'шесть ночей', 7: 'неделю' }[top.nights] ?? F.nights(top.nights);
+  const short = { 'Санкт-Петербург': 'Петербург' }[top.city] ?? F.city(top.city);
+  const share = Math.abs(top.diff) >= 30 && Math.abs(top.diff) <= 36 ? 'на треть' : `на ${Math.abs(top.diff)}%`;
+  document.getElementById('lead').innerHTML = `
+    <p class="kicker"><b>Горячий билет</b><span>${F.inDays(top.inDays)}</span></p>
+    <h1>${F.esc(short)} на&nbsp;${nightsWord} — <span class="num">${F.price(top.price)}</span></h1>
+    <p class="dek">Туда и обратно, ${F.route(top)} рейс. Это ${share} ниже обычной цены в ${top.monthIn}: ${F.rangeDays(top.dep, top.ret)}.</p>
+    <p class="lead-act"><a class="btn" href="#">Смотреть поездку${icon('i-arrow')}</a><a class="link" href="#" data-go="hot">Ещё горячие</a></p>
+    <figure class="window" style="margin:0">${top.photo ? `<div class="window-in"><img src="${F.photo(top)}" alt="${F.esc(top.city)}" fetchpriority="high"></div>` : ''}</figure>`;
+  const tabs = document.getElementById('tabs'), list = document.getElementById('list');
+  tabs.innerHTML = ROWS.map((row, i) => `<button class="tab" role="tab" type="button" aria-selected="${i === 0}" data-key="${row.key}">${row.title}<span>${row.items.length}</span></button>`).join('');
+  const item = (o) => `<li class="item"><a href="#">
+    <span class="thumb">${o.photo ? `<img src="${F.photo(o)}" alt="" loading="lazy" decoding="async">` : ''}</span>
+    <span><h3>${F.esc(F.city(o.city))}</h3><span class="meta">${F.range(o.dep, o.ret)} · ${F.nights(o.nights)} · ${F.route(o)}</span></span>
+    <span class="pr"><b>${F.price(o.price)}</b>${o.level ? `<small class="${o.level}" title="${F.esc(F.levelNote(o))}">${o.level === 'low' && o.diff ? `на ${Math.abs(o.diff)}% ниже обычной` : F.levelShort(o)}</small>` : ''}</span></a></li>`;
+  const show = (key) => {
+    const row = ROWS.find((r) => r.key === key);
+    tabs.querySelectorAll('.tab').forEach((t) => t.setAttribute('aria-selected', String(t.dataset.key === key)));
+    document.getElementById('hint').textContent = row.hint;
+    list.innerHTML = row.items.slice(0, 8).map(item).join('');
+    const more = document.getElementById('more');
+    more.textContent = row.items.length > 8 ? `Все ${row.items.length} в выдаче →` : 'Открыть в выдаче →';
+  };
+  tabs.addEventListener('click', (e) => { const t = e.target.closest('.tab'); if (t) show(t.dataset.key); });
+  document.querySelector('[data-go]').addEventListener('click', (e) => { e.preventDefault(); show('hot'); tabs.scrollIntoView({ block: 'nearest' }); });
+  show(ROWS[0].key);
+  document.getElementById('foot').innerHTML = `<span>Цены — находки Aviasales на ${F.received()} (мск), туда и обратно на одного. Точную цену показывает Aviasales.</span><a href="#">Как мы считаем</a><a href="#">Как зарабатываем</a><a href="../../web/credits.html">Авторы фото</a>`;
+})();
+</script>
+</body>
+</html>

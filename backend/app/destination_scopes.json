@@ -1,0 +1,71 @@
+{
+  "any": {
+    "label": "Куда угодно",
+    "countries": [],
+    "cities": []
+  },
+  "russia": {
+    "label": "Россия",
+    "countries": ["RU"],
+    "cities": []
+  },
+  "turkey": {
+    "label": "Турция",
+    "countries": ["TR"],
+    "cities": ["IST", "AYT", "IZM", "BJV", "DLM", "ANK"]
+  },
+  "egypt": {
+    "label": "Египет",
+    "countries": ["EG"],
+    "cities": ["CAI", "HRG", "SSH", "LXR", "RMF"]
+  },
+  "tunisia": {
+    "label": "Тунис",
+    "countries": ["TN"],
+    "cities": ["TUN", "MIR", "DJE", "NBE"]
+  },
+  "europe": {
+    "label": "Европа",
+    "countries": [
+      "AL", "AD", "AT", "BE", "BA", "BG", "HR", "CY", "CZ", "DK", "EE", "FI",
+      "FR", "DE", "GR", "HU", "IS", "IE", "IT", "LV", "LI", "LT", "LU", "MT",
+      "MD", "MC", "ME", "NL", "MK", "NO", "PL", "PT", "RO", "SM", "RS", "SK",
+      "SI", "ES", "SE", "CH", "TR", "UA", "GB", "VA", "XK"
+    ],
+    "cities": [
+      "PAR", "LON", "ROM", "MIL", "BER", "FRA", "MUC", "MAD", "BCN", "LIS",
+      "AMS", "VIE", "PRG", "BUD", "WAW", "ATH", "HEL", "ZRH", "CPH", "STO",
+      "OSL", "BEG", "IST", "LCA"
+    ]
+  },
+  "asia": {
+    "label": "Азия",
+    "countries": [
+      "AE", "AF", "AM", "AZ", "BD", "BH", "BN", "BT", "CN", "CY", "GE", "HK",
+      "ID", "IL", "IN", "IQ", "IR", "JO", "JP", "KG", "KH", "KP", "KR", "KW",
+      "KZ", "LA", "LB", "LK", "MM", "MN", "MO", "MV", "MY", "NP", "OM", "PH",
+      "PK", "PS", "QA", "SA", "SG", "SY", "TH", "TJ", "TL", "TM", "TR", "TW",
+      "UZ", "VN", "YE"
+    ],
+    "cities": [
+      "DXB", "AUH", "DOH", "ALA", "TAS", "EVN", "TBS", "BAK", "DEL", "BOM",
+      "CMB", "MLE", "BKK", "HKT", "KUL", "SIN", "HAN", "SGN", "DPS", "BJS",
+      "SHA", "HKG", "SEL", "TYO"
+    ]
+  },
+  "usa": {
+    "label": "США",
+    "countries": ["US"],
+    "cities": ["NYC", "LAX", "SFO", "CHI", "MIA", "WAS", "BOS", "LAS", "SEA", "ORL", "HOU", "DFW"]
+  },
+  "thailand": {
+    "label": "Таиланд",
+    "countries": ["TH"],
+    "cities": ["BKK", "HKT"]
+  },
+  "uae": {
+    "label": "ОАЭ",
+    "countries": ["AE"],
+    "cities": ["DXB", "AUH"]
+  }
+}

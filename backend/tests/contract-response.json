@@ -1,0 +1,33 @@
+{
+  "offers": [
+    {
+      "id": "e9e6bc18c3b2fa80452fd5daa1fd3eaa",
+      "city_code": "LED",
+      "city": "Санкт-Петербург",
+      "country_code": "RU",
+      "country": "Россия",
+      "origin_airport": "SVO",
+      "destination_airport": "LED",
+      "origin_city": "Москва",
+      "origin_name": "Шереметьево",
+      "destination_name": "Пулково",
+      "departure_at": "2026-10-02T10:00:00+03:00",
+      "return_at": "2026-10-04T18:00:00+03:00",
+      "origin_timezone": "Europe/Moscow",
+      "destination_timezone": "Europe/Moscow",
+      "transfers": 0,
+      "return_transfers": null,
+      "duration_to": null,
+      "duration_back": null,
+      "price_minor": 850001,
+      "currency": "RUB",
+      "search_url": "https://www.aviasales.com/search/SVO0210LED04101",
+      "partner_url": null,
+      "source": "LIVE",
+      "received_at": "2026-10-01T09:00:00Z"
+    }
+  ],
+  "received_at": "2026-10-01T09:00:00Z",
+  "incomplete": false,
+  "warnings": []
+}

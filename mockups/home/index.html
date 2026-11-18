@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Три варианта главной — Aviator</title>
+<link rel="icon" href="../../web/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="fonts/fonts.css">
+<style>
+:root { --paper: #e9e7e1; --ink: #0f1b3d; --muted: #565d70; --cobalt: #2346d8; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 15px/1.45 'Onest', system-ui, sans-serif; padding: 24px 16px 40px; }
+h1 { font: 600 24px/1.2 'Onest', system-ui, sans-serif; margin: 0 auto 4px; max-width: 1185px; }
+.lead { color: var(--muted); max-width: 1185px; margin: 0 auto 20px; }
+.grid { display: flex; gap: 30px; justify-content: center; flex-wrap: wrap; }
+figure { margin: 0; width: 375px; }
+iframe { width: 375px; height: 812px; border: 0; border-radius: 22px; background: #fff; box-shadow: 0 0 0 8px #10131c, 0 18px 40px -18px rgba(0, 0, 0, .5); display: block; }
+figcaption { margin-top: 20px; }
+figcaption b { font-size: 17px; }
+figcaption a { color: var(--cobalt); font-weight: 600; }
+figcaption p { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
+</style>
+</head>
+<body>
+<h1>Три варианта первого экрана</h1>
+<p class="lead">Живые цены Aviasales из Москвы на 15 ноября 2026. Подборки собраны по предварительным правилам — см. docs/handoffs/web-mvp.md.</p>
+<div class="grid">
+  <figure><iframe src="v1-talon.html" title="Вариант 1" loading="eager"></iframe>
+    <figcaption><b>1. Посадочный талон</b> · <a href="v1-talon.html">открыть</a><p>Geologica, Golos Text, Martian Mono. Горячие — талоны с линией отрыва, остальные подборки — марки с зубчиками. Ряды карточек.</p></figcaption></figure>
+  <figure><iframe src="v2-okno.html" title="Вариант 2" loading="eager"></iframe>
+    <figcaption><b>2. Иллюминатор</b> · <a href="v2-okno.html">открыть</a><p>Literata, Onest, IBM Plex Mono. Журнальная подача: главный билет дня в окне самолёта, подборки — вкладками и нумерованным списком.</p></figcaption></figure>
+  <figure><iframe src="v3-tablo.html" title="Вариант 3" loading="eager"></iframe>
+    <figcaption><b>3. Табло вылетов</b> · <a href="v3-tablo.html">открыть</a><p>Tektur, Onest, JetBrains Mono. Плотная таблица на тёмно-синем, коды городов на перекидных ячейках, подборки — значками.</p></figcaption></figure>
+</div>
+</body>
+</html>

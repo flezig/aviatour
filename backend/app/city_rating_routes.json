@@ -1,0 +1,1409 @@
+{
+  "KZN": {
+    "starts": [
+      {
+        "name": "Отель «Ногай»",
+        "area": "Квартал улицы Баумана",
+        "lat": 55.791623,
+        "lon": 49.115219,
+        "url": "https://hotelnogai.ru/"
+      },
+      {
+        "name": "Отель «ТатарИнн»",
+        "area": "Старо-Татарская слобода",
+        "lat": 55.7811857,
+        "lon": 49.1166489,
+        "url": "https://tatarinn.ru/contacts/"
+      }
+    ],
+    "places": [
+      {
+        "name": "Казанский кремль, Спасская башня",
+        "lat": 55.7965753,
+        "lon": 49.1080371,
+        "url": "https://www.openstreetmap.org/relation/15958803"
+      },
+      {
+        "name": "Улица Баумана, памятник Коту Казанскому",
+        "lat": 55.7921706,
+        "lon": 49.1123314,
+        "url": "https://www.openstreetmap.org/node/3292801557"
+      },
+      {
+        "name": "Петропавловский собор",
+        "lat": 55.793525,
+        "lon": 49.1131348,
+        "url": "https://www.openstreetmap.org/way/90178098"
+      },
+      {
+        "name": "Площадь Свободы",
+        "lat": 55.7968576,
+        "lon": 49.1251354,
+        "url": "https://www.openstreetmap.org/way/75616908"
+      },
+      {
+        "name": "Мечеть Аль-Марджани",
+        "lat": 55.7797549,
+        "lon": 49.1180451,
+        "url": "https://www.openstreetmap.org/way/133264462"
+      }
+    ],
+    "walk_minutes": [
+      [
+        11.11,
+        3.41,
+        6.09,
+        13.98,
+        23.2
+      ],
+      [
+        29.5,
+        20.47,
+        25.44,
+        27.19,
+        3.8
+      ]
+    ],
+    "walk_seconds": [
+      [
+        666.5,
+        204.6,
+        365.2,
+        838.7,
+        1391.9
+      ],
+      [
+        1770.1,
+        1228.1,
+        1526.3,
+        1631.5,
+        227.8
+      ]
+    ],
+    "walk_metres": [
+      [
+        832.4,
+        255.5,
+        454.1,
+        1045.8,
+        1739.8
+      ],
+      [
+        2212.9,
+        1535.2,
+        1905.6,
+        2039.2,
+        284.8
+      ]
+    ],
+    "source": "Пешеходные маршруты FOSSGIS OSRM · © OpenStreetMap contributors",
+    "url": "https://routing.openstreetmap.de/routed-foot/table/v1/foot/49.115219,55.791623;49.1166489,55.7811857;49.1080371,55.7965753;49.1123314,55.7921706;49.1131348,55.7935250;49.1251354,55.7968576;49.1180451,55.7797549?sources=0;1&destinations=2;3;4;5;6&annotations=duration,distance&generate_hints=false",
+    "checked": "2026-11-18",
+    "valid_until": "2027-02-16",
+    "review_interval_days": 90,
+    "selection": "В двух центральных туристических кварталах взяли по одному отелю с опубликованными координатами. По городским и республиканским туристическим материалам до расчёта выбрали пять ориентиров в историческом центре. Включены все десять сочетаний.",
+    "selection_urls": [
+      "https://go.kzn.ru/reminder",
+      "https://go.kzn.ru/places/ulica-baumana",
+      "https://go.kzn.ru/places/petropavlovskii-sobor",
+      "https://go.kzn.ru/routes/gorod-dvux-religii",
+      "https://go.kzn.ru/places/ploshhad-svobody"
+    ],
+    "saturday_local_times": [
+      "10:00",
+      "15:00"
+    ],
+    "time_zone": "Europe/Moscow",
+    "scope": "Маршрут рассчитан между ближайшими к указанным точкам участками пешеходной сети. Максимальное смещение от исходной точки до сети — 11 м. Для обычной субботы принято одинаковое время ходьбы в 10:00 и 15:00 при открытом проходе. Очереди, вход внутрь зданий, погода и временные ограничения прохода в расчёт не входят. Выборка охватывает исторический центр.",
+    "router_info_url": "https://routing.openstreetmap.de/about.html",
+    "attribution_url": "https://www.openstreetmap.org/copyright",
+    "map_feedback_url": "https://www.openstreetmap.org/fixthemap"
+  },
+  "LED": {
+    "starts": [
+      {
+        "name": "Отель «Англетер»",
+        "lat": 59.9335474,
+        "lon": 30.3086352,
+        "url": "https://www.openstreetmap.org/node/8032152668",
+        "area": "Исаакиевская площадь"
+      },
+      {
+        "name": "Гранд Отель Европа",
+        "lat": 59.9359473,
+        "lon": 30.330709,
+        "url": "https://www.openstreetmap.org/node/5563229125",
+        "area": "площадь Искусств"
+      }
+    ],
+    "places": [
+      {
+        "name": "Зимний дворец, ворота с Дворцовой площади",
+        "lat": 59.9397735,
+        "lon": 30.3147302,
+        "url": "https://www.openstreetmap.org/node/1380389454"
+      },
+      {
+        "name": "Исаакиевский собор",
+        "lat": 59.933776,
+        "lon": 30.3065033,
+        "url": "https://www.openstreetmap.org/node/4173088437"
+      },
+      {
+        "name": "Казанский собор",
+        "lat": 59.9343401,
+        "lon": 30.3236505,
+        "url": "https://www.openstreetmap.org/node/7756205352"
+      },
+      {
+        "name": "Михайловский дворец Русского музея",
+        "lat": 59.9383872,
+        "lon": 30.3330454,
+        "url": "https://www.openstreetmap.org/node/5339175326"
+      },
+      {
+        "name": "Спас на Крови",
+        "lat": 59.9402675,
+        "lon": 30.3285591,
+        "url": "https://www.openstreetmap.org/node/7929218848"
+      }
+    ],
+    "walk_minutes": [
+      [
+        13.5,
+        3.65,
+        15.83,
+        25.1,
+        24.1
+      ],
+      [
+        18.75,
+        21.53,
+        8.26,
+        4.89,
+        10.13
+      ]
+    ],
+    "walk_seconds": [
+      [
+        810.3,
+        218.7,
+        950,
+        1505.8,
+        1445.9
+      ],
+      [
+        1125,
+        1291.8,
+        495.4,
+        293.1,
+        608
+      ]
+    ],
+    "walk_metres": [
+      [
+        1003.7,
+        271,
+        1187.1,
+        1882.4,
+        1807.4
+      ],
+      [
+        1406.7,
+        1612.6,
+        619.3,
+        366.2,
+        759.8
+      ]
+    ],
+    "source": "Пешеходные маршруты FOSSGIS OSRM · © OpenStreetMap contributors",
+    "url": "https://routing.openstreetmap.de/routed-foot/table/v1/foot/30.3086352,59.9335474;30.330709,59.9359473;30.3147302,59.9397735;30.3065033,59.933776;30.3236505,59.9343401;30.3330454,59.9383872;30.3285591,59.9402675?sources=0;1&destinations=2;3;4;5;6&annotations=duration,distance&generate_hints=false",
+    "checked": "2026-11-18",
+    "valid_until": "2027-02-16",
+    "review_interval_days": 90,
+    "selection": "До замера выбраны два отеля в разных центральных кварталах и пять городских достопримечательностей. Маршруты ведут от главных входов отелей до входов или ворот со стороны улицы.",
+    "selection_urls": [
+      "https://angleterrehotel.ru/contacts/",
+      "https://grandhoteleurope.com/"
+    ],
+    "saturday_local_times": [
+      "10:00",
+      "15:00"
+    ],
+    "time_zone": "Europe/Moscow",
+    "scope": "Путь до достопримечательности по карте при открытом проходе. Для обоих часов используется одинаковая оценка ходьбы. Посещение интерьера, очередь, снег и временные перекрытия в модель не входят.",
+    "router_info_url": "https://routing.openstreetmap.de/about.html",
+    "attribution_url": "https://www.openstreetmap.org/copyright",
+    "map_feedback_url": "https://www.openstreetmap.org/fixthemap"
+  },
+  "MOW": {
+    "starts": [
+      {
+        "name": "Отель «Националь»",
+        "lat": 55.7569088,
+        "lon": 37.6144141,
+        "url": "https://www.openstreetmap.org/node/1419453301",
+        "area": "Моховая и Тверская"
+      },
+      {
+        "name": "Отель «Балчуг Кемпински Москва»",
+        "lat": 55.7481788,
+        "lon": 37.6256521,
+        "url": "https://www.openstreetmap.org/node/5329195060",
+        "area": "Балчуг"
+      }
+    ],
+    "places": [
+      {
+        "name": "Красная площадь, Воскресенские ворота со стороны Манежной площади",
+        "lat": 55.7556667,
+        "lon": 37.6178853,
+        "url": "https://www.openstreetmap.org/node/767790019"
+      },
+      {
+        "name": "Собор Василия Блаженного, ворота со стороны Красной площади",
+        "lat": 55.7528672,
+        "lon": 37.6224307,
+        "url": "https://www.openstreetmap.org/node/1084769588"
+      },
+      {
+        "name": "Большой театр, главный вход Исторической сцены",
+        "lat": 55.7597979,
+        "lon": 37.6188068,
+        "url": "https://www.openstreetmap.org/node/2541236155"
+      },
+      {
+        "name": "Третьяковская галерея, главный вход в Лаврушинском переулке",
+        "lat": 55.741463,
+        "lon": 37.6207008,
+        "url": "https://www.openstreetmap.org/node/5060852337"
+      },
+      {
+        "name": "Московский Кремль, подход к лестнице южного входного павильона Кутафьей башни из Александровского сада",
+        "lat": 55.7521445,
+        "lon": 37.6126166,
+        "url": "https://www.openstreetmap.org/node/2459967588"
+      }
+    ],
+    "walk_minutes": [
+      [
+        4.43,
+        10.92,
+        6.94,
+        31.89,
+        9.62
+      ],
+      [
+        16.5,
+        10.67,
+        23.4,
+        14.18,
+        23.01
+      ]
+    ],
+    "walk_seconds": [
+      [
+        266,
+        655.1,
+        416.4,
+        1913.7,
+        577.4
+      ],
+      [
+        990.1,
+        640.1,
+        1403.9,
+        850.5,
+        1380.6
+      ]
+    ],
+    "walk_metres": [
+      [
+        332.1,
+        818.2,
+        520.4,
+        2391.3,
+        721.4
+      ],
+      [
+        1238.5,
+        800.5,
+        1756.2,
+        1062.9,
+        1725.9
+      ]
+    ],
+    "source": "Пешеходные маршруты FOSSGIS OSRM · © OpenStreetMap contributors",
+    "url": "https://routing.openstreetmap.de/routed-foot/table/v1/foot/37.6144141,55.7569088;37.6256521,55.7481788;37.6178853,55.7556667;37.6224307,55.7528672;37.6188068,55.7597979;37.6207008,55.741463;37.6126166,55.7521445?sources=0;1&destinations=2;3;4;5;6&annotations=duration,distance&generate_hints=false",
+    "checked": "2026-11-18",
+    "valid_until": "2027-02-16",
+    "review_interval_days": 90,
+    "weekend_dates": [
+      "2026-11-21",
+      "2026-11-28",
+      "2026-12-05",
+      "2026-12-12",
+      "2026-12-19",
+      "2026-12-26",
+      "2027-01-02",
+      "2027-01-09",
+      "2027-01-16",
+      "2027-01-23",
+      "2027-01-30",
+      "2027-02-06",
+      "2027-02-13"
+    ],
+    "selection": "До замера выбраны два отеля в разных центральных кварталах и пять достопримечательностей. Путь начинается у отмеченного в OpenStreetMap главного входа отеля и заканчивается у уличного входа, ворот или основания наружной лестницы.",
+    "selection_urls": [
+      "https://national.ru/contacts",
+      "https://baltschughotel.ru/legal-information/",
+      "https://www.mos.ru/upload/documents/oiv/karta_otryvnaya_.pdf",
+      "https://kreml.ru/ru/tickets",
+      "https://tretyakov.ru/for-visitors/museums/istoricheskoe-zdanie/",
+      "https://shm.ru/visit/kontakty-i-rezhim-raboty/"
+    ],
+    "saturday_local_times": [
+      "10:00",
+      "15:00"
+    ],
+    "time_zone": "Europe/Moscow",
+    "scope": "Расчёт от входа до входа при открытом проходе. Все десять пешеходных маршрутов проходят снаружи стен Кремля. От Балчуга к Большому театру путь идёт через пассаж ГУМа, открытый ежедневно с 10:00 до 22:00. Очереди, снег, перекрытия и фактические задержки автобуса могут изменить время.",
+    "passage_hours_url": "https://gum.ru/",
+    "router_info_url": "https://routing.openstreetmap.de/about.html",
+    "attribution_url": "https://www.openstreetmap.org/copyright",
+    "map_feedback_url": "https://www.openstreetmap.org/fixthemap",
+    "city_validation": {
+      "city": "Москва",
+      "iso_region": "RU-MOW",
+      "method": "Обратное геокодирование Nominatim, все семь точек.",
+      "urls": [
+        "https://nominatim.openstreetmap.org/reverse?lat=55.7569088&lon=37.6144141&format=jsonv2&zoom=10&addressdetails=1",
+        "https://nominatim.openstreetmap.org/reverse?lat=55.7481788&lon=37.6256521&format=jsonv2&zoom=10&addressdetails=1",
+        "https://nominatim.openstreetmap.org/reverse?lat=55.7556667&lon=37.6178853&format=jsonv2&zoom=10&addressdetails=1",
+        "https://nominatim.openstreetmap.org/reverse?lat=55.7528672&lon=37.6224307&format=jsonv2&zoom=10&addressdetails=1",
+        "https://nominatim.openstreetmap.org/reverse?lat=55.7597979&lon=37.6188068&format=jsonv2&zoom=10&addressdetails=1",
+        "https://nominatim.openstreetmap.org/reverse?lat=55.741463&lon=37.6207008&format=jsonv2&zoom=10&addressdetails=1",
+        "https://nominatim.openstreetmap.org/reverse?lat=55.7521445&lon=37.6126166&format=jsonv2&zoom=10&addressdetails=1"
+      ]
+    },
+    "snap_metres": [
+      0,
+      2.924521513,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "kremlin_boundary_url": "https://www.openstreetmap.org/relation/1360641",
+    "transit_minutes": {
+      "10:00": [
+        [
+          null,
+          null,
+          null,
+          17.62,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
+      ],
+      "15:00": [
+        [
+          null,
+          null,
+          null,
+          20.62,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
+      ]
+    },
+    "transit_note": "От «Националя» до Третьяковской галереи пешком 31,9 мин. Автобус м1 от «Охотного Ряда» до «Болотной площади» с пешими подходами занимает 17 мин 37 с при выходе в 10:00 (ожидание 54 с) и 20 мин 37 с при выходе в 15:00 (ожидание 3 мин 54 с).",
+    "transit_sources": [
+      {
+        "label": "Субботнее расписание м1, Московский транспорт",
+        "url": "https://transport.mos.ru/transport/schedule/route/1284?mgt_schedule%5Bdirection%5D=1&mgt_schedule%5Bdate%5D=21.11.2026"
+      },
+      {
+        "label": "Пешком от отеля до остановки",
+        "url": "https://routing.openstreetmap.de/routed-foot/route/v1/foot/37.6144141,55.7569088;37.61288,55.75792?overview=false&steps=false&generate_hints=false"
+      },
+      {
+        "label": "Пешком от остановки до Третьяковской галереи",
+        "url": "https://routing.openstreetmap.de/routed-foot/route/v1/foot/37.6144932,55.7433871;37.6207008,55.741463?overview=false&steps=false&generate_hints=false"
+      }
+    ],
+    "transit_detail": {
+      "start_index": 0,
+      "place_index": 3,
+      "line": "м1",
+      "direction": "Метро «Новаторская»",
+      "direction_url": "https://www.openstreetmap.org/relation/3228965",
+      "walk_legs": [
+        {
+          "stop": {
+            "name": "Метро «Охотный Ряд»",
+            "lat": 55.75792,
+            "lon": 37.61288,
+            "url": "https://www.openstreetmap.org/node/1210261859"
+          },
+          "seconds": 125.6,
+          "metres": 157,
+          "url": "https://routing.openstreetmap.de/routed-foot/route/v1/foot/37.6144141,55.7569088;37.61288,55.75792?overview=false&steps=false&generate_hints=false"
+        },
+        {
+          "stop": {
+            "name": "Болотная площадь",
+            "lat": 55.7433871,
+            "lon": 37.6144932,
+            "url": "https://www.openstreetmap.org/node/510113910"
+          },
+          "seconds": 516.9,
+          "metres": 660.6,
+          "url": "https://routing.openstreetmap.de/routed-foot/route/v1/foot/37.6144932,55.7433871;37.6207008,55.741463?overview=false&steps=false&generate_hints=false"
+        }
+      ],
+      "slots": {
+        "10:00": {
+          "departure": "10:03",
+          "arrival": "10:09",
+          "waiting_seconds": 54.4,
+          "ride_seconds": 360,
+          "total_seconds": 1056.9
+        },
+        "15:00": {
+          "departure": "15:06",
+          "arrival": "15:12",
+          "waiting_seconds": 234.4,
+          "ride_seconds": 360,
+          "total_seconds": 1236.9
+        }
+      },
+      "timetable_dates": [
+        {
+          "date": "2026-11-21",
+          "url": "https://transport.mos.ru/transport/schedule/route/1284?mgt_schedule%5Bdirection%5D=1&mgt_schedule%5Bdate%5D=21.11.2026"
+        },
+        {
+          "date": "2026-11-28",
+          "url": "https://transport.mos.ru/transport/schedule/route/1284?mgt_schedule%5Bdirection%5D=1&mgt_schedule%5Bdate%5D=28.11.2026"
+        },
+        {
+          "date": "2026-12-05",
+          "url": "https://transport.mos.ru/transport/schedule/route/1284?mgt_schedule%5Bdirection%5D=1&mgt_schedule%5Bdate%5D=05.12.2026"
+        },
+        {
+          "date": "2026-12-12",
+          "url": "https://transport.mos.ru/transport/schedule/route/1284?mgt_schedule%5Bdirection%5D=1&mgt_schedule%5Bdate%5D=12.12.2026"
+        },
+        {
+          "date": "2026-12-19",
+          "url": "https://transport.mos.ru/transport/schedule/route/1284?mgt_schedule%5Bdirection%5D=1&mgt_schedule%5Bdate%5D=19.12.2026"
+        },
+        {
+          "date": "2026-12-26",
+          "url": "https://transport.mos.ru/transport/schedule/route/1284?mgt_schedule%5Bdirection%5D=1&mgt_schedule%5Bdate%5D=26.12.2026"
+        },
+        {
+          "date": "2027-01-02",
+          "url": "https://transport.mos.ru/transport/schedule/route/1284?mgt_schedule%5Bdirection%5D=1&mgt_schedule%5Bdate%5D=02.01.2027"
+        },
+        {
+          "date": "2027-01-09",
+          "url": "https://transport.mos.ru/transport/schedule/route/1284?mgt_schedule%5Bdirection%5D=1&mgt_schedule%5Bdate%5D=09.01.2027"
+        },
+        {
+          "date": "2027-01-16",
+          "url": "https://transport.mos.ru/transport/schedule/route/1284?mgt_schedule%5Bdirection%5D=1&mgt_schedule%5Bdate%5D=16.01.2027"
+        },
+        {
+          "date": "2027-01-23",
+          "url": "https://transport.mos.ru/transport/schedule/route/1284?mgt_schedule%5Bdirection%5D=1&mgt_schedule%5Bdate%5D=23.01.2027"
+        },
+        {
+          "date": "2027-01-30",
+          "url": "https://transport.mos.ru/transport/schedule/route/1284?mgt_schedule%5Bdirection%5D=1&mgt_schedule%5Bdate%5D=30.01.2027"
+        },
+        {
+          "date": "2027-02-06",
+          "url": "https://transport.mos.ru/transport/schedule/route/1284?mgt_schedule%5Bdirection%5D=1&mgt_schedule%5Bdate%5D=06.02.2027"
+        },
+        {
+          "date": "2027-02-13",
+          "url": "https://transport.mos.ru/transport/schedule/route/1284?mgt_schedule%5Bdirection%5D=1&mgt_schedule%5Bdate%5D=13.02.2027"
+        }
+      ],
+      "assumptions": "Ожидание до первого отправления по расписанию после пешего подхода. Запас на посадку, задержки движения и досмотр в музей не включены. Время в автобусе до «Болотной площади» — 6 минут."
+    }
+  },
+  "GOJ": {
+    "starts": [
+      {
+        "name": "Отель Sheraton, пешеходный подход перед фасадом",
+        "lat": 56.3245735,
+        "lon": 44.0018684,
+        "url": "https://www.openstreetmap.org/node/13047830591",
+        "area": "Театральная площадь"
+      },
+      {
+        "name": "CORT INN Нижний Новгород, главный вход",
+        "lat": 56.3223613,
+        "lon": 43.9919658,
+        "url": "https://www.openstreetmap.org/node/5646475351",
+        "area": "Ильинская улица"
+      }
+    ],
+    "places": [
+      {
+        "name": "Нижегородский кремль, Дмитриевские ворота со стороны площади Минина и Пожарского",
+        "lat": 56.3269862,
+        "lon": 44.0057805,
+        "url": "https://www.openstreetmap.org/node/361530518"
+      },
+      {
+        "name": "Чкаловская лестница, верхняя площадка рядом с памятником Чкалову",
+        "lat": 56.3300828,
+        "lon": 44.0093933,
+        "url": "https://www.openstreetmap.org/node/696986010"
+      },
+      {
+        "name": "Нижегородский театр драмы, главный вход",
+        "lat": 56.3239973,
+        "lon": 44.0018457,
+        "url": "https://www.openstreetmap.org/node/3212469776"
+      },
+      {
+        "name": "Музей «Домик Каширина», наружные ворота",
+        "lat": 56.3236627,
+        "lon": 43.990869,
+        "url": "https://www.openstreetmap.org/node/13649952143"
+      },
+      {
+        "name": "Строгановская церковь, вход со стороны Рождественской улицы",
+        "lat": 56.3271385,
+        "lon": 43.9850077,
+        "url": "https://www.openstreetmap.org/node/2360740419"
+      }
+    ],
+    "walk_seconds": [
+      [
+        368.8,
+        699.6,
+        59.9,
+        712.1,
+        1170.7
+      ],
+      [
+        982.8,
+        1325.7,
+        643.9,
+        188.8,
+        744.6
+      ]
+    ],
+    "walk_metres": [
+      [
+        461.1,
+        874.3,
+        74.7,
+        890.2,
+        1464.2
+      ],
+      [
+        1228.6,
+        1657.2,
+        805.1,
+        235.8,
+        931
+      ]
+    ],
+    "walk_minutes": [
+      [
+        6.15,
+        11.66,
+        1.0,
+        11.87,
+        19.51
+      ],
+      [
+        16.38,
+        22.1,
+        10.73,
+        3.15,
+        12.41
+      ]
+    ],
+    "source": "Пешеходные маршруты FOSSGIS OSRM · © OpenStreetMap contributors",
+    "url": "https://routing.openstreetmap.de/routed-foot/table/v1/foot/44.0018684,56.3245735;43.9919658,56.3223613;44.0057805,56.3269862;44.0093933,56.3300828;44.0018457,56.3239973;43.990869,56.3236627;43.9850077,56.3271385?sources=0;1&destinations=2;3;4;5;6&annotations=duration,distance&generate_hints=false",
+    "checked": "2026-11-18",
+    "valid_until": "2027-02-16",
+    "review_interval_days": 90,
+    "selection": "До замера выбраны два отеля в разных центральных кварталах и пять достопримечательностей. Измерены обозначенные на карте входы, ворота и наружные подходы.",
+    "selection_urls": [
+      "https://sheraton-nn.ru/",
+      "https://nn-cortinn.ru/contacts/",
+      "https://museumgorkogo.ru/posetitelyam/",
+      "https://ngiamz.ru/nizhegorodskiy-kreml",
+      "https://www.kremlnn.ru/"
+    ],
+    "saturday_local_times": [
+      "10:00",
+      "15:00"
+    ],
+    "time_zone": "Europe/Moscow",
+    "scope": "Для субботы в оба часа использована одна пешеходная сеть при открытых проходах. Расчёт заканчивается у указанной уличной точки. Погода, временные перекрытия, ожидание допуска и осмотр интерьера в модель не входят. У Sheraton точка на дорожке перед фасадом. У Чкаловской лестницы точка на верхней площадке в 6 м от памятника. Дмитриевские ворота открыты пешеходам в оба контрольных часа. Для двух путей к Строгановской церкви индивидуальный расчёт даёт на 2 с больше, чем матрица, при одинаковом расстоянии.",
+    "city_validation": {
+      "city": "Нижний Новгород",
+      "city_code": "GOJ",
+      "boundary_url": "https://www.openstreetmap.org/relation/1752948",
+      "points_in_city": 7
+    },
+    "snap_metres": [
+      0,
+      9.601227955,
+      0,
+      0,
+      3.24663714,
+      0,
+      0
+    ],
+    "router_info_url": "https://routing.openstreetmap.de/about.html",
+    "attribution_url": "https://www.openstreetmap.org/copyright",
+    "map_feedback_url": "https://www.openstreetmap.org/fixthemap"
+  },
+  "SVX": {
+    "starts": [
+      {
+        "name": "Хаятт Ридженси Екатеринбург, пешеходный подход у подъезда к отелю",
+        "lat": 56.8428531,
+        "lon": 60.5913287,
+        "url": "https://www.openstreetmap.org/node/797257868",
+        "area": "Екатеринбург-Сити"
+      },
+      {
+        "name": "Novotel Екатеринбург Центр, главный вход",
+        "lat": 56.8330611,
+        "lon": 60.6114456,
+        "url": "https://www.openstreetmap.org/node/6858499760",
+        "area": "улицы Энгельса и Розы Люксембург"
+      }
+    ],
+    "places": [
+      {
+        "name": "Храм на Крови, пешеходный подход у крыльца",
+        "lat": 56.8442428,
+        "lon": 60.6087144,
+        "url": "https://www.openstreetmap.org/node/12100541052"
+      },
+      {
+        "name": "Дом Севастьянова, туристическая табличка у фасада со стороны Плотинки",
+        "lat": 56.8387617,
+        "lon": 60.6054579,
+        "url": "https://www.openstreetmap.org/node/415531606"
+      },
+      {
+        "name": "Плотинка, подход к памятнику Татищеву и де Геннину со стороны сквера",
+        "lat": 56.8380287,
+        "lon": 60.6060732,
+        "url": "https://www.openstreetmap.org/node/830038098"
+      },
+      {
+        "name": "Урал Опера Балет, главный вход",
+        "lat": 56.839297,
+        "lon": 60.6165669,
+        "url": "https://www.openstreetmap.org/node/1512506349"
+      },
+      {
+        "name": "Ельцин Центр, подход по наружной лестнице со стороны улицы Бориса Ельцина",
+        "lat": 56.8448828,
+        "lon": 60.5920471,
+        "url": "https://www.openstreetmap.org/node/10596179394"
+      }
+    ],
+    "walk_seconds": [
+      [
+        1715.7,
+        1052.8,
+        1152.8,
+        1643.8,
+        210.2
+      ],
+      [
+        1115,
+        752.4,
+        670.2,
+        855.1,
+        1757.1
+      ]
+    ],
+    "walk_metres": [
+      [
+        2144.2,
+        1315.7,
+        1441.3,
+        2054.5,
+        262.8
+      ],
+      [
+        1393.8,
+        940.4,
+        837.4,
+        1069.2,
+        2196.1
+      ]
+    ],
+    "walk_minutes": [
+      [
+        28.6,
+        17.55,
+        19.21,
+        27.4,
+        3.5
+      ],
+      [
+        18.58,
+        12.54,
+        11.17,
+        14.25,
+        29.29
+      ]
+    ],
+    "source": "Пешеходные маршруты FOSSGIS OSRM · © OpenStreetMap contributors",
+    "url": "https://routing.openstreetmap.de/routed-foot/table/v1/foot/60.5913287,56.8428531;60.6114456,56.8330611;60.6087144,56.8442428;60.6054579,56.8387617;60.6060732,56.8380287;60.6165669,56.839297;60.5920471,56.8448828?sources=0;1&destinations=2;3;4;5;6&annotations=duration,distance&generate_hints=false",
+    "checked": "2026-11-18",
+    "valid_until": "2027-02-16",
+    "review_interval_days": 90,
+    "selection": "До замера выбраны два отеля в разных центральных кварталах и пять достопримечательностей. Измерены обозначенные на карте входы, ворота и наружные подходы.",
+    "selection_urls": [
+      "https://rg-ekaterinburghotel.ru/contacts/",
+      "https://novotel-ekb.ru/kontakty",
+      "https://yeltsin.ru/museum/"
+    ],
+    "saturday_local_times": [
+      "10:00",
+      "15:00"
+    ],
+    "time_zone": "Asia/Yekaterinburg",
+    "scope": "Для субботы в оба часа использована одна пешеходная сеть при открытых проходах. Расчёт заканчивается у указанной уличной точки. Погода, временные перекрытия, ожидание допуска и осмотр интерьера в модель не входят. У Hyatt точка на дорожке у подъезда к гостинице. У дома Севастьянова отмечена туристическая табличка перед фасадом, у памятника основателям — подход со стороны сквера в 22 м от центра памятника. У храма и Ельцин Центра отмечены подходы к крыльцу и наружной лестнице.",
+    "city_validation": {
+      "city": "Екатеринбург",
+      "city_code": "SVX",
+      "boundary_url": "https://www.openstreetmap.org/relation/6564910",
+      "points_in_city": 7
+    },
+    "snap_metres": [
+      0,
+      8.743240054,
+      0,
+      0,
+      0,
+      12.02968094,
+      0
+    ],
+    "router_info_url": "https://routing.openstreetmap.de/about.html",
+    "attribution_url": "https://www.openstreetmap.org/copyright",
+    "map_feedback_url": "https://www.openstreetmap.org/fixthemap"
+  },
+  "KUF": {
+    "starts": [
+      {
+        "name": "LOTTE HOTEL SAMARA, пешеходный подход с Самарской улицы",
+        "lat": 53.1928093,
+        "lon": 50.1051652,
+        "url": "https://www.openstreetmap.org/way/390961077#map=20/53.1928093/50.1051652",
+        "area": "Самарская улица и площадь Куйбышева"
+      },
+      {
+        "name": "HolidayHall Samara, тротуар перед фасадом",
+        "lat": 53.19003,
+        "lon": 50.0858834,
+        "url": "https://www.openstreetmap.org/way/375074835#map=20/53.19003/50.0858834",
+        "area": "улица Алексея Толстого"
+      }
+    ],
+    "places": [
+      {
+        "name": "Скульптура «Бурлаки на Волге», дорожка на набережной",
+        "lat": 53.1897919,
+        "lon": 50.0821078,
+        "url": "https://www.openstreetmap.org/node/6771357666"
+      },
+      {
+        "name": "Памятник Чапаеву, край площади со стороны улицы Шостаковича",
+        "lat": 53.1966766,
+        "lon": 50.0972423,
+        "url": "https://www.openstreetmap.org/node/4121147900"
+      },
+      {
+        "name": "Самарский театр оперы и балета, вход с площади Куйбышева",
+        "lat": 53.1953278,
+        "lon": 50.1025894,
+        "url": "https://www.openstreetmap.org/node/3820175951"
+      },
+      {
+        "name": "Бункер Сталина, уличный подход ко двору с улицы Фрунзе",
+        "lat": 53.1969529,
+        "lon": 50.0976804,
+        "url": "https://www.openstreetmap.org/node/14372558954"
+      },
+      {
+        "name": "Иверский монастырь, наружные ворота",
+        "lat": 53.1991749,
+        "lon": 50.0978114,
+        "url": "https://www.openstreetmap.org/node/4062893059"
+      }
+    ],
+    "walk_seconds": [
+      [
+        1632.8,
+        748.6,
+        437.6,
+        771.5,
+        948.5
+      ],
+      [
+        297.1,
+        1105.3,
+        1391.4,
+        1149,
+        1210.8
+      ]
+    ],
+    "walk_metres": [
+      [
+        2040.6,
+        935.5,
+        546.9,
+        964.1,
+        1185.3
+      ],
+      [
+        371.2,
+        1381.8,
+        1739.3,
+        1436.5,
+        1513.8
+      ]
+    ],
+    "walk_minutes": [
+      [
+        27.21,
+        12.48,
+        7.29,
+        12.86,
+        15.81
+      ],
+      [
+        4.95,
+        18.42,
+        23.19,
+        19.15,
+        20.18
+      ]
+    ],
+    "source": "Пешеходные маршруты FOSSGIS OSRM · © OpenStreetMap contributors",
+    "url": "https://routing.openstreetmap.de/routed-foot/table/v1/foot/50.1051652,53.1928093;50.0858834,53.19003;50.0821078,53.1897919;50.0972423,53.1966766;50.1025894,53.1953278;50.0976804,53.1969529;50.0978114,53.1991749?sources=0;1&destinations=2;3;4;5;6&annotations=duration,distance&generate_hints=false",
+    "checked": "2026-11-18",
+    "valid_until": "2027-02-16",
+    "review_interval_days": 90,
+    "selection": "До замера выбраны два отеля в разных центральных кварталах и пять достопримечательностей. Измерены обозначенные на карте входы, ворота и наружные подходы.",
+    "selection_urls": [
+      "https://holidayhall.ru/contacts/",
+      "https://www.lottehotel.com/samara-hotel/ru.html",
+      "https://samara.profi.travel/"
+    ],
+    "saturday_local_times": [
+      "10:00",
+      "15:00"
+    ],
+    "time_zone": "Europe/Samara",
+    "scope": "Для субботы в оба часа использована одна пешеходная сеть при открытых проходах. Расчёт заканчивается у указанной уличной точки. Погода, временные перекрытия, ожидание допуска и осмотр интерьера в модель не входят. У памятников отмечены точки на пешеходной площади или набережной. У отелей взят наружный тротуар перед фасадом, у Бункера Сталина — подход с улицы Фрунзе ко двору института культуры. Допуск во двор и посещение подземного музея в расчёт не входят.",
+    "city_validation": {
+      "city": "Самара",
+      "city_code": "KUF",
+      "boundary_url": "https://www.openstreetmap.org/relation/287507",
+      "points_in_city": 7
+    },
+    "snap_metres": [
+      0,
+      0,
+      0,
+      0,
+      19.32729703,
+      0,
+      5.317395007
+    ],
+    "router_info_url": "https://routing.openstreetmap.de/about.html",
+    "attribution_url": "https://www.openstreetmap.org/copyright",
+    "map_feedback_url": "https://www.openstreetmap.org/fixthemap"
+  },
+  "IST": {
+    "starts": [
+      {
+        "name": "Sirkeci Mansion, уличный подход на Tayahatun Sokak",
+        "lat": 41.0128862,
+        "lon": 28.978661,
+        "url": "https://www.openstreetmap.org/way/25542613#map=20/41.0128862/28.978661",
+        "area": "Сиркеджи"
+      },
+      {
+        "name": "Hotel Amira Istanbul, уличный подход на Mustafapaşa Sokak",
+        "lat": 41.0031732,
+        "lon": 28.973973,
+        "url": "https://www.openstreetmap.org/way/229360141#map=20/41.0031732/28.973973",
+        "area": "Кючюк-Айясофья"
+      }
+    ],
+    "places": [
+      {
+        "name": "Айя-София, уличная касса у туристического входа напротив фонтана Ахмеда III",
+        "lat": 41.0081077,
+        "lon": 28.9807891,
+        "url": "https://www.openstreetmap.org/node/12102726893"
+      },
+      {
+        "name": "Голубая мечеть, наружные ворота C со стороны площади Султанахмет",
+        "lat": 41.0059678,
+        "lon": 28.9759673,
+        "url": "https://www.openstreetmap.org/node/12919744743"
+      },
+      {
+        "name": "Дворец Топкапы, наружная сторона Императорских ворот",
+        "lat": 41.0085651,
+        "lon": 28.9814053,
+        "url": "https://www.openstreetmap.org/node/3078464235"
+      },
+      {
+        "name": "Цистерна Базилика, вход посетителей на улице Yerebatan",
+        "lat": 41.0084167,
+        "lon": 28.9779664,
+        "url": "https://www.openstreetmap.org/node/1909688087"
+      },
+      {
+        "name": "Гранд-базар, ворота Нуруосмание № 1",
+        "lat": 41.0100945,
+        "lon": 28.9699533,
+        "url": "https://www.openstreetmap.org/node/3461609141"
+      }
+    ],
+    "walk_seconds": [
+      [
+        532.5,
+        710.7,
+        496.8,
+        470.9,
+        788.8
+      ],
+      [
+        692.7,
+        354.7,
+        750.6,
+        651.9,
+        874.1
+      ]
+    ],
+    "walk_metres": [
+      [
+        665.5,
+        885.7,
+        620.8,
+        585.9,
+        985.6
+      ],
+      [
+        866.1,
+        443.6,
+        938.5,
+        810,
+        1087.6
+      ]
+    ],
+    "walk_minutes": [
+      [
+        8.88,
+        11.85,
+        8.28,
+        7.85,
+        13.15
+      ],
+      [
+        11.54,
+        5.91,
+        12.51,
+        10.87,
+        14.57
+      ]
+    ],
+    "source": "Пешеходные маршруты FOSSGIS OSRM · © OpenStreetMap contributors",
+    "url": "https://routing.openstreetmap.de/routed-foot/table/v1/foot/28.978661,41.0128862;28.973973,41.0031732;28.9807891,41.0081077;28.9759673,41.0059678;28.9814053,41.0085651;28.9779664,41.0084167;28.9699533,41.0100945?sources=0;1&destinations=2;3;4;5;6&annotations=duration,distance&generate_hints=false",
+    "checked": "2026-11-18",
+    "valid_until": "2027-02-16",
+    "review_interval_days": 90,
+    "selection": "До замера выбраны два отеля в разных центральных кварталах и пять достопримечательностей. Измерены обозначенные на карте входы, ворота и наружные подходы.",
+    "selection_urls": [
+      "https://www.sirkecimansion.com/contact/",
+      "https://www.hotelamira.com/",
+      "https://muze.gen.tr/muze-detay/ayasofya",
+      "https://mesalecafe.net/en/sultanahmet/arasta-bazaar",
+      "https://basin.ktb.gov.tr/TR-364045/ayasofya-i-kebir-camiinde-yeni-duzenleme-15-ocakta-basliyor.html"
+    ],
+    "saturday_local_times": [
+      "10:00",
+      "15:00"
+    ],
+    "time_zone": "Europe/Istanbul",
+    "scope": "Для субботы в оба часа использована одна пешеходная сеть при открытых проходах. Расчёт заканчивается у указанной уличной точки. Погода, временные перекрытия, ожидание допуска и осмотр интерьера в модель не входят. У гостиниц выбраны точки на их улицах перед фасадами. У Айя-Софии — уличная касса у входа в галерею напротив фонтана Ахмеда III. Путь от Hotel Amira к Айя-Софии и Топкапы идёт по торговой улице Араста, обычно открытой ежедневно с 09:00 до 19:00. Очередь, билетный контроль и ограничения во время молитв в расчёт не входят. Для этих двух пар отдельно проверены маршруты в обход ворот Арасты через улицу Yerebatan, оба короче 30 минут.",
+    "city_validation": {
+      "city": "Стамбул",
+      "city_code": "IST",
+      "boundary_url": "https://www.openstreetmap.org/relation/1766104",
+      "points_in_city": 7
+    },
+    "snap_metres": [
+      0,
+      0,
+      4.004394423,
+      0,
+      0,
+      0,
+      0
+    ],
+    "router_info_url": "https://routing.openstreetmap.de/about.html",
+    "attribution_url": "https://www.openstreetmap.org/copyright",
+    "map_feedback_url": "https://www.openstreetmap.org/fixthemap",
+    "passage_alternatives": [
+      {
+        "start_index": 1,
+        "place_index": 0,
+        "walk_seconds": 900,
+        "walk_metres": 1115,
+        "via": "Вход в Цистерну Базилика на улице Yerebatan",
+        "url": "https://routing.openstreetmap.de/routed-foot/route/v1/foot/28.973973,41.0031732;28.9779664,41.0084167;28.9807891,41.0081077?overview=full&geometries=geojson&steps=true&annotations=nodes&generate_hints=false"
+      },
+      {
+        "start_index": 1,
+        "place_index": 2,
+        "walk_seconds": 957.9,
+        "walk_metres": 1187.5,
+        "via": "Вход в Цистерну Базилика на улице Yerebatan",
+        "url": "https://routing.openstreetmap.de/routed-foot/route/v1/foot/28.973973,41.0031732;28.9779664,41.0084167;28.9814053,41.0085651?overview=full&geometries=geojson&steps=true&annotations=nodes&generate_hints=false"
+      }
+    ]
+  },
+  "TBS": {
+    "starts": [
+      {
+        "name": "ibis Styles Tbilisi Center, главный вход с улицы Галактиона Табидзе",
+        "lat": 41.6920883,
+        "lon": 44.8012275,
+        "url": "https://www.openstreetmap.org/node/13836824331",
+        "area": "площадь Свободы"
+      },
+      {
+        "name": "Tiflis Palace, от входной пристройки через сквер",
+        "url": "https://www.openstreetmap.org/node/14341110769",
+        "lon": 44.81159,
+        "lat": 41.6887591,
+        "area": "Абанотубани"
+      }
+    ],
+    "places": [
+      {
+        "name": "Орбелиановские бани Chreli Abano, главный вход",
+        "lat": 41.6876048,
+        "lon": 44.8107259,
+        "url": "https://www.openstreetmap.org/node/4936735210"
+      },
+      {
+        "name": "Храм Метехи, главный вход в церковь",
+        "lat": 41.69023,
+        "lon": 44.8112775,
+        "url": "https://www.openstreetmap.org/node/9774437723"
+      },
+      {
+        "name": "Мост Мира, западный подход со стороны Старого города",
+        "lat": 41.6929457,
+        "lon": 44.8071404,
+        "url": "https://www.openstreetmap.org/node/6668070294"
+      },
+      {
+        "name": "Собор Сиони, наружные ворота с улицы Сиони",
+        "lat": 41.6910864,
+        "lon": 44.807369,
+        "url": "https://www.openstreetmap.org/node/288583529"
+      },
+      {
+        "name": "Часовая башня театра Габриадзе, улица Шавтели у фасада",
+        "lat": 41.6958088,
+        "lon": 44.8064603,
+        "url": "https://www.openstreetmap.org/way/26340681#map=20/41.6958088/44.8064603"
+      }
+    ],
+    "walk_seconds": [
+      [
+        990.3,
+        1069,
+        547,
+        603.2,
+        648.1
+      ],
+      [
+        193.9,
+        539.6,
+        587.9,
+        458.5,
+        872.9
+      ]
+    ],
+    "walk_metres": [
+      [
+        1237.7,
+        1335.7,
+        683.7,
+        754,
+        809.5
+      ],
+      [
+        242.3,
+        674.2,
+        735.0,
+        572.8,
+        1091.1
+      ]
+    ],
+    "walk_minutes": [
+      [
+        16.5,
+        17.82,
+        9.12,
+        10.05,
+        10.8
+      ],
+      [
+        3.23,
+        8.99,
+        9.8,
+        7.64,
+        14.55
+      ]
+    ],
+    "source": "Пешеходные маршруты FOSSGIS OSRM · © OpenStreetMap contributors",
+    "url": "https://routing.openstreetmap.de/routed-foot/table/v1/foot/44.8012275,41.6920883;44.8112315,41.688694;44.8107259,41.6876048;44.8112775,41.69023;44.8071404,41.6929457;44.807369,41.6910864;44.8064603,41.6958088?sources=0;1&destinations=2;3;4;5;6&annotations=duration,distance&generate_hints=false",
+    "checked": "2026-11-18",
+    "valid_until": "2027-02-16",
+    "review_interval_days": 90,
+    "selection": "До замера выбраны два отеля в разных центральных кварталах и пять достопримечательностей. Измерены обозначенные на карте входы, ворота и наружные подходы.",
+    "selection_urls": [
+      "https://tiflispalace.ge/",
+      "https://all.accor.com/a/en/destination/city/hotels-tbilisi-v3958.html",
+      "https://chreli-abano.ge/",
+      "https://georgia.travel/strolling-through-the-old-city-of-tbilisi"
+    ],
+    "saturday_local_times": [
+      "10:00",
+      "15:00"
+    ],
+    "time_zone": "Asia/Tbilisi",
+    "scope": "Для субботы в оба часа использована одна пешеходная сеть при открытых проходах. Расчёт заканчивается у указанной уличной точки. Погода, временные перекрытия, ожидание допуска и осмотр интерьера в модель не входят. У бань отмечен главный вход, у Моста Мира — западный подход, у башни Габриадзе — улица перед фасадом. У Метехи путь включает подъём. Уличная доступность не означает возможность посетить богослужение, спектакль или сеанс в банях. Для Tiflis Palace в расчёт включён проход от входной пристройки до точки в сквере — ещё 74,5 м и около минуты.",
+    "city_validation": {
+      "city": "Тбилиси",
+      "city_code": "TBS",
+      "boundary_url": "https://www.openstreetmap.org/relation/1996871",
+      "points_in_city": 7
+    },
+    "snap_metres": [
+      5.090447766,
+      0,
+      0.9812478709,
+      0,
+      0,
+      0,
+      0
+    ],
+    "router_info_url": "https://routing.openstreetmap.de/about.html",
+    "attribution_url": "https://www.openstreetmap.org/copyright",
+    "map_feedback_url": "https://www.openstreetmap.org/fixthemap",
+    "start_access_check": {
+      "point": {
+        "name": "Вход во входной пристройке со стороны дороги на верхней террасе",
+        "url": "https://www.openstreetmap.org/node/14341110769",
+        "lon": 44.81159,
+        "lat": 41.6887591
+      },
+      "seconds": 59.6,
+      "metres": 74.5,
+      "url": "https://routing.openstreetmap.de/routed-foot/route/v1/foot/44.81159,41.6887591;44.8112315,41.688694?overview=full&geometries=geojson&steps=true&annotations=nodes&generate_hints=false",
+      "snap_metres": [
+        9.412774372,
+        0
+      ],
+      "checked_destinations_via_waypoint_seconds": [
+        193.9,
+        539.6,
+        587.9,
+        458.5,
+        872.9
+      ],
+      "building_url": "https://www.openstreetmap.org/way/1207148736",
+      "waypoint": {
+        "name": "Tiflis Palace, пешеходный ориентир в сквере у гостиницы",
+        "lat": 41.688694,
+        "lon": 44.8112315,
+        "url": "https://www.openstreetmap.org/node/1466679018",
+        "area": "Абанотубани"
+      }
+    },
+    "transit_sources": [
+      {
+        "label": "Участок пешком от входа Tiflis Palace до сквера",
+        "url": "https://routing.openstreetmap.de/routed-foot/route/v1/foot/44.81159,41.6887591;44.8112315,41.688694?overview=full&geometries=geojson&steps=true&annotations=nodes&generate_hints=false"
+      }
+    ]
+  },
+  "EVN": {
+    "starts": [
+      {
+        "name": "Republica Hotel Yerevan, наружный подъезд к гостинице",
+        "lat": 40.1793121,
+        "lon": 44.5094495,
+        "url": "https://www.openstreetmap.org/node/5167383385",
+        "area": "улица Папа Тагавора (бывшая Амиряна)"
+      },
+      {
+        "name": "Tufenkian Historic Yerevan Hotel, вход на улице Анрапетутян",
+        "lat": 40.1767088,
+        "lon": 44.5163796,
+        "url": "https://www.openstreetmap.org/node/2333643737",
+        "area": "квартал Вернисажа"
+      }
+    ],
+    "places": [
+      {
+        "name": "Площадь Республики, пешеходная дорожка у Поющих фонтанов",
+        "lat": 40.1779934,
+        "lon": 44.5137392,
+        "url": "https://www.openstreetmap.org/node/12520141997"
+      },
+      {
+        "name": "Каскад, площадка у памятника Александру Таманяну",
+        "lat": 40.1888327,
+        "lon": 44.5152803,
+        "url": "https://www.openstreetmap.org/node/5602776438"
+      },
+      {
+        "name": "Театр оперы и балета, главный вход с площади Свободы",
+        "lat": 40.1855385,
+        "lon": 44.5150429,
+        "url": "https://www.openstreetmap.org/node/4687647758"
+      },
+      {
+        "name": "Голубая мечеть, начало пешеходного прохода с проспекта Маштоца",
+        "lat": 40.1786261,
+        "lon": 44.5052089,
+        "url": "https://www.openstreetmap.org/node/10235425891"
+      },
+      {
+        "name": "Вернисаж, пешеходный подход со стороны улиц Бузанда и Анрапетутян",
+        "lat": 40.1766123,
+        "lon": 44.5169897,
+        "url": "https://www.openstreetmap.org/node/11703845161"
+      }
+    ],
+    "walk_seconds": [
+      [
+        611.6,
+        1306.6,
+        956.7,
+        454.6,
+        928.6
+      ],
+      [
+        302.6,
+        1364.8,
+        939.6,
+        1065.6,
+        75.4
+      ]
+    ],
+    "walk_metres": [
+      [
+        764.3,
+        1632.9,
+        1195.9,
+        568.2,
+        1160.7
+      ],
+      [
+        378.3,
+        1706.4,
+        1174.9,
+        1332.2,
+        94.3
+      ]
+    ],
+    "walk_minutes": [
+      [
+        10.19,
+        21.78,
+        15.95,
+        7.58,
+        15.48
+      ],
+      [
+        5.04,
+        22.75,
+        15.66,
+        17.76,
+        1.26
+      ]
+    ],
+    "source": "Пешеходные маршруты FOSSGIS OSRM · © OpenStreetMap contributors",
+    "url": "https://routing.openstreetmap.de/routed-foot/table/v1/foot/44.5094495,40.1793121;44.5163796,40.1767088;44.5137392,40.1779934;44.5152803,40.1888327;44.5150429,40.1855385;44.5052089,40.1786261;44.5169897,40.1766123?sources=0;1&destinations=2;3;4;5;6&annotations=duration,distance&generate_hints=false",
+    "checked": "2026-11-18",
+    "valid_until": "2027-02-16",
+    "review_interval_days": 90,
+    "selection": "До замера выбраны два отеля в разных центральных кварталах и пять достопримечательностей. Измерены обозначенные на карте входы, ворота и наружные подходы.",
+    "selection_urls": [
+      "https://www.republicahotel.am/contacts/",
+      "https://historic-yerevan.tufenkianheritage.com/contacts/",
+      "https://visityerevan.am/",
+      "https://armenia.travel/articles/yerevan-locals-guide-to-armenias-capital/"
+    ],
+    "saturday_local_times": [
+      "10:00",
+      "15:00"
+    ],
+    "time_zone": "Asia/Yerevan",
+    "scope": "Для субботы в оба часа использована одна пешеходная сеть при открытых проходах. Расчёт заканчивается у указанной уличной точки. Погода, временные перекрытия, ожидание допуска и осмотр интерьера в модель не входят. Указано время до уличного подхода. Работа фонтанов, посещение мечети и театра, а также торговля на рынке зависят от сезона и часов работы. Светомузыкальные представления фонтанов проходят по вечерам в сезон.",
+    "city_validation": {
+      "city": "Ереван",
+      "city_code": "EVN",
+      "boundary_url": "https://www.openstreetmap.org/relation/364087",
+      "points_in_city": 7
+    },
+    "snap_metres": [
+      0,
+      2.263779556,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "router_info_url": "https://routing.openstreetmap.de/about.html",
+    "attribution_url": "https://www.openstreetmap.org/copyright",
+    "map_feedback_url": "https://www.openstreetmap.org/fixthemap"
+  }
+}

@@ -1,0 +1,770 @@
+{
+ "AB": {
+  "mid": "abkhazia",
+  "fcdo": null
+ },
+ "AU": {
+  "mid": "australia",
+  "fcdo": "australia"
+ },
+ "AT": {
+  "mid": "austria",
+  "fcdo": "austria"
+ },
+ "AZ": {
+  "mid": "azerbaijan",
+  "fcdo": "azerbaijan"
+ },
+ "AL": {
+  "mid": "albania",
+  "fcdo": "albania"
+ },
+ "DZ": {
+  "mid": "algeria",
+  "fcdo": "algeria"
+ },
+ "AO": {
+  "mid": "angola",
+  "fcdo": "angola"
+ },
+ "AD": {
+  "mid": "andorra",
+  "fcdo": "andorra"
+ },
+ "AG": {
+  "mid": "antigua-and-barbuda",
+  "fcdo": "antigua-and-barbuda"
+ },
+ "AR": {
+  "mid": "argentina",
+  "fcdo": "argentina"
+ },
+ "AM": {
+  "mid": "armenia",
+  "fcdo": "armenia"
+ },
+ "AF": {
+  "mid": "afghanistan",
+  "fcdo": "afghanistan"
+ },
+ "BS": {
+  "mid": "bahamas",
+  "fcdo": "bahamas"
+ },
+ "BD": {
+  "mid": "bangladesh",
+  "fcdo": "bangladesh"
+ },
+ "BB": {
+  "mid": "barbados",
+  "fcdo": "barbados"
+ },
+ "BH": {
+  "mid": "bahrain",
+  "fcdo": "bahrain"
+ },
+ "BZ": {
+  "mid": "belize",
+  "fcdo": "belize"
+ },
+ "BY": {
+  "mid": "belarus",
+  "fcdo": "belarus"
+ },
+ "BE": {
+  "mid": "belgium",
+  "fcdo": "belgium"
+ },
+ "BJ": {
+  "mid": "benin",
+  "fcdo": "benin"
+ },
+ "BG": {
+  "mid": "bulgaria",
+  "fcdo": "bulgaria"
+ },
+ "BO": {
+  "mid": "bolivia",
+  "fcdo": "bolivia"
+ },
+ "BA": {
+  "mid": "bosnia-and-herzegovina",
+  "fcdo": "bosnia-and-herzegovina"
+ },
+ "BW": {
+  "mid": "botswana",
+  "fcdo": "botswana"
+ },
+ "BR": {
+  "mid": "brazil",
+  "fcdo": "brazil"
+ },
+ "BN": {
+  "mid": "brunei",
+  "fcdo": "brunei"
+ },
+ "BF": {
+  "mid": "burkina-faso",
+  "fcdo": "burkina-faso"
+ },
+ "BI": {
+  "mid": "burundi",
+  "fcdo": "burundi"
+ },
+ "BT": {
+  "mid": "bhutan",
+  "fcdo": "bhutan"
+ },
+ "VU": {
+  "mid": "vanuatu",
+  "fcdo": "vanuatu"
+ },
+ "VA": {
+  "mid": "vatican",
+  "fcdo": null
+ },
+ "GB": {
+  "mid": "britain",
+  "fcdo": null
+ },
+ "HU": {
+  "mid": "hungary",
+  "fcdo": "hungary"
+ },
+ "VE": {
+  "mid": "venezuela",
+  "fcdo": "venezuela"
+ },
+ "VN": {
+  "mid": "vietnam",
+  "fcdo": "vietnam"
+ },
+ "GA": {
+  "mid": "gabon",
+  "fcdo": "gabon"
+ },
+ "HT": {
+  "mid": "haiti",
+  "fcdo": "haiti"
+ },
+ "GY": {
+  "mid": "guyana",
+  "fcdo": "guyana"
+ },
+ "GM": {
+  "mid": "gambia",
+  "fcdo": null
+ },
+ "GH": {
+  "mid": "ghana",
+  "fcdo": "ghana"
+ },
+ "GT": {
+  "mid": "guatemala",
+  "fcdo": "guatemala"
+ },
+ "GN": {
+  "mid": "guinea",
+  "fcdo": "guinea"
+ },
+ "GW": {
+  "mid": "guinea-bissau",
+  "fcdo": "guinea-bissau"
+ },
+ "HN": {
+  "mid": "honduras",
+  "fcdo": "honduras"
+ },
+ "GD": {
+  "mid": "grenada",
+  "fcdo": "grenada"
+ },
+ "GR": {
+  "mid": "greece",
+  "fcdo": "greece"
+ },
+ "GE": {
+  "mid": "georgia",
+  "fcdo": "georgia"
+ },
+ "DK": {
+  "mid": "denmark",
+  "fcdo": "denmark"
+ },
+ "CD": {
+  "mid": "democratic-republic-congo",
+  "fcdo": null
+ },
+ "DJ": {
+  "mid": "djibouti",
+  "fcdo": "djibouti"
+ },
+ "DM": {
+  "mid": "dominica",
+  "fcdo": "dominica"
+ },
+ "DO": {
+  "mid": "dominican-republic",
+  "fcdo": "dominican-republic"
+ },
+ "EG": {
+  "mid": "egypt",
+  "fcdo": "egypt"
+ },
+ "ZM": {
+  "mid": "zambia",
+  "fcdo": "zambia"
+ },
+ "ZW": {
+  "mid": "zimbabwe",
+  "fcdo": "zimbabwe"
+ },
+ "IL": {
+  "mid": "israel",
+  "fcdo": "israel"
+ },
+ "IN": {
+  "mid": "india",
+  "fcdo": "india"
+ },
+ "ID": {
+  "mid": "indonesia",
+  "fcdo": "indonesia"
+ },
+ "JO": {
+  "mid": "jordan",
+  "fcdo": "jordan"
+ },
+ "IQ": {
+  "mid": "iraq",
+  "fcdo": "iraq"
+ },
+ "IR": {
+  "mid": "iran",
+  "fcdo": "iran"
+ },
+ "IE": {
+  "mid": "ireland",
+  "fcdo": "ireland"
+ },
+ "IS": {
+  "mid": "iceland",
+  "fcdo": "iceland"
+ },
+ "ES": {
+  "mid": "spain",
+  "fcdo": "spain"
+ },
+ "IT": {
+  "mid": "italy",
+  "fcdo": "italy"
+ },
+ "YE": {
+  "mid": "yemen",
+  "fcdo": "yemen"
+ },
+ "CV": {
+  "mid": "cape-verde",
+  "fcdo": "cape-verde"
+ },
+ "KZ": {
+  "mid": "kazakhstan",
+  "fcdo": "kazakhstan"
+ },
+ "KH": {
+  "mid": "cambodia",
+  "fcdo": "cambodia"
+ },
+ "CM": {
+  "mid": "cameroon",
+  "fcdo": "cameroon"
+ },
+ "CA": {
+  "mid": "canada",
+  "fcdo": "canada"
+ },
+ "QA": {
+  "mid": "qatar",
+  "fcdo": "qatar"
+ },
+ "KE": {
+  "mid": "kenya",
+  "fcdo": "kenya"
+ },
+ "CY": {
+  "mid": "cyprus",
+  "fcdo": "cyprus"
+ },
+ "KG": {
+  "mid": "kyrgyzstan",
+  "fcdo": "kyrgyzstan"
+ },
+ "CN": {
+  "mid": "china",
+  "fcdo": "china"
+ },
+ "KP": {
+  "mid": "dprk",
+  "fcdo": null
+ },
+ "CO": {
+  "mid": "colombia",
+  "fcdo": "colombia"
+ },
+ "KM": {
+  "mid": "comoros",
+  "fcdo": "comoros"
+ },
+ "CG": {
+  "mid": "congo",
+  "fcdo": "congo"
+ },
+ "CR": {
+  "mid": "costa-rica",
+  "fcdo": "costa-rica"
+ },
+ "CI": {
+  "mid": "cote-d-ivoire",
+  "fcdo": "cote-d-ivoire"
+ },
+ "CU": {
+  "mid": "cuba",
+  "fcdo": "cuba"
+ },
+ "KW": {
+  "mid": "kuwait",
+  "fcdo": "kuwait"
+ },
+ "LA": {
+  "mid": "laos",
+  "fcdo": "laos"
+ },
+ "LV": {
+  "mid": "latvia",
+  "fcdo": "latvia"
+ },
+ "LS": {
+  "mid": "lesotho",
+  "fcdo": "lesotho"
+ },
+ "LR": {
+  "mid": "liberia",
+  "fcdo": "liberia"
+ },
+ "LB": {
+  "mid": "lebanon",
+  "fcdo": "lebanon"
+ },
+ "LY": {
+  "mid": "libya",
+  "fcdo": "libya"
+ },
+ "LT": {
+  "mid": "lithuania",
+  "fcdo": "lithuania"
+ },
+ "LI": {
+  "mid": "liechtenstein",
+  "fcdo": "liechtenstein"
+ },
+ "LU": {
+  "mid": "luxembourg",
+  "fcdo": "luxembourg"
+ },
+ "MU": {
+  "mid": "mauritius",
+  "fcdo": "mauritius"
+ },
+ "MR": {
+  "mid": "mauritania",
+  "fcdo": "mauritania"
+ },
+ "MG": {
+  "mid": "madagascar",
+  "fcdo": "madagascar"
+ },
+ "MW": {
+  "mid": "malawi",
+  "fcdo": "malawi"
+ },
+ "MY": {
+  "mid": "malaysia",
+  "fcdo": "malaysia"
+ },
+ "ML": {
+  "mid": "mali",
+  "fcdo": "mali"
+ },
+ "MV": {
+  "mid": "maldives",
+  "fcdo": "maldives"
+ },
+ "MT": {
+  "mid": "malta",
+  "fcdo": "malta"
+ },
+ "MA": {
+  "mid": "morocco",
+  "fcdo": "morocco"
+ },
+ "MX": {
+  "mid": "mexico",
+  "fcdo": "mexico"
+ },
+ "MZ": {
+  "mid": "mozambique",
+  "fcdo": "mozambique"
+ },
+ "MD": {
+  "mid": "moldova",
+  "fcdo": "moldova"
+ },
+ "MC": {
+  "mid": "monaco",
+  "fcdo": "monaco"
+ },
+ "MN": {
+  "mid": "mongolia",
+  "fcdo": "mongolia"
+ },
+ "MM": {
+  "mid": "myanmar",
+  "fcdo": "myanmar"
+ },
+ "NA": {
+  "mid": "namibia",
+  "fcdo": "namibia"
+ },
+ "NR": {
+  "mid": "nauru",
+  "fcdo": "nauru"
+ },
+ "NP": {
+  "mid": "nepal",
+  "fcdo": "nepal"
+ },
+ "NE": {
+  "mid": "niger",
+  "fcdo": "niger"
+ },
+ "NG": {
+  "mid": "nigeria",
+  "fcdo": "nigeria"
+ },
+ "NL": {
+  "mid": "netherlands",
+  "fcdo": "netherlands"
+ },
+ "NI": {
+  "mid": "nicaragua",
+  "fcdo": "nicaragua"
+ },
+ "NZ": {
+  "mid": "new-zealand",
+  "fcdo": "new-zealand"
+ },
+ "NO": {
+  "mid": "norway",
+  "fcdo": "norway"
+ },
+ "AE": {
+  "mid": "united-arab-emirates",
+  "fcdo": "united-arab-emirates"
+ },
+ "OM": {
+  "mid": "oman",
+  "fcdo": "oman"
+ },
+ "PK": {
+  "mid": "pakistan",
+  "fcdo": "pakistan"
+ },
+ "PW": {
+  "mid": "palau",
+  "fcdo": "palau"
+ },
+ "PS": {
+  "mid": "palestine",
+  "fcdo": "palestine"
+ },
+ "PA": {
+  "mid": "panama",
+  "fcdo": "panama"
+ },
+ "PG": {
+  "mid": "papua-new-guinea",
+  "fcdo": "papua-new-guinea"
+ },
+ "PY": {
+  "mid": "paraguay",
+  "fcdo": "paraguay"
+ },
+ "PE": {
+  "mid": "peru",
+  "fcdo": "peru"
+ },
+ "PL": {
+  "mid": "poland",
+  "fcdo": "poland"
+ },
+ "PT": {
+  "mid": "portugal",
+  "fcdo": "portugal"
+ },
+ "KR": {
+  "mid": "republic-korea",
+  "fcdo": null
+ },
+ "RW": {
+  "mid": "rwanda",
+  "fcdo": "rwanda"
+ },
+ "RO": {
+  "mid": "romania",
+  "fcdo": "romania"
+ },
+ "SV": {
+  "mid": "salvador",
+  "fcdo": null
+ },
+ "WS": {
+  "mid": "samoa",
+  "fcdo": "samoa"
+ },
+ "SM": {
+  "mid": "san-marino",
+  "fcdo": "san-marino"
+ },
+ "ST": {
+  "mid": "sao-tome-and-principe",
+  "fcdo": "sao-tome-and-principe"
+ },
+ "SA": {
+  "mid": "saudi-arabia",
+  "fcdo": "saudi-arabia"
+ },
+ "MK": {
+  "mid": "macedonia",
+  "fcdo": null
+ },
+ "SC": {
+  "mid": "seychelles",
+  "fcdo": "seychelles"
+ },
+ "SN": {
+  "mid": "senegal",
+  "fcdo": "senegal"
+ },
+ "VC": {
+  "mid": "saint-vincent-and-the-grenadines",
+  "fcdo": null
+ },
+ "KN": {
+  "mid": "saint-kitts-and-nevis",
+  "fcdo": null
+ },
+ "LC": {
+  "mid": "saint-lucia",
+  "fcdo": null
+ },
+ "RS": {
+  "mid": "serbia",
+  "fcdo": "serbia"
+ },
+ "SG": {
+  "mid": "singapore",
+  "fcdo": "singapore"
+ },
+ "SY": {
+  "mid": "syria",
+  "fcdo": "syria"
+ },
+ "SK": {
+  "mid": "slovakia",
+  "fcdo": "slovakia"
+ },
+ "SI": {
+  "mid": "slovenia",
+  "fcdo": "slovenia"
+ },
+ "SO": {
+  "mid": "somalia",
+  "fcdo": "somalia"
+ },
+ "SD": {
+  "mid": "sudan",
+  "fcdo": "sudan"
+ },
+ "SR": {
+  "mid": "suriname",
+  "fcdo": "suriname"
+ },
+ "US": {
+  "mid": "usa",
+  "fcdo": "usa"
+ },
+ "SL": {
+  "mid": "sierra-leone",
+  "fcdo": "sierra-leone"
+ },
+ "TJ": {
+  "mid": "tajikistan",
+  "fcdo": "tajikistan"
+ },
+ "TH": {
+  "mid": "thailand",
+  "fcdo": "thailand"
+ },
+ "TW": {
+  "mid": "taiwan",
+  "fcdo": "taiwan"
+ },
+ "TZ": {
+  "mid": "tanzania",
+  "fcdo": "tanzania"
+ },
+ "TG": {
+  "mid": "togo",
+  "fcdo": "togo"
+ },
+ "TO": {
+  "mid": "tonga",
+  "fcdo": "tonga"
+ },
+ "TT": {
+  "mid": "trinidad-and-tobago",
+  "fcdo": "trinidad-and-tobago"
+ },
+ "TV": {
+  "mid": "tuvalu",
+  "fcdo": "tuvalu"
+ },
+ "TN": {
+  "mid": "tunisia",
+  "fcdo": "tunisia"
+ },
+ "TM": {
+  "mid": "turkmenistan",
+  "fcdo": "turkmenistan"
+ },
+ "TR": {
+  "mid": "turkey",
+  "fcdo": "turkey"
+ },
+ "UG": {
+  "mid": "uganda",
+  "fcdo": "uganda"
+ },
+ "UZ": {
+  "mid": "uzbekistan",
+  "fcdo": "uzbekistan"
+ },
+ "UA": {
+  "mid": "ukraine",
+  "fcdo": "ukraine"
+ },
+ "UY": {
+  "mid": "uruguay",
+  "fcdo": "uruguay"
+ },
+ "FJ": {
+  "mid": "fiji",
+  "fcdo": "fiji"
+ },
+ "PH": {
+  "mid": "philippines",
+  "fcdo": "philippines"
+ },
+ "FI": {
+  "mid": "finland",
+  "fcdo": "finland"
+ },
+ "FR": {
+  "mid": "france",
+  "fcdo": "france"
+ },
+ "DE": {
+  "mid": "germany",
+  "fcdo": "germany"
+ },
+ "HR": {
+  "mid": "croatia",
+  "fcdo": "croatia"
+ },
+ "CF": {
+  "mid": "central-african-republic",
+  "fcdo": "central-african-republic"
+ },
+ "TD": {
+  "mid": "chad",
+  "fcdo": "chad"
+ },
+ "ME": {
+  "mid": "montenegro",
+  "fcdo": "montenegro"
+ },
+ "CZ": {
+  "mid": "czech-republic",
+  "fcdo": "czechia"
+ },
+ "CL": {
+  "mid": "chile",
+  "fcdo": "chile"
+ },
+ "CH": {
+  "mid": "switzerland",
+  "fcdo": "switzerland"
+ },
+ "SE": {
+  "mid": "sweden",
+  "fcdo": "sweden"
+ },
+ "LK": {
+  "mid": "sri-lanka",
+  "fcdo": "sri-lanka"
+ },
+ "EC": {
+  "mid": "ecuador",
+  "fcdo": "ecuador"
+ },
+ "GQ": {
+  "mid": "equatorial-guinea",
+  "fcdo": "equatorial-guinea"
+ },
+ "ER": {
+  "mid": "eritrea",
+  "fcdo": "eritrea"
+ },
+ "SZ": {
+  "mid": "eswatini",
+  "fcdo": "eswatini"
+ },
+ "EE": {
+  "mid": "estonia",
+  "fcdo": "estonia"
+ },
+ "ET": {
+  "mid": "ethiopia",
+  "fcdo": "ethiopia"
+ },
+ "ZA": {
+  "mid": "south-africa",
+  "fcdo": "south-africa"
+ },
+ "OS": {
+  "mid": "south-ossetia",
+  "fcdo": null
+ },
+ "SS": {
+  "mid": "south-sudan",
+  "fcdo": "south-sudan"
+ },
+ "JM": {
+  "mid": "jamaica",
+  "fcdo": "jamaica"
+ },
+ "JP": {
+  "mid": "japan",
+  "fcdo": "japan"
+ }
+}

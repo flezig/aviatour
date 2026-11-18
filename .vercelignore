@@ -1,0 +1,8 @@
+# На Vercel загружается только сайт и серверный код. Всё остальное, включая backend/.env, остаётся на компьютере.
+/*
+!/backend
+!/web
+!/pyproject.toml
+!/vercel.json
+/backend/*
+!/backend/app

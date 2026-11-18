@@ -1,0 +1,559 @@
+{
+  "checked": "2026-11-18",
+  "valid_from": "2026-11-18",
+  "valid_until": "2026-12-31",
+  "cities": {
+    "AKX": {
+      "observations": [
+        {
+          "kind": "bus",
+          "detail": "Октябрь 2026. Городской автобус — 80 ₸ за поездку при оплате транспортной картой или QR-кодом.",
+          "label": "Бюро национальной статистики Казахстана · таблица 3",
+          "url": "https://stat.gov.kz/api/iblock/element/355086/file/ru/"
+        },
+        {
+          "kind": "hotel",
+          "detail": "Октябрь 2026. Проживание в гостинице — 18 080 ₸ за сутки. Таблица не уточняет категорию гостиницы и число гостей.",
+          "label": "Бюро национальной статистики Казахстана · таблица 3",
+          "url": "https://stat.gov.kz/api/iblock/element/355086/file/ru/"
+        }
+      ]
+    },
+    "ALA": {
+      "observations": [
+        {
+          "kind": "bus",
+          "detail": "Октябрь 2026. Городской автобус — 120 ₸ за поездку при оплате транспортной картой или QR-кодом.",
+          "label": "Бюро национальной статистики Казахстана · таблица 3",
+          "url": "https://stat.gov.kz/api/iblock/element/355086/file/ru/"
+        },
+        {
+          "kind": "hotel",
+          "detail": "Октябрь 2026. Проживание в гостинице — 36 456 ₸ за сутки. Таблица не уточняет категорию гостиницы и число гостей.",
+          "label": "Бюро национальной статистики Казахстана · таблица 3",
+          "url": "https://stat.gov.kz/api/iblock/element/355086/file/ru/"
+        }
+      ]
+    },
+    "BAK": {
+      "observations": [
+        {
+          "kind": "bus",
+          "detail": "На 18.11.2026 городской автобус № 1 по BakıKart — 0,60 AZN с человека за поездку. Стоимость других маршрутов зависит от линии.",
+          "label": "BakıKart · таблица тарифов по линиям",
+          "url": "https://www.bakikart.az/Home/TicketMobile/az"
+        }
+      ]
+    },
+    "CIT": {
+      "observations": [
+        {
+          "kind": "bus",
+          "detail": "Октябрь 2026. Городской автобус — 70 ₸ за поездку при оплате транспортной картой или QR-кодом.",
+          "label": "Бюро национальной статистики Казахстана · таблица 3",
+          "url": "https://stat.gov.kz/api/iblock/element/355086/file/ru/"
+        },
+        {
+          "kind": "hotel",
+          "detail": "Октябрь 2026. Проживание в гостинице — 23 096 ₸ за сутки. Таблица не уточняет категорию гостиницы и число гостей.",
+          "label": "Бюро национальной статистики Казахстана · таблица 3",
+          "url": "https://stat.gov.kz/api/iblock/element/355086/file/ru/"
+        }
+      ]
+    },
+    "DMB": {
+      "observations": [
+        {
+          "kind": "bus",
+          "detail": "Октябрь 2026. Городской автобус — 100 ₸ за поездку при оплате транспортной картой или QR-кодом.",
+          "label": "Бюро национальной статистики Казахстана · таблица 3",
+          "url": "https://stat.gov.kz/api/iblock/element/355086/file/ru/"
+        },
+        {
+          "kind": "hotel",
+          "detail": "Октябрь 2026. Проживание в гостинице — 15 318 ₸ за сутки. Таблица не уточняет категорию гостиницы и число гостей.",
+          "label": "Бюро национальной статистики Казахстана · таблица 3",
+          "url": "https://stat.gov.kz/api/iblock/element/355086/file/ru/"
+        }
+      ]
+    },
+    "DZN": {
+      "observations": [
+        {
+          "kind": "bus",
+          "detail": "Октябрь 2026. Городской автобус — 80 ₸ за поездку при оплате транспортной картой или QR-кодом.",
+          "label": "Бюро национальной статистики Казахстана · таблица 3",
+          "url": "https://stat.gov.kz/api/iblock/element/355086/file/ru/"
+        },
+        {
+          "kind": "hotel",
+          "detail": "Октябрь 2026. Проживание в гостинице — 19 961 ₸ за сутки. Таблица не уточняет категорию гостиницы и число гостей.",
+          "label": "Бюро национальной статистики Казахстана · таблица 3",
+          "url": "https://stat.gov.kz/api/iblock/element/355086/file/ru/"
+        }
+      ]
+    },
+    "EVN": {
+      "observations": [
+        {
+          "kind": "bus",
+          "detail": "На 18.11.2026 билет на одну поездку по городу — 150 AMD с человека. Действует в автобусах, троллейбусах и метро. Для аэропорта действует отдельный тариф.",
+          "label": "Единая билетная система Еревана",
+          "url": "https://transport.yerevan.am/"
+        },
+        {
+          "kind": "meal",
+          "detail": "На 18.11.2026 комплексный обед в Sig & Chips — 3 190 AMD за человека с обслуживанием. Меню указывает 2 900 AMD за салат, основное блюдо, гарнир и напиток плюс 10% за сервис. Дни действия предложения в меню не указаны.",
+          "label": "Sig & Chips · меню",
+          "url": "https://sigandchips.am/ru/menu/"
+        },
+        {
+          "kind": "hotel",
+          "detail": "На 18.11.2026 Regard Hotel указывает 22 000 AMD за ночь в стандартном одноместном номере для одного гостя. Это опубликованный тариф одной гостиницы. Категория 3★, итоговые сборы и наличие на дату поездки не подтверждены.",
+          "label": "Regard Hotel · номера и тарифы",
+          "url": "https://www.regard-hotel.am/room-details-4.html"
+        }
+      ]
+    },
+    "GUW": {
+      "observations": [
+        {
+          "kind": "bus",
+          "detail": "Октябрь 2026. Городской автобус — 80 ₸ за поездку при оплате транспортной картой или QR-кодом.",
+          "label": "Бюро национальной статистики Казахстана · таблица 3",
+          "url": "https://stat.gov.kz/api/iblock/element/355086/file/ru/"
+        },
+        {
+          "kind": "hotel",
+          "detail": "Октябрь 2026. Проживание в гостинице — 17 406 ₸ за сутки. Таблица не уточняет категорию гостиницы и число гостей.",
+          "label": "Бюро национальной статистики Казахстана · таблица 3",
+          "url": "https://stat.gov.kz/api/iblock/element/355086/file/ru/"
+        }
+      ]
+    },
+    "HSA": {
+      "observations": [
+        {
+          "kind": "bus",
+          "detail": "Октябрь 2026. Городской автобус — 70 ₸ за поездку при оплате транспортной картой или QR-кодом.",
+          "label": "Бюро национальной статистики Казахстана · таблица 3",
+          "url": "https://stat.gov.kz/api/iblock/element/355086/file/ru/"
+        },
+        {
+          "kind": "hotel",
+          "detail": "Октябрь 2026. Проживание в гостинице — 16 971 ₸ за сутки. Таблица не уточняет категорию гостиницы и число гостей.",
+          "label": "Бюро национальной статистики Казахстана · таблица 3",
+          "url": "https://stat.gov.kz/api/iblock/element/355086/file/ru/"
+        }
+      ]
+    },
+    "IST": {
+      "observations": [
+        {
+          "kind": "bus",
+          "detail": "С 20.07.2026 поездка на обычном городском автобусе İETT по İstanbulkart стоит 46,20 TRY для взрослого. Тариф подтверждён 18.11.2026.",
+          "label": "İETT · решение № 813, тарифы на городской автобус",
+          "url": "https://iett.istanbul/icerik/IETT-Toplu-Ulasim-ucret-Tarifesi"
+        }
+      ]
+    },
+    "KGF": {
+      "observations": [
+        {
+          "kind": "bus",
+          "detail": "Октябрь 2026. Городской автобус — 100 ₸ за поездку при оплате транспортной картой или QR-кодом.",
+          "label": "Бюро национальной статистики Казахстана · таблица 3",
+          "url": "https://stat.gov.kz/api/iblock/element/355086/file/ru/"
+        },
+        {
+          "kind": "hotel",
+          "detail": "Октябрь 2026. Проживание в гостинице — 18 719 ₸ за сутки. Таблица не уточняет категорию гостиницы и число гостей.",
+          "label": "Бюро национальной статистики Казахстана · таблица 3",
+          "url": "https://stat.gov.kz/api/iblock/element/355086/file/ru/"
+        }
+      ]
+    },
+    "KOV": {
+      "observations": [
+        {
+          "kind": "bus",
+          "detail": "Октябрь 2026. Городской автобус — 100 ₸ за поездку при оплате транспортной картой или QR-кодом.",
+          "label": "Бюро национальной статистики Казахстана · таблица 3",
+          "url": "https://stat.gov.kz/api/iblock/element/355086/file/ru/"
+        },
+        {
+          "kind": "hotel",
+          "detail": "Октябрь 2026. Проживание в гостинице — 16 169 ₸ за сутки. Таблица не уточняет категорию гостиницы и число гостей.",
+          "label": "Бюро национальной статистики Казахстана · таблица 3",
+          "url": "https://stat.gov.kz/api/iblock/element/355086/file/ru/"
+        }
+      ]
+    },
+    "KSN": {
+      "observations": [
+        {
+          "kind": "bus",
+          "detail": "Октябрь 2026. Городской автобус — 100 ₸ за поездку при оплате транспортной картой или QR-кодом.",
+          "label": "Бюро национальной статистики Казахстана · таблица 3",
+          "url": "https://stat.gov.kz/api/iblock/element/355086/file/ru/"
+        },
+        {
+          "kind": "hotel",
+          "detail": "Октябрь 2026. Проживание в гостинице — 16 501 ₸ за сутки. Таблица не уточняет категорию гостиницы и число гостей.",
+          "label": "Бюро национальной статистики Казахстана · таблица 3",
+          "url": "https://stat.gov.kz/api/iblock/element/355086/file/ru/"
+        }
+      ]
+    },
+    "KZO": {
+      "observations": [
+        {
+          "kind": "bus",
+          "detail": "Октябрь 2026. Городской автобус — 85 ₸ за поездку при оплате транспортной картой или QR-кодом.",
+          "label": "Бюро национальной статистики Казахстана · таблица 3",
+          "url": "https://stat.gov.kz/api/iblock/element/355086/file/ru/"
+        },
+        {
+          "kind": "hotel",
+          "detail": "Октябрь 2026. Проживание в гостинице — 15 794 ₸ за сутки. Таблица не уточняет категорию гостиницы и число гостей.",
+          "label": "Бюро национальной статистики Казахстана · таблица 3",
+          "url": "https://stat.gov.kz/api/iblock/element/355086/file/ru/"
+        }
+      ]
+    },
+    "NQZ": {
+      "observations": [
+        {
+          "kind": "bus",
+          "detail": "Октябрь 2026. Городской автобус — 110 ₸ за поездку при оплате транспортной картой или QR-кодом.",
+          "label": "Бюро национальной статистики Казахстана · таблица 3",
+          "url": "https://stat.gov.kz/api/iblock/element/355086/file/ru/"
+        },
+        {
+          "kind": "hotel",
+          "detail": "Октябрь 2026. Проживание в гостинице — 21 752 ₸ за сутки. Таблица не уточняет категорию гостиницы и число гостей.",
+          "label": "Бюро национальной статистики Казахстана · таблица 3",
+          "url": "https://stat.gov.kz/api/iblock/element/355086/file/ru/"
+        }
+      ]
+    },
+    "PLX": {
+      "observations": [
+        {
+          "kind": "bus",
+          "detail": "Октябрь 2026. Городской автобус — 80 ₸ за поездку при оплате транспортной картой или QR-кодом.",
+          "label": "Бюро национальной статистики Казахстана · таблица 3",
+          "url": "https://stat.gov.kz/api/iblock/element/355086/file/ru/"
+        },
+        {
+          "kind": "hotel",
+          "detail": "Октябрь 2026. Проживание в гостинице — 12 151 ₸ за сутки. Таблица не уточняет категорию гостиницы и число гостей.",
+          "label": "Бюро национальной статистики Казахстана · таблица 3",
+          "url": "https://stat.gov.kz/api/iblock/element/355086/file/ru/"
+        }
+      ]
+    },
+    "PPK": {
+      "observations": [
+        {
+          "kind": "bus",
+          "detail": "Октябрь 2026. Городской автобус — 100 ₸ за поездку при оплате транспортной картой или QR-кодом.",
+          "label": "Бюро национальной статистики Казахстана · таблица 3",
+          "url": "https://stat.gov.kz/api/iblock/element/355086/file/ru/"
+        },
+        {
+          "kind": "hotel",
+          "detail": "Октябрь 2026. Проживание в гостинице — 26 346 ₸ за сутки. Таблица не уточняет категорию гостиницы и число гостей.",
+          "label": "Бюро национальной статистики Казахстана · таблица 3",
+          "url": "https://stat.gov.kz/api/iblock/element/355086/file/ru/"
+        }
+      ]
+    },
+    "PWQ": {
+      "observations": [
+        {
+          "kind": "bus",
+          "detail": "Октябрь 2026. Городской автобус — 100 ₸ за поездку при оплате транспортной картой или QR-кодом.",
+          "label": "Бюро национальной статистики Казахстана · таблица 3",
+          "url": "https://stat.gov.kz/api/iblock/element/355086/file/ru/"
+        },
+        {
+          "kind": "hotel",
+          "detail": "Октябрь 2026. Проживание в гостинице — 17 169 ₸ за сутки. Таблица не уточняет категорию гостиницы и число гостей.",
+          "label": "Бюро национальной статистики Казахстана · таблица 3",
+          "url": "https://stat.gov.kz/api/iblock/element/355086/file/ru/"
+        }
+      ]
+    },
+    "SCO": {
+      "observations": [
+        {
+          "kind": "bus",
+          "detail": "Октябрь 2026. Городской автобус — 70 ₸ за поездку при оплате транспортной картой или QR-кодом.",
+          "label": "Бюро национальной статистики Казахстана · таблица 3",
+          "url": "https://stat.gov.kz/api/iblock/element/355086/file/ru/"
+        },
+        {
+          "kind": "hotel",
+          "detail": "Октябрь 2026. Проживание в гостинице — 13 608 ₸ за сутки. Таблица не уточняет категорию гостиницы и число гостей.",
+          "label": "Бюро национальной статистики Казахстана · таблица 3",
+          "url": "https://stat.gov.kz/api/iblock/element/355086/file/ru/"
+        }
+      ]
+    },
+    "TBS": {
+      "observations": [
+        {
+          "kind": "bus",
+          "detail": "На 18.11.2026 городской автобус — 1 GEL с человека. Билет действует 90 минут с пересадками при оплате транспортной или совместимой банковской картой.",
+          "label": "Тбилисская транспортная компания",
+          "url": "https://ttc.com.ge/index.php/en/tariff/10"
+        },
+        {
+          "kind": "meal",
+          "detail": "Меню от 07.10.2026. Обед в Bistrot 76 — 29 GEL за два блюда на человека, НДС включён. Предложение действует со вторника по пятницу с 12:00 до 16:00.",
+          "label": "Bistrot 76 · меню",
+          "url": "https://www.bistrot76.ge/menu/"
+        }
+      ]
+    },
+    "TDK": {
+      "observations": [
+        {
+          "kind": "bus",
+          "detail": "Октябрь 2026. Городской автобус — 80 ₸ за поездку при оплате транспортной картой или QR-кодом.",
+          "label": "Бюро национальной статистики Казахстана · таблица 3",
+          "url": "https://stat.gov.kz/api/iblock/element/355086/file/ru/"
+        },
+        {
+          "kind": "hotel",
+          "detail": "Октябрь 2026. Проживание в гостинице — 15 532 ₸ за сутки. Таблица не уточняет категорию гостиницы и число гостей.",
+          "label": "Бюро национальной статистики Казахстана · таблица 3",
+          "url": "https://stat.gov.kz/api/iblock/element/355086/file/ru/"
+        }
+      ]
+    },
+    "UKK": {
+      "observations": [
+        {
+          "kind": "bus",
+          "detail": "Октябрь 2026. Городской автобус — 90 ₸ за поездку при оплате транспортной картой или QR-кодом.",
+          "label": "Бюро национальной статистики Казахстана · таблица 3",
+          "url": "https://stat.gov.kz/api/iblock/element/355086/file/ru/"
+        },
+        {
+          "kind": "hotel",
+          "detail": "Октябрь 2026. Проживание в гостинице — 14 444 ₸ за сутки. Таблица не уточняет категорию гостиницы и число гостей.",
+          "label": "Бюро национальной статистики Казахстана · таблица 3",
+          "url": "https://stat.gov.kz/api/iblock/element/355086/file/ru/"
+        }
+      ]
+    },
+    "URA": {
+      "observations": [
+        {
+          "kind": "bus",
+          "detail": "Октябрь 2026. Городской автобус — 100 ₸ за поездку при оплате транспортной картой или QR-кодом.",
+          "label": "Бюро национальной статистики Казахстана · таблица 3",
+          "url": "https://stat.gov.kz/api/iblock/element/355086/file/ru/"
+        },
+        {
+          "kind": "hotel",
+          "detail": "Октябрь 2026. Проживание в гостинице — 27 956 ₸ за сутки. Таблица не уточняет категорию гостиницы и число гостей.",
+          "label": "Бюро национальной статистики Казахстана · таблица 3",
+          "url": "https://stat.gov.kz/api/iblock/element/355086/file/ru/"
+        }
+      ]
+    },
+    "YTO": {
+      "observations": [
+        {
+          "kind": "bus",
+          "detail": "На 18.11.2026 разовая поездка для взрослого на транспорте TTC — 3,30 CAD при оплате PRESTO или банковской картой. При оплате наличными — 3,35 CAD.",
+          "label": "Toronto Transit Commission · тарифы",
+          "url": "https://www.ttc.ca/Fares-and-passes"
+        }
+      ]
+    },
+    "PAR": {
+      "observations": [
+        {
+          "kind": "bus",
+          "detail": "Городской автобус или трамвай — 2,05 € за взрослый билет, до 90 минут с разрешёнными пересадками.",
+          "label": "RATP · билет Bus-Tram",
+          "url": "https://www.ratp.fr/en/titres-et-tarifs/ticket-bus-tram"
+        }
+      ]
+    },
+    "LON": {
+      "observations": [
+        {
+          "kind": "bus",
+          "detail": "Городской автобус или трамвай — 1,85 £ при бесконтактной оплате. В течение часа пересадки включены.",
+          "label": "Transport for London · Hopper",
+          "url": "https://tfl.gov.uk/how-to-pay/check-travel-costs/bus-and-tram-fares"
+        }
+      ]
+    },
+    "BER": {
+      "observations": [
+        {
+          "kind": "bus",
+          "detail": "Взрослый билет в зонах Берлина AB — 4 € за поездку в одну сторону, до 120 минут с пересадками.",
+          "label": "BVG · разовый билет",
+          "url": "https://www.bvg.de/en/subscriptions-and-tickets/all-tickets/single-tickets/single-ticket"
+        }
+      ]
+    },
+    "NYC": {
+      "observations": [
+        {
+          "kind": "bus",
+          "detail": "Обычный городской автобус или метро — 3 USD. Для экспресс-автобусов действует отдельный тариф.",
+          "label": "Metropolitan Transportation Authority",
+          "url": "https://www.mta.info/fares-tolls/subway-bus"
+        }
+      ]
+    },
+    "LAX": {
+      "observations": [
+        {
+          "kind": "bus",
+          "detail": "Разовая поездка Metro — 1,75 USD. При бесконтактной оплате пересадки в одном направлении включены в течение двух часов.",
+          "label": "Los Angeles Metro",
+          "url": "https://www.metro.net/fares/"
+        }
+      ]
+    },
+    "ATH": {
+      "observations": [
+        {
+          "kind": "bus",
+          "detail": "Обычный городской билет на 90 минут — 1,20 €. Для поездки в аэропорт отдельный тариф.",
+          "label": "Афинский городской транспорт OASA",
+          "url": "https://www.oasa.gr/en/passenger-service/announcements/faqs/"
+        }
+      ]
+    },
+    "ROM": {
+      "observations": [
+        {
+          "kind": "bus",
+          "detail": "Билет BIT на городской транспорт — 1,50 € на 100 минут с момента первой валидации.",
+          "label": "ATAC · разовый билет BIT",
+          "url": "https://www.atac.roma.it/en/frequently-asked-questions/how-is-the-ticket-price-calculated-with-tap-go"
+        }
+      ]
+    },
+    "LUX": {
+      "observations": [
+        {
+          "kind": "bus",
+          "detail": "Внутри страны обычные городские автобусы бесплатны для жителей и туристов.",
+          "label": "Правительство Люксембурга",
+          "url": "https://luxembourg.public.lu/content/luxembourg/fr/vivre/mobilite/transport-public.html"
+        }
+      ]
+    },
+    "AKL": {
+      "observations": [
+        {
+          "kind": "bus",
+          "detail": "Поездка на обычном автобусе в одной зоне — 3 NZD по карте AT HOP или бесконтактной карте, 4 NZD наличными. У центрального маршрута CityLink отдельный тариф.",
+          "label": "Auckland Transport",
+          "url": "https://at.govt.nz/bus-train-ferry/fares-and-discounts/bus-and-train-fares"
+        }
+      ]
+    },
+    "TWB": {
+      "observations": [
+        {
+          "kind": "bus",
+          "detail": "Городской автобус сети Translink — 0,50 AUD за поездку. Тариф действует для взрослых пассажиров.",
+          "label": "Translink Queensland · городской автобус",
+          "url": "https://translink.com.au/tickets-and-fares/50-cent-fares"
+        }
+      ]
+    },
+    "OOL": {
+      "observations": [
+        {
+          "kind": "bus",
+          "detail": "Городской автобус сети Translink — 0,50 AUD за поездку. Тариф действует для взрослых пассажиров.",
+          "label": "Translink Queensland · городской автобус",
+          "url": "https://translink.com.au/tickets-and-fares/50-cent-fares"
+        }
+      ]
+    },
+    "CNS": {
+      "observations": [
+        {
+          "kind": "bus",
+          "detail": "Городской автобус сети Translink — 0,50 AUD за поездку. Тариф действует для взрослых пассажиров.",
+          "label": "Translink Queensland · городской автобус",
+          "url": "https://translink.com.au/tickets-and-fares/50-cent-fares"
+        }
+      ]
+    },
+    "BDB": {
+      "observations": [
+        {
+          "kind": "bus",
+          "detail": "Городской автобус сети Translink — 0,50 AUD за поездку. Тариф действует для взрослых пассажиров.",
+          "label": "Translink Queensland · городской автобус",
+          "url": "https://translink.com.au/tickets-and-fares/50-cent-fares"
+        }
+      ]
+    },
+    "ROK": {
+      "observations": [
+        {
+          "kind": "bus",
+          "detail": "Городской автобус сети Translink — 0,50 AUD за поездку. Тариф действует для взрослых пассажиров.",
+          "label": "Translink Queensland · городской автобус",
+          "url": "https://translink.com.au/tickets-and-fares/50-cent-fares"
+        }
+      ]
+    },
+    "GLT": {
+      "observations": [
+        {
+          "kind": "bus",
+          "detail": "Городской автобус сети Translink — 0,50 AUD за поездку. Тариф действует для взрослых пассажиров.",
+          "label": "Translink Queensland · городской автобус",
+          "url": "https://translink.com.au/tickets-and-fares/50-cent-fares"
+        }
+      ]
+    },
+    "MKY": {
+      "observations": [
+        {
+          "kind": "bus",
+          "detail": "Городской автобус сети Translink — 0,50 AUD за поездку. Тариф действует для взрослых пассажиров.",
+          "label": "Translink Queensland · городской автобус",
+          "url": "https://translink.com.au/tickets-and-fares/50-cent-fares"
+        }
+      ]
+    },
+    "TSV": {
+      "observations": [
+        {
+          "kind": "bus",
+          "detail": "Городской автобус сети Translink — 0,50 AUD за поездку. Тариф действует для взрослых пассажиров.",
+          "label": "Translink Queensland · городской автобус",
+          "url": "https://translink.com.au/tickets-and-fares/50-cent-fares"
+        }
+      ]
+    },
+    "BNE": {
+      "observations": [
+        {
+          "kind": "bus",
+          "detail": "Городской автобус сети Translink — 0,50 AUD за поездку. Тариф действует для взрослых пассажиров.",
+          "label": "Translink Queensland · городской автобус",
+          "url": "https://translink.com.au/tickets-and-fares/50-cent-fares"
+        }
+      ]
+    }
+  }
+}

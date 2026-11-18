@@ -1,0 +1,116 @@
+{
+  "state": "complete",
+  "site": "https://aviatour.vercel.app",
+  "api_queries": 36,
+  "cards": {
+    "countries": {
+      "thailand": {
+        "screen": {
+          "accepted": true,
+          "cells": 12,
+          "dates": {
+            "MOW/2026-12": 18,
+            "MOW/2027-01": 10,
+            "MOW/2027-02": 13,
+            "LED/2026-12": 16,
+            "LED/2027-01": 18,
+            "LED/2027-02": 13,
+            "KZN/2026-12": 19,
+            "KZN/2027-01": 23,
+            "KZN/2027-02": 28,
+            "SVX/2026-12": 19,
+            "SVX/2027-01": 20,
+            "SVX/2027-02": 19
+          }
+        },
+        "live": {
+          "accepted": true,
+          "cells": 12,
+          "dates": {
+            "MOW/2026-12": 18,
+            "MOW/2027-01": 10,
+            "MOW/2027-02": 13,
+            "LED/2026-12": 16,
+            "LED/2027-01": 18,
+            "LED/2027-02": 13,
+            "KZN/2026-12": 19,
+            "KZN/2027-01": 23,
+            "KZN/2027-02": 28,
+            "SVX/2026-12": 19,
+            "SVX/2027-01": 20,
+            "SVX/2027-02": 19
+          }
+        }
+      },
+      "uae": {
+        "screen": {
+          "accepted": true,
+          "cells": 12,
+          "dates": {
+            "MOW/2026-12": 17,
+            "MOW/2027-01": 17,
+            "MOW/2027-02": 18,
+            "LED/2026-12": 21,
+            "LED/2027-01": 25,
+            "LED/2027-02": 26,
+            "KZN/2026-12": 29,
+            "KZN/2027-01": 29,
+            "KZN/2027-02": 22,
+            "SVX/2026-12": 29,
+            "SVX/2027-01": 29,
+            "SVX/2027-02": 23
+          }
+        },
+        "live": {
+          "accepted": true,
+          "cells": 12,
+          "dates": {
+            "MOW/2026-12": 17,
+            "MOW/2027-01": 17,
+            "MOW/2027-02": 18,
+            "LED/2026-12": 21,
+            "LED/2027-01": 25,
+            "LED/2027-02": 26,
+            "KZN/2026-12": 29,
+            "KZN/2027-01": 29,
+            "KZN/2027-02": 22,
+            "SVX/2026-12": 29,
+            "SVX/2027-01": 29,
+            "SVX/2027-02": 23
+          }
+        }
+      }
+    },
+    "partial_country_queries": 4,
+    "ui": {
+      "picker": "chromium геометрия, подсказки, выбор и восстановление прошли\nwebkit геометрия, подсказки, выбор и восстановление прошли",
+      "cards": "chromium thailand 2 [ 'Бангкок', 'Пхукет' ] OK\nwebkit uae 2 [ 'Дубай', 'Абу-Даби' ] OK"
+    }
+  },
+  "coordinator_model_calls": 0,
+  "coordinator_tokens": 0,
+  "agents": {
+    "interface": {
+      "model": "sol",
+      "effort": "xhigh",
+      "attempts": 1,
+      "requests": 1,
+      "uncached": 8073,
+      "cached_input_tokens": 10368,
+      "input_tokens": 18441,
+      "output_tokens": 973,
+      "total": 19414
+    },
+    "datajudge": {
+      "model": "astra",
+      "effort": "xhigh",
+      "attempts": 1,
+      "requests": 1,
+      "uncached": 18560,
+      "cached_input_tokens": 0,
+      "input_tokens": 18560,
+      "output_tokens": 243,
+      "total": 18803
+    }
+  }
+}

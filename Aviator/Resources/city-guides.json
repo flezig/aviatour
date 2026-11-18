@@ -1,0 +1,699 @@
+{
+  "MOW": {
+    "country": "RU",
+    "iso3": "RUS",
+    "latitude": 55.75,
+    "longitude": 37.62,
+    "currency": "RUB",
+    "advice_slug": "russia",
+    "summary": "Архитектура, музеи и большие городские прогулки.",
+    "tags": [
+      "culture",
+      "food",
+      "architecture"
+    ],
+    "places": [
+      "Красная площадь",
+      "Третьяковская галерея",
+      "ВДНХ"
+    ],
+    "areas": [
+      "Замоскворечье — прогулки и музеи",
+      "Хамовники — парки и набережные"
+    ],
+    "tourism_url": "https://discovermoscow.com/",
+    "days": "2–4 дня — ориентир для знакомства с городом",
+    "editorial_updated": "2026-10-08",
+    "hdi_value": 0.832,
+    "hdi_year": 2023
+  },
+  "LED": {
+    "country": "RU",
+    "iso3": "RUS",
+    "latitude": 59.94,
+    "longitude": 30.31,
+    "currency": "RUB",
+    "advice_slug": "russia",
+    "summary": "Музеи, каналы и исторические кварталы.",
+    "tags": [
+      "culture",
+      "architecture",
+      "food"
+    ],
+    "places": [
+      "Эрмитаж",
+      "Новая Голландия",
+      "Петропавловская крепость"
+    ],
+    "areas": [
+      "Адмиралтейский — рядом с центром",
+      "Петроградская сторона — прогулки"
+    ],
+    "tourism_url": "https://visit-petersburg.ru/",
+    "days": "2–4 дня — ориентир для знакомства с городом",
+    "editorial_updated": "2026-10-08",
+    "hdi_value": 0.832,
+    "hdi_year": 2023
+  },
+  "AER": {
+    "country": "RU",
+    "iso3": "RUS",
+    "latitude": 43.59,
+    "longitude": 39.72,
+    "currency": "RUB",
+    "advice_slug": "russia",
+    "summary": "Побережье и прогулки, с возможностью выехать в горы.",
+    "tags": [
+      "sea",
+      "nature",
+      "food"
+    ],
+    "places": [
+      "Дендрарий",
+      "Морская набережная",
+      "Красная Поляна"
+    ],
+    "areas": [
+      "Центр — прогулки",
+      "Адлер — близость к аэропорту"
+    ],
+    "tourism_url": "https://sochi.ru/",
+    "days": "2–4 дня — ориентир для знакомства с городом",
+    "editorial_updated": "2026-10-08",
+    "hdi_value": 0.832,
+    "hdi_year": 2023
+  },
+  "KZN": {
+    "country": "RU",
+    "iso3": "RUS",
+    "latitude": 55.79,
+    "longitude": 49.12,
+    "currency": "RUB",
+    "advice_slug": "russia",
+    "summary": "Исторический центр и знакомство с татарской кухней.",
+    "tags": [
+      "culture",
+      "food",
+      "architecture"
+    ],
+    "places": [
+      "Казанский кремль",
+      "Старо-Татарская слобода",
+      "Улица Баумана"
+    ],
+    "areas": [
+      "Вахитовский — основные прогулки"
+    ],
+    "tourism_url": "https://visit-tatarstan.com/",
+    "days": "2–4 дня — ориентир для знакомства с городом",
+    "editorial_updated": "2026-10-08",
+    "hdi_value": 0.832,
+    "hdi_year": 2023
+  },
+  "IST": {
+    "country": "TR",
+    "iso3": "TUR",
+    "latitude": 41.01,
+    "longitude": 28.98,
+    "currency": "TRY",
+    "advice_slug": "turkey",
+    "summary": "Исторические кварталы, Босфор и разнообразная кухня.",
+    "tags": [
+      "culture",
+      "food",
+      "architecture"
+    ],
+    "places": [
+      "Султанахмет",
+      "Босфор",
+      "Кадыкёй"
+    ],
+    "areas": [
+      "Султанахмет — исторические места",
+      "Кадыкёй — кафе и местная жизнь"
+    ],
+    "tourism_url": "https://istanbul.goturkiye.com/",
+    "days": "2–4 дня — ориентир для знакомства с городом",
+    "editorial_updated": "2026-10-08",
+    "hdi_value": 0.853,
+    "hdi_year": 2023
+  },
+  "AYT": {
+    "country": "TR",
+    "iso3": "TUR",
+    "latitude": 36.89,
+    "longitude": 30.71,
+    "currency": "TRY",
+    "advice_slug": "turkey",
+    "summary": "Море, старый город и выезды к античным памятникам.",
+    "tags": [
+      "sea",
+      "nature",
+      "food"
+    ],
+    "places": [
+      "Калеичи",
+      "Коньяалты",
+      "Дюденские водопады"
+    ],
+    "areas": [
+      "Калеичи — прогулки",
+      "Коньяалты — побережье"
+    ],
+    "tourism_url": "https://antalya.goturkiye.com/",
+    "days": "2–4 дня — ориентир для знакомства с городом",
+    "editorial_updated": "2026-10-08",
+    "hdi_value": 0.853,
+    "hdi_year": 2023
+  },
+  "TBS": {
+    "country": "GE",
+    "iso3": "GEO",
+    "latitude": 41.72,
+    "longitude": 44.79,
+    "currency": "GEL",
+    "advice_slug": "georgia",
+    "summary": "Старый город, гастрономия и прогулки по холмам.",
+    "tags": [
+      "food",
+      "culture",
+      "architecture"
+    ],
+    "places": [
+      "Старый Тбилиси",
+      "Серные бани",
+      "Мтацминда"
+    ],
+    "areas": [
+      "Сололаки — исторические улицы",
+      "Вера — кафе"
+    ],
+    "tourism_url": "https://georgia.travel/",
+    "days": "2–4 дня — ориентир для знакомства с городом",
+    "editorial_updated": "2026-10-08",
+    "hdi_value": 0.844,
+    "hdi_year": 2023
+  },
+  "EVN": {
+    "country": "AM",
+    "iso3": "ARM",
+    "latitude": 40.18,
+    "longitude": 44.51,
+    "currency": "AMD",
+    "advice_slug": "armenia",
+    "summary": "Музеи, кафе и выезды к природным и историческим местам.",
+    "tags": [
+      "food",
+      "culture",
+      "nature"
+    ],
+    "places": [
+      "Каскад",
+      "Матенадаран",
+      "Площадь Республики"
+    ],
+    "areas": [
+      "Кентрон — пешие маршруты по центру"
+    ],
+    "tourism_url": "https://armenia.travel/",
+    "days": "2–4 дня — ориентир для знакомства с городом",
+    "editorial_updated": "2026-10-08",
+    "hdi_value": 0.811,
+    "hdi_year": 2023
+  },
+  "GYD": {
+    "country": "AZ",
+    "iso3": "AZE",
+    "latitude": 40.41,
+    "longitude": 49.87,
+    "currency": "AZN",
+    "advice_slug": "azerbaijan",
+    "summary": "Старый город и современная архитектура у Каспийского моря.",
+    "tags": [
+      "architecture",
+      "culture",
+      "food"
+    ],
+    "places": [
+      "Ичери-шехер",
+      "Приморский бульвар",
+      "Центр Гейдара Алиева"
+    ],
+    "areas": [
+      "Сабаиль — исторический центр"
+    ],
+    "tourism_url": "https://azerbaijan.travel/",
+    "days": "2–4 дня — ориентир для знакомства с городом",
+    "editorial_updated": "2026-10-08",
+    "hdi_value": 0.789,
+    "hdi_year": 2023
+  },
+  "DXB": {
+    "country": "AE",
+    "iso3": "ARE",
+    "latitude": 25.2,
+    "longitude": 55.27,
+    "currency": "AED",
+    "advice_slug": "united-arab-emirates",
+    "summary": "Современная архитектура, пляжи и городские развлечения.",
+    "tags": [
+      "sea",
+      "architecture",
+      "food"
+    ],
+    "places": [
+      "Дубай-Крик",
+      "Аль-Фахиди",
+      "Дубай-Марина"
+    ],
+    "areas": [
+      "Марина — побережье",
+      "Дейра — исторические кварталы"
+    ],
+    "tourism_url": "https://www.visitdubai.com/",
+    "days": "2–4 дня — ориентир для знакомства с городом",
+    "editorial_updated": "2026-10-08",
+    "hdi_value": 0.94,
+    "hdi_year": 2023
+  },
+  "PAR": {
+    "country": "FR",
+    "iso3": "FRA",
+    "latitude": 48.86,
+    "longitude": 2.35,
+    "currency": "EUR",
+    "advice_slug": "france",
+    "summary": "Музеи, архитектура и прогулки по кварталам.",
+    "tags": [
+      "culture",
+      "architecture",
+      "food"
+    ],
+    "places": [
+      "Лувр",
+      "Сена",
+      "Монмартр"
+    ],
+    "areas": [
+      "Латинский квартал — прогулки",
+      "Маре — музеи и кафе"
+    ],
+    "tourism_url": "https://parisjetaime.com/",
+    "days": "2–4 дня — ориентир для знакомства с городом",
+    "editorial_updated": "2026-10-08",
+    "hdi_value": 0.92,
+    "hdi_year": 2023
+  },
+  "ROM": {
+    "country": "IT",
+    "iso3": "ITA",
+    "latitude": 41.9,
+    "longitude": 12.5,
+    "currency": "EUR",
+    "advice_slug": "italy",
+    "summary": "Античная история, площади и итальянская кухня.",
+    "tags": [
+      "culture",
+      "architecture",
+      "food"
+    ],
+    "places": [
+      "Колизей",
+      "Римский форум",
+      "Трастевере"
+    ],
+    "areas": [
+      "Монти — исторический центр",
+      "Трастевере — кафе"
+    ],
+    "tourism_url": "https://www.turismoroma.it/",
+    "days": "2–4 дня — ориентир для знакомства с городом",
+    "editorial_updated": "2026-10-08",
+    "hdi_value": 0.915,
+    "hdi_year": 2023
+  },
+  "BCN": {
+    "country": "ES",
+    "iso3": "ESP",
+    "latitude": 41.39,
+    "longitude": 2.17,
+    "currency": "EUR",
+    "advice_slug": "spain",
+    "summary": "Архитектура, городские пляжи и каталонская кухня.",
+    "tags": [
+      "architecture",
+      "sea",
+      "food"
+    ],
+    "places": [
+      "Саграда Фамилия",
+      "Парк Гуэль",
+      "Готический квартал"
+    ],
+    "areas": [
+      "Эшампле — архитектура",
+      "Грасия — районные площади"
+    ],
+    "tourism_url": "https://www.barcelonaturisme.com/",
+    "days": "2–4 дня — ориентир для знакомства с городом",
+    "editorial_updated": "2026-10-08",
+    "hdi_value": 0.918,
+    "hdi_year": 2023
+  },
+  "BER": {
+    "country": "DE",
+    "iso3": "DEU",
+    "latitude": 52.52,
+    "longitude": 13.4,
+    "currency": "EUR",
+    "advice_slug": "germany",
+    "summary": "Музеи, современная история и разнообразные районы.",
+    "tags": [
+      "culture",
+      "architecture",
+      "nightlife"
+    ],
+    "places": [
+      "Музейный остров",
+      "Бранденбургские ворота",
+      "Истсайдская галерея"
+    ],
+    "areas": [
+      "Митте — достопримечательности",
+      "Шарлоттенбург — музеи"
+    ],
+    "tourism_url": "https://www.visitberlin.de/",
+    "days": "2–4 дня — ориентир для знакомства с городом",
+    "editorial_updated": "2026-10-08",
+    "hdi_value": 0.959,
+    "hdi_year": 2023
+  },
+  "AMS": {
+    "country": "NL",
+    "iso3": "NLD",
+    "latitude": 52.37,
+    "longitude": 4.9,
+    "currency": "EUR",
+    "advice_slug": "netherlands",
+    "summary": "Каналы, музеи и прогулки по компактному центру.",
+    "tags": [
+      "culture",
+      "architecture",
+      "nightlife"
+    ],
+    "places": [
+      "Рейксмюсеум",
+      "Йордан",
+      "Вонделпарк"
+    ],
+    "areas": [
+      "Йордан — каналы",
+      "Де-Пейп — кафе"
+    ],
+    "tourism_url": "https://www.iamsterdam.com/",
+    "days": "2–4 дня — ориентир для знакомства с городом",
+    "editorial_updated": "2026-10-08",
+    "hdi_value": 0.955,
+    "hdi_year": 2023
+  },
+  "PRG": {
+    "country": "CZ",
+    "iso3": "CZE",
+    "latitude": 50.08,
+    "longitude": 14.44,
+    "currency": "CZK",
+    "advice_slug": "czechia",
+    "summary": "Историческая архитектура и прогулки вдоль Влтавы.",
+    "tags": [
+      "architecture",
+      "culture",
+      "food"
+    ],
+    "places": [
+      "Карлов мост",
+      "Пражский град",
+      "Вышеград"
+    ],
+    "areas": [
+      "Старе-Место — центр",
+      "Винограды — кафе и парки"
+    ],
+    "tourism_url": "https://www.prague.eu/",
+    "days": "2–4 дня — ориентир для знакомства с городом",
+    "editorial_updated": "2026-10-08",
+    "hdi_value": 0.915,
+    "hdi_year": 2023
+  },
+  "LON": {
+    "country": "GB",
+    "iso3": "GBR",
+    "latitude": 51.51,
+    "longitude": -0.13,
+    "currency": "GBP",
+    "advice_slug": "united-kingdom",
+    "summary": "Музеи, театры, парки и разнообразная кухня.",
+    "tags": [
+      "culture",
+      "food",
+      "architecture"
+    ],
+    "places": [
+      "Британский музей",
+      "Саут-Бэнк",
+      "Гайд-парк"
+    ],
+    "areas": [
+      "Блумсбери — музеи",
+      "Саут-Бэнк — набережная"
+    ],
+    "tourism_url": "https://www.visitlondon.com/",
+    "days": "2–4 дня — ориентир для знакомства с городом",
+    "editorial_updated": "2026-10-08",
+    "hdi_value": 0.946,
+    "hdi_year": 2023
+  },
+  "NYC": {
+    "country": "US",
+    "iso3": "USA",
+    "latitude": 40.71,
+    "longitude": -74.01,
+    "currency": "USD",
+    "advice_slug": "usa",
+    "summary": "Большой город с музеями, парками и культурной программой.",
+    "tags": [
+      "culture",
+      "architecture",
+      "nightlife"
+    ],
+    "places": [
+      "Центральный парк",
+      "Метрополитен-музей",
+      "Бруклинский мост"
+    ],
+    "areas": [
+      "Мидтаун — основные маршруты",
+      "Бруклин — районы и кафе"
+    ],
+    "tourism_url": "https://www.nyctourism.com/",
+    "days": "2–4 дня — ориентир для знакомства с городом",
+    "editorial_updated": "2026-10-08",
+    "hdi_value": 0.938,
+    "hdi_year": 2023
+  },
+  "LAX": {
+    "country": "US",
+    "iso3": "USA",
+    "latitude": 34.05,
+    "longitude": -118.24,
+    "currency": "USD",
+    "advice_slug": "usa",
+    "summary": "Побережье, кино и музеи; маршруты стоит планировать по районам.",
+    "tags": [
+      "sea",
+      "culture",
+      "food"
+    ],
+    "places": [
+      "Гриффит-парк",
+      "Центр Гетти",
+      "Санта-Моника"
+    ],
+    "areas": [
+      "Санта-Моника — побережье",
+      "Голливуд — кино"
+    ],
+    "tourism_url": "https://www.discoverlosangeles.com/",
+    "days": "2–4 дня — ориентир для знакомства с городом",
+    "editorial_updated": "2026-10-08",
+    "hdi_value": 0.938,
+    "hdi_year": 2023
+  },
+  "SFO": {
+    "country": "US",
+    "iso3": "USA",
+    "latitude": 37.77,
+    "longitude": -122.42,
+    "currency": "USD",
+    "advice_slug": "usa",
+    "summary": "Городские прогулки по холмам, залив и музеи.",
+    "tags": [
+      "nature",
+      "culture",
+      "food"
+    ],
+    "places": [
+      "Золотые Ворота",
+      "Парк Голден-Гейт",
+      "Эмбаркадеро"
+    ],
+    "areas": [
+      "Ноб-Хилл — виды",
+      "Марина — прогулки у воды"
+    ],
+    "tourism_url": "https://www.sftravel.com/",
+    "days": "2–4 дня — ориентир для знакомства с городом",
+    "editorial_updated": "2026-10-08",
+    "hdi_value": 0.938,
+    "hdi_year": 2023
+  },
+  "BUD": {
+    "country": "HU",
+    "iso3": "HUN",
+    "latitude": 47.5,
+    "longitude": 19.04,
+    "currency": "HUF",
+    "advice_slug": "hungary",
+    "summary": "Дунай, историческая архитектура и термальные купальни.",
+    "tags": [
+      "architecture",
+      "culture",
+      "food"
+    ],
+    "places": [
+      "Будайская крепость",
+      "Парламент",
+      "Купальни Сечени"
+    ],
+    "areas": [
+      "Белварош — центр",
+      "Терезварош — театры"
+    ],
+    "tourism_url": "https://visithungary.com/",
+    "days": "2–4 дня — ориентир для знакомства с городом",
+    "editorial_updated": "2026-10-08",
+    "hdi_value": 0.87,
+    "hdi_year": 2023
+  },
+  "VIE": {
+    "country": "AT",
+    "iso3": "AUT",
+    "latitude": 48.21,
+    "longitude": 16.37,
+    "currency": "EUR",
+    "advice_slug": "austria",
+    "summary": "Дворцы, художественные музеи и музыкальная программа.",
+    "tags": [
+      "culture",
+      "architecture",
+      "food"
+    ],
+    "places": [
+      "Шёнбрунн",
+      "Бельведер",
+      "Музейный квартал"
+    ],
+    "areas": [
+      "Внутренний город — достопримечательности",
+      "Нойбау — музеи"
+    ],
+    "tourism_url": "https://www.wien.info/",
+    "days": "2–4 дня — ориентир для знакомства с городом",
+    "editorial_updated": "2026-10-08",
+    "hdi_value": 0.93,
+    "hdi_year": 2023
+  },
+  "LIS": {
+    "country": "PT",
+    "iso3": "PRT",
+    "latitude": 38.72,
+    "longitude": -9.14,
+    "currency": "EUR",
+    "advice_slug": "portugal",
+    "summary": "Холмы, набережные и выезды к Атлантике.",
+    "tags": [
+      "architecture",
+      "sea",
+      "food"
+    ],
+    "places": [
+      "Алфама",
+      "Белен",
+      "Площадь Коммерции"
+    ],
+    "areas": [
+      "Байша — центр",
+      "Шиаду — прогулки"
+    ],
+    "tourism_url": "https://www.visitlisboa.com/",
+    "days": "2–4 дня — ориентир для знакомства с городом",
+    "editorial_updated": "2026-10-08",
+    "hdi_value": 0.89,
+    "hdi_year": 2023
+  },
+  "ATH": {
+    "country": "GR",
+    "iso3": "GRC",
+    "latitude": 37.98,
+    "longitude": 23.73,
+    "currency": "EUR",
+    "advice_slug": "greece",
+    "summary": "Античные памятники, музеи и городская кухня.",
+    "tags": [
+      "culture",
+      "architecture",
+      "food"
+    ],
+    "places": [
+      "Акрополь",
+      "Плака",
+      "Национальный археологический музей"
+    ],
+    "areas": [
+      "Плака — исторический центр",
+      "Кукаки — кафе"
+    ],
+    "tourism_url": "https://www.thisisathens.org/",
+    "days": "2–4 дня — ориентир для знакомства с городом",
+    "editorial_updated": "2026-10-08",
+    "hdi_value": 0.908,
+    "hdi_year": 2023
+  },
+  "BKK": {
+    "country": "TH",
+    "iso3": "THA",
+    "latitude": 13.76,
+    "longitude": 100.5,
+    "currency": "THB",
+    "advice_slug": "thailand",
+    "summary": "Храмы, рынки и разнообразная уличная еда.",
+    "tags": [
+      "culture",
+      "food",
+      "nightlife"
+    ],
+    "places": [
+      "Большой дворец",
+      "Ват Арун",
+      "Чатучак"
+    ],
+    "areas": [
+      "Раттанакосин — история",
+      "Силом — транспорт"
+    ],
+    "tourism_url": "https://www.tourismthailand.org/",
+    "days": "2–4 дня — ориентир для знакомства с городом",
+    "editorial_updated": "2026-10-08",
+    "hdi_value": 0.798,
+    "hdi_year": 2023
+  }
+}

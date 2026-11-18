@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Конфиденциальность — Aviator</title>
+  <meta name="description" content="Какие данные сайт Aviator хранит в вашем браузере, что получает сервер и когда включается Яндекс Метрика.">
+  <meta name="theme-color" content="#eef3f9">
+  <link rel="canonical" href="https://aviatour.vercel.app/privacy.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Aviator">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:title" content="Конфиденциальность — Aviator">
+  <meta property="og:description" content="Какие данные сайт Aviator хранит в вашем браузере, что получает сервер и когда включается Яндекс Метрика.">
+  <meta property="og:url" content="https://aviatour.vercel.app/privacy.html">
+  <meta property="og:image" content="https://aviatour.vercel.app/og.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="top wrap">
+    <a class="brand" href="/"><span class="brand-mark"><svg class="icon" aria-hidden="true"><use href="/icons.svg#plane"></use></svg></span>Aviator</a>
+    <nav class="nav" aria-label="Разделы сайта">
+      <a href="/">Билеты</a>
+      <a href="/city/">Города</a>
+      <a href="/#fav">Избранное</a>
+      <a href="/trip.html">Мои поездки</a>
+      <a href="/how-we-count.html">Как мы считаем</a>
+    </nav>
+  </header>
+
+  <main class="wrap">
+    <header class="page-head">
+      <h1>Конфиденциальность</h1>
+      <p>Aviator не просит регистрацию, почту, телефон и платёжные данные.</p>
+    </header>
+    <div class="prose">
+      <section class="card" id="operator" hidden>
+        <h2>Кто отвечает за данные</h2>
+        <p data-fill></p>
+      </section>
+      <section class="card">
+        <h2>Что хранится в вашем браузере</h2>
+        <p>В хранилище браузера (localStorage), не на нашем сервере:</p>
+        <ul>
+          <li>сохранённые маршруты, ваш расчёт бюджета и отметка о предложении сохранить поездку. Ссылка на план содержит маршрут и указанные суммы. При отправке их увидит получатель;</li>
+          <li>избранные поездки — чтобы вернуться к ним и сравнить;</li>
+          <li>последние открытые поездки (до восьми) — для ряда «Продолжить планирование»; его можно очистить кнопкой на главной;</li>
+          <li>город вылета — выбранный вами или подсказанный сервером, чтобы цены были из вашего города;</li>
+          <li>вариант эксперимента, если он идёт, — чтобы страница не менялась от визита к визиту;</li>
+          <li>ваш ответ про Яндекс Метрику.</li>
+        </ul>
+        <p>Всё это можно удалить, очистив данные сайта в настройках браузера.</p>
+      </section>
+      <section class="card">
+        <h2>Что получает наш сервер</h2>
+        <p>Условия поиска (города, даты, бюджет) — чтобы найти цены. Как любой сайт, сервер видит технические данные запроса: адрес IP и сведения о браузере. Хостинг Vercel ведёт служебные журналы запросов.</p>
+        <p>Город вылета по умолчанию: Vercel по IP-адресу определяет примерное место, откуда пришёл запрос, а сервер выбирает ближайший к нему крупный город с аэропортом (не дальше 300 км, иначе Москва). Сервер ничего из этого не сохраняет; браузер запоминает только выбранный город. Геолокацию браузера мы не запрашиваем.</p>
+      </section>
+      <section class="card">
+        <h2>Переход к партнёрам</h2>
+        <p>Когда вы нажимаете «Проверить цену на Aviasales», «Отели» или «Островок», ссылка проходит через партнёрскую сеть Travelpayouts и открывает сайт партнёра. Мы добавляем к ссылке только адрес поиска и метку нашего блока (например, «led-trip-tickets»). Дальше ваш браузер сам открывает сайты Travelpayouts и партнёра — как любой сайт, они видят ваш IP-адрес и сведения о браузере, и действуют их правила.</p>
+      </section>
+      <section class="card">
+        <h2>Яндекс Метрика</h2>
+        <p data-metrika hidden>Мы включаем Метрику, только если вы согласились в уведомлении на сайте. Она ставит cookie и передаёт Яндексу сведения о посещении: какие страницы открыты, на что нажимали, тип устройства, примерное место по IP. Мы видим отчёты Метрики о посещениях — без имён, почты и телефонов. Отказаться можно в уведомлении или очистив данные сайта в браузере — уведомление появится снова.</p>
+        <p data-metrika-off>Сейчас Метрика выключена: сайт не загружает счётчики и не ставит cookie.</p>
+      </section>
+      <p class="caption">Редакция от 15 ноября 2026 года.</p>
+    </div>
+  </main>
+
+  <footer class="wrap footer">
+    <nav aria-label="Информация">
+      <a href="/city/">Города</a>
+      <a href="/kuda/">Куда улететь</a>
+      <a href="/how-we-count.html">Как мы считаем</a>
+      <a href="/how-we-earn.html">Как мы зарабатываем</a>
+      <a href="/about.html">О проекте</a>
+      <a href="/privacy.html" data-metrika hidden>Конфиденциальность</a>
+      <a href="/credits.html">Авторы фото</a>
+    </nav>
+    <p class="caption">Цены — находки Aviasales, окончательную цену и наличие мест показывает Aviasales. Билеты продаёт Aviasales, мы получаем комиссию.</p>
+  </footer>
+
+  <script src="/config.js" defer></script>
+  <script type="module" src="/js/site.js"></script>
+</body>
+</html>
