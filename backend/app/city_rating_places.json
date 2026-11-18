@@ -1,0 +1,3044 @@
+{
+  "ABA": [
+    {
+      "name": "Хакасский национальный краеведческий музей им. Л. Р. Кызласова",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/27838/khakasskii-nacionalnyi-kraevedcheskii-muzei-im-l-r-kyzlasova",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 28010,
+      "record_updated": "2025-09-18",
+      "address": "Респ Хакасия,г Абакан,ул Пушкина,д 28 А стр 1"
+    },
+    {
+      "name": "Абаканская картинная галерея им. Ф. Е. Пронских",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/12183/abakanskaya-kartinnaya-galereya-im-f-e-pronskikh",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 19:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 6439,
+      "record_updated": "2025-09-01",
+      "address": "Респ Хакасия,г Абакан,ул Щетинкина,д 65"
+    }
+  ],
+  "ARH": [
+    {
+      "name": "Северный морской музей",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/21664/severnyi-morskoi-muzei",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 11:00 до 19:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 12233,
+      "record_updated": "2026-03-03",
+      "address": "обл Архангельская,г Архангельск,наб Северной Двины,д 80"
+    },
+    {
+      "name": "Архангельский краеведческий музей",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/11626/arkhangelskii-kraevedcheskii-muzei",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 8486,
+      "record_updated": "2025-09-11",
+      "address": "обл Архангельская,г Архангельск,пл В.И.Ленина,д 2"
+    }
+  ],
+  "ASF": [
+    {
+      "name": "Дом-музей Велимира Хлебникова",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/11453/dom-muzei-velimira-khlebnikova",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 9522,
+      "record_updated": "2025-09-22",
+      "address": "обл Астраханская,г Астрахань,ул Свердлова,д 53"
+    },
+    {
+      "name": "Астраханская картинная галерея им. П. М. Догадина",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/12000/astrakhanskaya-kartinnaya-galereya-im-p-m-dogadina",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 6306,
+      "record_updated": "2025-09-22",
+      "address": "обл Астраханская,г Астрахань,ул Свердлова,зд 81"
+    }
+  ],
+  "BQS": [
+    {
+      "name": "Музейно-выставочный центр «Дом И. А. Котельникова»",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/48455/muzeino-vystavochnyi-centr-dom-i-a-kotelnikova",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 19:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 48997,
+      "record_updated": "2026-02-17",
+      "address": "обл Амурская,г Благовещенск,ул Краснофлотская,д 131/1"
+    },
+    {
+      "name": "Музей-мастерская народного художника России А. Тихомирова",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/48445/muzei-masterskaya-narodnogo-khudozhnika-rossii-a-tikhomirova",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 48990,
+      "record_updated": "2026-02-17",
+      "address": "обл Амурская,г Благовещенск,ул Пионерская,д 14"
+    }
+  ],
+  "BTK": [
+    {
+      "name": "Музей истории «Братскгэсстроя» и города Братска",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/83055/muzei-istorii-bratskgesstroya-i-goroda-bratska",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 69876,
+      "record_updated": "2026-07-24",
+      "address": "обл Иркутская,г Братск,ж/р Падун,ул Гидростроителей,д 54"
+    },
+    {
+      "name": "Музей истории политической ссылки г. Братска",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/83054/muzei-istorii-politicheskoi-ssylki-g-bratska",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 69875,
+      "record_updated": "2025-11-06",
+      "address": "обл Иркутская,г Братск,ж/р Центральный,ул Парковая,д 3"
+    }
+  ],
+  "BZK": [
+    {
+      "name": "Брянский областной художественный музейно-выставочный центр",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/22249/bryanskii-oblastnoi-khudozhestvennyi-muzeino-vystavochnyi-centr",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 8755,
+      "record_updated": "2025-12-05",
+      "address": "обл Брянская,г Брянск,ул Емлютина,д 39"
+    },
+    {
+      "name": "Музей братьев Ткачевых",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/11463/muzei-bratev-tkachevykh",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 7542,
+      "record_updated": "2025-10-08",
+      "address": "обл Брянская,г Брянск,ул Куйбышева,д 2"
+    }
+  ],
+  "CEE": [
+    {
+      "name": "Мемориальный дом-музей Верещагиных",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/11549/memorialnyi-dom-muzei-vereshaginykh",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 8544,
+      "record_updated": "2025-09-22",
+      "address": "обл Вологодская,г Череповец,ул Социалистическая,д 22"
+    },
+    {
+      "name": "Детский музей г. Череповца",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/6982/detskii-muzei-g-cherepovca",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 17:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 8353,
+      "record_updated": "2025-09-15",
+      "address": "обл Вологодская,г Череповец,пр-кт Луначарского,д 39"
+    }
+  ],
+  "CEK": [
+    {
+      "name": "Галерея «ЛюбаПетя»",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/102088/galereya-lyubapetya",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 21:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 89077,
+      "record_updated": "2025-05-23",
+      "address": "обл Челябинская,г Челябинск,ул Лесопарковая,д 5 к 2"
+    }
+  ],
+  "CSY": [
+    {
+      "name": "Музей истории трактора",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/55855/muzei-istorii-traktora",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 09:00 до 17:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 56927,
+      "record_updated": "2026-04-07",
+      "address": "Чувашия Чувашская Республика,г Чебоксары,пр-кт Мира,д 1"
+    },
+    {
+      "name": "Арт-галерея «Счастье на Волге»",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/104850/art-galereya-schaste-na-volge",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 20:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 91529,
+      "record_updated": "2026-03-06",
+      "address": "Чувашия Чувашская Республика,г Чебоксары,б-р Купца Ефремова,д 1"
+    }
+  ],
+  "DHG": [
+    {
+      "name": "Музейно-выставочный центр г. Дальнегорска",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/10375/muzeino-vystavochnyi-centr-g-dalnegorska",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 7514,
+      "record_updated": "2025-10-17",
+      "address": "край Приморский,г Дальнегорск,пр-кт 50 лет Октября,д 70"
+    }
+  ],
+  "DLR": [
+    {
+      "name": "Музей истории г. Дальнереченска",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/8467/muzei-istorii-g-dalnerechenska",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 09:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 8327,
+      "record_updated": "2025-09-10",
+      "address": "край Приморский,г Дальнереченск,ул Рябуха,д 75"
+    }
+  ],
+  "ESL": [
+    {
+      "name": "Национальный музей Республики Калмыкия им. Н. Н. Пальмова",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/21604/nacionalnyi-muzei-respubliki-kalmykiya-im-n-n-palmova",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 16:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 12459,
+      "record_updated": "2025-09-04",
+      "address": "Респ Калмыкия,г Элиста,ул Джангара,д 9"
+    }
+  ],
+  "EYA": [
+    {
+      "name": "Музей истории золотодобычи г. Зея",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/20240/muzei-istorii-zolotodobychi-g-zeya",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 17942,
+      "record_updated": "2026-03-17",
+      "address": "обл Амурская,г Зея,ул Мухина,д 202"
+    },
+    {
+      "name": "Краеведческий музей г. Зеи",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/20241/kraevedcheskii-muzei-g-zei",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 17929,
+      "record_updated": "2026-03-17",
+      "address": "обл Амурская,г Зея,ул Мухина,д 247"
+    }
+  ],
+  "GDX": [
+    {
+      "name": "Музей «Галерея боевой славы»",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/97246/muzei-galereya-boevoi-slavy",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 17:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 84312,
+      "record_updated": "2026-04-27",
+      "address": "обл Магаданская,г Магадан,пр-кт Карла Маркса,д 35"
+    },
+    {
+      "name": "Выставочный павильон парка «Маяк»",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/97248/vystavochnyi-pavilon-parka-mayak",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 12:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 84313,
+      "record_updated": "2026-03-13",
+      "address": "обл Магаданская,г Магадан,ул Приморская,д 7А/1"
+    },
+    {
+      "name": "Парк г. Магадана",
+      "category": "nature",
+      "source": "Минкультуры России · Парки",
+      "url": "https://www.culture.ru/institutes/42713/park-g-magadana",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 11:00 до 20:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-parks/data-826-structure-4.jsons",
+      "registry_id": 41282,
+      "record_updated": "2025-07-31",
+      "address": "обл Магаданская,г Магадан,пр-кт Ленина,д 21А"
+    }
+  ],
+  "GDZ": [
+    {
+      "name": "Городской выставочный зал Геленджика",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/6882/gorodskoi-vystavochnyi-zal-gelendzhika",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 19:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 16190,
+      "record_updated": "2026-01-22",
+      "address": "край Краснодарский,г Геленджик,ул Островского,д 16"
+    },
+    {
+      "name": "Геленджикский историко-краеведческий музей",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/4732/gelendzhikskii-istoriko-kraevedcheskii-muzei",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 09:00 до 20:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 7127,
+      "record_updated": "2025-09-22",
+      "address": "край Краснодарский,г Геленджик,ул Островского,д 1"
+    }
+  ],
+  "GOJ": [
+    {
+      "name": "Музей истории ГАЗ",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/102541/muzei-istorii-gaz",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 09:00 до 19:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 89515,
+      "record_updated": "2026-03-13",
+      "address": "обл Нижегородская,г Нижний Новгород,пр-кт Ленина,д 95"
+    }
+  ],
+  "GRV": [
+    {
+      "name": "Музей Чеченской Республики",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/22091/muzei-chechenskoi-respubliki",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 9077,
+      "record_updated": "2025-09-17",
+      "address": "Респ Чеченская,г Грозный,пр-кт им В.В.Путина,зд 3б"
+    },
+    {
+      "name": "Государственная галерея им. А. А. Кадырова",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/11758/gosudarstvennaya-galereya-im-a-a-kadyrova",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 17:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 6901,
+      "record_updated": "2025-08-29",
+      "address": "Респ Чеченская,г Грозный,ул Х.А.Исаева,д 75"
+    }
+  ],
+  "HMA": [
+    {
+      "name": "Музей геологии, нефти и газа",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/11368/muzei-geologii-nefti-i-gaza",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 11:00 до 19:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 7446,
+      "record_updated": "2026-09-29",
+      "address": "АО Ханты-Мансийский Автономный округ - Югра,г Ханты-Мансийск,ул Чехова,д 9"
+    },
+    {
+      "name": "Выставочные залы Этнографического музея «Торум Маа»",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/28229/vystavochnye-zaly-etnograficheskogo-muzeya-torum-maa",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 24036,
+      "record_updated": "2026-01-12",
+      "address": "АО Ханты-Мансийский Автономный округ - Югра,г Ханты-Мансийск,ул Комсомольская,д 30"
+    }
+  ],
+  "HTA": [
+    {
+      "name": "Музейный центр этно-археопарка «Сухотино»",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/105851/muzeinyi-centr-etno-arkheoparka-sukhotino",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 92564,
+      "record_updated": "2026-04-28",
+      "address": "край Забайкальский,г Чита,ул Промышленная"
+    },
+    {
+      "name": "Музей декабристов г. Читы",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/11723/muzei-dekabristov-g-chity",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 28885,
+      "record_updated": "2025-10-28",
+      "address": "край Забайкальский,г Чита,ул Декабристов,д 3Б"
+    }
+  ],
+  "IAR": [
+    {
+      "name": "Центральный выставочный зал г. Ярославля",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/102382/centralnyi-vystavochnyi-zal-g-yaroslavlya",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 11:00 до 19:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 89355,
+      "record_updated": "2025-06-19",
+      "address": "обл Ярославская,г Ярославль,ул Максимова,д 15"
+    }
+  ],
+  "IJK": [
+    {
+      "name": "Национальный музей Удмуртской Республики им. К. Герда",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/21614/nacionalnyi-muzei-udmurtskoi-respubliki-im-k-gerda",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 12417,
+      "record_updated": "2026-11-11",
+      "address": "Респ Удмуртская,г Ижевск,ул Коммунаров,д 287"
+    },
+    {
+      "name": "Удмуртский республиканский музей изобразительных искусств им. А. П. Холмогорова",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/106510/udmurtskii-respublikanskii-muzei-izobrazitelnykh-iskusstv-im-a-p-kholmogorova",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 12:00 до 20:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 93231,
+      "record_updated": "2026-05-25",
+      "address": "респ Удмуртская,г Ижевск,ул Кирова,д 128"
+    }
+  ],
+  "IKT": [
+    {
+      "name": "Музей «Ледокол «Ангара»",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/38464/muzei-ledokol-angara",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 36639,
+      "record_updated": "2026-06-24",
+      "address": "обл Иркутская,г Иркутск,пр-кт Маршала Жукова,д 36А/1"
+    },
+    {
+      "name": "Музей городского быта г. Иркутска",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/94844/muzei-gorodskogo-byta-g-irkutska",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 81858,
+      "record_updated": "2025-11-28",
+      "address": "обл Иркутская,г Иркутск,ул Декабрьских Событий,стр 77"
+    }
+  ],
+  "INA": [
+    {
+      "name": "Интинский краеведческий музей",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/6393/intinskii-kraevedcheskii-muzei",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 6923,
+      "record_updated": "2025-11-21",
+      "address": "Респ Коми,г Инта,ул Куратова,д 28"
+    }
+  ],
+  "IWA": [
+    {
+      "name": "Дом-музей семьи Бубновых",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/20104/dom-muzei-semi-bubnovykh",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 11:00 до 17:30.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 18236,
+      "record_updated": "2026-04-07",
+      "address": "обл Ивановская,г Иваново,ул Третьего Интернационала,д 45/43"
+    },
+    {
+      "name": "Музейно-выставочный центр г. Иваново",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/42834/muzeino-vystavochnyi-centr-g-ivanovo",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 29875,
+      "record_updated": "2026-01-14",
+      "address": "обл Ивановская,г Иваново,ул Советская,д 29"
+    },
+    {
+      "name": "Парк Революции",
+      "category": "nature",
+      "source": "Минкультуры России · Парки",
+      "url": "https://www.culture.ru/institutes/49283/park-revolyucii",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-parks/data-826-structure-4.jsons",
+      "registry_id": 50518,
+      "record_updated": "2026-05-04",
+      "address": "обл Ивановская,г Иваново,ул Первых Маевок,д 55"
+    }
+  ],
+  "JOK": [
+    {
+      "name": "Музей истории г. Йошкар-Олы",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/11639/muzei-istorii-g-ioshkar-oly",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 16:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 7351,
+      "record_updated": "2025-10-28",
+      "address": "Респ Марий Эл,г Йошкар-Ола,ул Вознесенская,д 39"
+    },
+    {
+      "name": "Национальная художественная галерея г. Йошкар-Ола",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/20846/nacionalnaya-khudozhestvennaya-galereya-g-ioshkar-ola",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 15265,
+      "record_updated": "2025-09-10",
+      "address": "Респ Марий Эл,г Йошкар-Ола,пр-кт Ленинский,д 24"
+    }
+  ],
+  "KGD": [
+    {
+      "name": "Третьяковская галерея в г. Калининграде",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/99272/tretyakovskaya-galereya-v-g-kaliningrade",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 20:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 86374,
+      "record_updated": "2025-09-02",
+      "address": "обл Калининградская,г Калининград,наб Парадная,зд 3"
+    }
+  ],
+  "KGP": [
+    {
+      "name": "Культурно-выставочный центр Русского музея",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/49877/kulturno-vystavochnyi-centr-russkogo-muzeya",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 19:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 51933,
+      "record_updated": "2026-10-21",
+      "address": "АО Ханты-Мансийский Автономный округ - Югра,г Когалым,ул Югорская,д 30"
+    },
+    {
+      "name": "Музейно-выставочный центр г. Когалыма",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/10291/muzeino-vystavochnyi-centr-g-kogalyma",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 19:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 17352,
+      "record_updated": "2025-11-18",
+      "address": "АО Ханты-Мансийский Автономный округ - Югра,г Когалым,ул Дружбы Народов,д 40"
+    }
+  ],
+  "KHV": [
+    {
+      "name": "Музей «Мир говорящих машин» г. Хабаровска",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/58726/muzei-mir-govoryashikh-mashin-g-khabarovska",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 19:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 58725,
+      "record_updated": "2026-11-05",
+      "address": "край Хабаровский,г Хабаровск,ул Фрунзе,д 50"
+    },
+    {
+      "name": "Музей истории Дальневосточного военного округа",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/79201/muzei-istorii-dalnevostochnogo-voennogo-okruga",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 17:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 65716,
+      "record_updated": "2025-11-19",
+      "address": "край Хабаровский,г Хабаровск,ул Шевченко,д 20"
+    }
+  ],
+  "KJA": [
+    {
+      "name": "Музейный центр «Площадь Мира»",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/100543/muzeinyi-centr-ploshad-mira",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 11:00 до 19:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 87810,
+      "record_updated": "2025-08-29",
+      "address": "край Красноярский,г Красноярск,пл Мира,д 1"
+    }
+  ],
+  "KLF": [
+    {
+      "name": "Мемориальный дом-музей К. Э. Циолковского",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/25063/memorialnyi-dom-muzei-k-e-ciolkovskogo",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 19:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 19739,
+      "record_updated": "2026-05-25",
+      "address": "обл Калужская,г Калуга,ул Циолковского,д 79"
+    },
+    {
+      "name": "Дом-музей А. Л. Чижевского",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/3510/dom-muzei-a-l-chizhevskogo",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 19:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 18107,
+      "record_updated": "2026-05-12",
+      "address": "обл Калужская,г Калуга,ул Московская,д 62"
+    }
+  ],
+  "KMW": [
+    {
+      "name": "Парк отдыха «Берендеевка» г. Костромы",
+      "category": "nature",
+      "source": "Минкультуры России · Парки",
+      "url": "https://www.culture.ru/institutes/98680/park-otdykha-berendeevka-g-kostromy",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 00:00 до 23:59.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-parks/data-826-structure-4.jsons",
+      "registry_id": 85825,
+      "record_updated": "2026-11-05",
+      "address": "обл Костромская,г Кострома,ул Ленина,д 150а"
+    },
+    {
+      "name": "Парк «Малышково» г. Костромы",
+      "category": "nature",
+      "source": "Минкультуры России · Парки",
+      "url": "https://www.culture.ru/institutes/104147/park-malyshkovo",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 00:00 до 23:59.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-parks/data-826-structure-4.jsons",
+      "registry_id": 91146,
+      "record_updated": "2026-11-03",
+      "address": "обл Костромская,г Кострома,ул Станкостроительная"
+    }
+  ],
+  "KRO": [
+    {
+      "name": "Музей истории г. Кургана",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/11474/muzei-istorii-g-kurgana",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 18687,
+      "record_updated": "2025-12-23",
+      "address": "обл Курганская,г Курган,ул Куйбышева,д 59"
+    },
+    {
+      "name": "Курганский областной краеведческий музей",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/11434/kurganskii-oblastnoi-kraevedcheskii-muzei",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 7581,
+      "record_updated": "2025-12-23",
+      "address": "обл Курганская,г Курган,ул Пушкина,д 137"
+    },
+    {
+      "name": "Детский парк г. Кургана",
+      "category": "nature",
+      "source": "Минкультуры России · Парки",
+      "url": "https://www.culture.ru/institutes/49216/detskii-park-g-kurgana",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 21:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-parks/data-826-structure-4.jsons",
+      "registry_id": 50330,
+      "record_updated": "2025-04-30",
+      "address": "обл Курганская,г Курган,ул Гоголя,д 1"
+    }
+  ],
+  "KSZ": [
+    {
+      "name": "Котласский краеведческий музей",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/11957/kotlasskii-kraevedcheskii-muzei",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 09:30 до 17:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 7383,
+      "record_updated": "2025-08-27",
+      "address": "обл Архангельская,р-н Котласский,г Котлас,ул Виноградова,д 22"
+    }
+  ],
+  "KUF": [
+    {
+      "name": "Музей городских легенд г. Самары",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/106243/muzei-gorodskikh-legend-g-samary",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 92971,
+      "record_updated": "2026-05-08",
+      "address": "обл Самарская,г Самара,ул Галактионовская,д 91"
+    },
+    {
+      "name": "Самарский областной художественный музей",
+      "category": "museums",
+      "source": "Самарский областной художественный музей",
+      "url": "https://artmus.ru/exhibitions/id-1170.html",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "С 12 октября 2026 года субботние часы основного здания — 12:00–19:30."
+    }
+  ],
+  "KXK": [
+    {
+      "name": "Городской краеведческий музей Комсомольска-на-Амуре",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/2095/gorodskoi-kraevedcheskii-muzei-komsomolska-na-amure",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 17:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 7234,
+      "record_updated": "2025-09-09",
+      "address": "край Хабаровский,г Комсомольск-на-Амуре,ул Кирова,д 27"
+    },
+    {
+      "name": "Музей изобразительных искусств г. Комсомольска-на-Амуре",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/11646/muzei-izobrazitelnykh-iskusstv-g-komsomolska-na-amure",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 17:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 8683,
+      "record_updated": "2025-08-29",
+      "address": "край Хабаровский,г Комсомольск-на-Амуре,пр-кт Мира,д 16"
+    }
+  ],
+  "KYZ": [
+    {
+      "name": "Стеларий Национального музея «Алдын-Дошка»",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/53306/stelarii-nacionalnogo-muzeya-aldyn-doshka",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 57557,
+      "record_updated": "2026-10-12",
+      "address": "Респ Тыва,г Кызыл,ул Титова,зд 30"
+    },
+    {
+      "name": "Музей истории политических репрессий г. Кызыла",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/20787/muzei-istorii-politicheskikh-repressii-g-kyzyla",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 15845,
+      "record_updated": "2026-04-16",
+      "address": "Респ Тыва,г Кызыл,ул Комсомольская,д 5"
+    }
+  ],
+  "MCX": [
+    {
+      "name": "Национальный музей Республики Дагестан им. А. Тахо-Годи",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/6008/nacionalnyi-muzei-respubliki-dagestan-im-a-takho-godi",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 7057,
+      "record_updated": "2026-02-20",
+      "address": "Респ Дагестан,г Махачкала,ул Даниялова,д 31"
+    },
+    {
+      "name": "Мемориальный дом-музей Анвара Аджиева",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/38787/memorialnyi-dom-muzei-anvara-adzhieva",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 37057,
+      "record_updated": "2025-11-12",
+      "address": "респ Дагестан,г Махачкала,пер Анвара Аджиева,д 10"
+    }
+  ],
+  "MMK": [
+    {
+      "name": "Мурманский областной художественный музей",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/7991/murmanskii-oblastnoi-khudozhestvennyi-muzei",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 11:00 до 19:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 6558,
+      "record_updated": "2025-09-03",
+      "address": "обл Мурманская,г Мурманск,ул Коминтерна,д 13"
+    },
+    {
+      "name": "Мурманский областной краеведческий музей",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/11653/murmanskii-oblastnoi-kraevedcheskii-muzei",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 11:00 до 20:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 7295,
+      "record_updated": "2025-09-03",
+      "address": "обл Мурманская,г Мурманск,пр-кт Ленина,д 90"
+    }
+  ],
+  "MQF": [
+    {
+      "name": "Магнитогорский историко-краеведческий музей",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/11913/magnitogorskii-istoriko-kraevedcheskii-muzei",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 16:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 8396,
+      "record_updated": "2025-10-01",
+      "address": "обл Челябинская,г Магнитогорск,ул Советской Армии,д 51А"
+    },
+    {
+      "name": "Магнитогорская картинная галерея",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/10889/magnitogorskaya-kartinnaya-galereya",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 11:00 до 19:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 8403,
+      "record_updated": "2025-09-25",
+      "address": "обл Челябинская,г Магнитогорск,ул имени газеты Правда,д 12"
+    }
+  ],
+  "NAL": [
+    {
+      "name": "Национальный музей Кабардино-Балкарской Республики",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/20536/nacionalnyi-muzei-kabardino-balkarskoi-respubliki",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 16179,
+      "record_updated": "2026-10-01",
+      "address": "Респ Кабардино-Балкарская,г Нальчик,ул Горького,д 62"
+    },
+    {
+      "name": "Мемориальный музей-квартира А. А. Шогенцукова",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/100614/memorialnyi-muzei-kvartira-a-a-shogencukova",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 17:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 87884,
+      "record_updated": "2026-04-08",
+      "address": "Респ Кабардино-Балкарская,г Нальчик,ул Горького,д 35"
+    }
+  ],
+  "NJC": [
+    {
+      "name": "Музей истории русского быта г. Нижневартовска",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/27215/muzei-istorii-russkogo-byta-g-nizhnevartovska",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 17:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 23466,
+      "record_updated": "2026-02-16",
+      "address": "АО Ханты-Мансийский Автономный округ - Югра,г Нижневартовск,ул Первомайская,д 15"
+    },
+    {
+      "name": "Нижневартовский краеведческий музей им. Т. Д. Шуваева",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/26460/nizhnevartovskii-kraevedcheskii-muzei-im-t-d-shuvaeva",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 11:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 23462,
+      "record_updated": "2025-09-12",
+      "address": "ао Ханты-Мансийский Автономный округ - Югра,г Нижневартовск,ул Ленина,д 9 к 1"
+    }
+  ],
+  "NLI": [
+    {
+      "name": "Межпоселенческий краеведческий музей им. В. Е. Розова",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/3362/mezhposelencheskii-kraevedcheskii-muzei-im-v-e-rozova",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 17:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 8566,
+      "record_updated": "2025-09-25",
+      "address": "край Хабаровский,г Николаевск-на-Амуре,ул Советская,д 71"
+    }
+  ],
+  "NNM": [
+    {
+      "name": "Музей-заповедник «Пустозерск» г. Нарьян-Мара",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/10229/muzei-zapovednik-pustozersk-g-naryan-mara",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 11:00 до 17:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 7763,
+      "record_updated": "2026-10-15",
+      "address": "ао Ненецкий,г Нарьян-Мар,ул им Тыко-Вылко,д 4"
+    },
+    {
+      "name": "Ненецкий краеведческий музей",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/11754/neneckii-kraevedcheskii-muzei",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 11:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 12249,
+      "record_updated": "2026-02-18",
+      "address": "АО Ненецкий,г Нарьян-Мар,ул Победы,д 5"
+    }
+  ],
+  "NSK": [
+    {
+      "name": "Художественная галерея г. Норильска",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/1721/khudozhestvennaya-galereya-g-norilska",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 11:00 до 19:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 6894,
+      "record_updated": "2025-09-15",
+      "address": "край Красноярский,г Норильск,ул Талнахская,д 78"
+    },
+    {
+      "name": "Музей Норильска",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/11808/muzei-norilska",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 11:00 до 19:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 8923,
+      "record_updated": "2025-09-15",
+      "address": "край Красноярский,г Норильск,пр-кт Ленинский,д 14"
+    }
+  ],
+  "NYA": [
+    {
+      "name": "Музейно-культурный центр «Центр малочисленных народов Севера»",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/26962/muzeino-kulturnyi-centr-centr-malochislennykh-narodov-severa",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 23376,
+      "record_updated": "2025-09-22",
+      "address": "АО Ханты-Мансийский Автономный округ - Югра,г Нягань,мкр 4-й,д 13"
+    },
+    {
+      "name": "Музейно-культурный центр г. Нягани",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/11629/muzeino-kulturnyi-centr-g-nyagani",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 7643,
+      "record_updated": "2025-09-10",
+      "address": "АО Ханты-Мансийский Автономный округ - Югра,г Нягань,мкр 3-й,д 3/1"
+    }
+  ],
+  "OGZ": [
+    {
+      "name": "Музей осетинской литературы им. К. Л. Хетагурова",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/69903/muzei-osetinskoi-literatury-im-k-l-khetagurova",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 17:30.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 34903,
+      "record_updated": "2026-09-15",
+      "address": "Респ Северная Осетия - Алания,г Владикавказ,пер Музейный,д 3"
+    },
+    {
+      "name": "Отдел природы Национального музея РСО-А",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/56889/otdel-prirody-nacionalnogo-muzeya-rso-a",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 30328,
+      "record_updated": "2026-03-03",
+      "address": "респ Северная Осетия - Алания,г Владикавказ,ул Ленина,д 19"
+    }
+  ],
+  "OVB": [
+    {
+      "name": "Новосибирский зоопарк имени Р. А. Шило",
+      "category": "nature",
+      "source": "Новосибирский зоопарк",
+      "url": "https://zoonovosib.ru/visitors/",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "Открыт в выходные с 09:00 до 18:00, касса закрывается в 17:00."
+    }
+  ],
+  "PEE": [
+    {
+      "name": "Музей-заповедник «Пермь-36»",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/101882/muzei-zapovednik-perm-36",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 09:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 88849,
+      "record_updated": "2025-07-17",
+      "address": "край Пермский,г Пермь,б-р Гагарина,д 10"
+    }
+  ],
+  "PES": [
+    {
+      "name": "Фондохранилище Музея изобразительных искусств Карелии",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/105379/fondokhranilishe-muzeya-izobrazitelnykh-iskusstv-karelii",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 17:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 92088,
+      "record_updated": "2026-03-16",
+      "address": "Респ Карелия,г Петрозаводск,р-н Перевалка,ул Зелёная,д 7"
+    },
+    {
+      "name": "Детский музейный центр музея-заповедника «Кижи»",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/11276/detskii-muzeinyi-centr-muzeya-zapovednika-kizhi",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 17:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 7692,
+      "record_updated": "2025-10-06",
+      "address": "Респ Карелия,г Петрозаводск,ул Федосовой,д 19"
+    }
+  ],
+  "PEX": [
+    {
+      "name": "Печорский историко-краеведческий музей",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/20635/pechorskii-istoriko-kraevedcheskii-muzei",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 16060,
+      "record_updated": "2025-08-28",
+      "address": "Респ Коми,г Печора,ул Советская,д 33"
+    }
+  ],
+  "PEZ": [
+    {
+      "name": "Музей Н. Н. Бурденко",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/20362/muzei-n-n-burdenko",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 17:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 17029,
+      "record_updated": "2026-03-12",
+      "address": "обл Пензенская,г Пенза,ул Лермонтова,д 28"
+    },
+    {
+      "name": "Пензенский краеведческий музей на ул. Белинского",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/105323/penzenskii-kraevedcheskii-muzei-na-ul-belinskogo",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 17:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 92030,
+      "record_updated": "2026-03-06",
+      "address": "обл Пензенская,г Пенза,ул Белинского,стр 8"
+    },
+    {
+      "name": "Центральный парк культуры и отдыха им. В. Г. Белинского",
+      "category": "nature",
+      "source": "Минкультуры России · Парки",
+      "url": "https://www.culture.ru/institutes/35488/centralnyi-park-kultury-i-otdykha-im-v-g-belinskogo",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 21:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-parks/data-826-structure-4.jsons",
+      "registry_id": 26171,
+      "record_updated": "2025-06-24",
+      "address": "обл Пензенская,г Пенза,ул Карла Маркса,стр 1"
+    }
+  ],
+  "PKC": [
+    {
+      "name": "Камчатский краевой объединенный музей",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/12173/kamchatskii-kraevoi-obedinennyi-muzei",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:30 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 6812,
+      "record_updated": "2025-12-10",
+      "address": "край Камчатский,г Петропавловск-Камчатский,ул Ленинская,д 20"
+    },
+    {
+      "name": "Камчатский краевой художественный музей",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/20914/kamchatskii-kraevoi-khudozhestvennyi-muzei",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 15091,
+      "record_updated": "2025-08-28",
+      "address": "край Камчатский,г Петропавловск-Камчатский,ул Ленинская,д 62"
+    }
+  ],
+  "PKV": [
+    {
+      "name": "Музей-квартира В. И. Ленина",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/26794/muzei-kvartira-v-i-lenina",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 11:00 до 17:30.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 24883,
+      "record_updated": "2026-06-29",
+      "address": "обл Псковская,г Псков,ул Ленина,д 3"
+    },
+    {
+      "name": "Мемориальный музей-квартира Ю. П. Спегальского",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/26792/memorialnyi-muzei-kvartira-yu-p-spegalskogo",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 11:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 24885,
+      "record_updated": "2026-06-29",
+      "address": "обл Псковская,г Псков,пр-кт Октябрьский,д 14"
+    }
+  ],
+  "REN": [
+    {
+      "name": "Музей истории Оренбурга",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/10248/muzei-istorii-orenburga",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 6425,
+      "record_updated": "2026-01-08",
+      "address": "обл Оренбургская,г Оренбург,ул Набережная,д 29"
+    },
+    {
+      "name": "Музей современного искусства г. Оренбурга",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/103072/muzei-sovremennogo-iskusstva-g-orenburga",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 90032,
+      "record_updated": "2025-09-12",
+      "address": "обл Оренбургская,г Оренбург,ул Советская,д 3"
+    }
+  ],
+  "RMZ": [
+    {
+      "name": "Семейный музейный центр «Камелёк»",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/38549/semeinyi-muzeinyi-centr-kamelyok",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 36715,
+      "record_updated": "2025-09-12",
+      "address": "обл Тюменская,г Тобольск,ул Красная площадь,д 1"
+    },
+    {
+      "name": "Тобольский историко-архитектурный музей-заповедник",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/10107/tobolskii-istoriko-arkhitekturnyi-muzei-zapovednik",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 7384,
+      "record_updated": "2025-09-10",
+      "address": "обл Тюменская,г Тобольск,пл Красная,д 1"
+    }
+  ],
+  "ROV": [
+    {
+      "name": "Музей истории города Ростова-на-Дону",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/102160/muzei-istorii-goroda-rostova-na-donu",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 19:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 89141,
+      "record_updated": "2025-11-17",
+      "address": "обл Ростовская,г Ростов-на-Дону,ул Шаумяна,д 65"
+    }
+  ],
+  "SCW": [
+    {
+      "name": "Национальная галерея Республики Коми",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/11322/nacionalnaya-galereya-respubliki-komi",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 11:00 до 19:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 8944,
+      "record_updated": "2026-09-30",
+      "address": "Респ Коми,г Сыктывкар,ул Кирова,д 44"
+    },
+    {
+      "name": "Литературно-театральный музей им. Н. М. Дьяконова",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/11232/literaturno-teatralnyi-muzei-im-n-m-dyakonova",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 16:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 7555,
+      "record_updated": "2025-10-24",
+      "address": "Респ Коми,г Сыктывкар,ул Маяковского,д 3"
+    }
+  ],
+  "SGC": [
+    {
+      "name": "Сургутский краеведческий музей",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/10278/surgutskii-kraevedcheskii-muzei",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 17:30.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 6413,
+      "record_updated": "2025-09-26",
+      "address": "АО Ханты-Мансийский Автономный округ - Югра,г Сургут,ул 30 лет Победы,д 21/2"
+    },
+    {
+      "name": "Галерея современного искусства «Стерх»",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/11921/galereya-sovremennogo-iskusstva-sterkh",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 7432,
+      "record_updated": "2025-08-26",
+      "address": "АО Ханты-Мансийский Автономный округ - Югра,г Сургут,ул Магистральная,д 34а"
+    }
+  ],
+  "SKX": [
+    {
+      "name": "Музей А. И. Полежаева г. Саранска",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/11846/muzei-a-i-polezhaeva-g-saranska",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 6779,
+      "record_updated": "2026-01-22",
+      "address": "Респ Мордовия,г Саранск,ул Саранская,д 51"
+    },
+    {
+      "name": "Мемориальный музей военного и трудового подвига 1941–1945 гг.",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/11552/memorialnyi-muzei-voennogo-i-trudovogo-podviga-1941-1945-gg",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 7595,
+      "record_updated": "2026-01-22",
+      "address": "Респ Мордовия,г Саранск,ул Советская,д 34А"
+    }
+  ],
+  "SLY": [
+    {
+      "name": "Музей имени И. С. Шемановского",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/106883/muzei-imeni-i-s-shemanovskogo",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 11:00 до 19:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 93612,
+      "record_updated": "2026-07-10",
+      "address": "а.окр. Ямало-Ненецкий,г Салехард,ул Чубынина,влд 38"
+    },
+    {
+      "name": "Дом-музей Л. В. Лапцуя, Е. Г. Сусой, В. Т. Подшибякина",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/106890/dom-muzei-l-v-lapcuya-e-g-susoi-v-t-podshibyakina",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 93617,
+      "record_updated": "2026-07-07",
+      "address": "а.окр. Ямало-Ненецкий,г Салехард,ул Комсомольская,д 40 кв 2"
+    }
+  ],
+  "STW": [
+    {
+      "name": "Музейно-выставочный комплекс «Россия – моя история» г. Ставрополя",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/106551/muzeino-vystavochnyi-kompleks-rossiya-moya-istoriya-g-stavropolya",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 20:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 93276,
+      "record_updated": "2026-06-10",
+      "address": "край Ставропольский,г Ставрополь,ул Западный обход,д 58в"
+    },
+    {
+      "name": "Отдел истории казачества Ставропольского государственного музея-заповедника",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/11316/otdel-istorii-kazachestva-stavropolskogo-gosudarstvennogo-muzeya-zapovednika",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 18116,
+      "record_updated": "2025-12-09",
+      "address": "край Ставропольский,г Ставрополь,ул Вокзальная,д 24А"
+    },
+    {
+      "name": "Сквер Героев России",
+      "category": "nature",
+      "source": "Минкультуры России · Парки",
+      "url": "https://www.culture.ru/institutes/102837/skver-geroev-rossii",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 00:00 до 23:59.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-parks/data-826-structure-4.jsons",
+      "registry_id": 89824,
+      "record_updated": "2025-08-14",
+      "address": "край Ставропольский,г Ставрополь,ул Ивана Щипакина"
+    }
+  ],
+  "SVX": [
+    {
+      "name": "Музей памяти жертв политических репрессий 1930–1950-х гг.",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/102709/muzei-pamyati-zhertv-politicheskikh-repressii-1930-1950-kh-gg",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 89688,
+      "record_updated": "2025-07-24",
+      "address": "обл Свердловская,г Екатеринбург,тракт Ново-Московский"
+    },
+    {
+      "name": "Парк «Литературный квартал» г. Екатеринбурга",
+      "category": "nature",
+      "source": "Минкультуры России · Парки",
+      "url": "https://www.culture.ru/institutes/105790/park-literaturnyi-kvartal-g-ekaterinburga",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 20:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-parks/data-826-structure-4.jsons",
+      "registry_id": 93216,
+      "record_updated": "2026-05-21",
+      "address": "обл Свердловская,г Екатеринбург,ул Пролетарская"
+    },
+    {
+      "name": "Музей истории Екатеринбурга",
+      "category": "museums",
+      "source": "Музей истории Екатеринбурга",
+      "url": "https://m-i-e.ru/contacts2",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "Главный корпус на улице Карла Либкнехта, 26. По субботам 11:00–18:00, касса закрывается в 17:00."
+    },
+    {
+      "name": "Водонапорная башня на Плотинке",
+      "category": "history",
+      "source": "Музей истории Екатеринбурга",
+      "url": "https://m-i-e.ru/contacts2",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "В субботу на 17:00 назначена обзорная экскурсия по исторической башне. Адрес — улица Горького, 4в."
+    },
+    {
+      "name": "Прогулка по Ботаническому саду УрО РАН",
+      "category": "nature",
+      "source": "Ботанический сад УрО РАН",
+      "url": "https://botgard.ru/page/main",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "С ноября по март по субботам открыта прогулочная территория с 10:00 до 17:45. Зимние выходные не предусматривают посещение оранжерей."
+    }
+  ],
+  "TBW": [
+    {
+      "name": "Тамбовский областной краеведческий музей",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/11051/tambovskii-oblastnoi-kraevedcheskii-muzei",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 8191,
+      "record_updated": "2026-11-11",
+      "address": "обл Тамбовская,г Тамбов,ул Державинская,д 3"
+    },
+    {
+      "name": "Тамбовская областная картинная галерея",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/11658/tambovskaya-oblastnaya-kartinnaya-galereya",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 7300,
+      "record_updated": "2026-09-11",
+      "address": "обл Тамбовская,г Тамбов,ул Советская,д 97"
+    }
+  ],
+  "TGK": [
+    {
+      "name": "Музей «Дом П. Е. Чехова»",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/78235/muzei-dom-p-e-chekhova",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 17:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 55622,
+      "record_updated": "2026-01-21",
+      "address": "обл Ростовская,г Таганрог,ул Розы Люксембург,д 77"
+    },
+    {
+      "name": "Музей И. Д. Василенко",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/10105/muzei-i-d-vasilenko",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 7390,
+      "record_updated": "2026-01-08",
+      "address": "обл Ростовская,г Таганрог,ул Чехова,д 88"
+    },
+    {
+      "name": "Парк им. 300-летия г. Таганрога",
+      "category": "nature",
+      "source": "Минкультуры России · Парки",
+      "url": "https://www.culture.ru/institutes/100378/park-im-300-letiya-g-taganroga",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 06:00 до 22:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-parks/data-826-structure-4.jsons",
+      "registry_id": 87570,
+      "record_updated": "2025-08-01",
+      "address": "обл Ростовская,г Таганрог,ул Сергея Шило,д 210"
+    },
+    {
+      "name": "Приморский парк",
+      "category": "nature",
+      "source": "Минкультуры России · Парки",
+      "url": "https://www.culture.ru/institutes/100372/primorskii-park",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 06:00 до 22:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-parks/data-826-structure-4.jsons",
+      "registry_id": 87562,
+      "record_updated": "2025-02-20",
+      "address": "обл Ростовская,г Таганрог,ул Инструментальная,д 13А"
+    }
+  ],
+  "TYD": [
+    {
+      "name": "Музей истории Байкало-Амурской магистрали",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/20291/muzei-istorii-baikalo-amurskoi-magistrali",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 19:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 17501,
+      "record_updated": "2026-02-24",
+      "address": "обл Амурская,г Тында,ул Спортивная,д 22"
+    }
+  ],
+  "UCT": [
+    {
+      "name": "Выставочный зал Ухтинского музейного комплекса",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/63574/vystavochnyi-zal-ukhtinskogo-muzeinogo-kompleksa",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 09:00 до 16:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 63050,
+      "record_updated": "2025-11-28",
+      "address": "Респ Коми,г Ухта,ул Мира,д 1"
+    },
+    {
+      "name": "Историко-краеведческий музей с кабинетом-музеем А. Я. Кремса",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/12260/istoriko-kraevedcheskii-muzei-s-kabinetom-muzeem-a-ya-kremsa",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 09:00 до 16:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 6263,
+      "record_updated": "2025-10-21",
+      "address": "Респ Коми,г Ухта,ул Мира,д 5б"
+    }
+  ],
+  "UFA": [
+    {
+      "name": "Музей геологии и полезных ископаемых Республики Башкортостан",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/105572/muzei-geologii-i-poleznykh-iskopaemykh-respubliki-bashkortostan",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 19:30.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 92283,
+      "record_updated": "2026-03-30",
+      "address": "Респ Башкортостан,г Уфа,ул Ленина,д 47"
+    },
+    {
+      "name": "Музей музыки им. Ф. Шаляпина",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/96741/muzei-muzyki-im-f-shalyapina",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 11:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 83798,
+      "record_updated": "2026-01-08",
+      "address": "Респ Башкортостан,г Уфа,ул Свердлова,д 86"
+    }
+  ],
+  "UIK": [
+    {
+      "name": "Усть-Илимская картинная галерея",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/11183/ust-ilimskaya-kartinnaya-galereya",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 11:00 до 15:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 7961,
+      "record_updated": "2025-10-13",
+      "address": "обл Иркутская,г Усть-Илимск,пр-кт Мира,д 7"
+    },
+    {
+      "name": "Усть-Илимский краеведческий музей",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/45179/ust-ilimskii-kraevedcheskii-muzei",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 16:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 46494,
+      "record_updated": "2025-09-23",
+      "address": "обл Иркутская,г Усть-Илимск,ул Карла Маркса,д 67"
+    }
+  ],
+  "ULY": [
+    {
+      "name": "Квартира-музей семьи Ульяновых",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/20872/kvartira-muzei-semi-ulyanovykh",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 15193,
+      "record_updated": "2026-05-21",
+      "address": "обл Ульяновская,г Ульяновск,пл Ленина,д 1В"
+    },
+    {
+      "name": "Ульяновский областной художественный музей",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/11633/ulyanovskii-oblastnoi-khudozhestvennyi-muzei",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 09:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 8255,
+      "record_updated": "2026-04-07",
+      "address": "обл Ульяновская,г Ульяновск,б-р Новый Венец,д 3/4"
+    }
+  ],
+  "URJ": [
+    {
+      "name": "Музей истории г. Урая",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/11015/muzei-istorii-g-uraya",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 11:00 до 19:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 7975,
+      "record_updated": "2025-10-02",
+      "address": "АО Ханты-Мансийский Автономный округ - Югра,г Урай,мкр 2-й,д 39/1"
+    },
+    {
+      "name": "Парк культуры и отдыха г. Урай",
+      "category": "nature",
+      "source": "Минкультуры России · Парки",
+      "url": "https://www.culture.ru/institutes/35569/park-kultury-i-otdykha-g-urai",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 12:00 до 19:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-parks/data-826-structure-4.jsons",
+      "registry_id": 14684,
+      "record_updated": "2025-07-17",
+      "address": "АО Ханты-Мансийский Автономный округ - Югра,г Урай,ул Ленина"
+    }
+  ],
+  "URS": [
+    {
+      "name": "Выставочное пространство «Поток»",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/105463/vystavochnoe-prostranstvo-potok",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 11:00 до 19:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 91459,
+      "record_updated": "2026-06-01",
+      "address": "обл Курская,г Курск,ул Луначарского,зд 8"
+    },
+    {
+      "name": "Выставочный зал им. Казимира Малевича г. Курска",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/34728/vystavochnyi-zal-im-kazimira-malevicha-g-kurska",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 33303,
+      "record_updated": "2026-04-09",
+      "address": "обл Курская,г Курск,пл Красная,д 2/4"
+    }
+  ],
+  "USK": [
+    {
+      "name": "Усинский музейно-выставочный центр «Вöртас»",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/20753/usinskii-muzeino-vystavochnyi-centr-voertas",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 15895,
+      "record_updated": "2025-10-21",
+      "address": "Респ Коми,г Усинск,ул Парковая,д 4А"
+    }
+  ],
+  "UUA": [
+    {
+      "name": "Бугульминский краеведческий музей",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/12203/bugulminskii-kraevedcheskii-muzei",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 09:00 до 16:30.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 6796,
+      "record_updated": "2026-01-22",
+      "address": "Респ Татарстан,р-н Бугульминский,г Бугульма,ул Александра Герцена,д 88"
+    },
+    {
+      "name": "Литературно-мемориальный музей Ярослава Гашека",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/4797/literaturno-memorialnyi-muzei-yaroslava-gasheka",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 09:00 до 17:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 7125,
+      "record_updated": "2025-11-13",
+      "address": "Респ Татарстан,р-н Бугульминский,г Бугульма,ул Советская,д 67"
+    },
+    {
+      "name": "Парк культуры и отдыха г. Бугульмы",
+      "category": "nature",
+      "source": "Минкультуры России · Парки",
+      "url": "https://www.culture.ru/institutes/106535/park-kultury-i-otdykha-g-bugulmy",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 11:00 до 20:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-parks/data-826-structure-4.jsons",
+      "registry_id": 93261,
+      "record_updated": "2026-06-03",
+      "address": "респ Татарстан,р-н Бугульминский,г Бугульма,ул Владимира Ленина,зд 45"
+    }
+  ],
+  "UUD": [
+    {
+      "name": "Музей-галерея Льва Бардамова",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/59976/muzei-galereya-lva-bardamova",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 11:00 до 19:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 59477,
+      "record_updated": "2026-02-17",
+      "address": "Респ Бурятия,г Улан-Удэ,ул Набережная,д 14"
+    },
+    {
+      "name": "Филиал Кяхтинского краеведческого музея в г. Улан-Удэ",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/53156/filial-kyakhtinskogo-kraevedcheskogo-muzeya-v-g-ulan-ude",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 08:30 до 17:30.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 56227,
+      "record_updated": "2025-10-21",
+      "address": "Респ Бурятия,г Улан-Удэ,ул Советская,д 27А"
+    },
+    {
+      "name": "Парк «Кристальный»",
+      "category": "nature",
+      "source": "Минкультуры России · Парки",
+      "url": "https://www.culture.ru/institutes/55278/park-kristalnyi",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 06:00 до 23:59.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-parks/data-826-structure-4.jsons",
+      "registry_id": 40952,
+      "record_updated": "2025-05-06",
+      "address": "респ Бурятия,г Улан-Удэ,ул Радикальцева"
+    }
+  ],
+  "VGD": [
+    {
+      "name": "Музей Николая Рубцова",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/11205/muzei-nikolaya-rubcova",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 17:30.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 7426,
+      "record_updated": "2026-04-13",
+      "address": "обл Вологодская,г Вологда,ул Герцена,д 36"
+    },
+    {
+      "name": "Музей «Мир забытых вещей»",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/11496/muzei-mir-zabytykh-veshei",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 17:30.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 8503,
+      "record_updated": "2026-01-13",
+      "address": "обл Вологодская,г Вологда,ул Ленинградская,д 6"
+    }
+  ],
+  "VKT": [
+    {
+      "name": "Воркутинский городской выставочный зал",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/11883/vorkutinskii-gorodskoi-vystavochnyi-zal",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 17:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 6742,
+      "record_updated": "2025-09-05",
+      "address": "Респ Коми,г Воркута,ул Ленина,д 58"
+    },
+    {
+      "name": "Воркутинский краеведческий музей",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/99506/vorkutinskii-kraevedcheskii-muzei",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 17:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 86587,
+      "record_updated": "2025-02-25",
+      "address": "Респ Коми,г Воркута,ул Гагарина,д 7"
+    }
+  ],
+  "VOG": [
+    {
+      "name": "Музей Виктора Лосева",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/106339/muzei-viktora-loseva",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 09:00 до 21:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 93059,
+      "record_updated": "2026-05-06",
+      "address": "обл Волгоградская,г Волгоград,ул Коммунистическая,д 5"
+    },
+    {
+      "name": "Музей «Этнографическая мозаика»",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/99796/muzei-etnograficheskaya-mozaika",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 09:00 до 17:30.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 86821,
+      "record_updated": "2025-09-01",
+      "address": "обл Волгоградская,г Волгоград,ул Изобильная,зд 10"
+    }
+  ],
+  "VOZ": [
+    {
+      "name": "Музей «История создания российского флота»",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/103781/muzei-istoriya-sozdaniya-rossiiskogo-flota",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 90674,
+      "record_updated": "2025-12-01",
+      "address": "обл Воронежская,г Воронеж,наб Петровская,д 21А"
+    },
+    {
+      "name": "Музей Воздушно-десантных войск",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/102322/muzei-vozdushno-desantnykh-voisk",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 89298,
+      "record_updated": "2025-09-15",
+      "address": "обл Воронежская,г Воронеж,ул Генерала Лизюкова,д 42в"
+    }
+  ],
+  "VVO": [
+    {
+      "name": "Главный корпус Музея-заповедника истории Дальнего Востока им. В. К. Арсеньева",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/10467/glavnyi-korpus-muzeya-zapovednika-istorii-dalnego-vostoka-im-v-k-arseneva",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 19:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 6345,
+      "record_updated": "2026-03-31",
+      "address": "край Приморский,г Владивосток,ул Светланская,д 20"
+    },
+    {
+      "name": "Мемориальный дом-музей семьи Сухановых",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/35758/memorialnyi-dom-muzei-semi-sukhanovykh",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 19:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 34321,
+      "record_updated": "2026-03-02",
+      "address": "край Приморский,г Владивосток,ул Суханова,д 9"
+    }
+  ],
+  "YKS": [
+    {
+      "name": "Выставочный зал художественного музея г. Якутска",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/35886/vystavochnyi-zal-khudozhestvennogo-muzeya-g-yakutska",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 28080,
+      "record_updated": "2026-10-13",
+      "address": "Респ Саха /Якутия/,г Якутск,ул Кирова,д 12"
+    },
+    {
+      "name": "Якутский государственный объединенный музей истории и культуры народов Севера им. Ем. Ярославского",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/10224/yakutskii-gosudarstvennyi-obedinennyi-muzei-istorii-i-kultury-narodov-severa-im-em-yaroslavskogo",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 17:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 6410,
+      "record_updated": "2026-10-05",
+      "address": "Респ Саха /Якутия/,г Якутск,пр-кт Ленина,д 5/2"
+    }
+  ],
+  "ВЛМ": [
+    {
+      "name": "Музейный центр «Палаты»",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/22317/muzeinyi-centr-palaty",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 8660,
+      "record_updated": "2026-10-06",
+      "address": "обл Владимирская,г Владимир,ул Большая Московская,д 58"
+    },
+    {
+      "name": "Музей хрусталя и стекла XVIII–XXI веков",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/55739/muzei-khrustalya-i-stekla-xviii-xxi-vekov",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 11:00 до 19:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 56679,
+      "record_updated": "2026-10-06",
+      "address": "обл Владимирская,г Владимир,ул Дворянская,д 2"
+    },
+    {
+      "name": "Парк «Дружба»",
+      "category": "nature",
+      "source": "Минкультуры России · Парки",
+      "url": "https://www.culture.ru/institutes/35477/park-druzhba",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 18:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-parks/data-826-structure-4.jsons",
+      "registry_id": 28447,
+      "record_updated": "2025-06-25",
+      "address": "обл Владимирская,г Владимир,ул Верхняя Дуброва,д 22Д"
+    },
+    {
+      "name": "Центральный парк культуры и отдыха г. Владимира",
+      "category": "nature",
+      "source": "Минкультуры России · Парки",
+      "url": "https://www.culture.ru/institutes/80343/centralnyi-park-kultury-i-otdykha-g-vladimira",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 06:00 до 23:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-parks/data-826-structure-4.jsons",
+      "registry_id": 66886,
+      "record_updated": "2025-04-24",
+      "address": "обл Владимирская,г Владимир,ул Мира,д 36А"
+    }
+  ],
+  "СОЛ": [
+    {
+      "name": "Старооскольский художественный музей",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/10884/starooskolskii-khudozhestvennyi-muzei",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 19:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 982,
+      "record_updated": "2026-03-03",
+      "address": "обл Белгородская,г Старый Оскол,ул Ленина,д 57"
+    },
+    {
+      "name": "Старооскольский краеведческий музей",
+      "category": "museums",
+      "source": "Минкультуры России · Музеи и галереи",
+      "url": "https://www.culture.ru/institutes/11020/starooskolskii-kraevedcheskii-muzei",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "По опубликованному расписанию по субботам с 10:00 до 19:00.",
+      "registry_url": "https://opendata.mkrf.ru/opendata/7705851331-museums/data-1-structure-5.jsons",
+      "registry_id": 545,
+      "record_updated": "2026-02-03",
+      "address": "обл Белгородская,г Старый Оскол,ул Ленина,д 50"
+    }
+  ]
+}

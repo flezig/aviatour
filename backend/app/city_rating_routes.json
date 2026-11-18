@@ -235,5 +235,317 @@
     "router_info_url": "https://routing.openstreetmap.de/about.html",
     "attribution_url": "https://www.openstreetmap.org/copyright",
     "map_feedback_url": "https://www.openstreetmap.org/fixthemap"
+  },
+  "MOW": {
+    "starts": [
+      {
+        "name": "Отель «Националь»",
+        "lat": 55.7569088,
+        "lon": 37.6144141,
+        "url": "https://www.openstreetmap.org/node/1419453301",
+        "area": "Моховая и Тверская"
+      },
+      {
+        "name": "Отель «Балчуг Кемпински Москва»",
+        "lat": 55.7481788,
+        "lon": 37.6256521,
+        "url": "https://www.openstreetmap.org/node/5329195060",
+        "area": "Балчуг"
+      }
+    ],
+    "places": [
+      {
+        "name": "Красная площадь, Воскресенские ворота со стороны Манежной площади",
+        "lat": 55.7556667,
+        "lon": 37.6178853,
+        "url": "https://www.openstreetmap.org/node/767790019"
+      },
+      {
+        "name": "Собор Василия Блаженного, ворота со стороны Красной площади",
+        "lat": 55.7528672,
+        "lon": 37.6224307,
+        "url": "https://www.openstreetmap.org/node/1084769588"
+      },
+      {
+        "name": "Большой театр, главный вход Исторической сцены",
+        "lat": 55.7597979,
+        "lon": 37.6188068,
+        "url": "https://www.openstreetmap.org/node/2541236155"
+      },
+      {
+        "name": "Третьяковская галерея, главный вход в Лаврушинском переулке",
+        "lat": 55.741463,
+        "lon": 37.6207008,
+        "url": "https://www.openstreetmap.org/node/5060852337"
+      },
+      {
+        "name": "Московский Кремль, подход к лестнице южного входного павильона Кутафьей башни из Александровского сада",
+        "lat": 55.7521445,
+        "lon": 37.6126166,
+        "url": "https://www.openstreetmap.org/node/2459967588"
+      }
+    ],
+    "walk_minutes": [
+      [
+        4.43,
+        10.92,
+        6.94,
+        31.89,
+        9.62
+      ],
+      [
+        16.5,
+        10.67,
+        23.4,
+        14.18,
+        23.01
+      ]
+    ],
+    "walk_seconds": [
+      [
+        266,
+        655.1,
+        416.4,
+        1913.7,
+        577.4
+      ],
+      [
+        990.1,
+        640.1,
+        1403.9,
+        850.5,
+        1380.6
+      ]
+    ],
+    "walk_metres": [
+      [
+        332.1,
+        818.2,
+        520.4,
+        2391.3,
+        721.4
+      ],
+      [
+        1238.5,
+        800.5,
+        1756.2,
+        1062.9,
+        1725.9
+      ]
+    ],
+    "source": "Пешеходные маршруты FOSSGIS OSRM · © OpenStreetMap contributors",
+    "url": "https://routing.openstreetmap.de/routed-foot/table/v1/foot/37.6144141,55.7569088;37.6256521,55.7481788;37.6178853,55.7556667;37.6224307,55.7528672;37.6188068,55.7597979;37.6207008,55.741463;37.6126166,55.7521445?sources=0;1&destinations=2;3;4;5;6&annotations=duration,distance&generate_hints=false",
+    "checked": "2026-11-18",
+    "valid_until": "2027-02-16",
+    "review_interval_days": 90,
+    "weekend_dates": [
+      "2026-11-21",
+      "2026-11-28",
+      "2026-12-05",
+      "2026-12-12",
+      "2026-12-19",
+      "2026-12-26",
+      "2027-01-02",
+      "2027-01-09",
+      "2027-01-16",
+      "2027-01-23",
+      "2027-01-30",
+      "2027-02-06",
+      "2027-02-13"
+    ],
+    "selection": "До замера выбраны два отеля в разных центральных кварталах и пять достопримечательностей. Путь начинается у отмеченного в OpenStreetMap главного входа отеля и заканчивается у уличного входа, ворот или основания наружной лестницы.",
+    "selection_urls": [
+      "https://national.ru/contacts",
+      "https://baltschughotel.ru/legal-information/",
+      "https://www.mos.ru/upload/documents/oiv/karta_otryvnaya_.pdf",
+      "https://kreml.ru/ru/tickets",
+      "https://tretyakov.ru/for-visitors/museums/istoricheskoe-zdanie/",
+      "https://shm.ru/visit/kontakty-i-rezhim-raboty/"
+    ],
+    "saturday_local_times": [
+      "10:00",
+      "15:00"
+    ],
+    "time_zone": "Europe/Moscow",
+    "scope": "Расчёт от входа до входа при открытом проходе. Все десять пешеходных маршрутов проходят снаружи стен Кремля. От Балчуга к Большому театру путь идёт через пассаж ГУМа, открытый ежедневно с 10:00 до 22:00. Очереди, снег, перекрытия и фактические задержки автобуса могут изменить время.",
+    "passage_hours_url": "https://gum.ru/",
+    "router_info_url": "https://routing.openstreetmap.de/about.html",
+    "attribution_url": "https://www.openstreetmap.org/copyright",
+    "map_feedback_url": "https://www.openstreetmap.org/fixthemap",
+    "city_validation": {
+      "city": "Москва",
+      "iso_region": "RU-MOW",
+      "method": "Обратное геокодирование Nominatim, все семь точек.",
+      "urls": [
+        "https://nominatim.openstreetmap.org/reverse?lat=55.7569088&lon=37.6144141&format=jsonv2&zoom=10&addressdetails=1",
+        "https://nominatim.openstreetmap.org/reverse?lat=55.7481788&lon=37.6256521&format=jsonv2&zoom=10&addressdetails=1",
+        "https://nominatim.openstreetmap.org/reverse?lat=55.7556667&lon=37.6178853&format=jsonv2&zoom=10&addressdetails=1",
+        "https://nominatim.openstreetmap.org/reverse?lat=55.7528672&lon=37.6224307&format=jsonv2&zoom=10&addressdetails=1",
+        "https://nominatim.openstreetmap.org/reverse?lat=55.7597979&lon=37.6188068&format=jsonv2&zoom=10&addressdetails=1",
+        "https://nominatim.openstreetmap.org/reverse?lat=55.741463&lon=37.6207008&format=jsonv2&zoom=10&addressdetails=1",
+        "https://nominatim.openstreetmap.org/reverse?lat=55.7521445&lon=37.6126166&format=jsonv2&zoom=10&addressdetails=1"
+      ]
+    },
+    "snap_metres": [
+      0,
+      2.924521513,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "kremlin_boundary_url": "https://www.openstreetmap.org/relation/1360641",
+    "transit_minutes": {
+      "10:00": [
+        [
+          null,
+          null,
+          null,
+          17.62,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
+      ],
+      "15:00": [
+        [
+          null,
+          null,
+          null,
+          20.62,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
+      ]
+    },
+    "transit_note": "От «Националя» до Третьяковской галереи пешком 31,9 мин. Автобус м1 от «Охотного Ряда» до «Болотной площади» с пешими подходами занимает 17 мин 37 с при выходе в 10:00 (ожидание 54 с) и 20 мин 37 с при выходе в 15:00 (ожидание 3 мин 54 с).",
+    "transit_sources": [
+      {
+        "label": "Субботнее расписание м1, Московский транспорт",
+        "url": "https://transport.mos.ru/transport/schedule/route/1284?mgt_schedule%5Bdirection%5D=1&mgt_schedule%5Bdate%5D=21.11.2026"
+      },
+      {
+        "label": "Пешком от отеля до остановки",
+        "url": "https://routing.openstreetmap.de/routed-foot/route/v1/foot/37.6144141,55.7569088;37.61288,55.75792?overview=false&steps=false&generate_hints=false"
+      },
+      {
+        "label": "Пешком от остановки до Третьяковской галереи",
+        "url": "https://routing.openstreetmap.de/routed-foot/route/v1/foot/37.6144932,55.7433871;37.6207008,55.741463?overview=false&steps=false&generate_hints=false"
+      }
+    ],
+    "transit_detail": {
+      "start_index": 0,
+      "place_index": 3,
+      "line": "м1",
+      "direction": "Метро «Новаторская»",
+      "direction_url": "https://www.openstreetmap.org/relation/3228965",
+      "walk_legs": [
+        {
+          "stop": {
+            "name": "Метро «Охотный Ряд»",
+            "lat": 55.75792,
+            "lon": 37.61288,
+            "url": "https://www.openstreetmap.org/node/1210261859"
+          },
+          "seconds": 125.6,
+          "metres": 157,
+          "url": "https://routing.openstreetmap.de/routed-foot/route/v1/foot/37.6144141,55.7569088;37.61288,55.75792?overview=false&steps=false&generate_hints=false"
+        },
+        {
+          "stop": {
+            "name": "Болотная площадь",
+            "lat": 55.7433871,
+            "lon": 37.6144932,
+            "url": "https://www.openstreetmap.org/node/510113910"
+          },
+          "seconds": 516.9,
+          "metres": 660.6,
+          "url": "https://routing.openstreetmap.de/routed-foot/route/v1/foot/37.6144932,55.7433871;37.6207008,55.741463?overview=false&steps=false&generate_hints=false"
+        }
+      ],
+      "slots": {
+        "10:00": {
+          "departure": "10:03",
+          "arrival": "10:09",
+          "waiting_seconds": 54.4,
+          "ride_seconds": 360,
+          "total_seconds": 1056.9
+        },
+        "15:00": {
+          "departure": "15:06",
+          "arrival": "15:12",
+          "waiting_seconds": 234.4,
+          "ride_seconds": 360,
+          "total_seconds": 1236.9
+        }
+      },
+      "timetable_dates": [
+        {
+          "date": "2026-11-21",
+          "url": "https://transport.mos.ru/transport/schedule/route/1284?mgt_schedule%5Bdirection%5D=1&mgt_schedule%5Bdate%5D=21.11.2026"
+        },
+        {
+          "date": "2026-11-28",
+          "url": "https://transport.mos.ru/transport/schedule/route/1284?mgt_schedule%5Bdirection%5D=1&mgt_schedule%5Bdate%5D=28.11.2026"
+        },
+        {
+          "date": "2026-12-05",
+          "url": "https://transport.mos.ru/transport/schedule/route/1284?mgt_schedule%5Bdirection%5D=1&mgt_schedule%5Bdate%5D=05.12.2026"
+        },
+        {
+          "date": "2026-12-12",
+          "url": "https://transport.mos.ru/transport/schedule/route/1284?mgt_schedule%5Bdirection%5D=1&mgt_schedule%5Bdate%5D=12.12.2026"
+        },
+        {
+          "date": "2026-12-19",
+          "url": "https://transport.mos.ru/transport/schedule/route/1284?mgt_schedule%5Bdirection%5D=1&mgt_schedule%5Bdate%5D=19.12.2026"
+        },
+        {
+          "date": "2026-12-26",
+          "url": "https://transport.mos.ru/transport/schedule/route/1284?mgt_schedule%5Bdirection%5D=1&mgt_schedule%5Bdate%5D=26.12.2026"
+        },
+        {
+          "date": "2027-01-02",
+          "url": "https://transport.mos.ru/transport/schedule/route/1284?mgt_schedule%5Bdirection%5D=1&mgt_schedule%5Bdate%5D=02.01.2027"
+        },
+        {
+          "date": "2027-01-09",
+          "url": "https://transport.mos.ru/transport/schedule/route/1284?mgt_schedule%5Bdirection%5D=1&mgt_schedule%5Bdate%5D=09.01.2027"
+        },
+        {
+          "date": "2027-01-16",
+          "url": "https://transport.mos.ru/transport/schedule/route/1284?mgt_schedule%5Bdirection%5D=1&mgt_schedule%5Bdate%5D=16.01.2027"
+        },
+        {
+          "date": "2027-01-23",
+          "url": "https://transport.mos.ru/transport/schedule/route/1284?mgt_schedule%5Bdirection%5D=1&mgt_schedule%5Bdate%5D=23.01.2027"
+        },
+        {
+          "date": "2027-01-30",
+          "url": "https://transport.mos.ru/transport/schedule/route/1284?mgt_schedule%5Bdirection%5D=1&mgt_schedule%5Bdate%5D=30.01.2027"
+        },
+        {
+          "date": "2027-02-06",
+          "url": "https://transport.mos.ru/transport/schedule/route/1284?mgt_schedule%5Bdirection%5D=1&mgt_schedule%5Bdate%5D=06.02.2027"
+        },
+        {
+          "date": "2027-02-13",
+          "url": "https://transport.mos.ru/transport/schedule/route/1284?mgt_schedule%5Bdirection%5D=1&mgt_schedule%5Bdate%5D=13.02.2027"
+        }
+      ],
+      "assumptions": "Ожидание до первого отправления по расписанию после пешего подхода. Запас на посадку, задержки движения и досмотр в музей не включены. Время в автобусе до «Болотной площади» — 6 минут."
+    }
   }
 }

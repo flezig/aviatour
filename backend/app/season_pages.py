@@ -108,22 +108,27 @@ def layout(title, description, path, crumbs, main, script="/js/site.js"):
     )
 
 
-def directory(catalog, month, query):
-    from .city_rating import badge
-
+def matching_codes(query):
     def norm(s):
         return s.casefold().replace("ё", "е").strip()
 
     needle = norm(query)
     matched_airport = BY_IATA.get(query.strip().upper(), {}).get("city_code")
-    codes = [
+    return [
         c
         for c, a in CITIES.items()
         if needle in norm(a["city"]) or needle in c.lower() or c == matched_airport
     ]
+
+
+def directory(catalog, month, query):
+    from .city_rating import badge
+
+    needle = query.casefold().replace("ё", "е").strip()
+    codes = matching_codes(query)
     codes.sort(
         key=lambda c: (
-            not norm(CITIES[c]["city"]).startswith(needle),
+            not CITIES[c]["city"].casefold().replace("ё", "е").startswith(needle),
             c not in catalog.by_code,
             c not in NORMALS,
             CITIES[c]["city"],
@@ -142,6 +147,7 @@ def directory(catalog, month, query):
     body = f'''<header class="page-head"><h1>Сезонный рейтинг городов</h1><p>Выберите город и месяц, чтобы узнать, какая погода обычно бывает во время поездки.</p></header>
 <form class="season-find" action="/season/"><label>Город или код аэропорта<input type="search" name="q" maxlength="100" value="{esc(query)}" placeholder="Например, Казань или DXB"></label>
 <label>Месяц<select name="month">{options}</select></label><button class="btn-inline" type="submit">Найти</button></form>
+<p><a href="/season/compare/">Сравнить города за ноябрь и декабрь 2026</a></p>
 <h2>{"Результаты поиска" if query else "Города"} · {MONTH_NAMES[month - 1].lower()}</h2><ul class="season-directory">{items}</ul>
 {("<p>Уточните название города, чтобы сузить список.</p>" if len(codes) > 60 else "") if codes else "<p>Такого города в справочнике пока нет.</p>"}'''
     return layout(
@@ -172,7 +178,7 @@ def source_info(n):
     return f"Станция {n['name']} · {n['km']} км от координат города · ВМО", WMO
 
 
-def city_page(catalog, code, month, requested_mode, origin, rating, year, today):
+def city_page(catalog, code, month, requested_mode, origin, rating, year, today, other_month):
     from .city_rating import badge, report_html
 
     city = CITIES[code]
@@ -278,7 +284,7 @@ def city_page(catalog, code, month, requested_mode, origin, rating, year, today)
 {choice}<div class="season-summary"><div><p>{esc(mode_name)} · {MONTH_NAMES[idx].lower()}</p><h2 id="seasonVerdict" aria-live="polite">{"Проверяем цены и сведения по направлению…" if trip else esc(note)}</h2></div><strong id="seasonValue">{value}</strong></div>
 <nav class="season-months" aria-label="Сравнить месяцы">{chart}</nav></section>
 <div class="season-facts">{climate}{demand}{fare}{safety}</div>
-{report_html(rating, today, origin)}
+{report_html(rating, today, origin, other_month)}
 <details class="season-method"><summary>Как сравниваются сезоны</summary><p>Шкала Aviator рассчитана на прогулки по городу. Температура даёт 80% балла, месячная сумма осадков — 20%. Для пляжа и горнолыжных трасс условия могут отличаться.</p>
 <p>От 16 до 25 °C температура получает 10 баллов. За каждые 3 °C ниже или 1,7 °C выше снимаем один балл. За каждые 18 мм осадков за месяц снимаем один из 10 баллов. Минимум каждого показателя — ноль. Итог округляем один раз.</p>
 <p>В режиме «Погода и турпоток» погода даёт 70%, спрос — 30%. Балл спроса равен десяти, умноженным на долю снижения числа поездок относительно самого загруженного квартала 2025 года. Меньший поток повышает оценку. </p><p>В режиме «С учётом перелёта» погода даёт 50%, турпоток — 20%, цена — 30%. Сравниваем найденные цены за три или больше месяцев на одном маршруте. Медиана получает 5 баллов, цена на 50% дешевле — 10, на 50% дороже — ноль. При отсутствии цены или серьёзном предупреждении по всей стране итог скрывается. Официальные предупреждения о безопасности проверяйте перед покупкой.</p></details>

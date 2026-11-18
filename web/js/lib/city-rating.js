@@ -76,8 +76,12 @@ async function enhance(badge) {
 }
 
 function sources(links) {
-  return links.filter(link => /^https?:\/\//i.test(link.url) || /^\/(?!\/)/.test(link.url))
-    .map(link => `<a href="${esc(link.url)}">${esc(link.label)}</a>`).join(' · ');
+  const verified = links.filter(link => /^https?:\/\//i.test(link.url) || /^\/(?!\/)/.test(link.url));
+  const anchor = link => `<a href="${esc(link.url)}">${esc(link.label)}</a>`;
+  if (verified.some(link => link.note)) {
+    return `<ul>${verified.map(link => `<li>${anchor(link)} ${esc(link.note || '')}</li>`).join('')}</ul>`;
+  }
+  return verified.map(anchor).join(' · ');
 }
 const descriptions = {
   activities: 'Музеи, природа и события', cost: 'Жильё, питание и транспорт',
@@ -100,7 +104,7 @@ function criteria(report, pageUrl) {
       <details><summary>${detailLabel}</summary><p>${esc(component.detail)}</p>
         ${component.comparison ? `<p><a href="${esc(comparisonUrl.href)}">Сравнить расходы в ${component.comparison.length} городах</a></p>` : ''}
         ${component.trip_detail ? `<p><b>Ориентир на даты поездки.</b> ${esc(component.trip_detail)}</p>` : ''}
-        ${links ? `<p>${links}</p>` : ''}</details></th>
+        ${links}</details></th>
       <td>${Number.isFinite(component.score) ? scoreFormat.format(component.score) : '—'}</td><td>${esc(component.weight)}%</td></tr>`;
   }).join('');
   const gaps = report.components.filter(component => component.missing.length)

@@ -35,7 +35,7 @@ def test_real_components_explicit_gaps_and_time_limits():
 
 def test_basket_uses_medians_and_requires_all_samples(monkeypatch):
     city = deepcopy(rating.EVIDENCE["KZN"])
-    city.pop("price_survey_city")
+    monkeypatch.delitem(rating.SURVEY_CITIES, "KZN")
     # Test fixture only. All amounts include fees and are in the fare currency.
     city["baskets"] = {"2026-11": {
         "hotel_weekends": {str(w): {str(i): 816 for i in range(10)} for w in range(3)},
@@ -106,3 +106,41 @@ def test_petersburg_and_kazan_pilot_comparison():
         assert 'id="city-weekend-comparison"' in page and "Спас на Крови" in page
         assert all(s in page for s in ("7,7/10", "7,5/10", "7,4/10", "7,0/10"))
         assert 'id="city-weekend-comparison"' not in client.get("/season/LED?month=11&year=2027").text
+
+
+@pytest.mark.parametrize(("month", "score"), [(11, 6.8), (12, 6.5)])
+def test_moscow_weekends_with_scheduled_bus(month, score):
+    report = rating.report("MOW", month, 2026, TODAY)
+    assert (report["available"], report["score"]) == (4, score)
+    activities, cost, _, mobility = report["components"]
+    assert activities["score"] == mobility["score"] == 10
+    assert cost["score"] == 1.6 and "11 658,90 ₽" in cost["detail"]
+    assert "17 мин 37 с" in mobility["detail"] and "20 мин 37 с" in mobility["detail"]
+    assert any("transport.mos.ru" in src["url"] for src in mobility["sources"])
+    assert rating.report("MOW", month, 2027, TODAY)["score"] is None
+
+
+def test_national_price_coverage_and_fixed_reference():
+    costs = [rating.survey_cost(city, 2026, 11, TODAY) for city in rating.SURVEY_CITIES.values()]
+    assert sum(cost["score"] is not None for cost in costs) == 93
+    assert sum(cost["score"] is None for cost in costs) == 15
+    assert not {"KVK", "NBC", "ЖЕЗ", "YAE", "IST"}.intersection(rating.SURVEY_CITIES)
+    abakan = rating.report("ABA", 11, 2026, TODAY)["components"][1]
+    assert abakan["score"] is not None and len(abakan["comparison"]) == 43
+    anadyr = rating.report("DYR", 11, 2026, TODAY)["components"][1]
+    assert anadyr["score"] is None and "8 750 ₽" in anadyr["detail"]
+    assert anadyr["missing"] == ["Нет цены в обследовании: поездка на городском автобусе."]
+
+
+def test_catalogue_comparison_search_pagination_and_partial_city():
+    with TestClient(create_app(now=lambda: datetime(2026, 11, 18, tzinfo=UTC))) as client:
+        directory = client.get("/season/compare/").text
+        assert all(label in directory for label in ("6,8/10", "6,5/10", "7,7/10", "7,0/10", "Дальше"))
+        assert "Назад" in client.get("/season/compare/?page=2").text
+        partial = client.get("/season/compare/?q=Абакан").text
+        assert "направлений: 1" in partial and partial.count("Данные: 2 из 4") == 2
+        assert "/season/ABA?month=12&amp;year=2026#city-rating" in partial
+        foreign = client.get("/season/IST?month=12&year=2026").text
+        panel = foreign.split('id="city-weekend-comparison"', 1)[1].split("</section>", 1)[0]
+        assert panel.count('<th scope="row">') == 4
+        assert "Стамбул" in panel and panel.count("Данные: 1 из 4") == 2

@@ -459,6 +459,10 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
         return JSONResponse(await monthly_city_rating(code, month, year),
                             headers={'Cache-Control': 'public, max-age=60, s-maxage=600'})
 
+    @app.get('/season/compare/', response_class=HTMLResponse)
+    async def city_comparison(q: str = Query('', max_length=100), page: int = Query(1, ge=1, le=10000)):
+        return HTMLResponse(city_rating.comparison_directory(q, page, now().date()), headers={'Cache-Control': page_cache})
+
     @app.get('/season/{code}', response_class=HTMLResponse)
     async def season_city(code: str, month: int | None = Query(None, ge=1, le=12), mode: str = '',
                           year: int | None = Query(None, ge=2000, le=2100),
@@ -471,7 +475,10 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
             origin = default_origin({'code': code})
         current = month or now().astimezone(ZoneInfo(city['timezone'] or 'UTC')).month
         rating = await monthly_city_rating(code, current, year)
-        return HTMLResponse(season_pages.city_page(catalog, code, current, mode, origin, rating, year, now().date()),
+        other_month = None
+        if rating["year"] == 2026 and current in (11, 12):
+            other_month = await monthly_city_rating(code, 12 if current == 11 else 11, 2026)
+        return HTMLResponse(season_pages.city_page(catalog, code, current, mode, origin, rating, year, now().date(), other_month),
                             headers={'Cache-Control': page_cache})
 
     @app.get('/api/v1/season/{code}/fares')
