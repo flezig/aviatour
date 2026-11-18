@@ -73,6 +73,51 @@
       "registry_id": 8486,
       "record_updated": "2025-09-11",
       "address": "обл Архангельская,г Архангельск,пл В.И.Ленина,д 2"
+    },
+    {
+      "name": "Архангельский театр драмы им. М. В. Ломоносова",
+      "category": "stage",
+      "source": "Архангельский театр драмы им. М. В. Ломоносова · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/arhangelsk-teatr-lomonosova",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-13",
+      "note": "В афише — «Сказки в избе: Китайские сказки». Даты показов: 21 ноября, 13 декабря.",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-12-13"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/arhangelsk-teatr-lomonosova/e309"
+      ]
+    },
+    {
+      "name": "Архангельский театр кукол",
+      "category": "stage",
+      "source": "Архангельский театр кукол · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/arhangelsk-teatr-kukol",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-28",
+      "valid_until": "2026-12-06",
+      "note": "28 ноября — «Хармс! Приглашает!», 5 декабря — «Щелкунчик».",
+      "weekend_dates": [
+        "2026-11-28",
+        "2026-11-29",
+        "2026-12-05",
+        "2026-12-06"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/arhangelsk-teatr-kukol/e287",
+        "https://quicktickets.ru/arhangelsk-teatr-kukol/e283"
+      ]
     }
   ],
   "ASF": [
@@ -149,6 +194,52 @@
       "registry_id": 48990,
       "record_updated": "2026-02-17",
       "address": "обл Амурская,г Благовещенск,ул Пионерская,д 14"
+    },
+    {
+      "name": "Амурский областной театр кукол",
+      "category": "stage",
+      "source": "Амурский областной театр кукол · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/blagoveschensk-amur-teatr-kukol",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-28",
+      "valid_until": "2026-12-06",
+      "note": "28 ноября — «Сказка о храбром ягнёнке», 5 декабря — «Терем Деда Мороза».",
+      "weekend_dates": [
+        "2026-11-28",
+        "2026-11-29",
+        "2026-12-05",
+        "2026-12-06"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/blagoveschensk-amur-teatr-kukol/e30",
+        "https://quicktickets.ru/blagoveschensk-amur-teatr-kukol/e47"
+      ]
+    },
+    {
+      "name": "Амурский областной театр драмы",
+      "category": "stage",
+      "source": "Амурский областной театр драмы · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/blagoveschensk-amur-teatr",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-28",
+      "valid_until": "2026-12-06",
+      "note": "В афише — «Беспокойное наследство». Даты показов: 28 ноября, 29 ноября, 6 декабря.",
+      "weekend_dates": [
+        "2026-11-28",
+        "2026-11-29",
+        "2026-12-06"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/blagoveschensk-amur-teatr/e223"
+      ]
     }
   ],
   "BTK": [
@@ -225,6 +316,51 @@
       "registry_id": 7542,
       "record_updated": "2025-10-08",
       "address": "обл Брянская,г Брянск,ул Куйбышева,д 2"
+    },
+    {
+      "name": "Брянский областной театр кукол",
+      "category": "stage",
+      "source": "Брянский областной театр кукол · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/bryansk-teatr-kukol",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-29",
+      "valid_until": "2026-12-20",
+      "note": "29 ноября — «Золушка», 20 декабря — «Клочки по закоулочкам».",
+      "weekend_dates": [
+        "2026-11-29",
+        "2026-12-20"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/bryansk-teatr-kukol/e30",
+        "https://quicktickets.ru/bryansk-teatr-kukol/e181"
+      ]
+    },
+    {
+      "name": "Брянский областной театр драмы им. А. К. Толстого",
+      "category": "stage",
+      "source": "Брянский областной театр драмы им. А. К. Толстого · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/bryansk-teatr-tolstogo",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-29",
+      "valid_until": "2026-12-26",
+      "note": "29 ноября — «СТАРШИЙ СЫН», 19 декабря — «ОСТРОВ СОКРОВИЩ».",
+      "weekend_dates": [
+        "2026-11-29",
+        "2026-12-19",
+        "2026-12-26"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/bryansk-teatr-tolstogo/e289",
+        "https://quicktickets.ru/bryansk-teatr-tolstogo/e274"
+      ]
     }
   ],
   "CEE": [
@@ -263,6 +399,50 @@
       "registry_id": 8353,
       "record_updated": "2025-09-15",
       "address": "обл Вологодская,г Череповец,пр-кт Луначарского,д 39"
+    },
+    {
+      "name": "Театр для детей и молодежи",
+      "category": "stage",
+      "source": "Театр для детей и молодежи · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/cherepovets-teatr-detej-molodezh",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-19",
+      "note": "21 ноября — «Пеппи Длинныйчулок», 19 декабря — «Морозко».",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-12-19"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/cherepovets-teatr-detej-molodezh/e11",
+        "https://quicktickets.ru/cherepovets-teatr-detej-molodezh/e77"
+      ]
+    },
+    {
+      "name": "Череповецкий Камерный театр",
+      "category": "stage",
+      "source": "Череповецкий Камерный театр · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/cherepovetskiy-kamernyy-teatr",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-29",
+      "valid_until": "2026-12-06",
+      "note": "29 ноября — «Стинг. Концерт-трибьют», 6 декабря — «Двенадцать месяцев».",
+      "weekend_dates": [
+        "2026-11-29",
+        "2026-12-06"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/cherepovetskiy-kamernyy-teatr/e67",
+        "https://quicktickets.ru/cherepovetskiy-kamernyy-teatr/e245"
+      ]
     }
   ],
   "CEK": [
@@ -321,6 +501,28 @@
       "registry_id": 91529,
       "record_updated": "2026-03-06",
       "address": "Чувашия Чувашская Республика,г Чебоксары,б-р Купца Ефремова,д 1"
+    },
+    {
+      "name": "Чувашский государственный театр кукол",
+      "category": "stage",
+      "source": "Чувашский государственный театр кукол · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/cheboksary-teatr-kukol",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-28",
+      "valid_until": "2026-12-12",
+      "note": "В афише — «КРОШКА ЕНОТ. БОЛЬШИЕ СНЫ». Даты показов: 28 ноября, 29 ноября, 12 декабря.",
+      "weekend_dates": [
+        "2026-11-28",
+        "2026-11-29",
+        "2026-12-12"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/cheboksary-teatr-kukol/e537"
+      ]
     }
   ],
   "DHG": [
@@ -381,6 +583,50 @@
       "registry_id": 12459,
       "record_updated": "2025-09-04",
       "address": "Респ Калмыкия,г Элиста,ул Джангара,д 9"
+    },
+    {
+      "name": "Национальный драматический театр им. Б. Басангова",
+      "category": "stage",
+      "source": "Национальный драматический театр им. Б. Басангова · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/elista-teatr-basangova",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-28",
+      "valid_until": "2026-12-19",
+      "note": "28 ноября — «Гимн матери», 19 декабря — «Араш».",
+      "weekend_dates": [
+        "2026-11-28",
+        "2026-12-19"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/elista-teatr-basangova/e2",
+        "https://quicktickets.ru/elista-teatr-basangova/e88"
+      ]
+    },
+    {
+      "name": "Республиканский русский театр драмы и комедии Республики Калмыкия",
+      "category": "stage",
+      "source": "Республиканский русский театр драмы и комедии Республики Калмыкия · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/elista-teatr-respublikanskij",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-28",
+      "valid_until": "2026-12-13",
+      "note": "28 ноября — «Праздничный сон», 13 декабря — «Золушка».",
+      "weekend_dates": [
+        "2026-11-28",
+        "2026-12-13"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/elista-teatr-respublikanskij/e29",
+        "https://quicktickets.ru/elista-teatr-respublikanskij/e96"
+      ]
     }
   ],
   "EYA": [
@@ -475,6 +721,28 @@
       "registry_id": 41282,
       "record_updated": "2025-07-31",
       "address": "обл Магаданская,г Магадан,пр-кт Ленина,д 21А"
+    },
+    {
+      "name": "Магаданский областной театр кукол",
+      "category": "stage",
+      "source": "Магаданский областной театр кукол · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/magadan-teatr-kukol",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-29",
+      "valid_until": "2026-12-19",
+      "note": "29 ноября — «Сказка о Красной Шапочке», 19 декабря — «Бука».",
+      "weekend_dates": [
+        "2026-11-29",
+        "2026-12-19"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/magadan-teatr-kukol/e57",
+        "https://quicktickets.ru/magadan-teatr-kukol/e16"
+      ]
     }
   ],
   "GDZ": [
@@ -533,6 +801,160 @@
       "registry_id": 89515,
       "record_updated": "2026-03-13",
       "address": "обл Нижегородская,г Нижний Новгород,пр-кт Ленина,д 95"
+    },
+    {
+      "name": "Купеческая кухня в ресторации «Пяткинъ»",
+      "category": "food",
+      "source": "Ресторация «Пяткинъ»",
+      "url": "https://pyatkin.pirnnov.ru/",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "Блюда из волжской рыбы и купеческой кухни на Рождественской улице. Ежедневно 12:00–00:00."
+    },
+    {
+      "name": "Волжская кухня в ресторане «По щучьему велению»",
+      "category": "food",
+      "source": "Ресторан «По щучьему велению»",
+      "url": "https://shchukann.ru/",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "Нижегородская и волжская кухня на Большой Покровской, 47. В субботу открыто 12:00–00:00, в воскресенье 12:00–22:00."
+    },
+    {
+      "name": "Парадные интерьеры усадьбы Рукавишниковых",
+      "category": "history",
+      "source": "Нижегородский музей-заповедник",
+      "url": "https://ngiamz.ru/novosti/s-1-oktyabrya-usadba-rukavishnikovykh-perekhodit-na-zimniy-rezhim-raboty",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "Зимний график действует до апреля 2027 года. В выходные усадьба открыта 10:00–18:00, касса до 17:15."
+    },
+    {
+      "name": "Дом детства Максима Горького «Домик Каширина»",
+      "category": "history",
+      "source": "Государственный музей А. М. Горького",
+      "url": "https://museumgorkogo.ru/rezhim-raboty/",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "Дом семьи Кашириных на Почтовом съезде, 21, открыт в субботу и воскресенье 09:00–17:00. Вход до 16:30."
+    },
+    {
+      "name": "Парк «Швейцария»",
+      "category": "nature",
+      "source": "МАУК «Парк Швейцария»",
+      "url": "https://swissparknn.ru/pravila-parka/",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "Прогулочные аллеи и природный ландшафт на окском откосе. Посещение ежедневно 05:00–23:00, вход до 22:00."
+    },
+    {
+      "name": "Нижегородский зоопарк «Лимпопо»",
+      "category": "nature",
+      "source": "Зоопарк «Лимпопо»",
+      "url": "https://nnzoo.ru/vnimanie-zoopark-limpopo-pereshel-na-zimniy-rezhim-raboty/",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "С 16 ноября 2026 года зоопарк работает со вторника по воскресенье 09:00–17:00, касса до 16:00."
+    },
+    {
+      "name": "Русский музей фотографии",
+      "category": "museums",
+      "source": "Русский музей фотографии",
+      "url": "https://www.fotomuseum.nnov.ru/contacts.html",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "Музей на улице Пискунова, 9а, открыт со вторника по воскресенье 11:00–19:00."
+    },
+    {
+      "name": "Нижегородский театр драмы имени М. Горького",
+      "category": "stage",
+      "source": "Нижегородский театр драмы имени М. Горького",
+      "url": "https://drama.nnov.ru/",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-06",
+      "note": "21 ноября — «Параллельные влюбленности», 5 декабря — «Третья правда, или История одного преступления».",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-22",
+        "2026-11-28",
+        "2026-11-29",
+        "2026-12-05",
+        "2026-12-06"
+      ],
+      "schedule_urls": [
+        "https://drama.nnov.ru/"
+      ]
+    },
+    {
+      "name": "Нижегородский государственный академический театр кукол",
+      "category": "stage",
+      "source": "Нижегородский государственный академический театр кукол",
+      "url": "https://www.ngatk.ru/afisha",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-27",
+      "note": "21 ноября — «Бука», 5 декабря — «День в лесу».",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-22",
+        "2026-11-28",
+        "2026-11-29",
+        "2026-12-05",
+        "2026-12-06",
+        "2026-12-12",
+        "2026-12-13",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ],
+      "schedule_urls": [
+        "https://www.ngatk.ru/afisha"
+      ]
     }
   ],
   "GRV": [
@@ -609,6 +1031,32 @@
       "registry_id": 24036,
       "record_updated": "2026-01-12",
       "address": "АО Ханты-Мансийский Автономный округ - Югра,г Ханты-Мансийск,ул Комсомольская,д 30"
+    },
+    {
+      "name": "БУ «Театр обско-угорских народов - Солнце»",
+      "category": "stage",
+      "source": "БУ «Театр обско-угорских народов - Солнце» · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/hanty-mansiysk-teatr-solnce",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-27",
+      "note": "21 ноября — «Чев Чев», 19 декабря — «Что такое Снеженика?».",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-22",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/hanty-mansiysk-teatr-solnce/e118",
+        "https://quicktickets.ru/hanty-mansiysk-teatr-solnce/e123"
+      ]
     }
   ],
   "HTA": [
@@ -647,6 +1095,51 @@
       "registry_id": 28885,
       "record_updated": "2025-10-28",
       "address": "край Забайкальский,г Чита,ул Декабристов,д 3Б"
+    },
+    {
+      "name": "Забайкальский краевой драматический театр им. Н. А. Березина",
+      "category": "stage",
+      "source": "Забайкальский краевой драматический театр им. Н. А. Березина · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/chita-dramteatr",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-22",
+      "valid_until": "2026-12-13",
+      "note": "В афише — «Золушка». Даты показов: 22 ноября, 29 ноября, 13 декабря.",
+      "weekend_dates": [
+        "2026-11-22",
+        "2026-11-29",
+        "2026-12-13"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/chita-dramteatr/e196"
+      ]
+    },
+    {
+      "name": "Забайкальская краевая филармония",
+      "category": "stage",
+      "source": "Забайкальская краевая филармония · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/chita-filarmoniya",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-29",
+      "valid_until": "2026-12-27",
+      "note": "29 ноября — «Концерт, посвященный «VIII Всероссийскому дню органа»», 26 декабря — «Карамельные приключения».",
+      "weekend_dates": [
+        "2026-11-29",
+        "2026-12-26",
+        "2026-12-27"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/chita-filarmoniya/e1675",
+        "https://quicktickets.ru/chita-filarmoniya/e1513"
+      ]
     }
   ],
   "IAR": [
@@ -667,6 +1160,28 @@
       "registry_id": 89355,
       "record_updated": "2025-06-19",
       "address": "обл Ярославская,г Ярославль,ул Максимова,д 15"
+    },
+    {
+      "name": "Ярославский государственный театр кукол",
+      "category": "stage",
+      "source": "Ярославский государственный театр кукол · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/yaroslavl-teatr-kukol",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-29",
+      "valid_until": "2026-12-13",
+      "note": "29 ноября — «Подарок для мамы», 13 декабря — «Снежная королева».",
+      "weekend_dates": [
+        "2026-11-29",
+        "2026-12-13"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/yaroslavl-teatr-kukol/e2",
+        "https://quicktickets.ru/yaroslavl-teatr-kukol/e119"
+      ]
     }
   ],
   "IJK": [
@@ -705,6 +1220,31 @@
       "registry_id": 93231,
       "record_updated": "2026-05-25",
       "address": "респ Удмуртская,г Ижевск,ул Кирова,д 128"
+    },
+    {
+      "name": "Национальный театр Удмуртской Республики",
+      "category": "stage",
+      "source": "Национальный театр Удмуртской Республики · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/izhevsk-nacionalnyj-teatr",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-22",
+      "valid_until": "2026-12-27",
+      "note": "22 ноября — «Волшебная лампа Аладдина», 19 декабря — «Как Иван Василису выручал».",
+      "weekend_dates": [
+        "2026-11-22",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/izhevsk-nacionalnyj-teatr/e127",
+        "https://quicktickets.ru/izhevsk-nacionalnyj-teatr/e102"
+      ]
     }
   ],
   "IKT": [
@@ -743,6 +1283,48 @@
       "registry_id": 81858,
       "record_updated": "2025-11-28",
       "address": "обл Иркутская,г Иркутск,ул Декабрьских Событий,стр 77"
+    },
+    {
+      "name": "Театр 38 (Театр Внутренней Практики)",
+      "category": "stage",
+      "source": "Театр 38 (Театр Внутренней Практики) · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/irkutsk-teatr-38",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-28",
+      "valid_until": "2026-12-12",
+      "note": "В афише — «Убить красавчика». Даты показов: 28 ноября, 12 декабря.",
+      "weekend_dates": [
+        "2026-11-28",
+        "2026-12-12"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/irkutsk-teatr-38/e20"
+      ]
+    },
+    {
+      "name": "Театр «Подвал»",
+      "category": "stage",
+      "source": "Театр «Подвал» · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/irkutsk-teatr-podval",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-20",
+      "note": "В афише — «Это была просто ШУТКА». Даты показов: 21 ноября, 20 декабря.",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-12-20"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/irkutsk-teatr-podval/e30"
+      ]
     }
   ],
   "INA": [
@@ -1011,6 +1593,55 @@
       "registry_id": 18107,
       "record_updated": "2026-05-12",
       "address": "обл Калужская,г Калуга,ул Московская,д 62"
+    },
+    {
+      "name": "Калужский ордена Трудового Красного Знамени областной драматический театр",
+      "category": "stage",
+      "source": "Калужский ордена Трудового Красного Знамени областной драматический театр · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/teatrkaluga",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-29",
+      "valid_until": "2026-12-27",
+      "note": "29 ноября — «Прекрасная маркиза», 19 декабря — «Новогодняя Карамба».",
+      "weekend_dates": [
+        "2026-11-29",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/teatrkaluga/e407",
+        "https://quicktickets.ru/teatrkaluga/e367"
+      ]
+    },
+    {
+      "name": "Калужский театр кукол",
+      "category": "stage",
+      "source": "Калужский театр кукол · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/kaluga-teatr-kukol",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-29",
+      "valid_until": "2026-12-27",
+      "note": "29 ноября — «Крошка Енот», 12 декабря — «Ночь перед Рождеством».",
+      "weekend_dates": [
+        "2026-11-29",
+        "2026-12-12",
+        "2026-12-26",
+        "2026-12-27"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/kaluga-teatr-kukol/e65",
+        "https://quicktickets.ru/kaluga-teatr-kukol/e140"
+      ]
     }
   ],
   "KMW": [
@@ -1049,6 +1680,50 @@
       "registry_id": 91146,
       "record_updated": "2026-11-03",
       "address": "обл Костромская,г Кострома,ул Станкостроительная"
+    },
+    {
+      "name": "Костромской государственный драматический театр им. Островского",
+      "category": "stage",
+      "source": "Костромской государственный драматический театр им. Островского · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/kostromskoj-dramaticheskij-teatr-ostrovskogo",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-22",
+      "valid_until": "2026-12-19",
+      "note": "В афише — «Жди меня». Даты показов: 22 ноября, 19 декабря.",
+      "weekend_dates": [
+        "2026-11-22",
+        "2026-12-19"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/kostromskoj-dramaticheskij-teatr-ostrovskogo/e178"
+      ]
+    },
+    {
+      "name": "Костромской областной театр кукол",
+      "category": "stage",
+      "source": "Костромской областной театр кукол · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/kostromskoy-oblastnoy-teatr-kukol",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-29",
+      "valid_until": "2026-12-20",
+      "note": "29 ноября — «Про мышонка...», 19 декабря — «Морозко».",
+      "weekend_dates": [
+        "2026-11-29",
+        "2026-12-19",
+        "2026-12-20"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/kostromskoy-oblastnoy-teatr-kukol/e23",
+        "https://quicktickets.ru/kostromskoy-oblastnoy-teatr-kukol/e15"
+      ]
     }
   ],
   "KRO": [
@@ -1105,6 +1780,30 @@
       "registry_id": 50330,
       "record_updated": "2025-04-30",
       "address": "обл Курганская,г Курган,ул Гоголя,д 1"
+    },
+    {
+      "name": "Курганский театр кукол «Гулливер»",
+      "category": "stage",
+      "source": "Курганский театр кукол «Гулливер» · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/kurgan-teatr-kukol-guliver",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-28",
+      "valid_until": "2026-12-27",
+      "note": "28 ноября — «Гуси-лебеди», 26 декабря — «Ёжик и Медвежонок».",
+      "weekend_dates": [
+        "2026-11-28",
+        "2026-11-29",
+        "2026-12-26",
+        "2026-12-27"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/kurgan-teatr-kukol-guliver/e346",
+        "https://quicktickets.ru/kurgan-teatr-kukol-guliver/e147"
+      ]
     }
   ],
   "KSZ": [
@@ -1159,6 +1858,135 @@
       "valid_from": "2026-11-18",
       "valid_until": "2026-12-31",
       "note": "С 12 октября 2026 года субботние часы основного здания — 12:00–19:30."
+    },
+    {
+      "name": "Волжские раки в ресторане «У Вакано»",
+      "category": "food",
+      "source": "Ресторан «У Вакано»",
+      "url": "https://u-vakano.ru/",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "В историческом корпусе Жигулёвского пивоваренного завода подают волжских раков круглый год. Ресторан открывается ежедневно в 12:00."
+    },
+    {
+      "name": "Волжская кухня в «Городской усадьбе»",
+      "category": "food",
+      "source": "Ресторан «Городская усадьба»",
+      "url": "https://gorodskaya-usadba63.ru/",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "Ресторан волжской кухни на улице Степана Разина, 126. Со вторника по субботу открыт с 12:00 до 22:00."
+    },
+    {
+      "name": "Интерьеры особняка Курлиных",
+      "category": "history",
+      "source": "Самарский музей Модерна",
+      "url": "https://samaramodern.ru/",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "Основная экспозиция размещена в историческом купеческом особняке. По обычному графику в субботу и воскресенье 10:00–18:00."
+    },
+    {
+      "name": "Мемориальная квартира семьи Ульяновых",
+      "category": "history",
+      "source": "Дом-музей В. И. Ленина в Самаре",
+      "url": "https://leninmuseum63.ru/contacts",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "Историческая квартира в Самаре. Посещение в субботу 09:00–17:00, касса до 16:30. В воскресенье закрыто."
+    },
+    {
+      "name": "Самарский зоопарк",
+      "category": "nature",
+      "source": "Самарский зоопарк",
+      "url": "https://samzoo.ru/posetitelyam/rezhim-raboty/",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "В ноябре и декабре зоопарк открыт ежедневно 10:00–17:00."
+    },
+    {
+      "name": "Самарский океанариум",
+      "category": "nature",
+      "source": "Самарский океанариум",
+      "url": "https://oceansamara.ru/kontakty/",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "В субботу и воскресенье касса открыта 10:00–20:00, вход до 20:30, экспозиция до 21:00."
+    },
+    {
+      "name": "Самарский театр оперы и балета имени Д. Д. Шостаковича",
+      "category": "stage",
+      "source": "Самарский театр оперы и балета",
+      "url": "https://opera-samara.ru/afisha/",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-27",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-22",
+        "2026-11-28",
+        "2026-11-29",
+        "2026-12-05",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ],
+      "note": "Водевиль «Всё дело в шляпке» — 21 и 22 ноября, 5 и 27 декабря. В декабрьские выходные также идёт «Щелкунчик»."
+    },
+    {
+      "name": "Самарский академический театр драмы имени М. Горького",
+      "category": "stage",
+      "source": "Самарский театр драмы",
+      "url": "https://dramtheatre.ru/",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-19",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-22",
+        "2026-12-06",
+        "2026-12-12",
+        "2026-12-19"
+      ],
+      "note": "«Неаполитанские каникулы» — 22 ноября и 19 декабря, «На дне.doc» — 22 ноября и 6 декабря. Спектакли проходят в Самаре."
     }
   ],
   "KXK": [
@@ -1197,6 +2025,29 @@
       "registry_id": 8683,
       "record_updated": "2025-08-29",
       "address": "край Хабаровский,г Комсомольск-на-Амуре,пр-кт Мира,д 16"
+    },
+    {
+      "name": "Драматический театр",
+      "category": "stage",
+      "source": "Драматический театр · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/komsomolsk-na-amure-dramaticheskij-teatr",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-28",
+      "valid_until": "2026-12-20",
+      "note": "28 ноября — «Крыша», 12 декабря — «Исчезновение принцессы Фефелы III».",
+      "weekend_dates": [
+        "2026-11-28",
+        "2026-12-12",
+        "2026-12-20"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/komsomolsk-na-amure-dramaticheskij-teatr/e13",
+        "https://quicktickets.ru/komsomolsk-na-amure-dramaticheskij-teatr/e105"
+      ]
     }
   ],
   "KYZ": [
@@ -1311,6 +2162,48 @@
       "registry_id": 7295,
       "record_updated": "2025-09-03",
       "address": "обл Мурманская,г Мурманск,пр-кт Ленина,д 90"
+    },
+    {
+      "name": "Драматический театр Северного флота",
+      "category": "stage",
+      "source": "Драматический театр Северного флота · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/murmansk-teatr-flot",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-29",
+      "valid_until": "2026-12-20",
+      "note": "В афише — «СВОИ ЛЮДИ - СОЧТЁМСЯ». Даты показов: 29 ноября, 20 декабря.",
+      "weekend_dates": [
+        "2026-11-29",
+        "2026-12-20"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/murmansk-teatr-flot/e40"
+      ]
+    },
+    {
+      "name": "Мурманский областной драматический театр",
+      "category": "stage",
+      "source": "Мурманский областной драматический театр · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/murmansk-teatr-dramy",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-12",
+      "note": "В афише — «Сочельник в Манхэттене». Даты показов: 21 ноября, 12 декабря.",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-12-12"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/murmansk-teatr-dramy/e14"
+      ]
     }
   ],
   "MQF": [
@@ -1349,6 +2242,50 @@
       "registry_id": 8403,
       "record_updated": "2025-09-25",
       "address": "обл Челябинская,г Магнитогорск,ул имени газеты Правда,д 12"
+    },
+    {
+      "name": "Магнитогорский театр куклы и актера «Буратино»",
+      "category": "stage",
+      "source": "Магнитогорский театр куклы и актера «Буратино» · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/magnitogorsk-teatr-buratino",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-29",
+      "valid_until": "2026-12-13",
+      "note": "В афише — «Снежная королева». Даты показов: 29 ноября, 13 декабря.",
+      "weekend_dates": [
+        "2026-11-29",
+        "2026-12-13"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/magnitogorsk-teatr-buratino/e34"
+      ]
+    },
+    {
+      "name": "Магнитогорский академический драматический театр им. А. С. Пушкина",
+      "category": "stage",
+      "source": "Магнитогорский академический драматический театр им. А. С. Пушкина · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/magnitogorsk-teatr-pushkina",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-29",
+      "valid_until": "2026-12-20",
+      "note": "29 ноября — «Гамлет», 19 декабря — «Женитьба Белугина».",
+      "weekend_dates": [
+        "2026-11-29",
+        "2026-12-19",
+        "2026-12-20"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/magnitogorsk-teatr-pushkina/e137",
+        "https://quicktickets.ru/magnitogorsk-teatr-pushkina/e109"
+      ]
     }
   ],
   "NAL": [
@@ -1559,6 +2496,28 @@
       "registry_id": 7643,
       "record_updated": "2025-09-10",
       "address": "АО Ханты-Мансийский Автономный округ - Югра,г Нягань,мкр 3-й,д 3/1"
+    },
+    {
+      "name": "Няганский театр юного зрителя",
+      "category": "stage",
+      "source": "Няганский театр юного зрителя · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/njagan-tyuz",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-28",
+      "valid_until": "2026-12-06",
+      "note": "28 ноября — «Сказки народов Севера», 6 декабря — «К МАМЕ».",
+      "weekend_dates": [
+        "2026-11-28",
+        "2026-12-06"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/njagan-tyuz/e18",
+        "https://quicktickets.ru/njagan-tyuz/e39"
+      ]
     }
   ],
   "OGZ": [
@@ -1785,6 +2744,49 @@
       "registry_id": 15091,
       "record_updated": "2025-08-28",
       "address": "край Камчатский,г Петропавловск-Камчатский,ул Ленинская,д 62"
+    },
+    {
+      "name": "Камчатский театр кукол",
+      "category": "stage",
+      "source": "Камчатский театр кукол · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/petropavlovsk-kamchatskiy-teatr-kukol",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-29",
+      "valid_until": "2026-12-13",
+      "note": "29 ноября — «Муха-цокотуха», 13 декабря — «Приключение мидии».",
+      "weekend_dates": [
+        "2026-11-29",
+        "2026-12-13"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/petropavlovsk-kamchatskiy-teatr-kukol/e70",
+        "https://quicktickets.ru/petropavlovsk-kamchatskiy-teatr-kukol/e20"
+      ]
+    },
+    {
+      "name": "Камчатский театр драмы и комедии",
+      "category": "stage",
+      "source": "Камчатский театр драмы и комедии · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/petropavlovsk-kamchatskiy-dramteatr",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-22",
+      "valid_until": "2026-12-20",
+      "note": "В афише — «Клинический случай». Даты показов: 22 ноября, 20 декабря.",
+      "weekend_dates": [
+        "2026-11-22",
+        "2026-12-20"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/petropavlovsk-kamchatskiy-dramteatr/e250"
+      ]
     }
   ],
   "PKV": [
@@ -1861,6 +2863,49 @@
       "registry_id": 90032,
       "record_updated": "2025-09-12",
       "address": "обл Оренбургская,г Оренбург,ул Советская,д 3"
+    },
+    {
+      "name": "Оренбургский областной драматический театр им. М. Горького",
+      "category": "stage",
+      "source": "Оренбургский областной драматический театр им. М. Горького · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/orenburg-teatr-gorkogo",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-12",
+      "note": "В афише — «Таня». Даты показов: 21 ноября, 12 декабря.",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-12-12"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/orenburg-teatr-gorkogo/e32"
+      ]
+    },
+    {
+      "name": "Оренбургский областной театр кукол",
+      "category": "stage",
+      "source": "Оренбургский областной театр кукол · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/orenburg-teatr-kukol",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-29",
+      "valid_until": "2026-12-12",
+      "note": "29 ноября — «Лисичка со скалочкой», 12 декабря — «Леля».",
+      "weekend_dates": [
+        "2026-11-29",
+        "2026-12-12"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/orenburg-teatr-kukol/e83",
+        "https://quicktickets.ru/orenburg-teatr-kukol/e69"
+      ]
     }
   ],
   "RMZ": [
@@ -1919,6 +2964,27 @@
       "registry_id": 89141,
       "record_updated": "2025-11-17",
       "address": "обл Ростовская,г Ростов-на-Дону,ул Шаумяна,д 65"
+    },
+    {
+      "name": "Театр Миссис ЛО",
+      "category": "stage",
+      "source": "Театр Миссис ЛО · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/rostov-na-donu-teatr-missis-lo",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-29",
+      "valid_until": "2026-12-05",
+      "note": "В афише — «Шуты, плуты и баламуты Мигеля де Сервантеса». Даты показов: 29 ноября, 5 декабря.",
+      "weekend_dates": [
+        "2026-11-29",
+        "2026-12-05"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/rostov-na-donu-teatr-missis-lo/e3"
+      ]
     }
   ],
   "SCW": [
@@ -1957,6 +3023,49 @@
       "registry_id": 7555,
       "record_updated": "2025-10-24",
       "address": "Респ Коми,г Сыктывкар,ул Маяковского,д 3"
+    },
+    {
+      "name": "Национальный музыкально-драматический театр РК",
+      "category": "stage",
+      "source": "Национальный музыкально-драматический театр РК · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/muzykalno-dramaticheskiy-teatr",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-29",
+      "valid_until": "2026-12-20",
+      "note": "29 ноября — «ЗАИГРАЙ, МОЙ ЧИПСАН», 20 декабря — «ПАРМА ЛОВ/ Душа Пармы».",
+      "weekend_dates": [
+        "2026-11-29",
+        "2026-12-20"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/muzykalno-dramaticheskiy-teatr/e13",
+        "https://quicktickets.ru/muzykalno-dramaticheskiy-teatr/e8"
+      ]
+    },
+    {
+      "name": "Академический театр оперы и балета Республики Коми",
+      "category": "stage",
+      "source": "Академический театр оперы и балета Республики Коми · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/komiopera",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-29",
+      "valid_until": "2026-12-20",
+      "note": "В афише — «ОХ, УЖ ЭТОТ ЦАРЬ ГОРОХ!». Даты показов: 29 ноября, 20 декабря.",
+      "weekend_dates": [
+        "2026-11-29",
+        "2026-12-20"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/komiopera/e22"
+      ]
     }
   ],
   "SGC": [
@@ -2127,6 +3236,31 @@
       "registry_id": 89824,
       "record_updated": "2025-08-14",
       "address": "край Ставропольский,г Ставрополь,ул Ивана Щипакина"
+    },
+    {
+      "name": "Ставропольская государственная филармония",
+      "category": "stage",
+      "source": "Ставропольская государственная филармония · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/stavropol-filarmoniya",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-28",
+      "valid_until": "2026-12-27",
+      "note": "28 ноября — «Сила России - в единстве народов», 19 декабря — «Волшебная лампа».",
+      "weekend_dates": [
+        "2026-11-28",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/stavropol-filarmoniya/e270",
+        "https://quicktickets.ru/stavropol-filarmoniya/e289"
+      ]
     }
   ],
   "SVX": [
@@ -2207,6 +3341,99 @@
       "valid_from": "2026-11-18",
       "valid_until": "2026-12-31",
       "note": "С ноября по март по субботам открыта прогулочная территория с 10:00 до 17:45. Зимние выходные не предусматривают посещение оранжерей."
+    },
+    {
+      "name": "Храм-памятник на Крови",
+      "category": "history",
+      "source": "Екатеринбургская епархия",
+      "url": "https://ekaterinburg-eparhia.ru/building/chrames/11/",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "Храм открыт ежедневно 07:00–23:00. Экскурсии проводят с 10:00 до 18:00."
+    },
+    {
+      "name": "Пельмени в ресторане «Уральские пельмени»",
+      "category": "food",
+      "source": "Ресторан «Уральские пельмени»",
+      "url": "https://rest-up.ru/",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "Проспект Ленина, 69/1. По субботам ресторан работает 11:00–02:00, по воскресеньям 12:00–00:00."
+    },
+    {
+      "name": "Уральские травы и ягоды в ресторане «Троекуров»",
+      "category": "food",
+      "source": "Resta Management · ресторан «Троекуров»",
+      "url": "https://restamanagement.ru/places/troekurov",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "Местные травы и ягоды используют в чайных композициях. Ресторан на улице Малышева, 137, открыт ежедневно 11:30–23:00."
+    },
+    {
+      "name": "Екатеринбургский театр оперы и балета",
+      "category": "stage",
+      "source": "Екатеринбургский театр оперы и балета",
+      "url": "https://uralopera.ru/?section=calendar",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-27",
+      "note": "21 ноября — «Кармен», 5 декабря — «Дон Кихот».",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-22",
+        "2026-12-05",
+        "2026-12-06",
+        "2026-12-13",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ],
+      "schedule_urls": [
+        "https://uralopera.ru/?section=calendar"
+      ]
+    },
+    {
+      "name": "Свердловский театр музыкальной комедии",
+      "category": "stage",
+      "source": "Свердловский театр музыкальной комедии",
+      "url": "https://www.muzkom.net/afisha",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-05",
+      "note": "21 ноября — «Приключения Буратино», 5 декабря — «24 часа из жизни женщины».",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-22",
+        "2026-12-05"
+      ],
+      "schedule_urls": [
+        "https://www.muzkom.net/afisha",
+        "https://www.muzkom.net/about/repertoire/24-chasa-iz-zhizni-zhenshchiny"
+      ]
     }
   ],
   "TBW": [
@@ -2319,6 +3546,48 @@
       "registry_id": 87562,
       "record_updated": "2025-02-20",
       "address": "обл Ростовская,г Таганрог,ул Инструментальная,д 13А"
+    },
+    {
+      "name": "Студия-театр «Люди»",
+      "category": "stage",
+      "source": "Студия-театр «Люди» · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/taganrog-studiya-teatr-lyudi",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-29",
+      "valid_until": "2026-12-27",
+      "note": "В афише — «Яма». Даты показов: 29 ноября, 27 декабря.",
+      "weekend_dates": [
+        "2026-11-29",
+        "2026-12-27"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/taganrog-studiya-teatr-lyudi/e7"
+      ]
+    },
+    {
+      "name": "Таганрогский Камерный театр",
+      "category": "stage",
+      "source": "Таганрогский Камерный театр · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/taganrog-kamernyj-teatr",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-05",
+      "note": "В афише — «Свои люди – сочтемся». Даты показов: 21 ноября, 5 декабря.",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-12-05"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/taganrog-kamernyj-teatr/e47"
+      ]
     }
   ],
   "TYD": [
@@ -2453,6 +3722,28 @@
       "registry_id": 46494,
       "record_updated": "2025-09-23",
       "address": "обл Иркутская,г Усть-Илимск,ул Карла Маркса,д 67"
+    },
+    {
+      "name": "Усть-Илимский театр драмы и комедии",
+      "category": "stage",
+      "source": "Усть-Илимский театр драмы и комедии · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/ust-ilimsk-dramteatr",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-29",
+      "valid_until": "2026-12-12",
+      "note": "29 ноября — «Бармалей», 12 декабря — «Осторожно-женщины!».",
+      "weekend_dates": [
+        "2026-11-29",
+        "2026-12-12"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/ust-ilimsk-dramteatr/e25",
+        "https://quicktickets.ru/ust-ilimsk-dramteatr/e71"
+      ]
     }
   ],
   "ULY": [
@@ -2567,6 +3858,49 @@
       "registry_id": 33303,
       "record_updated": "2026-04-09",
       "address": "обл Курская,г Курск,пл Красная,д 2/4"
+    },
+    {
+      "name": "Курский государственный театр кукол",
+      "category": "stage",
+      "source": "Курский государственный театр кукол · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/kursk-teatr-kukol",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-29",
+      "valid_until": "2026-12-06",
+      "note": "В афише — «Кот в сапогах». Даты показов: 29 ноября, 6 декабря.",
+      "weekend_dates": [
+        "2026-11-29",
+        "2026-12-06"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/kursk-teatr-kukol/e52"
+      ]
+    },
+    {
+      "name": "Курский государственный драматический театр им. А. С. Пушкина",
+      "category": "stage",
+      "source": "Курский государственный драматический театр им. А. С. Пушкина · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/kursk-teatr-pushkina",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-26",
+      "note": "21 ноября — «Все мыши любят сыр», 26 декабря — «Контрабас».",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-12-26"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/kursk-teatr-pushkina/e117",
+        "https://quicktickets.ru/kursk-teatr-pushkina/e81"
+      ]
     }
   ],
   "USK": [
@@ -2737,6 +4071,52 @@
       "registry_id": 8503,
       "record_updated": "2026-01-13",
       "address": "обл Вологодская,г Вологда,ул Ленинградская,д 6"
+    },
+    {
+      "name": "Вологодский государственный драматический театр",
+      "category": "stage",
+      "source": "Вологодский государственный драматический театр · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/vologda-dramaticheskij-teatr",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-29",
+      "valid_until": "2026-12-20",
+      "note": "29 ноября — «Барышня-крестьянка», 20 декабря — «Салон красоты».",
+      "weekend_dates": [
+        "2026-11-29",
+        "2026-12-20"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/vologda-dramaticheskij-teatr/e78",
+        "https://quicktickets.ru/vologda-dramaticheskij-teatr/e85"
+      ]
+    },
+    {
+      "name": "Камерный драматический театр",
+      "category": "stage",
+      "source": "Камерный драматический театр · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/vologda-kamernyj-teatr",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-22",
+      "valid_until": "2026-12-27",
+      "note": "22 ноября — «ЛЮБОВНЫЕ ПИСЬМА», 19 декабря — «Новый год в Камерном театре».",
+      "weekend_dates": [
+        "2026-11-22",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-27"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/vologda-kamernyj-teatr/e9",
+        "https://quicktickets.ru/vologda-kamernyj-teatr/e86"
+      ]
     }
   ],
   "VKT": [
@@ -2775,6 +4155,52 @@
       "registry_id": 86587,
       "record_updated": "2025-02-25",
       "address": "Респ Коми,г Воркута,ул Гагарина,д 7"
+    },
+    {
+      "name": "Государственный театр кукол Республики Коми",
+      "category": "stage",
+      "source": "Государственный театр кукол Республики Коми · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/vorkuta-teatr-kukol",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-29",
+      "valid_until": "2026-12-27",
+      "note": "29 ноября — «Сказка о капризной принцессе и короле лягушек», 20 декабря — «Маленькая Ёлочка».",
+      "weekend_dates": [
+        "2026-11-29",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/vorkuta-teatr-kukol/e81",
+        "https://quicktickets.ru/vorkuta-teatr-kukol/e127"
+      ]
+    },
+    {
+      "name": "Воркутинский драматический театр им. Б. А. Мордвинова",
+      "category": "stage",
+      "source": "Воркутинский драматический театр им. Б. А. Мордвинова · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/vorkuta-dramaticheskij-teatr",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-29",
+      "valid_until": "2026-12-13",
+      "note": "29 ноября — «Кадриль», 13 декабря — «День отдыха».",
+      "weekend_dates": [
+        "2026-11-29",
+        "2026-12-13"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/vorkuta-dramaticheskij-teatr/e136",
+        "https://quicktickets.ru/vorkuta-dramaticheskij-teatr/e212"
+      ]
     }
   ],
   "VOG": [
@@ -2813,6 +4239,52 @@
       "registry_id": 86821,
       "record_updated": "2025-09-01",
       "address": "обл Волгоградская,г Волгоград,ул Изобильная,зд 10"
+    },
+    {
+      "name": "Волгоградский областной театр кукол",
+      "category": "stage",
+      "source": "Волгоградский областной театр кукол · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/volgograd-teatr-kukol",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-29",
+      "valid_until": "2026-12-27",
+      "note": "29 ноября — «Кошкин дом», 19 декабря — «Двенадцать месяцев».",
+      "weekend_dates": [
+        "2026-11-29",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-27"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/volgograd-teatr-kukol/e164",
+        "https://quicktickets.ru/volgograd-teatr-kukol/e7"
+      ]
+    },
+    {
+      "name": "ГБУК «Волгоградский ТЮЗ»",
+      "category": "stage",
+      "source": "ГБУК «Волгоградский ТЮЗ» · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/volgograd-tyuz",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-28",
+      "valid_until": "2026-12-26",
+      "note": "28 ноября — «С ЛЮБОВЬЮ НЕ ШУТЯТ», 26 декабря — «КОНЁК-ГОРБУНОК».",
+      "weekend_dates": [
+        "2026-11-28",
+        "2026-12-26"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/volgograd-tyuz/e81",
+        "https://quicktickets.ru/volgograd-tyuz/e96"
+      ]
     }
   ],
   "VOZ": [
@@ -2851,6 +4323,50 @@
       "registry_id": 89298,
       "record_updated": "2025-09-15",
       "address": "обл Воронежская,г Воронеж,ул Генерала Лизюкова,д 42в"
+    },
+    {
+      "name": "Воронежский государственный академический театр драмы им. А. Кольцова",
+      "category": "stage",
+      "source": "Воронежский государственный академический театр драмы им. А. Кольцова · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/voronej-dramteatr-kolcova",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-29",
+      "valid_until": "2026-12-13",
+      "note": "В афише — «Любимые люди». Даты показов: 29 ноября, 12 декабря, 13 декабря.",
+      "weekend_dates": [
+        "2026-11-29",
+        "2026-12-12",
+        "2026-12-13"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/voronej-dramteatr-kolcova/e148"
+      ]
+    },
+    {
+      "name": "Воронежский государственный театр юного зрителя им. С. Я. Маршака",
+      "category": "stage",
+      "source": "Воронежский государственный театр юного зрителя им. С. Я. Маршака · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/voronej-tyuz",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-22",
+      "valid_until": "2026-12-06",
+      "note": "22 ноября — «Русский характер», 6 декабря — «Летучий корабль».",
+      "weekend_dates": [
+        "2026-11-22",
+        "2026-12-06"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/voronej-tyuz/e90",
+        "https://quicktickets.ru/voronej-tyuz/e100"
+      ]
     }
   ],
   "VVO": [
@@ -2927,6 +4443,53 @@
       "registry_id": 6410,
       "record_updated": "2026-10-05",
       "address": "Респ Саха /Якутия/,г Якутск,пр-кт Ленина,д 5/2"
+    },
+    {
+      "name": "Государственный академический русский драматический театр им. А. С. Пушкина",
+      "category": "stage",
+      "source": "Государственный академический русский драматический театр им. А. С. Пушкина · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/yakutsk-teatr-pushkina",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-22",
+      "valid_until": "2026-12-12",
+      "note": "22 ноября — «Незнайка-путешественник», 6 декабря — «Незнайка-путешественник».",
+      "weekend_dates": [
+        "2026-11-22",
+        "2026-12-06",
+        "2026-12-12"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/yakutsk-teatr-pushkina/e30",
+        "https://quicktickets.ru/yakutsk-teatr-pushkina/e31"
+      ]
+    },
+    {
+      "name": "Государственный театр эстрады РС(Я) им. Ю. Платонова",
+      "category": "stage",
+      "source": "Государственный театр эстрады РС(Я) им. Ю. Платонова · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/yakutsk-teatr-platonova",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-28",
+      "valid_until": "2026-12-13",
+      "note": "28 ноября — «Уэлькаль», 12 декабря — «Любовь и голуби».",
+      "weekend_dates": [
+        "2026-11-28",
+        "2026-11-29",
+        "2026-12-12",
+        "2026-12-13"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/yakutsk-teatr-platonova/e150",
+        "https://quicktickets.ru/yakutsk-teatr-platonova/e128"
+      ]
     }
   ],
   "ВЛМ": [
@@ -3001,6 +4564,31 @@
       "registry_id": 66886,
       "record_updated": "2025-04-24",
       "address": "обл Владимирская,г Владимир,ул Мира,д 36А"
+    },
+    {
+      "name": "Музыкальный театр «Разгуляй»",
+      "category": "stage",
+      "source": "Музыкальный театр «Разгуляй» · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/vladimir-teatr-razgulyaj",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-22",
+      "valid_until": "2026-12-27",
+      "note": "22 ноября — «Чиполлино», 19 декабря — «Новогодняя интермедия с Дедом Морозом и Снегурочкой. Музыкальный спектакль для детей «Конёк-Горбунок»».",
+      "weekend_dates": [
+        "2026-11-22",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/vladimir-teatr-razgulyaj/e21",
+        "https://quicktickets.ru/vladimir-teatr-razgulyaj/e6"
+      ]
     }
   ],
   "СОЛ": [
@@ -3039,6 +4627,2456 @@
       "registry_id": 545,
       "record_updated": "2026-02-03",
       "address": "обл Белгородская,г Старый Оскол,ул Ленина,д 50"
+    }
+  ],
+  "EGO": [
+    {
+      "name": "Белгородский государственный театр кукол",
+      "category": "stage",
+      "source": "Белгородский государственный театр кукол · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/belgorodskiy-gosudarstvennyy-teatr-kukol",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-28",
+      "valid_until": "2026-12-12",
+      "note": "28 ноября — «Машенька и медведь», 12 декабря — «Заяц, Лиса и Петух».",
+      "weekend_dates": [
+        "2026-11-28",
+        "2026-12-12"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/belgorodskiy-gosudarstvennyy-teatr-kukol/e30",
+        "https://quicktickets.ru/belgorodskiy-gosudarstvennyy-teatr-kukol/e103"
+      ]
+    }
+  ],
+  "GVN": [
+    {
+      "name": "Народный театр «Диалог»",
+      "category": "stage",
+      "source": "Народный театр «Диалог» · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/sovetskaya-gavan-teatr-dialog",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-22",
+      "valid_until": "2026-12-05",
+      "note": "В афише — «Пока она умирала». Даты показов: 22 ноября, 28 ноября, 5 декабря.",
+      "weekend_dates": [
+        "2026-11-22",
+        "2026-11-28",
+        "2026-12-05"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/sovetskaya-gavan-teatr-dialog/e43"
+      ]
+    }
+  ],
+  "KVX": [
+    {
+      "name": "Кировский областной драматический театр им. С. М. Кирова",
+      "category": "stage",
+      "source": "Кировский областной драматический театр им. С. М. Кирова · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/kirov-dramteatr-kirova",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-29",
+      "valid_until": "2026-12-27",
+      "note": "В афише — «Пиковая дама». Даты показов: 29 ноября, 27 декабря.",
+      "weekend_dates": [
+        "2026-11-29",
+        "2026-12-27"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/kirov-dramteatr-kirova/e281"
+      ]
+    },
+    {
+      "name": "Кировский театр кукол им. А. Н. Афанасьева",
+      "category": "stage",
+      "source": "Кировский театр кукол им. А. Н. Афанасьева · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/kirov-teatr-afanaseva",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-28",
+      "valid_until": "2026-12-26",
+      "note": "28 ноября — «Ночь перед Рождеством», 26 декабря — «Курочка Ряба».",
+      "weekend_dates": [
+        "2026-11-28",
+        "2026-12-26"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/kirov-teatr-afanaseva/e185",
+        "https://quicktickets.ru/kirov-teatr-afanaseva/e106"
+      ]
+    }
+  ],
+  "LPK": [
+    {
+      "name": "Липецкий государственный театр кукол",
+      "category": "stage",
+      "source": "Липецкий государственный театр кукол · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/lipetsk-teatr-kukol",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-29",
+      "valid_until": "2026-12-13",
+      "note": "29 ноября — «Аленький цветочек», 13 декабря — «Кошкин дом».",
+      "weekend_dates": [
+        "2026-11-29",
+        "2026-12-13"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/lipetsk-teatr-kukol/e16",
+        "https://quicktickets.ru/lipetsk-teatr-kukol/e7"
+      ]
+    }
+  ],
+  "MJZ": [
+    {
+      "name": "Мирнинский театр",
+      "category": "stage",
+      "source": "Мирнинский театр · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/mirnyy-teatr",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-29",
+      "valid_until": "2026-12-26",
+      "note": "29 ноября — «ТЕРЕМОК», 26 декабря — «МОРОЗКО».",
+      "weekend_dates": [
+        "2026-11-29",
+        "2026-12-26"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/mirnyy-teatr/e152",
+        "https://quicktickets.ru/mirnyy-teatr/e130"
+      ]
+    }
+  ],
+  "NER": [
+    {
+      "name": "Театр кукол Республики Саха (Якутия)",
+      "category": "stage",
+      "source": "Театр кукол Республики Саха (Якутия) · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/neryungri-teatr-kukol",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-29",
+      "valid_until": "2026-12-13",
+      "note": "29 ноября — «Курочка Ряба», 13 декабря — «Колобок».",
+      "weekend_dates": [
+        "2026-11-29",
+        "2026-12-13"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/neryungri-teatr-kukol/e26",
+        "https://quicktickets.ru/neryungri-teatr-kukol/e41"
+      ]
+    }
+  ],
+  "NOZ": [
+    {
+      "name": "Театр кукол «Сказ» им. В. Машкова",
+      "category": "stage",
+      "source": "Театр кукол «Сказ» им. В. Машкова · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/novokuzneck-teatr-kukol-mashkova",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-12",
+      "note": "21 ноября — «Зима в Простоквашино», 12 декабря — «Сказка о Золотом петушке».",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-22",
+        "2026-12-12"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/novokuzneck-teatr-kukol-mashkova/e156",
+        "https://quicktickets.ru/novokuzneck-teatr-kukol-mashkova/e110"
+      ]
+    },
+    {
+      "name": "Интерактивный детский театр «Коза-егоза»",
+      "category": "stage",
+      "source": "«Коза-егоза»: экскурсии для детей и взрослых, интерактивный детский театр и яркие шоу-программы · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/novokuznetsk-teatr-koza-egoza",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-22",
+      "valid_until": "2026-12-06",
+      "note": "22 ноября — «Сенсорная сказка \"Репка\" с живой крыской», 6 декабря — «Сенсорная сказка \"Курочка ряба\" и настоящие крольчата».",
+      "weekend_dates": [
+        "2026-11-22",
+        "2026-12-06"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/novokuznetsk-teatr-koza-egoza/e32",
+        "https://quicktickets.ru/novokuznetsk-teatr-koza-egoza/e31"
+      ]
+    }
+  ],
+  "OMS": [
+    {
+      "name": "Городской драматический театр им. Л. И. Ермолаевой",
+      "category": "stage",
+      "source": "Городской драматический театр им. Л. И. Ермолаевой · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/omsk-teatr-ermolaevoj",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-22",
+      "valid_until": "2026-12-12",
+      "note": "В афише — «О любви, или Забытые письма». Даты показов: 22 ноября, 12 декабря.",
+      "weekend_dates": [
+        "2026-11-22",
+        "2026-12-12"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/omsk-teatr-ermolaevoj/e70"
+      ]
+    }
+  ],
+  "OSW": [
+    {
+      "name": "Орский государственный драматический театр им. А. С. Пушкина",
+      "category": "stage",
+      "source": "Орский государственный драматический театр им. А. С. Пушкина · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/orsk-dramteatr-pushkina",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-28",
+      "valid_until": "2026-12-20",
+      "note": "В афише — «Старший сын». Даты показов: 28 ноября, 20 декабря.",
+      "weekend_dates": [
+        "2026-11-28",
+        "2026-12-20"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/orsk-dramteatr-pushkina/e106"
+      ]
+    },
+    {
+      "name": "Дворец культуры нефтехимиков",
+      "category": "stage",
+      "source": "Дворец культуры нефтехимиков · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/orsk-dk-neftehimikov",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-28",
+      "valid_until": "2026-12-05",
+      "note": "28 ноября — «Гриша не свидетель», 5 декабря — «Русская душа».",
+      "weekend_dates": [
+        "2026-11-28",
+        "2026-12-05"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/orsk-dk-neftehimikov/e163",
+        "https://quicktickets.ru/orsk-dk-neftehimikov/e171"
+      ]
+    }
+  ],
+  "RTW": [
+    {
+      "name": "Театр драмы для детей и молодежи «Версия»",
+      "category": "stage",
+      "source": "Театр драмы для детей и молодежи «Версия» · билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/saratov-dramteatr-versiya",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-22",
+      "valid_until": "2026-12-05",
+      "note": "В афише — «Свадьба Кречинского». Даты показов: 22 ноября, 5 декабря.",
+      "weekend_dates": [
+        "2026-11-22",
+        "2026-12-05"
+      ],
+      "schedule_urls": [
+        "https://quicktickets.ru/saratov-dramteatr-versiya/e42"
+      ]
+    }
+  ],
+  "NTE": [
+    {
+      "name": "CONCERT ROCK",
+      "category": "stage",
+      "source": "FESTIVAL CULTURE BAR-BARS · OpenAgenda",
+      "url": "https://openagenda.com/festival-culture-bar-bars/events/carte-blanche-rapha",
+      "months": [
+        11
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-28",
+      "valid_until": "2026-11-28",
+      "weekend_dates": [
+        "2026-11-28"
+      ],
+      "note": "PIOCHE. Даты по афише организатора: 28.11."
+    },
+    {
+      "name": "Concert : Stabat Mater, de Pergolese",
+      "category": "stage",
+      "source": "Vie associative Nantes ville et métropole · OpenAgenda",
+      "url": "https://openagenda.com/vie-associative-nantes-ville-et-metropole/events/stabat-mater-de-pergolese-6644133",
+      "months": [
+        11
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-29",
+      "valid_until": "2026-11-29",
+      "weekend_dates": [
+        "2026-11-29"
+      ],
+      "note": "Chapelle de l'Immaculée. Даты по афише организатора: 29.11."
+    },
+    {
+      "name": "Concert : Véronique Gens et le chœur de chambre Aria Voce",
+      "category": "stage",
+      "source": "Nantes Métropole · OpenAgenda",
+      "url": "https://openagenda.com/nantesmetropole/events/concert-veronique-gens-et-le-choeur-de-chambre-aria-voce",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-12-05",
+      "valid_until": "2026-12-05",
+      "weekend_dates": [
+        "2026-12-05"
+      ],
+      "note": "Basilique Saint Nicolas. Даты по афише организатора: 05.12."
+    },
+    {
+      "name": "Concert de Noël",
+      "category": "stage",
+      "source": "Dervallières - Zola · OpenAgenda",
+      "url": "https://openagenda.com/nantesmetropole/events/concert-de-noel-2869831",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-12-20",
+      "valid_until": "2026-12-20",
+      "weekend_dates": [
+        "2026-12-20"
+      ],
+      "note": "Théâtre Rue de Belleville. Даты по афише организатора: 20.12."
+    }
+  ],
+  "PAR": [
+    {
+      "name": "Ciné-concert pour enfant / Cartoon’est pas si mal !",
+      "category": "stage",
+      "source": "JASS CLUB PARIS · OpenAgenda",
+      "url": "https://openagenda.com/jassclub-paris/events/cine-concert-pour-enfant-cartoonest-pas-si-mal-2483360",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-12-20",
+      "valid_until": "2026-12-20",
+      "weekend_dates": [
+        "2026-12-20"
+      ],
+      "note": "JASS CLUB. Даты по афише организатора: 20.12."
+    },
+    {
+      "name": "Spectacle conté — « Contes d'ombre et de lumière »",
+      "category": "stage",
+      "source": "Arc de triomphe · OpenAgenda",
+      "url": "https://openagenda.com/arc-de-triomphe/events/spectacle-conte-contes-dombre-et-de-lumiere",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-12-13",
+      "valid_until": "2026-12-20",
+      "weekend_dates": [
+        "2026-12-13",
+        "2026-12-20"
+      ],
+      "note": "Arc de triomphe. Даты по афише организатора: 13.12, 20.12."
+    },
+    {
+      "name": "Spectacle | L'Heure Exquise voyage dans le temps",
+      "category": "stage",
+      "source": "Saison Cabaret · OpenAgenda",
+      "url": "https://openagenda.com/saison-cabaret2026/events/lheure-exquise-voyage-dans-le-temps",
+      "months": [
+        11
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-28",
+      "valid_until": "2026-11-28",
+      "weekend_dates": [
+        "2026-11-28"
+      ],
+      "note": "Le Bal Blomet. Даты по афише организатора: 28.11."
+    }
+  ],
+  "RNS": [
+    {
+      "name": "CONCERT DE NOËL : DOUCE NUIT",
+      "category": "stage",
+      "source": "Dimanche à Rennes · OpenAgenda",
+      "url": "https://openagenda.com/sortir-rennesmetropole/events/concert-de-noel-douce-nuit",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-12-20",
+      "valid_until": "2026-12-20",
+      "weekend_dates": [
+        "2026-12-20"
+      ],
+      "note": "Temple protestant. Даты по афише организатора: 20.12."
+    }
+  ],
+  "LIL": [
+    {
+      "name": "Concert de Noël",
+      "category": "stage",
+      "source": "Conservatoire à Rayonnement Régional de Lille · OpenAgenda",
+      "url": "https://openagenda.com/planlibre/events/concert-de-noel-3389879",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-12-19",
+      "valid_until": "2026-12-19",
+      "weekend_dates": [
+        "2026-12-19"
+      ],
+      "note": "Auditorium du Nouveau Siècle. Даты по афише организатора: 19.12."
+    },
+    {
+      "name": "Concert de la chorale \"Digue Dondaines\"",
+      "category": "stage",
+      "source": "Bibliothèque municipale de Lille · OpenAgenda",
+      "url": "https://openagenda.com/planlibre/events/concert-de-la-chorale-digue-dondaines",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-12-12",
+      "valid_until": "2026-12-12",
+      "weekend_dates": [
+        "2026-12-12"
+      ],
+      "note": "Médiathèque de Saint-Maurice Pellevoisin. Даты по афише организатора: 12.12."
+    },
+    {
+      "name": "Un prélude au spectacle La Baleine tatouée",
+      "category": "stage",
+      "source": "Bibliothèque municipale de Lille · OpenAgenda",
+      "url": "https://openagenda.com/planlibre/events/un-prelude-au-spectacle-la-baleine-tatouee",
+      "months": [
+        11
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-11-21",
+      "weekend_dates": [
+        "2026-11-21"
+      ],
+      "note": "médiathèque Lille-Moulins. Даты по афише организатора: 21.11."
+    },
+    {
+      "name": "[Les 2010] -  Sylvain Groud / Ballet du Nord - CCN & Vous !",
+      "category": "stage",
+      "source": "Le Grand Sud · OpenAgenda",
+      "url": "https://openagenda.com/planlibre/events/les-2010-sylvain-groud-ballet-du-nord-ccn-and-vous",
+      "months": [
+        11
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-28",
+      "valid_until": "2026-11-28",
+      "weekend_dates": [
+        "2026-11-28"
+      ],
+      "note": "Le Grand Sud. Даты по афише организатора: 28.11."
+    }
+  ],
+  "BOD": [
+    {
+      "name": "Concert Requiem de Mozart  version Levin à l'église Notre Dame par l'Ensemble Vocal Martenot les 21 et 22 novembre",
+      "category": "stage",
+      "source": "Ensemble Vocal Martenot de Gironde · OpenAgenda",
+      "url": "https://openagenda.com/ville-de-bordeaux/events/concert-requiem-de-mozart-version-levin-a-leglise-notre-dame-par-lensemble-vocal-martenot",
+      "months": [
+        11
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-11-22",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-22"
+      ],
+      "note": "Eglise Notre Dame. Даты по афише организатора: 21.11, 22.11."
+    },
+    {
+      "name": "Concert de l'ensemble vocal atout chœur du Tauzin",
+      "category": "stage",
+      "source": "Le Tauzin · OpenAgenda",
+      "url": "https://openagenda.com/ville-de-bordeaux/events/concert-de-lensemble-vocal-atout-choeur-du-tauzin",
+      "months": [
+        11
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-22",
+      "valid_until": "2026-11-22",
+      "weekend_dates": [
+        "2026-11-22"
+      ],
+      "note": "Eglise Notre Dame des Anges. Даты по афише организатора: 22.11."
+    },
+    {
+      "name": "Concert du dimanche",
+      "category": "stage",
+      "source": "Opéra National de Bordeaux · OpenAgenda",
+      "url": "https://openagenda.com/ville-de-bordeaux/events/concert-du-dimanche-8184945",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-12-06",
+      "valid_until": "2026-12-06",
+      "weekend_dates": [
+        "2026-12-06"
+      ],
+      "note": "Auditorium de Bordeaux. Даты по афише организатора: 06.12."
+    },
+    {
+      "name": "SPECTACLE \"SANS VISAGE\"",
+      "category": "stage",
+      "source": "Shotgun · OpenAgenda",
+      "url": "https://openagenda.com/shotgun/events/spectacle-sans-visage",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-12-19",
+      "valid_until": "2026-12-19",
+      "weekend_dates": [
+        "2026-12-19"
+      ],
+      "note": "L'Estrade. Даты по афише организатора: 19.12."
+    }
+  ],
+  "TLS": [
+    {
+      "name": "Concert",
+      "category": "stage",
+      "source": "Conservatoire à rayonnement régional de Toulouse · OpenAgenda",
+      "url": "https://openagenda.com/conservatoire-de-toulouse/events/concert-7761849",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-12-12",
+      "valid_until": "2026-12-12",
+      "weekend_dates": [
+        "2026-12-12"
+      ],
+      "note": "Auditorium Saint-Pierre des Cuisines. Даты по афише организатора: 12.12."
+    },
+    {
+      "name": "Dr.Peacock in concert (The Orchestra Universe)",
+      "category": "stage",
+      "source": "Shotgun · OpenAgenda",
+      "url": "https://openagenda.com/shotgun/events/drpeacock-in-concert-the-orchestra-universe",
+      "months": [
+        11
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-11-21",
+      "weekend_dates": [
+        "2026-11-21"
+      ],
+      "note": "Toulouse. Даты по афише организатора: 21.11."
+    },
+    {
+      "name": "Saison musicale - Concert de Noël - La Lauzeta, chœur d'enfants",
+      "category": "stage",
+      "source": "Monuments de Toulouse · OpenAgenda",
+      "url": "https://openagenda.com/monuments-toulouse/events/saison-musicale-concert-de-noel-la-lauzeta-choeur-denfants",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-12-13",
+      "valid_until": "2026-12-13",
+      "weekend_dates": [
+        "2026-12-13"
+      ],
+      "note": "Chapelle des Carmélites. Даты по афише организатора: 13.12."
+    }
+  ],
+  "AVN": [
+    {
+      "name": "Le petit chef d'orchestre",
+      "category": "stage",
+      "source": "Avignon Bibliothèques · OpenAgenda",
+      "url": "https://openagenda.com/avignon-bibliotheques/events/le-petit-chef-dorchestre-4398215",
+      "months": [
+        11
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-28",
+      "valid_until": "2026-11-28",
+      "weekend_dates": [
+        "2026-11-28"
+      ],
+      "note": "Bibliothèque Ceccano. Даты по афише организатора: 28.11."
+    }
+  ],
+  "ANE": [
+    {
+      "name": "Concert de Noël",
+      "category": "stage",
+      "source": "Saison 2026-2027 de l'Orchestre National des Pays de la Loire · OpenAgenda",
+      "url": "https://openagenda.com/saison-2026-2027-de-lorchestre-national-des-pays-de-la-loire/events/concert-de-noel-1362286",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-12-06",
+      "valid_until": "2026-12-06",
+      "weekend_dates": [
+        "2026-12-06"
+      ],
+      "note": "Centre de Congrès d'Angers. Даты по афише организатора: 06.12."
+    }
+  ],
+  "LRT": [
+    {
+      "name": "SPECTACLE PARTICIPATIF NA - NUÉES EN ACTION",
+      "category": "stage",
+      "source": "FESTIVAL CULTURE BAR-BARS · OpenAgenda",
+      "url": "https://openagenda.com/festival-culture-bar-bars/events/atelier-na-nuees-en-action",
+      "months": [
+        11
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-28",
+      "valid_until": "2026-11-28",
+      "weekend_dates": [
+        "2026-11-28"
+      ],
+      "note": "L'EMBARCADÈRE. Даты по афише организатора: 28.11."
+    }
+  ],
+  "MRS": [
+    {
+      "name": "Spectacle Tic-Tac",
+      "category": "stage",
+      "source": "Bibliothèques de territoire - Ville de Marseille · OpenAgenda",
+      "url": "https://openagenda.com/bibliotheques-de-marseille/events/spectacle-tic-tac-369174",
+      "months": [
+        11
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-28",
+      "valid_until": "2026-11-28",
+      "weekend_dates": [
+        "2026-11-28"
+      ],
+      "note": "Bibliothèque du Merlan. Даты по афише организатора: 28.11."
+    }
+  ],
+  "MSY": [
+    {
+      "name": "French Quarter Visitor Center",
+      "category": "museums",
+      "source": "Служба национальных парков США",
+      "url": "https://www.nps.gov/jela/planyourvisit/french-quarter-site.htm",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-26",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-28",
+        "2026-12-05",
+        "2026-12-12",
+        "2026-12-19",
+        "2026-12-26"
+      ],
+      "park_code": "jela",
+      "note": "Выставка в центре для посетителей. Среди подтверждённых дат — 2026-11-21 и 2026-12-05."
+    }
+  ],
+  "SFO": [
+    {
+      "name": "William Penn Mott Jr. Presidio Visitor Center",
+      "category": "museums",
+      "source": "Служба национальных парков США",
+      "url": "https://www.nps.gov/prsf/planyourvisit/presidio-visitor-center.htm",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-27",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-22",
+        "2026-11-28",
+        "2026-11-29",
+        "2026-12-05",
+        "2026-12-06",
+        "2026-12-12",
+        "2026-12-13",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ],
+      "park_code": "prsf",
+      "note": "Выставка в центре для посетителей. Среди подтверждённых дат — 2026-11-21 и 2026-12-05."
+    },
+    {
+      "name": "Форт-Пойнт у моста Золотые Ворота",
+      "category": "history",
+      "source": "Служба национальных парков США",
+      "url": "https://www.nps.gov/fopo/planyourvisit/hours.htm",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-27",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-22",
+        "2026-11-28",
+        "2026-11-29",
+        "2026-12-05",
+        "2026-12-06",
+        "2026-12-12",
+        "2026-12-13",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ],
+      "park_code": "fopo",
+      "note": "По субботам и воскресеньям площадка открыта 10:00–17:00."
+    },
+    {
+      "name": "Морской музей Сан-Франциско",
+      "category": "museums",
+      "source": "Служба национальных парков США",
+      "url": "https://www.nps.gov/safr/planyourvisit/hours.htm",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-27",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-22",
+        "2026-11-28",
+        "2026-11-29",
+        "2026-12-05",
+        "2026-12-06",
+        "2026-12-12",
+        "2026-12-13",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ],
+      "park_code": "safr",
+      "note": "По субботам и воскресеньям площадка открыта 10:00–16:00."
+    }
+  ],
+  "ATL": [
+    {
+      "name": "Martin Luther King, Jr. National Historical Park Visitor Center",
+      "category": "museums",
+      "source": "Служба национальных парков США",
+      "url": "https://www.nps.gov/malu/planyourvisit/visitor_center.htm",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-27",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-22",
+        "2026-11-28",
+        "2026-11-29",
+        "2026-12-05",
+        "2026-12-06",
+        "2026-12-12",
+        "2026-12-13",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ],
+      "park_code": "malu",
+      "note": "Выставка в центре для посетителей. Среди подтверждённых дат — 2026-11-21 и 2026-12-05."
+    }
+  ],
+  "LIT": [
+    {
+      "name": "Little Rock Central High School National Historic Site Visitor Center",
+      "category": "museums",
+      "source": "Служба национальных парков США",
+      "url": "https://www.nps.gov/chsc",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-26",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-28",
+        "2026-12-05",
+        "2026-12-12",
+        "2026-12-19",
+        "2026-12-26"
+      ],
+      "park_code": "chsc",
+      "note": "Выставка в центре для посетителей. Среди подтверждённых дат — 2026-11-21 и 2026-12-05."
+    }
+  ],
+  "ELP": [
+    {
+      "name": "Chamizal National Memorial Cultural Center",
+      "category": "museums",
+      "source": "Служба национальных парков США",
+      "url": "https://www.nps.gov/cham/planyourvisit/hours.htm",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-26",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-28",
+        "2026-12-05",
+        "2026-12-12",
+        "2026-12-19",
+        "2026-12-26"
+      ],
+      "park_code": "cham",
+      "note": "Выставка в центре для посетителей. Среди подтверждённых дат — 2026-11-21 и 2026-12-05."
+    }
+  ],
+  "STL": [
+    {
+      "name": "Gateway Arch Visitor Center",
+      "category": "museums",
+      "source": "Служба национальных парков США",
+      "url": "https://www.nps.gov/jeff/planyourvisit/index.htm",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-27",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-22",
+        "2026-11-28",
+        "2026-11-29",
+        "2026-12-05",
+        "2026-12-06",
+        "2026-12-12",
+        "2026-12-13",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ],
+      "park_code": "jeff",
+      "note": "Выставка в центре для посетителей. Среди подтверждённых дат — 2026-11-21 и 2026-12-05."
+    }
+  ],
+  "PVD": [
+    {
+      "name": "Visitor Center",
+      "category": "museums",
+      "source": "Служба национальных парков США",
+      "url": "https://www.nps.gov/rowi/visitor-center.htm",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-27",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-22",
+        "2026-11-28",
+        "2026-11-29",
+        "2026-12-05",
+        "2026-12-06",
+        "2026-12-12",
+        "2026-12-13",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ],
+      "park_code": "rowi",
+      "note": "Выставка в центре для посетителей. Среди подтверждённых дат — 2026-11-21 и 2026-12-05."
+    }
+  ],
+  "HOT": [
+    {
+      "name": "Fordyce Bathhouse Visitor Center and Museum",
+      "category": "museums",
+      "source": "Служба национальных парков США",
+      "url": "https://www.nps.gov/hosp/learn/historyculture/fordyce-bathhouse.htm",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-27",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-22",
+        "2026-11-28",
+        "2026-11-29",
+        "2026-12-05",
+        "2026-12-06",
+        "2026-12-12",
+        "2026-12-13",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ],
+      "park_code": "hosp",
+      "note": "Выставка в центре для посетителей. Среди подтверждённых дат — 2026-11-21 и 2026-12-05."
+    }
+  ],
+  "WAS": [
+    {
+      "name": "Frederick Douglass NHS Visitor Center",
+      "category": "museums",
+      "source": "Служба национальных парков США",
+      "url": "https://www.nps.gov/frdo/index.htm",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-26",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-28",
+        "2026-12-05",
+        "2026-12-12",
+        "2026-12-19",
+        "2026-12-26"
+      ],
+      "park_code": "frdo",
+      "note": "Выставка в центре для посетителей. Среди подтверждённых дат — 2026-11-21 и 2026-12-05."
+    },
+    {
+      "name": "Прогулка в парке Анакостия",
+      "category": "nature",
+      "source": "Служба национальных парков США",
+      "url": "https://www.nps.gov/anac/planyourvisit/hours.htm",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-27",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-22",
+        "2026-11-28",
+        "2026-11-29",
+        "2026-12-05",
+        "2026-12-06",
+        "2026-12-12",
+        "2026-12-13",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ],
+      "park_code": "anac",
+      "note": "По субботам и воскресеньям площадка открыта 06:00–22:00."
+    },
+    {
+      "name": "Водные сады Кенилуэрт",
+      "category": "nature",
+      "source": "Служба национальных парков США",
+      "url": "https://www.nps.gov/keaq/planyourvisit/hours.htm",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-27",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-22",
+        "2026-11-28",
+        "2026-11-29",
+        "2026-12-05",
+        "2026-12-06",
+        "2026-12-12",
+        "2026-12-13",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ],
+      "park_code": "keaq",
+      "note": "По субботам и воскресеньям площадка открыта 08:00–16:00."
+    },
+    {
+      "name": "Дом-музей Бельмонт — Пол",
+      "category": "museums",
+      "source": "Служба национальных парков США",
+      "url": "https://www.nps.gov/bepa/planyourvisit/hours.htm",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-27",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-22",
+        "2026-11-28",
+        "2026-11-29",
+        "2026-12-05",
+        "2026-12-06",
+        "2026-12-12",
+        "2026-12-13",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ],
+      "park_code": "bepa",
+      "note": "По субботам и воскресеньям площадка открыта 10:00–17:00."
+    },
+    {
+      "name": "Мемориал Линкольна",
+      "category": "history",
+      "source": "Служба национальных парков США",
+      "url": "https://www.nps.gov/linc/planyourvisit/hours.htm",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-27",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-22",
+        "2026-11-28",
+        "2026-11-29",
+        "2026-12-05",
+        "2026-12-06",
+        "2026-12-12",
+        "2026-12-13",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ],
+      "park_code": "linc",
+      "note": "По субботам и воскресеньям площадка открыта круглосуточно."
+    },
+    {
+      "name": "Мемориал Томаса Джефферсона",
+      "category": "history",
+      "source": "Служба национальных парков США",
+      "url": "https://www.nps.gov/thje/planyourvisit/hours.htm",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-27",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-22",
+        "2026-11-28",
+        "2026-11-29",
+        "2026-12-05",
+        "2026-12-06",
+        "2026-12-12",
+        "2026-12-13",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ],
+      "park_code": "thje",
+      "note": "По субботам и воскресеньям площадка открыта круглосуточно."
+    }
+  ],
+  "SPI": [
+    {
+      "name": "Lincoln Home Visitor Center",
+      "category": "museums",
+      "source": "Служба национальных парков США",
+      "url": "https://www.nps.gov/liho/planyourvisit/basicinfo.htm",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-27",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-22",
+        "2026-11-28",
+        "2026-11-29",
+        "2026-12-05",
+        "2026-12-06",
+        "2026-12-12",
+        "2026-12-13",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ],
+      "park_code": "liho",
+      "note": "Выставка в центре для посетителей. Среди подтверждённых дат — 2026-11-21 и 2026-12-05."
+    }
+  ],
+  "CVG": [
+    {
+      "name": "Taft Education Center",
+      "category": "museums",
+      "source": "Служба национальных парков США",
+      "url": "https://www.nps.gov/thingstodo/explore-the-tec.htm",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-27",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-22",
+        "2026-11-28",
+        "2026-11-29",
+        "2026-12-05",
+        "2026-12-06",
+        "2026-12-12",
+        "2026-12-13",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ],
+      "park_code": "wiho",
+      "note": "Выставка в центре для посетителей. Среди подтверждённых дат — 2026-11-21 и 2026-12-05."
+    }
+  ],
+  "RIC": [
+    {
+      "name": "Chimborazo Medical Museum",
+      "category": "museums",
+      "source": "Служба национальных парков США",
+      "url": "https://www.nps.gov/rich/planyourvisit/visitorcenters.htm",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-27",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-22",
+        "2026-11-28",
+        "2026-11-29",
+        "2026-12-05",
+        "2026-12-06",
+        "2026-12-12",
+        "2026-12-13",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ],
+      "park_code": "rich",
+      "note": "Выставка в центре для посетителей. Среди подтверждённых дат — 2026-11-21 и 2026-12-05."
+    }
+  ],
+  "FAI": [
+    {
+      "name": "Fairbanks Alaska Public Lands Information Center",
+      "category": "museums",
+      "source": "Служба национальных парков США",
+      "url": "https://www.AlaskaCenters.gov",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-27",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-22",
+        "2026-11-28",
+        "2026-11-29",
+        "2026-12-05",
+        "2026-12-06",
+        "2026-12-12",
+        "2026-12-13",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ],
+      "park_code": "yuch",
+      "note": "Выставка в центре для посетителей. Среди подтверждённых дат — 2026-11-21 и 2026-12-05."
+    }
+  ],
+  "IST": [
+    {
+      "name": "Стамбульский музей современного искусства",
+      "category": "museums",
+      "source": "İstanbul Modern",
+      "url": "https://www.istanbulmodern.org/en/visit/museum",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "Галереи открыты по субботам и воскресеньям."
+    },
+    {
+      "name": "Музей Пера",
+      "category": "museums",
+      "source": "Pera Museum",
+      "url": "https://peramuseum.org/Home/Visit",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "В субботу музей открыт с 10 до 19 часов, в воскресенье — с 12 до 18 часов."
+    },
+    {
+      "name": "Дворец Топкапы",
+      "category": "history",
+      "source": "Управление национальных дворцов Турции",
+      "url": "https://www.millisaraylar.gov.tr/Lokasyon/2/Topkapi-Sarayi?culture=en",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "Дворец принимает посетителей в субботу и воскресенье. Выходной день — вторник."
+    },
+    {
+      "name": "Цистерна Базилика",
+      "category": "history",
+      "source": "Музей «Цистерна Базилика»",
+      "url": "https://yerebatansarnici.gov.tr/en/buy-ticket/",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "Подземное византийское водохранилище открыто для посетителей ежедневно."
+    },
+    {
+      "name": "Арборетум Ататюрка",
+      "category": "nature",
+      "source": "Министерство национального образования Турции",
+      "url": "https://okuldisiogrenme.eba.gov.tr/mekan-detay/ataturk-arboretumu-2712",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "В субботу и воскресенье арборетум в Сарыере открыт с 9 до 17 часов."
+    },
+    {
+      "name": "Ботанический сад Незахат Гёкйигит",
+      "category": "nature",
+      "source": "Nezahat Gökyiğit Botanik Bahçesi",
+      "url": "https://www.ngbb.org.tr/ziyaretci.html",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "У сада есть отдельные часы на ноябрь и декабрь. Он открыт в выходные, понедельник — день ухода за садом."
+    },
+    {
+      "name": "Баклава в кондитерской Karaköy Güllüoğlu",
+      "category": "food",
+      "source": "Karaköy Güllüoğlu",
+      "url": "https://www.karakoygulluoglu.com/sikca-sorulan-sorular",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "В субботу и воскресенье в кондитерскую можно прийти с 8 утра до часа ночи."
+    },
+    {
+      "name": "Кебаб в Şişli Kebap",
+      "category": "food",
+      "source": "© OpenStreetMap contributors · часы проверены 13 ноября",
+      "url": "https://www.openstreetmap.org/node/14371377601",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "У ресторана турецкой кухни указан ежедневный режим с 10 утра до 2 часов ночи. Дата проверки часов в карточке — 13 ноября 2026 года.",
+      "schedule_urls": [
+        "https://menum.co/SisliKebap"
+      ],
+      "source_checked": "2026-11-13"
+    },
+    {
+      "name": "Выступление в центре сценических искусств Zorlu PSM",
+      "category": "stage",
+      "source": "Zorlu Performans Sanatları Merkezi",
+      "url": "https://www.zorlupsm.com/etkinlikler",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-22",
+      "valid_until": "2026-12-05",
+      "note": "22 ноября проходит мюзикл «7 Kocalı Hürmüz», 5 декабря — концерт ASH с Евразийским филармоническим оркестром.",
+      "weekend_dates": [
+        "2026-11-22",
+        "2026-12-05"
+      ],
+      "schedule_urls": [
+        "https://www.zorlupsm.com/etkinlikler/7-kocali-hurmuz",
+        "https://www.zorlupsm.com/etkinlikler?date=2026-12-05"
+      ]
+    },
+    {
+      "name": "Концерт в джаз-клубе Nardis",
+      "category": "stage",
+      "source": "Nardis Jazz Club",
+      "url": "https://www.nardisjazz.com/en/",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-05",
+      "note": "21 ноября выступает квинтет Сибель Кёсе, 28 ноября — İpek Dinç Band, 5 декабря — квинтет Эврим Озшуджи.",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-28",
+        "2026-12-05"
+      ],
+      "schedule_urls": [
+        "https://www.nardisjazz.com/en/this-month/",
+        "https://www.nardisjazz.com/en/next-month/"
+      ]
+    }
+  ],
+  "SPN": [
+    {
+      "name": "Прогулка по American Memorial Park",
+      "category": "nature",
+      "source": "Служба национальных парков США",
+      "url": "https://www.nps.gov/amme/planyourvisit/hours.htm",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-27",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-22",
+        "2026-11-28",
+        "2026-11-29",
+        "2026-12-05",
+        "2026-12-06",
+        "2026-12-12",
+        "2026-12-13",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ],
+      "park_code": "amme",
+      "note": "По субботам и воскресеньям площадка открыта круглосуточно."
+    }
+  ],
+  "NYC": [
+    {
+      "name": "Музей мемориала African Burial Ground",
+      "category": "museums",
+      "source": "Служба национальных парков США",
+      "url": "https://www.nps.gov/afbg/planyourvisit/hours.htm",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-27",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-22",
+        "2026-11-28",
+        "2026-11-29",
+        "2026-12-05",
+        "2026-12-06",
+        "2026-12-12",
+        "2026-12-13",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ],
+      "park_code": "afbg",
+      "note": "По субботам и воскресеньям площадка открыта 10:00–16:00."
+    },
+    {
+      "name": "Форт Касл-Клинтон",
+      "category": "history",
+      "source": "Служба национальных парков США",
+      "url": "https://www.nps.gov/cacl/planyourvisit/hours.htm",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-27",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-22",
+        "2026-11-28",
+        "2026-11-29",
+        "2026-12-05",
+        "2026-12-06",
+        "2026-12-12",
+        "2026-12-13",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ],
+      "park_code": "cacl",
+      "note": "По субботам и воскресеньям площадка открыта 07:45–17:00."
+    },
+    {
+      "name": "Федерал-холл на Уолл-стрит",
+      "category": "history",
+      "source": "Служба национальных парков США",
+      "url": "https://www.nps.gov/feha/planyourvisit/hours.htm",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-27",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-22",
+        "2026-11-28",
+        "2026-11-29",
+        "2026-12-05",
+        "2026-12-06",
+        "2026-12-12",
+        "2026-12-13",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ],
+      "park_code": "feha",
+      "note": "По субботам и воскресеньям площадка открыта 10:00–16:00."
+    }
+  ],
+  "SAN": [
+    {
+      "name": "Национальный памятник Кабрильо",
+      "category": "history",
+      "source": "Служба национальных парков США",
+      "url": "https://www.nps.gov/cabr/planyourvisit/hours.htm",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-27",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-22",
+        "2026-11-28",
+        "2026-11-29",
+        "2026-12-05",
+        "2026-12-06",
+        "2026-12-12",
+        "2026-12-13",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ],
+      "park_code": "cabr",
+      "note": "По субботам и воскресеньям площадка открыта 09:00–17:00."
+    }
+  ],
+  "UST": [
+    {
+      "name": "Крепость Кастильо-де-Сан-Маркос",
+      "category": "history",
+      "source": "Служба национальных парков США",
+      "url": "https://www.nps.gov/casa/planyourvisit/hours.htm",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-27",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-22",
+        "2026-11-28",
+        "2026-11-29",
+        "2026-12-05",
+        "2026-12-06",
+        "2026-12-12",
+        "2026-12-13",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ],
+      "park_code": "casa",
+      "note": "По субботам и воскресеньям площадка открыта 09:00–17:00."
+    }
+  ],
+  "BWI": [
+    {
+      "name": "Форт Макгенри",
+      "category": "history",
+      "source": "Служба национальных парков США",
+      "url": "https://www.nps.gov/fomc/planyourvisit/hours.htm",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-27",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-22",
+        "2026-11-28",
+        "2026-11-29",
+        "2026-12-05",
+        "2026-12-06",
+        "2026-12-12",
+        "2026-12-13",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ],
+      "park_code": "fomc",
+      "note": "В выходные территория открыта до 17 часов. Продажа билетов для посещения звёздчатого форта заканчивается в 16 часов."
+    }
+  ],
+  "FSM": [
+    {
+      "name": "Историческая территория форта Смит",
+      "category": "history",
+      "source": "Служба национальных парков США",
+      "url": "https://www.nps.gov/fosm/planyourvisit/hours.htm",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-27",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-22",
+        "2026-11-28",
+        "2026-11-29",
+        "2026-12-05",
+        "2026-12-06",
+        "2026-12-12",
+        "2026-12-13",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ],
+      "park_code": "fosm",
+      "note": "По территории форта можно гулять ежедневно до 23 часов."
+    }
+  ],
+  "PHL": [
+    {
+      "name": "Прогулка по территории старой церкви Глория-Деи",
+      "category": "history",
+      "source": "Служба национальных парков США",
+      "url": "https://www.nps.gov/glde/planyourvisit/hours.htm",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-27",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-22",
+        "2026-11-28",
+        "2026-11-29",
+        "2026-12-05",
+        "2026-12-06",
+        "2026-12-12",
+        "2026-12-13",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ],
+      "park_code": "glde",
+      "note": "По субботам и воскресеньям площадка открыта 05:00–23:00."
+    },
+    {
+      "name": "Исторический парк Независимости",
+      "category": "history",
+      "source": "Служба национальных парков США",
+      "url": "https://www.nps.gov/inde/planyourvisit/hours.htm",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-27",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-22",
+        "2026-11-28",
+        "2026-11-29",
+        "2026-12-05",
+        "2026-12-06",
+        "2026-12-12",
+        "2026-12-13",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ],
+      "park_code": "inde",
+      "note": "По субботам и воскресеньям площадка открыта 09:00–17:00."
+    }
+  ],
+  "GSO": [
+    {
+      "name": "Поле сражения при Гилфорд-Кортхаус",
+      "category": "history",
+      "source": "Служба национальных парков США",
+      "url": "https://www.nps.gov/guco/planyourvisit/hours.htm",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-27",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-22",
+        "2026-11-28",
+        "2026-11-29",
+        "2026-12-05",
+        "2026-12-06",
+        "2026-12-12",
+        "2026-12-13",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ],
+      "park_code": "guco",
+      "note": "По субботам и воскресеньям площадка открыта 08:30–17:00."
+    }
+  ],
+  "MMU": [
+    {
+      "name": "Музей штаба Джорджа Вашингтона",
+      "category": "museums",
+      "source": "Служба национальных парков США",
+      "url": "https://www.nps.gov/morr/planyourvisit/hours.htm",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-27",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-22",
+        "2026-11-28",
+        "2026-11-29",
+        "2026-12-05",
+        "2026-12-06",
+        "2026-12-12",
+        "2026-12-13",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ],
+      "park_code": "morr",
+      "note": "Музей штаба Вашингтона открыт с четверга по понедельник с 9:30 до 16:30."
+    }
+  ],
+  "OKC": [
+    {
+      "name": "Мемориальный сад Оклахома-Сити",
+      "category": "history",
+      "source": "Служба национальных парков США",
+      "url": "https://www.nps.gov/okci/planyourvisit/hours.htm",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-27",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-22",
+        "2026-11-28",
+        "2026-11-29",
+        "2026-12-05",
+        "2026-12-06",
+        "2026-12-12",
+        "2026-12-13",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ],
+      "park_code": "okci",
+      "note": "По субботам и воскресеньям площадка открыта круглосуточно."
+    }
+  ],
+  "BRO": [
+    {
+      "name": "Поле сражения Пало-Альто",
+      "category": "history",
+      "source": "Служба национальных парков США",
+      "url": "https://www.nps.gov/paal/planyourvisit/hours.htm",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-27",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-22",
+        "2026-11-28",
+        "2026-11-29",
+        "2026-12-05",
+        "2026-12-06",
+        "2026-12-12",
+        "2026-12-13",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ],
+      "park_code": "paal",
+      "note": "По субботам и воскресеньям площадка открыта 08:00–17:00."
+    }
+  ],
+  "ABQ": [
+    {
+      "name": "Петроглифы в каньоне Бока-Негра",
+      "category": "history",
+      "source": "Служба национальных парков США",
+      "url": "https://www.nps.gov/petr/planyourvisit/hours.htm",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-27",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-22",
+        "2026-11-28",
+        "2026-11-29",
+        "2026-12-05",
+        "2026-12-06",
+        "2026-12-12",
+        "2026-12-13",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ],
+      "park_code": "petr",
+      "note": "На выходных доступны три короткие тропы к петроглифам в каньоне Бока-Негра."
+    }
+  ],
+  "SAT": [
+    {
+      "name": "Испанская миссия Сан-Хосе",
+      "category": "history",
+      "source": "Служба национальных парков США",
+      "url": "https://www.nps.gov/saan/planyourvisit/hours.htm",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-27",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-22",
+        "2026-11-28",
+        "2026-11-29",
+        "2026-12-05",
+        "2026-12-06",
+        "2026-12-12",
+        "2026-12-13",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ],
+      "park_code": "saan",
+      "note": "По субботам и воскресеньям площадка открыта 09:00–17:00."
+    }
+  ],
+  "SJU": [
+    {
+      "name": "Исторические укрепления Сан-Хуана",
+      "category": "history",
+      "source": "Служба национальных парков США",
+      "url": "https://www.nps.gov/saju/planyourvisit/hours.htm",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-27",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-22",
+        "2026-11-28",
+        "2026-11-29",
+        "2026-12-05",
+        "2026-12-06",
+        "2026-12-12",
+        "2026-12-13",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ],
+      "park_code": "saju",
+      "note": "Наружные укрепления и исторические форты принимают посетителей в выходные. Переход через сухой ров Эль-Морро частично закрыт."
+    }
+  ],
+  "SIT": [
+    {
+      "name": "Прогулка по тропам исторического парка Ситки",
+      "category": "nature",
+      "source": "Служба национальных парков США",
+      "url": "https://www.nps.gov/sitk/planyourvisit/hours.htm",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-27",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-22",
+        "2026-11-28",
+        "2026-11-29",
+        "2026-12-05",
+        "2026-12-06",
+        "2026-12-12",
+        "2026-12-13",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ],
+      "park_code": "sitk",
+      "note": "Тропы национального исторического парка открыты для дневных прогулок круглый год."
+    }
+  ],
+  "TUP": [
+    {
+      "name": "Национальное поле сражения в Тьюпело",
+      "category": "history",
+      "source": "Служба национальных парков США",
+      "url": "https://www.nps.gov/tupe/planyourvisit/hours.htm",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-27",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-22",
+        "2026-11-28",
+        "2026-11-29",
+        "2026-12-05",
+        "2026-12-06",
+        "2026-12-12",
+        "2026-12-13",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ],
+      "park_code": "tupe",
+      "note": "По субботам и воскресеньям площадка открыта от рассвета до заката."
+    }
+  ],
+  "ACT": [
+    {
+      "name": "Палеонтологический памятник Waco Mammoth",
+      "category": "nature",
+      "source": "Служба национальных парков США",
+      "url": "https://www.nps.gov/waco/planyourvisit/hours.htm",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-27",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-22",
+        "2026-11-28",
+        "2026-11-29",
+        "2026-12-05",
+        "2026-12-06",
+        "2026-12-12",
+        "2026-12-13",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ],
+      "park_code": "waco",
+      "note": "Территория открыта ежедневно с 9 до 17 часов. Для осмотра места раскопок нужен билет."
+    }
+  ],
+  "JAX": [
+    {
+      "name": "Прогулка по территории форта Каролин",
+      "category": "history",
+      "source": "Служба национальных парков США",
+      "url": "https://www.nps.gov/timu/planyourvisit/hours.htm",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-27",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-22",
+        "2026-11-28",
+        "2026-11-29",
+        "2026-12-05",
+        "2026-12-06",
+        "2026-12-12",
+        "2026-12-13",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ],
+      "park_code": "timu",
+      "note": "Территория форта Каролин открыта со среды по воскресенье с 9 до 17 часов."
+    }
+  ],
+  "BUF": [
+    {
+      "name": "Экскурсия по месту инаугурации Теодора Рузвельта",
+      "category": "history",
+      "source": "Служба национальных парков США",
+      "url": "https://www.nps.gov/thri/planyourvisit/hours.htm",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-27",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-22",
+        "2026-11-28",
+        "2026-11-29",
+        "2026-12-05",
+        "2026-12-06",
+        "2026-12-12",
+        "2026-12-13",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ],
+      "park_code": "thri",
+      "note": "Вход в дом с экскурсоводом. По субботам и воскресеньям экскурсии начинаются с 12:30."
+    }
+  ],
+  "TBS": [
+    {
+      "name": "Музей истории Тбилиси имени Иосеба Гришашвили",
+      "category": "museums",
+      "source": "Грузинский национальный музей",
+      "url": "https://museum.ge/index.php?lang=geo&lng=eng&m=350&museum=47",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "Экспозиция в бывшем караван-сарае на улице Сиони, 8. Музей открыт со вторника по воскресенье с 10:00 до 18:00, кроме официальных праздников."
+    },
+    {
+      "name": "Национальная галерея имени Димитрия Шеварднадзе",
+      "category": "museums",
+      "source": "Грузинский национальный музей",
+      "url": "https://museum.ge/index.php?lang=eng&lng=eng&m=350&museum=54",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "Галерея на проспекте Руставели, 11 открыта со вторника по воскресенье с 10:00 до 18:00, кроме официальных праздников."
+    },
+    {
+      "name": "Кафедральный собор Успения Девы Марии",
+      "category": "history",
+      "source": "Католический собор Успения Девы Марии в Тбилиси",
+      "url": "https://www.tbcathedral.ge/en/contact",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "Собор на улице Гии Абесадзе, 4 открыт для посещения в субботу с 10:00 до 19:00 и в воскресенье с 10:00 до 16:00."
+    },
+    {
+      "name": "Часовая башня Резо Габриадзе",
+      "category": "history",
+      "source": "Национальная администрация туризма Грузии",
+      "url": "https://georgia.travel/gabriadze-clock-tower",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "Башню можно осмотреть с улицы Шавтели. Ежедневно в 12:00 и 19:00 в окошке башни проходит кукольное представление.",
+      "schedule_urls": [
+        "https://gabriadze.com/about"
+      ]
+    },
+    {
+      "name": "Сад «Гардения Шеварднадзе»",
+      "category": "nature",
+      "source": "Национальная администрация туризма Грузии",
+      "url": "https://georgia.travel/gardenia-shevardnadze",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "С февраля по декабрь включительно сад принимает посетителей со вторника по воскресенье с 10:00 до 18:00."
+    },
+    {
+      "name": "Тбилисский зоологический парк",
+      "category": "nature",
+      "source": "Тбилисский зоопарк · раздел для посетителей",
+      "url": "https://zoo.ge/index.php?m=4",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "Зоопарк открыт ежедневно, включая выходные и праздники. С ноября до начала марта на странице для посетителей указаны часы с 10:00 до 19:00. Касса закрывается за час до окончания работы."
+    },
+    {
+      "name": "Грузинская кухня в Dariko",
+      "category": "food",
+      "source": "Ресторан Dariko",
+      "url": "https://dariko.ge/",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "На улице Пхови, 3 подают хинкали и аджарские хачапури. Ресторан работает ежедневно с 12:00 до 02:00."
+    },
+    {
+      "name": "Грузинская кухня в «Этно Цисквили»",
+      "category": "food",
+      "source": "Ресторан Ethno Tsiskvili",
+      "url": "https://tsiskvili.ge/ethno-tsiskvili/en",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "Грузинская кухня на улице Акакия Белиашвили, 99. Ресторан работает с 16:00 до 01:00, кухня принимает заказы до 23:00.",
+      "schedule_urls": [
+        "https://tsiskvili.ge/ethno-tsiskvili-menu/en"
+      ]
+    },
+    {
+      "name": "Цирк-шапито STAR в парке Глдани",
+      "category": "stage",
+      "source": "STAR Circus Georgia · афиша организатора",
+      "url": "https://starcircus.ge/eng/tbilisi",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-06",
+      "note": "Семейное цирковое представление на улице Ильи Векуа, 40. В афише есть показы в 17:00 по субботам и воскресеньям с 21 ноября по 6 декабря.",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-22",
+        "2026-11-28",
+        "2026-11-29",
+        "2026-12-05",
+        "2026-12-06"
+      ],
+      "schedule_urls": [
+        "https://yolo.ge/en/poster/star-circus-georgia34565432"
+      ]
+    },
+    {
+      "name": "Концерты в зале имени Вахтанга Саларидзе",
+      "category": "stage",
+      "source": "Red Events Georgia · афиша организатора",
+      "url": "https://redevents.ge/en",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-28",
+      "valid_until": "2026-12-26",
+      "note": "28 ноября в 18:00 — музыка Моцарта, 12 декабря в 20:00 — музыка из «Гарри Поттера», 19 и 26 декабря в 20:00 — «Зимние сказки». Все концерты проходят в одном зале.",
+      "weekend_dates": [
+        "2026-11-28",
+        "2026-12-12",
+        "2026-12-19",
+        "2026-12-26"
+      ],
+      "schedule_urls": [
+        "https://redevents.ge/en/event/123-v-a-mocart-malenkaja-nochnaja-serenada-pri-svechah-mystery-ensemble.html?date=2026-11-28+18%3A00%3A00",
+        "https://redevents.ge/en/event/103-garri-potter-mystery-ensemble-multimediinyi-koncert.html?date=2026-12-12+20%3A00%3A00",
+        "https://redevents.ge/en/event/102-zimnie-skazki-pri-svechah-schelkunchik-lebedinoe-ozero-spjaschaja-krasavica-mystery-ensemble.html?date=2026-12-19+20%3A00%3A00",
+        "https://redevents.ge/en/event/102-zimnie-skazki-pri-svechah-schelkunchik-lebedinoe-ozero-spjaschaja-krasavica-mystery-ensemble.html?date=2026-12-26+20%3A00%3A00"
+      ]
+    }
+  ],
+  "EVN": [
+    {
+      "name": "Музей истории Армении",
+      "category": "museums",
+      "source": "Музей истории Армении",
+      "url": "https://historymuseum.am/en/hours-and-admission/",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "В субботу музей открыт с 11:00 до 18:00, в воскресенье с 11:00 до 17:00. Последний вход за 45 минут до закрытия. В государственные праздники музей закрыт."
+    },
+    {
+      "name": "Матенадаран — музей древних рукописей",
+      "category": "museums",
+      "source": "Матенадаран",
+      "url": "https://matenadaran.am/en/matenadaran/museum-and-gallery/working-hours-and-tickets/",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "Коллекцию рукописей на проспекте Маштоца можно посмотреть в субботу с 10:00 до 17:50. Воскресенье — выходной."
+    },
+    {
+      "name": "Архитектурный комплекс «Каскад»",
+      "category": "history",
+      "source": "Центр искусств Гафесчяна",
+      "url": "https://www.cmf.am/en/visit-cca",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "Галерея с эскалаторами внутри монументальной лестницы открыта ежедневно с 08:00 до 20:00. Вход со стороны улицы Таманяна."
+    },
+    {
+      "name": "Крепость Эребуни на холме Арин-Берд",
+      "category": "history",
+      "source": "Мэрия Еревана",
+      "url": "https://www.yerevan.am/ru/allmuseums/museums/",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "Мэрия указывает часы заповедника в субботу и воскресенье с 10:30 до 17:00. Есть экскурсия по музею и урартской крепости. Адрес для посетителей — улица Эребуни, 38."
+    },
+    {
+      "name": "Парк Влюблённых",
+      "category": "nature",
+      "source": "Boghossian Gardens Foundation",
+      "url": "https://www.bg.am/en/garden-rules",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "У главных ворот и входа со стороны метро в ноябре можно пройти с 06:00 до 02:00, в декабре с 07:00 до 01:00. Такой режим действует и по выходным."
+    },
+    {
+      "name": "Ереванский зоопарк",
+      "category": "nature",
+      "source": "Ереванский зоопарк",
+      "url": "https://zoo.am/working-hours/",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "На прогулку по зоопарку в выходные можно прийти с 10:00. Касса по обычному расписанию работает до 19:00."
+    },
+    {
+      "name": "Ресторан «Долмама»",
+      "category": "food",
+      "source": "Ресторан Dolmama",
+      "url": "https://dolmama.am/",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "В этом ресторане современной армянской кухни подают долму. По субботам и воскресеньям он открыт с 11:00 до 23:30."
+    },
+    {
+      "name": "Ресторан «Харперт»",
+      "category": "food",
+      "source": "Tufenkian Historic Yerevan",
+      "url": "https://historic-yerevan.tufenkianheritage.com/ru/restaurants/tufenkian-kharpert-restaurant/",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-18",
+      "valid_until": "2026-12-31",
+      "note": "Попробовать блюда западноармянской кухни по основному меню можно с 16:00 до 22:00, включая выходные."
+    },
+    {
+      "name": "Армянский национальный театр оперы и балета",
+      "category": "stage",
+      "source": "Армянский национальный театр оперы и балета",
+      "url": "https://opera.am/en/repertoire",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-21",
+      "valid_until": "2026-12-27",
+      "note": "Балет-оратория «Давид Сасунский» идёт 28 и 29 ноября и 12 декабря в 18:00. На 19 и 20 декабря в 18:00 запланирован «Щелкунчик».",
+      "weekend_dates": [
+        "2026-11-21",
+        "2026-11-22",
+        "2026-11-28",
+        "2026-11-29",
+        "2026-12-05",
+        "2026-12-06",
+        "2026-12-12",
+        "2026-12-13",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ]
+    },
+    {
+      "name": "Ереванский русский драматический театр имени Станиславского",
+      "category": "stage",
+      "source": "Русский театр имени Станиславского",
+      "url": "https://stanislavski.am/ru/schedule",
+      "months": [
+        11,
+        12
+      ],
+      "checked": "2026-11-18",
+      "valid_from": "2026-11-29",
+      "valid_until": "2026-12-27",
+      "note": "29 ноября в 19:00 на малой сцене идёт «Тумач Романтик», 5 декабря в 19:00 на основной сцене — «Три сестры». Оба спектакля на русском языке.",
+      "weekend_dates": [
+        "2026-11-29",
+        "2026-12-05",
+        "2026-12-12",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ]
     }
   ]
 }

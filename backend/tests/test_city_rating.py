@@ -140,7 +140,51 @@ def test_catalogue_comparison_search_pagination_and_partial_city():
         partial = client.get("/season/compare/?q=Абакан").text
         assert "направлений: 1" in partial and partial.count("Данные: 2 из 4") == 2
         assert "/season/ABA?month=12&amp;year=2026#city-rating" in partial
-        foreign = client.get("/season/IST?month=12&year=2026").text
+        foreign = client.get("/season/DXB?month=12&year=2026").text
         panel = foreign.split('id="city-weekend-comparison"', 1)[1].split("</section>", 1)[0]
         assert panel.count('<th scope="row">') == 4
-        assert "Стамбул" in panel and panel.count("Данные: 1 из 4") == 2
+        assert "Дубай" in panel and panel.count("Данные: 1 из 4") == 2
+
+def test_international_prices_have_sources_and_expire():
+    part = rating.report("PAR", 12, 2026, TODAY)["components"][1]
+    assert part["score"] is None and "20 городов" in " ".join(part["missing"])
+    assert any("2,05 €" in item["note"] and "ratp.fr" in item["url"] for item in part["sources"])
+    expired = rating.report("PAR", 12, 2027, TODAY)["components"][1]
+    assert all("ratp.fr" not in item["url"] for item in expired["sources"])
+
+
+@pytest.mark.parametrize(("code", "november", "december"), [("GOJ", 7.2, 6.9), ("KUF", 7.6, 7.2), ("SVX", 7.3, 7.0)])
+def test_new_complete_weekend_ratings(code, november, december):
+    for month, expected in [(11, november), (12, december)]:
+        result = rating.report(code, month, 2026, TODAY)
+        assert (result["available"], result["score"]) == (4, expected)
+        assert len(result["components"][0]["sources"]) == 10
+
+
+def test_world_directory_region_uses_catalogue_country():
+    with TestClient(create_app(now=lambda: datetime(2026, 11, 18, tzinfo=UTC))) as client:
+        page = client.get("/season/compare/?region=world").text
+        foreign_count = sum(city["country_code"] != "RU" for city in rating.season.CITIES.values())
+        assert f"направлений: {foreign_count}" in page and "region=world" in page
+        assert "Городов на этой странице нет" in client.get("/season/compare/?q=Казань&region=world").text
+        assert client.get("/season/compare/?region=unknown").status_code == 422
+
+
+def test_published_observations_match_catalogue_dates_and_source_links():
+    places = rating.load_snapshot("city_rating_places.json")
+    assert set(places) <= rating.season.CITIES.keys()
+    for records in places.values():
+        for venue in records:
+            assert venue["category"] in rating.CATEGORIES
+            assert venue["note"] and venue["url"].startswith("https://")
+            assert venue["checked"] <= venue["valid_until"]
+            for day in venue.get("weekend_dates", []):
+                assert date.fromisoformat(day).weekday() in (5, 6)
+                assert int(day[5:7]) in venue["months"]
+                assert venue["valid_from"] <= day <= venue["valid_until"]
+    for code in rating.WORLD_PRICES["cities"]:
+        assert rating.season.CITIES[code]["country_code"] != "RU"
+    for month in (11, 12):
+        istanbul = rating.report("IST", month, 2026, TODAY)
+        assert (istanbul["available"], istanbul["score"]) == (3, None)
+        assert [c["key"] for c in istanbul["components"] if c["score"] is None] == ["cost"]

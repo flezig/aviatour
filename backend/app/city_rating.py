@@ -147,7 +147,7 @@ def survey_cost(city, year, month, today):
     return part
 
 
-def costs(evidence, month, year, today, survey_city):
+def costs(evidence, month, year, today, survey_city, observations):
     detail = "Корзина на человека: две ночи, четыре приёма пищи и четыре поездки по городу."
     # Reviewed price sets share one currency, collection date and comparison cohort.
     sample = evidence.get("baskets", {}).get(f"{year:04}-{month:02}", {})
@@ -160,8 +160,8 @@ def costs(evidence, month, year, today, survey_city):
              if len(prices) >= 10 and all(price > 0 for price in prices.values())]
     dates = sample.get("hotel_weekends", {})
     if dates:
-        observations = [f"{d}: {number(median(prices.values()))} ₽ ({len(prices)} гостиниц)" for d, prices in sorted(dates.items()) if prices]
-        detail += f' Цены на {sample["as_of"]}. Медианы за две ночи в отдельном стандартном номере без питания, заезды ' + ", ".join(observations) + "."
+        hotel_observations = [f"{d}: {number(median(prices.values()))} ₽ ({len(prices)} гостиниц)" for d, prices in sorted(dates.items()) if prices]
+        detail += f' Цены на {sample["as_of"]}. Медианы за две ночи в отдельном стандартном номере без питания, заезды ' + ", ".join(hotel_observations) + "."
     if sample.get("fees_confirmed") is False:
         missing.append("Подтверждение всех обязательных сборов в цене номера.")
     if len(stays) < 3:
@@ -208,6 +208,18 @@ def costs(evidence, month, year, today, survey_city):
             survey["trip_detail"] = detail + (" Включение всех обязательных сборов продавец отдельно не подтвердил." if dates and sample.get("fees_confirmed") is False else "")
         survey["sources"].extend(links)
         return survey
+    if observations and score is None and applicable(WORLD_PRICES, month, year, today):
+        kinds = {obs["kind"] for obs in observations}
+        part["detail"] = (f"Опубликованные цены и тарифы в местной валюте. Проверено {WORLD_PRICES['checked']}. "
+                          "Условия и даты приведены у каждого источника.")
+        part["sources"].extend(dict(source(obs["label"], obs["url"]), note=obs["detail"]) for obs in observations)
+        part["missing"] = [
+            "Нужны сопоставимые городские цены на проживание одного человека в гостинице 3★ и на обычный обед.",
+            "Нужна полная корзина и сопоставимая группа минимум из 20 городов за тот же период.",
+        ]
+        if "bus" not in kinds:
+            part["missing"].append("Нужен подтверждённый городской тариф.")
+        part["gap"] = "Есть отдельные цены. Не хватает сопоставимых данных по жилью и обедам."
     return part
 
 
@@ -271,7 +283,8 @@ def report(code, month, year, today):
     evidence = EVIDENCE.get(code, {})
     year = target_year(month, year, today)
     components = [activities(code, evidence, month, year, today),
-                  costs(evidence, month, year, today, SURVEY_CITIES.get(code)), climate(code, month),
+                  costs(evidence, month, year, today, SURVEY_CITIES.get(code),
+                        WORLD_PRICES["cities"].get(code, {}).get("observations", [])), climate(code, month),
                   mobility(ROUTES.get(code), month, year, today)]
     score = available_score(components)
     for c in components:
@@ -358,9 +371,14 @@ def city_comparison_html(data, today, origin, other_month):
             '<p><a href="/season/compare/">Сравнить другие города</a></p></section>')
 
 
-def comparison_directory(query, page, today):
+def comparison_directory(query, page, today, region="all"):
     index = coverage_index(2026, today)
     codes = season.matching_codes(query)
+    if region in ("ru", "world"):
+        codes = [code for code in codes if (season.CITIES[code]["country_code"] == "RU") == (region == "ru")]
+    complete = sum(index[code][10:12] == "44" for code in codes)
+    regions = (("all", "Все страны"), ("ru", "Россия"), ("world", "Зарубежные направления"))
+    options = "".join(f'<option value="{key}"{" selected" if key == region else ""}>{label}</option>' for key, label in regions)
     codes.sort(key=lambda c: (-min(int(index[c][10]), int(index[c][11])), season.CITIES[c]["city"], c))
     page_size = 40
     start = (page - 1) * page_size
@@ -379,19 +397,20 @@ def comparison_directory(query, page, today):
                     label = "Проверить оценку"
             href = season.link(code, month, year=2026) + "#city-rating"
             cells.append(f'<td><a href="{esc(href)}">{esc(label)}</a></td>')
-        rows.append(f'<tr><th scope="row">{esc(city["city"])} <small>· {esc(code)}</small></th>{"".join(cells)}</tr>')
+        rows.append(f'<tr><th scope="row">{esc(city["city"])} <small>· {esc(city["country"])} · {esc(code)}</small></th>{"".join(cells)}</tr>')
     navigation = []
     for target, label in ((page - 1, "Назад"), (page + 1, "Дальше")):
         if 0 < target and (target - 1) * page_size < len(codes):
-            href = "/season/compare/?" + urlencode({"q": query, "page": target})
+            href = "/season/compare/?" + urlencode({"q": query, "region": region, "page": target})
             navigation.append(f'<a href="{esc(href)}">{label}</a>')
     title = "Сравнение городов на выходные"
-    table = (f'<div class="rating-comparison rating-comparison-scroll"><table><caption>Ноябрь и декабрь 2026 · направлений: {len(codes)}</caption>'
+    table = (f'<div class="rating-comparison rating-comparison-scroll"><table><caption>Ноябрь и декабрь 2026 · направлений: {len(codes)} · с четырьмя показателями за оба месяца: {complete}</caption>'
              '<thead><tr><th scope="col">Город</th><th scope="col">Ноябрь</th><th scope="col">Декабрь</th></tr></thead>'
              f'<tbody>{"".join(rows)}</tbody></table></div>') if rows else "<p>Городов на этой странице нет.</p>"
     body = (f'<header class="page-head"><h1>{title}</h1><p>Сначала города, где собраны все четыре показателя.</p></header>'
             '<form class="season-find" action="/season/compare/"><label>Город или код аэропорта'
             f'<input type="search" name="q" maxlength="100" value="{esc(query)}" placeholder="Например, Казань или DXB"></label>'
+            f'<label>Где<select name="region">{options}</select></label>'
             '<button class="btn-inline" type="submit">Найти</button></form>'
             + table + '<nav aria-label="Страницы сравнения">' + " · ".join(navigation) + '</nav>')
     return season.layout(title, "Рейтинг городов за ноябрь и декабрь 2026 года.", "/season/compare/",
@@ -453,6 +472,7 @@ for city_code, places in load_snapshot("city_rating_places.json").items():
     EVIDENCE.setdefault(city_code, {}).setdefault("activities", []).extend(places)
 ROUTES = load_snapshot("city_rating_routes.json")
 PRICES = load_snapshot("city_rating_prices.json")
+WORLD_PRICES = load_snapshot("city_rating_world_prices.json")
 SURVEY_RATES = {**PRICES["partial_cities"], **PRICES["additional_cities"], **PRICES["cities"]}
 SURVEY_CITIES = {
     code: city["city"] for code, city in season.CITIES.items()

@@ -815,4 +815,5 @@ a.month:hover .month-bar rect { fill: var(--cobalt); }
 .rating-comparison caption { text-align: left; padding: .75rem 0; }
 .rating-comparison th, .rating-comparison td { padding: .35rem .5rem; border-bottom: 1px solid var(--line); text-align: left; }
 .rating-comparison td { white-space: nowrap; }
+#city-weekend-comparison th, #city-weekend-comparison td { white-space: normal; overflow-wrap: anywhere; }
 .rating-comparison tr > :last-child { text-align: right; font-variant-numeric: tabular-nums; }

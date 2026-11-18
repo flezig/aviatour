@@ -460,8 +460,9 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
                             headers={'Cache-Control': 'public, max-age=60, s-maxage=600'})
 
     @app.get('/season/compare/', response_class=HTMLResponse)
-    async def city_comparison(q: str = Query('', max_length=100), page: int = Query(1, ge=1, le=10000)):
-        return HTMLResponse(city_rating.comparison_directory(q, page, now().date()), headers={'Cache-Control': page_cache})
+    async def city_comparison(q: str = Query('', max_length=100), page: int = Query(1, ge=1, le=10000),
+                              region: str = Query('all', pattern='^(all|ru|world)$')):
+        return HTMLResponse(city_rating.comparison_directory(q, page, now().date(), region), headers={'Cache-Control': page_cache})
 
     @app.get('/season/{code}', response_class=HTMLResponse)
     async def season_city(code: str, month: int | None = Query(None, ge=1, le=12), mode: str = '',
