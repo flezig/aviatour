@@ -704,7 +704,63 @@ a.month:hover .month-bar rect { fill: var(--cobalt); }
 .symbol-bank { position: absolute; overflow: hidden; pointer-events: none; }
 
 /* Сезонная страница города и ссылки из билетов. */
-.season-link { position: relative; z-index: 2; display: inline-flex; align-items: center; align-self: start; justify-self: start; min-height: 32px; color: var(--accent, #2547be); font-size: var(--fs-cap); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; pointer-events: auto; }
+/* The badge stays above the card's stretched link. Its details open in the browser's
+   top layer, including from clipped ticket stubs, horizontal strips and modal dialogs. */
+.city-rating {
+  position: relative; z-index: 2; display: inline-flex; align-items: center; align-self: start; justify-self: start;
+  gap: 7px; width: fit-content; max-width: 100%; min-height: var(--tap); margin: 3px 0; padding: 5px 10px;
+  border: 1px solid #cfdaff; border-radius: 8px; background: #f6f8ff; color: var(--cobalt);
+  text-decoration: none; text-align: left; pointer-events: auto; cursor: pointer;
+}
+.city-rating:is(:hover, [aria-expanded="true"]) { background: #e9eeff; border-color: #a9b9f5; }
+.city-rating > .icon { flex: none; width: 13px; height: 13px; }
+.city-rating .icon:last-child { width: 14px; height: 14px; }
+.city-rating[aria-expanded="true"] .icon:last-child { transform: rotate(180deg); }
+.city-rating-label { font: 800 13px/1.15 var(--f-head); }
+.city-rating-value { font: 700 13px/1.15 var(--f-mono); letter-spacing: -.06em; white-space: nowrap; }
+.city-rating-value:has(small) { font-size: 19px; }
+.city-rating-value small, .city-rating-popover strong small { display: inline; margin-left: 2px; color: inherit; font-size: 11px; }
+:is(.tile:not(.tile--pass), .city-grid) .city-rating { gap: 4px; padding-inline: 6px; }
+:is(.tile:not(.tile--pass), .city-grid) .city-rating-label { font-size: 12px; }
+.scenario-item > .city-rating { margin: 4px 12px 12px; }
+.city-rating-popover {
+  position: fixed; inset: auto; margin: 0; width: min(420px, calc(100vw - 16px)); max-width: none;
+  padding: 16px; border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--sh-sheet);
+  background: var(--card); color: var(--ink); font: 400 14px/1.4 var(--f-text); text-align: left;
+  pointer-events: auto; overflow: auto; overscroll-behavior: contain;
+}
+.city-rating-popover:popover-open { display: flex; flex-direction: column; gap: 12px; }
+.city-rating-popover > header { display: flex; justify-content: space-between; align-items: start; gap: 8px; }
+.city-rating-popover header h2 { margin: 0; color: var(--ink); font: 800 17px/1.2 var(--f-head); }
+.city-rating-popover header p { margin: 3px 0 0; color: var(--ink-2); font: 400 13px/1.4 var(--f-text); }
+.city-rating-popover header strong { color: var(--cobalt); font: 700 18px/1.3 var(--f-mono); white-space: nowrap; }
+.city-rating-criteria { overflow: auto; overscroll-behavior: contain; min-height: 0; }
+.city-rating-criteria table { width: 100%; margin: 0; border-collapse: collapse; text-align: left; }
+.city-rating-criteria :is(th, td) { padding: 7px 0; vertical-align: top; }
+.city-rating-criteria thead th { padding-top: 0; color: var(--ink-2); font-size: 12px; font-weight: 400; }
+.city-rating-criteria tbody tr { border-top: 1px solid var(--line); }
+.city-rating-criteria tbody th { font: 600 14px/1.35 var(--f-text); overflow-wrap: anywhere; }
+.city-rating-criteria th small { display: block; margin-top: 2px; color: var(--ink-2); font: 400 12px/1.4 var(--f-text); }
+.city-rating-criteria details { margin-top: 3px; color: var(--ink-2); font: 400 12px/1.4 var(--f-text); }
+.city-rating-criteria summary { width: fit-content; color: var(--cobalt); cursor: pointer; }
+.city-rating-criteria details p { margin: 6px 0 0; }
+.city-rating-gaps { border-top: 1px solid var(--line); padding-top: 12px; }
+.city-rating-gaps h3 { margin: 0; font: 800 14px/1.35 var(--f-head); }
+.city-rating-gaps dl { margin: 6px 0 0; }
+.city-rating-gaps dt { margin-top: 6px; font-weight: 600; }
+.city-rating-gaps dd { margin: 0; color: var(--ink-2); font: 400 13px/1.4 var(--f-text); }
+.city-rating-criteria :is(th, td):not(:first-child) { padding-left: 10px; text-align: right; }
+.city-rating-criteria td { font: 500 12px/1.6 var(--f-mono); white-space: nowrap; }
+.city-rating-criteria td:last-child { color: var(--ink-2); }
+.city-rating-popover .city-rating-notice { margin: 0 0 10px; color: var(--ink-2); font-size: 13px; }
+.city-rating-popover a { color: var(--cobalt); text-underline-offset: 2px; }
+.city-rating-popover footer { padding: 0; margin: 0; background: transparent; }
+.city-rating-popover footer a { display: inline-flex; align-items: center; gap: 4px; min-height: 32px; font-weight: 600; }
+.city-rating-popover footer .icon { width: 14px; height: 14px; }
+.city-rating-report dl { display: grid; gap: 12px; margin: 16px 0; }
+.city-rating-report dl > div { padding-top: 12px; border-top: 1px solid var(--line); }
+.city-rating-report dt { font-weight: 600; }
+.city-rating-report dd { margin: 3px 0 0; color: var(--ink-2); }
 .season-tabs, .season-mode { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 .season-tabs a, .season-mode a { display: inline-flex; align-items: center; min-height: 42px; padding: 7px 14px; border-radius: 10px; text-decoration: none; color: var(--ink-2); }
 .season-tabs a[aria-current], .season-mode a[aria-current] { background: var(--ink); color: white; }
@@ -737,8 +793,10 @@ a.month:hover .month-bar rect { fill: var(--cobalt); }
 .season-method summary { cursor:pointer; font-weight:700; }
 .season-method p { margin:12px 0 0; max-width:76ch; }
 .season-directory { list-style:none; padding:0; }
-.season-directory a { display:flex; justify-content:space-between; align-items:center; gap:8px; padding:12px 16px; color:var(--ink); background:var(--card); border-radius:10px; text-decoration:none; }
-.season-directory small { display:block; }
+.season-directory li { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 4px 12px; padding: 8px 12px; background: var(--card); border-radius: 10px; }
+.season-directory .season-city-link { flex: 1 1 auto; display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: var(--tap); color: var(--ink); text-decoration: none; }
+.season-directory .season-city-link:hover { text-decoration: underline; }
+.season-directory .season-city-link small { display: block; }
 .season-find { display:flex; align-items:end; gap:12px; margin-bottom:20px; }
 .season-find label { display:grid; gap:4px; }
 .season-find input,.season-find select { font:inherit; color:var(--ink); min-height:44px; border:1px solid var(--line); border-radius:8px; background:var(--card); padding:4px 10px; min-width:0; }

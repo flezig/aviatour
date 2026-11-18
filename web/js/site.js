@@ -1,4 +1,5 @@
 // Текстовые страницы: Метрика с согласием, блок «Кто мы», источники фото, оператор на странице конфиденциальности.
+import './lib/city-rating.js';
 import './lib/measure.js';
 import { mountSky } from './lib/sky.js';
 import { esc } from './lib/ui.js';

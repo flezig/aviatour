@@ -2,7 +2,7 @@
 import { $, esc, icon, adMark } from './lib/ui.js';
 import { DEFAULT_ZONE, localZone, zoned, fmtDate, fmtDay, fmtTime, fmtMoney, fmtRange, monthLabel, months, defaultMonth, addDays, duration, daysLabel, nightsLabel, countLabel } from './lib/format.js';
 import { snapshot, tripPath, savedTrips, firstPrompt, saveTrip, tripDates } from './lib/trip.js';
-import { seasonLink, loadSeasonScores } from './lib/season-link.js';
+import { cityRating } from './lib/city-rating.js';
 import { partnerLink } from './lib/links.js';
 import { goal } from './lib/measure.js';
 import { currentOrigin, saveOrigin } from './lib/origin.js';
@@ -207,9 +207,11 @@ const receivedLabel = (iso) => { const date = new Date(iso); return `${fmtDay(da
 
 const favButton = (offer) => `<button type="button" class="fav" data-fav="${esc(offer.id)}" aria-pressed="${state.favs.has(offer.id)}" aria-label="В избранное: ${esc(offer.city)}">${icon('heart')}</button>`;
 // Карточка отвечает на три вопроса: куда, сколько, когда. Время рейсов и подробности — в карточке поездки.
-function offerSeason(offer) {
-  const x = facts(offer), month = zoned(x.arr ?? x.dep, offer.destination_timezone).month;
-  return seasonLink(offer.city_code, month, offer.origin_airport);
+function offerRating(offer) {
+  const x = facts(offer), date = zoned(x.arr ?? x.dep, offer.destination_timezone);
+  const query = state.view === 'results' && state.performed ? state.performed : state.query;
+  const all = query.originCity === offer.origin_city_code ? query.originCity : null;
+  return cityRating(offer.city_code, date, offer.origin_airport, offer.city, all);
 }
 function offerCard(offer) {
   const x = facts(offer), hint = longer(offer), guide = state.guides[offer.city_code];
@@ -223,7 +225,7 @@ function offerCard(offer) {
       <p class="offer-dates">${esc(fmtRange(x.dep, x.ret, offer.origin_timezone, offer.destination_timezone))}, ${esc(stayLabel(offer))}</p>
       <p class="offer-meta">${x.direct ? 'прямые' : 'с пересадками'} · ${carrier(offer)}</p>
       ${levelTag(offer)}
-      ${offerSeason(offer)}
+      ${offerRating(offer)}
       ${guide ? `<p class="offer-about">${esc(guide.summary)}</p>` : ''}
       ${hint ? `<p class="offer-hint">+${esc(daysLabel(hint.days))} на месте — на ${esc(fmtMoney(hint.saving))} дешевле</p>` : ''}
     </div>
@@ -405,7 +407,7 @@ function openDetail(offer) {
   $('detailBody').innerHTML = `<div class="detail">
     <div class="stamp stamp--wide">${photo(offer.city_code, favButton(offer), true)}</div>
     <div class="detail-head"><h2>${esc(offer.city)}</h2><p class="caption">${esc(offer.country ?? '')}</p></div>
-    ${offerSeason(offer)}
+    ${offerRating(offer)}
     ${state.cityPages.has(offer.city_code) ? `<a class="btn-inline city-link" href="/city/${esc(state.cityPages.get(offer.city_code))}">Когда лететь дешевле и где жить${icon('arrow-right')}</a>` : ''}
     ${past ? '<p class="caption">Даты прошли. Выполните новый поиск.</p>' : ''}
     <article class="pass">
@@ -530,7 +532,7 @@ function passTile(offer, row) {
     <div class="pass-stub">
       <div class="tile-price-row"><p class="pass-price">${esc(fmtMoney(offer.price_minor))}</p>${levelTag(offer)}${favButton(offer).replace('class="fav"', 'class="fav fav--inline"')}</div>
       ${level && level.diff < 0 ? `<p class="caption">${esc(hotLine(daysFromToday(offer), level.diff, level.month))}</p>` : ''}
-      ${offerSeason(offer)}
+      ${offerRating(offer)}
       <p class="caption">${x.direct ? 'прямые' : 'с пересадками'} · ${carrier(offer)}</p>
     </div></div>${openButton(offer, row)}</article>`;
 }
@@ -543,7 +545,7 @@ function stampTile(offer, row, note = '') {
       <h3 class="tile-city">${esc(offer.city)}</h3>
       <div class="tile-price-row"><b class="tile-price">${esc(fmtMoney(offer.price_minor))}</b>${levelTag(offer)}</div>
       <p class="tile-dates">${esc(fmtRange(x.dep, x.ret, offer.origin_timezone, offer.destination_timezone))}, ${esc(stayLabel(offer))}</p>
-      ${offerSeason(offer)}
+      ${offerRating(offer)}
       ${note ? `<p class="tile-note">${note}</p>` : ''}
     </div>${openButton(offer, row)}</article>`;
 }
@@ -1125,7 +1127,6 @@ document.fonts?.ready.then(fitHero);
   }).catch(() => {});
   fetch('/data/hotel-locations.json').then((response) => response.ok ? response.json() : {}).then((hotels) => { state.hotels = hotels; }).catch(() => {});
   fetch('/data/origins.json').then((response) => response.ok ? response.json() : null).then((data) => { for (const origin of data?.cities ?? []) state.fromNames.set(origin.code, origin.from); renderForm(); }).catch(() => {});
-  loadSeasonScores();
   fetch('/data/cities.json').then((response) => response.ok ? response.json() : null).then((data) => { state.cityPages = new Map((data?.cities ?? []).map((city) => [city.code, city.slug])); }).catch(() => {});
   fetch('/data/city-guides.json').then((response) => response.ok ? response.json() : {}).then((guides) => { state.guides = guides; if (state.status === 'done') renderResults(); }).catch(() => {});
   const wantFav = location.hash === '#fav';

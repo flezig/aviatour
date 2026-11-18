@@ -1,5 +1,6 @@
 // Страница города (готовый HTML с сервера, цены из Москвы): цены из города посетителя, выбор города вылета,
 // время цен по часам посетителя, пометки «Реклама» со сведениями из config.js, цели Метрики.
+import './lib/city-rating.js';
 import { $, adMark } from './lib/ui.js';
 import { mountSky } from './lib/sky.js';
 import { goal } from './lib/measure.js';

@@ -22,7 +22,7 @@ from .runtime import TTLCache, RateLimiter
 from .settings import Settings
 from .upstream import Travelpayouts
 from .rules import matches, safe_search_url, safe_hotel_url, safe_stay_url, safe_tour_url, longer_stays
-from . import city_pages, scenario_pages, season_pages, showcase
+from . import city_pages, city_rating, scenario_pages, season_pages, showcase
 from .regions import includes, REGION_CITIES
 from .rating import evaluate, round_int
 from .rating_sources import RatingSources, load_reviewed_data
@@ -442,8 +442,26 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
         current = month or now().astimezone(ZoneInfo('Europe/Moscow')).month
         return HTMLResponse(season_pages.directory(catalog, current, q), headers={'Cache-Control': page_cache})
 
+    async def monthly_city_rating(code, month, year):
+        data = city_rating.report(code, month, year, now().date())
+        return await city_rating.check_advice(data, app.state.city_insights)
+
+    @app.get('/api/v1/city-rating-index')
+    async def rating_index(year: int | None = Query(None, ge=2000, le=2100)):
+        return JSONResponse(city_rating.coverage_index(year, now().date()),
+                            headers={'Cache-Control': page_cache})
+
+    @app.get('/api/v1/city-rating/{code}')
+    async def city_rating_details(code: str, month: int = Query(ge=1, le=12),
+                                  year: int | None = Query(None, ge=2000, le=2100)):
+        if code not in season_pages.CITIES:
+            raise SearchError('validation', 'Такого города в справочнике пока нет.', 404)
+        return JSONResponse(await monthly_city_rating(code, month, year),
+                            headers={'Cache-Control': 'public, max-age=60, s-maxage=600'})
+
     @app.get('/season/{code}', response_class=HTMLResponse)
     async def season_city(code: str, month: int | None = Query(None, ge=1, le=12), mode: str = '',
+                          year: int | None = Query(None, ge=2000, le=2100),
                           departure: str | None = Query(None, alias='from'), fc: str | None = None):
         city = season_pages.CITIES.get(code)
         if not city:
@@ -452,7 +470,8 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
         if not origin or origin['code'] == code:
             origin = default_origin({'code': code})
         current = month or now().astimezone(ZoneInfo(city['timezone'] or 'UTC')).month
-        return HTMLResponse(season_pages.city_page(catalog, code, current, mode, origin),
+        rating = await monthly_city_rating(code, current, year)
+        return HTMLResponse(season_pages.city_page(catalog, code, current, mode, origin, rating, year),
                             headers={'Cache-Control': page_cache})
 
     @app.get('/api/v1/season/{code}/fares')

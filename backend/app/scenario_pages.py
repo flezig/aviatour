@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 from urllib.parse import parse_qs
 from zoneinfo import ZoneInfo
 
-from .season_pages import badge
+from .city_rating import badge
 
 from .city_pages import FOOT, HEAD, SITE, breadcrumbs, date_range, esc, money, nights_label, received_html, slug
 from .showcase import BUDGET_TIERS, ROW_MIN, plural
@@ -66,7 +66,7 @@ def item(offer, note, photos, cities):
     departure = query.get('from', [None])[0]
     fc = query.get('fc', [None])[0]
     origin = {'iata': departure, 'all': bool(fc), 'code': fc} if departure else None
-    month = arriving.astimezone(ZoneInfo(offer.get("destination_timezone") or "UTC")).month
+    local_arrival = arriving.astimezone(ZoneInfo(offer.get("destination_timezone") or "UTC"))
     thumb = (f'<span class="stamp"><span class="photo"><img src="/photos/s/{esc(offer["city_code"])}.webp" alt="" loading="lazy" decoding="async"></span></span>'
              if offer['city_code'] in photos else '<span class="stamp"><span class="photo"></span></span>')
     extra = f'<span class="caption">{esc(leave_text(note))}</span>' if note else ''
@@ -75,7 +75,7 @@ def item(offer, note, photos, cities):
   <a class="scenario-open" href="/?{esc(offer['q'])}#trip={esc(offer['id'])}">{thumb}
     <span class="scenario-text"><b>{esc(offer['city'])}</b><span class="caption">{esc(offer.get('country') or '')}</span>
       <span>{date_range(dep, ret)}, {nights_label(nights)}</span>{extra}</span>
-    <b class="scenario-price">{money(offer['price_minor'])}</b></a>{about}{badge(offer["city_code"],month,origin)}
+    <b class="scenario-price">{money(offer['price_minor'])}</b></a>{about}{badge(offer["city_code"],local_arrival.month,origin,local_arrival.year)}
 </li>'''
 
 

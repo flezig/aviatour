@@ -347,7 +347,7 @@ def population(city):
 
 
 def page(catalog, city, origin, parts, route=False):
-    from .season_pages import badge
+    from .city_rating import badge
     month = datetime.now(ZoneInfo(city['timezone'] or 'UTC')).month
     name = city['name']
     url = f'{SITE}/route/{slug(origin["name"])}-{city["slug"]}' if route else f'{SITE}/city/{city["slug"]}'
@@ -398,7 +398,7 @@ def country_caption(city):
 
 
 def index_page(catalog):
-    from .season_pages import badge
+    from .city_rating import badge
     month = datetime.now(ZoneInfo('Europe/Moscow')).month
     groups = {'Россия': [city for city in catalog.cities if city['country_code'] == 'RU'], 'Другие страны': [city for city in catalog.cities if city['country_code'] != 'RU']}
     sections = ''.join(f'''<section class="city-group"><h2>{title}</h2><ul class="city-grid">{''.join(

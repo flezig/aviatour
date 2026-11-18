@@ -1,0 +1,122 @@
+{
+  "KZN": {
+    "starts": [
+      {
+        "name": "Отель «Ногай»",
+        "area": "Квартал улицы Баумана",
+        "lat": 55.791623,
+        "lon": 49.115219,
+        "url": "https://hotelnogai.ru/"
+      },
+      {
+        "name": "Отель «ТатарИнн»",
+        "area": "Старо-Татарская слобода",
+        "lat": 55.7811857,
+        "lon": 49.1166489,
+        "url": "https://tatarinn.ru/contacts/"
+      }
+    ],
+    "places": [
+      {
+        "name": "Казанский кремль, Спасская башня",
+        "lat": 55.7965753,
+        "lon": 49.1080371,
+        "url": "https://www.openstreetmap.org/relation/15958803"
+      },
+      {
+        "name": "Улица Баумана, памятник Коту Казанскому",
+        "lat": 55.7921706,
+        "lon": 49.1123314,
+        "url": "https://www.openstreetmap.org/node/3292801557"
+      },
+      {
+        "name": "Петропавловский собор",
+        "lat": 55.793525,
+        "lon": 49.1131348,
+        "url": "https://www.openstreetmap.org/way/90178098"
+      },
+      {
+        "name": "Площадь Свободы",
+        "lat": 55.7968576,
+        "lon": 49.1251354,
+        "url": "https://www.openstreetmap.org/way/75616908"
+      },
+      {
+        "name": "Мечеть Аль-Марджани",
+        "lat": 55.7797549,
+        "lon": 49.1180451,
+        "url": "https://www.openstreetmap.org/way/133264462"
+      }
+    ],
+    "walk_minutes": [
+      [
+        11.11,
+        3.41,
+        6.09,
+        13.98,
+        23.2
+      ],
+      [
+        29.5,
+        20.47,
+        25.44,
+        27.19,
+        3.8
+      ]
+    ],
+    "walk_seconds": [
+      [
+        666.5,
+        204.6,
+        365.2,
+        838.7,
+        1391.9
+      ],
+      [
+        1770.1,
+        1228.1,
+        1526.3,
+        1631.5,
+        227.8
+      ]
+    ],
+    "walk_metres": [
+      [
+        832.4,
+        255.5,
+        454.1,
+        1045.8,
+        1739.8
+      ],
+      [
+        2212.9,
+        1535.2,
+        1905.6,
+        2039.2,
+        284.8
+      ]
+    ],
+    "source": "Пешеходные маршруты FOSSGIS OSRM · © OpenStreetMap contributors",
+    "url": "https://routing.openstreetmap.de/routed-foot/table/v1/foot/49.115219,55.791623;49.1166489,55.7811857;49.1080371,55.7965753;49.1123314,55.7921706;49.1131348,55.7935250;49.1251354,55.7968576;49.1180451,55.7797549?sources=0;1&destinations=2;3;4;5;6&annotations=duration,distance&generate_hints=false",
+    "checked": "2026-11-18",
+    "valid_until": "2027-02-16",
+    "review_interval_days": 90,
+    "selection": "В двух центральных туристических кварталах взяли по одному отелю с опубликованными координатами. По городским и республиканским туристическим материалам до расчёта выбрали пять ориентиров в историческом центре. Включены все десять сочетаний.",
+    "selection_urls": [
+      "https://go.kzn.ru/reminder",
+      "https://go.kzn.ru/places/ulica-baumana",
+      "https://go.kzn.ru/places/petropavlovskii-sobor",
+      "https://go.kzn.ru/routes/gorod-dvux-religii",
+      "https://go.kzn.ru/places/ploshhad-svobody"
+    ],
+    "saturday_local_times": [
+      "10:00",
+      "15:00"
+    ],
+    "time_zone": "Europe/Moscow",
+    "scope": "Маршрут рассчитан между ближайшими к указанным точкам участками пешеходной сети. Максимальное смещение от исходной точки до сети — 11 м. Для обычной субботы принято одинаковое время ходьбы в 10:00 и 15:00 при открытом проходе. Очереди, вход внутрь зданий, погода и временные ограничения прохода в расчёт не входят. Выборка охватывает исторический центр.",
+    "router_info_url": "https://routing.openstreetmap.de/about.html",
+    "attribution_url": "https://www.openstreetmap.org/copyright",
+    "map_feedback_url": "https://www.openstreetmap.org/fixthemap"
+  }
+}

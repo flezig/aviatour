@@ -78,8 +78,10 @@ def score_index():
     }
 
 
-def link(code, month, origin=None, mode=None):
+def link(code, month, origin=None, mode=None, year=None):
     query = {"month": month}
+    if year is not None:
+        query["year"] = year
     if mode in ("quiet", "trip"):
         query["mode"] = mode
     if origin:
@@ -87,14 +89,6 @@ def link(code, month, origin=None, mode=None):
         if origin["all"]:
             query["fc"] = origin["code"]
     return "/season/" + code + "?" + urlencode(query)
-
-
-def badge(code, month, origin=None):
-    if code not in CITIES:
-        return ""
-    scores = monthly_scores(code)
-    label = f"Прогулки {scores[month - 1]}/10" if scores else "Сезон поездки"
-    return f'<a class="season-link" href="{esc(link(code, month, origin))}">{label} · {SHORT[month - 1].lower()}</a>'
 
 
 def layout(title, description, path, crumbs, main, script="/js/site.js"):
@@ -115,6 +109,8 @@ def layout(title, description, path, crumbs, main, script="/js/site.js"):
 
 
 def directory(catalog, month, query):
+    from .city_rating import badge
+
     def norm(s):
         return s.casefold().replace("ё", "е").strip()
 
@@ -135,9 +131,8 @@ def directory(catalog, month, query):
         )
     )
     items = "".join(
-        f'<li><a href="{esc(link(c, month))}"><span><b>{esc(CITIES[c]["city"])}</b>'
-        f"<small>{esc(CITIES[c]['country'])} · {c}</small></span><strong>"
-        f"{str(monthly_scores(c)[month - 1]) + '/10' if c in NORMALS else 'Подробнее'}</strong></a></li>"
+        f'<li><a class="season-city-link" href="{esc(link(c, month))}"><span><b>{esc(CITIES[c]["city"])}</b>'
+        f"<small>{esc(CITIES[c]['country'])} · {c}</small></span></a>{badge(c, month)}</li>"
         for c in codes[:60]
     )
     options = "".join(
@@ -177,7 +172,9 @@ def source_info(n):
     return f"Станция {n['name']} · {n['km']} км от координат города · ВМО", WMO
 
 
-def city_page(catalog, code, month, requested_mode, origin):
+def city_page(catalog, code, month, requested_mode, origin, rating, year=None):
+    from .city_rating import badge, report_html
+
     city = CITIES[code]
     title, cc = city["city"], city["country_code"]
     idx, quarter = month - 1, (month - 1) // 3
@@ -189,13 +186,13 @@ def city_page(catalog, code, month, requested_mode, origin):
     normal = NORMALS.get(code)
     scores = monthly_scores(code, quiet)
     back = f'<a href="/city/{esc(official["slug"])}">О городе</a>' if official else ""
-    tabs = f'<nav class="season-tabs" aria-label="Разделы города">{back}<a aria-current="page" href="{esc(link(code, month, origin, mode))}">Сезонный рейтинг</a></nav>'
+    tabs = f'<nav class="season-tabs" aria-label="Разделы города">{back}<a aria-current="page" href="{esc(link(code, month, origin, mode, year))}">Сезонный рейтинг</a></nav>'
     choice = ""
     if counts and scores:
         choice = (
             '<nav class="season-mode" aria-label="Что важнее">'
             + "".join(
-                f'<a href="{esc(link(code, month, origin, v))}"'
+                f'<a href="{esc(link(code, month, origin, v, year))}"'
                 + (' aria-current="true"' if v == mode else "")
                 + f">{s}</a>"
                 for v, s in [
@@ -214,14 +211,14 @@ def city_page(catalog, code, month, requested_mode, origin):
     value = f"{scores[idx]}<small>/10</small>" if scores and not trip else "—"
     chart = (
         "".join(
-            f'<a href="{esc(link(code, i + 1, origin, mode))}" aria-label="{n}, {scores[i]} из 10"'
+            f'<a href="{esc(link(code, i + 1, origin, mode, year))}" aria-label="{n}, {scores[i]} из 10"'
             + (' aria-current="date"' if i == idx else "")
             + f'><span>{SHORT[i]}</span><svg aria-hidden="true" viewBox="0 0 12 40"><rect x="1" y="{36 - scores[i] * 3}" width="10" height="{4 + scores[i] * 3}" rx="2"/></svg><b>{scores[i]}</b></a>'
             for i, n in enumerate(MONTH_NAMES)
         )
         if scores and not trip
         else "".join(
-            f'<a href="{esc(link(code, i + 1, origin, mode))}"'
+            f'<a href="{esc(link(code, i + 1, origin, mode, year))}"'
             + (' aria-current="date"' if i == idx else "")
             + f">{s}</a>"
             for i, s in enumerate(SHORT)
@@ -276,12 +273,13 @@ def city_page(catalog, code, month, requested_mode, origin):
         if official and official.get("photo")
         else ""
     )
-    body = f'''{tabs}<header class="season-heading"><div><p>{esc(city["country"])} · {code}</p><h1>{esc(title)}</h1></div>{hero}</header>
+    body = f'''{tabs}<header class="season-heading"><div><p>{esc(city["country"])} · {code}</p><h1>{esc(title)}</h1>{badge(code, month, origin, rating["year"], checked_report=rating)}</div>{hero}</header>
 <section class="season-panel" id="season" data-code="{code}" data-month="{month}" data-domestic="{int(cc == "RU")}" data-mode="{mode}" data-walk="{esc(json.dumps([walk_score(t, p) for t, p in zip(normal["temperature"], normal["precipitation"])] if normal else []))}" data-counts="{esc(json.dumps(counts or []))}" data-fcdo="{int(bool(advice.get("fcdo")) and cc != "RU")}" data-origin="{esc(origin["iata"])}" data-all="{esc(origin["code"] if origin["all"] else "")}">
 {choice}<div class="season-summary"><div><p>{esc(mode_name)} · {MONTH_NAMES[idx].lower()}</p><h2 id="seasonVerdict" aria-live="polite">{"Проверяем цены и сведения по направлению…" if trip else esc(note)}</h2></div><strong id="seasonValue">{value}</strong></div>
 <nav class="season-months" aria-label="Сравнить месяцы">{chart}</nav></section>
 <div class="season-facts">{climate}{demand}{fare}{safety}</div>
-<details class="season-method"><summary>Как считается рейтинг</summary><p>Шкала Aviator рассчитана на прогулки по городу. Температура даёт 80% балла, месячная сумма осадков — 20%. Для пляжа и горнолыжных трасс условия могут отличаться.</p>
+{report_html(rating)}
+<details class="season-method"><summary>Как сравниваются сезоны</summary><p>Шкала Aviator рассчитана на прогулки по городу. Температура даёт 80% балла, месячная сумма осадков — 20%. Для пляжа и горнолыжных трасс условия могут отличаться.</p>
 <p>От 16 до 25 °C температура получает 10 баллов. За каждые 3 °C ниже или 1,7 °C выше снимаем один балл. За каждые 18 мм осадков за месяц снимаем один из 10 баллов. Минимум каждого показателя — ноль. Итог округляем один раз.</p>
 <p>В режиме «Погода и турпоток» погода даёт 70%, спрос — 30%. Балл спроса равен десяти, умноженным на долю снижения числа поездок относительно самого загруженного квартала 2025 года. Меньший поток повышает оценку. </p><p>В режиме «С учётом перелёта» погода даёт 50%, турпоток — 20%, цена — 30%. Сравниваем найденные цены за три или больше месяцев на одном маршруте. Медиана получает 5 баллов, цена на 50% дешевле — 10, на 50% дороже — ноль. При отсутствии цены или серьёзном предупреждении по всей стране итог скрывается. Официальные предупреждения о безопасности проверяйте перед покупкой.</p></details>
 <a class="btn-inline" href="/season/?month={month}">Проверить другой город</a>'''
