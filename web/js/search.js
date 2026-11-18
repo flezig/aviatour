@@ -267,12 +267,19 @@ function toggleFav(id) {
   else if ($('favCount')) $('favCount').textContent = state.favs.size;
 }
 function compareTable(offers) {
-  const cheapest = Math.min(...offers.map((offer) => offer.price_minor));
+  const prices = offers.map(offer => offer.price_minor);
+  const lowest = Math.min(...prices), highest = Math.max(...prices);
+  const priceCell = offer => {
+    const price = `<b>${esc(fmtMoney(offer.price_minor))}</b>`;
+    if (offer.price_minor !== lowest || lowest === highest) return price;
+    const note = offers.length === 2 ? `На ${fmtMoney(highest - lowest)} дешевле` : 'Минимальная цена';
+    return `${price}<small class="compare-price-note">${esc(note)}</small>`;
+  };
   const row = (title, cell) => `<tr><th scope="row">${title}</th>${offers.map((offer) => `<td>${cell(offer, facts(offer))}</td>`).join('')}</tr>`;
   return `<div class="compare"><table>
     <thead><tr><td></td>${offers.map((offer) => `<th scope="col">${esc(offer.city)}</th>`).join('')}</tr></thead>
     <tbody>
-      ${row('Цена', (offer) => `<b class="${offer.price_minor === cheapest ? 'best' : ''}">${esc(fmtMoney(offer.price_minor))}</b>`)}
+      ${row('Цена', priceCell)}
       ${row('Даты', (offer, x) => esc(fmtRange(x.dep, x.ret, offer.origin_timezone, offer.destination_timezone)))}
       ${row('На месте', (offer, x) => x.stay ? `≈ ${Math.floor(x.stay)} ч` : '—')}
       ${row('Час поездки', (offer, x) => x.stay ? esc(hourCost(x)) : '—')}
@@ -286,8 +293,8 @@ function renderFavorites() {
   state.shown = new Map(offers.map((offer) => [offer.id, offer]));
   section.hidden = false;
   section.innerHTML = `<div class="results-head"><h2>Избранное</h2><button type="button" class="chip" data-action="results">${icon('arrow-left')}К вариантам</button></div>
-    ${offers.length > 1 ? `<p class="caption">Сравнение${offers.length > 4 ? ' первых четырёх' : ''} поездок. Самая низкая цена выделена.</p>${compareTable(offers.slice(0, 4))}` : ''}
-    ${offers.length ? `<div class="grid">${offers.map(offerCard).join('')}</div><p class="caption">Избранное хранится только в этом браузере. Цены — на момент добавления; актуальную покажет Aviasales.</p>`
+    ${offers.length > 1 ? `<p class="caption">${offers.length > 4 ? 'Сравнение последних четырёх сохранённых поездок' : 'Сравнение поездок'}</p>${compareTable(offers.slice(0, 4))}` : ''}
+    ${offers.length ? `<div class="grid">${offers.map(offerCard).join('')}</div>`
       : statusPanel('heart', 'Пока пусто', 'Нажмите на сердечко на карточке поездки — она появится здесь, и поездки можно будет сравнить.')}`;
 }
 
