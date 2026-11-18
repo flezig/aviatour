@@ -294,7 +294,7 @@ function renderFavorites() {
   section.hidden = false;
   section.innerHTML = `<div class="results-head"><h2>Избранное</h2><button type="button" class="chip" data-action="results">${icon('arrow-left')}К вариантам</button></div>
     ${offers.length > 1 ? `<p class="caption">${offers.length > 4 ? 'Сравнение последних четырёх сохранённых поездок' : 'Сравнение поездок'}</p>${compareTable(offers.slice(0, 4))}` : ''}
-    ${offers.length ? `<div class="grid">${offers.map(offerCard).join('')}</div><p class="caption">Избранное хранится только в этом браузере. Цены — на момент добавления; актуальную покажет Aviasales.</p>`
+    ${offers.length ? `<div class="grid">${offers.map(offerCard).join('')}</div>`
       : statusPanel('heart', 'Пока пусто', 'Нажмите на сердечко на карточке поездки — она появится здесь, и поездки можно будет сравнить.')}`;
 }
 
