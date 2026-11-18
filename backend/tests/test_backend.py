@@ -472,6 +472,8 @@ def test_exact_params_and_cache_separation():
     ('turkey', 'SAW', True), ('turkey', 'LCA', False),
     ('egypt', 'HRG', True), ('egypt', 'IST', False),
     ('tunisia', 'MIR', True), ('tunisia', 'CAI', False),
+    ('thailand', 'BKK', True), ('thailand', 'DXB', False),
+    ('uae', 'AUH', True), ('uae', 'HKT', False),
     ('asia', 'DXB', True), ('asia', 'MNL', True), ('asia', 'JFK', False),
 ])
 def test_region_country_filter(region, airport, accepted):
@@ -505,6 +507,7 @@ def test_destination_scopes_match_web_schema_and_provider_catalog():
 @pytest.mark.parametrize('region,city,airport,country', [
     ('turkey', 'IZM', 'ADB', 'TR'), ('egypt', 'CAI', 'SPX', 'EG'),
     ('tunisia', 'DJE', 'DJE', 'TN'), ('asia', 'DXB', 'DWC', 'AE'),
+    ('thailand', 'BKK', 'DMK', 'TH'), ('uae', 'DXB', 'DWC', 'AE'),
 ])
 def test_new_region_web_search_targets_and_country_filter(region, city, airport, country):
     calls = []

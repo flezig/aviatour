@@ -488,6 +488,7 @@ img { display: block; max-width: 100%; }
 .region-option { display: flex; align-items: center; justify-content: space-between; width: 100%; min-height: var(--tap); padding: var(--s-2) var(--s-3); border-radius: var(--r-chip); text-align: left; }
 .picker-regions:not([hidden]):not(.scope-matches) { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--s-2); }
 .region-option[data-region="any"] { grid-column: 1 / -1; }
+.region-option:not([aria-current]) > .icon { display: none; }
 .region-option:hover { background: var(--fill); }
 .region-option[aria-current] { color: var(--cobalt); background: var(--cobalt-soft); font-weight: 600; }
 .picker-coverage { margin: 0 var(--s-4) var(--s-2); border-top: 1px solid var(--line); font-size: var(--fs-small); }

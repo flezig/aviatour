@@ -58,5 +58,15 @@ export const DESTINATION_SCOPES = {
     "label": "США",
     "countries": ["US"],
     "cities": ["NYC", "LAX", "SFO", "CHI", "MIA", "WAS", "BOS", "LAS", "SEA", "ORL", "HOU", "DFW"]
+  },
+  "thailand": {
+    "label": "Таиланд",
+    "countries": ["TH"],
+    "cities": ["BKK", "HKT"]
+  },
+  "uae": {
+    "label": "ОАЭ",
+    "countries": ["AE"],
+    "cities": ["DXB", "AUH"]
   }
 };

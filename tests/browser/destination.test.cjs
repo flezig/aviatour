@@ -89,3 +89,46 @@ test('на телефоне страна и город Тунис различи
   await city.click();
   assert.equal(await page.locator('#searchButton').innerText(), 'Найти билеты');
 });
+
+test('Таиланд и ОАЭ появляются по вводу, выбор восстанавливается по ссылке', async (t) => {
+  const browser = await chromium.launch();
+  t.after(() => browser.close());
+  const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
+  const base = process.env.AVIATOR_TEST_URL ?? 'http://127.0.0.1:8000';
+  await page.route('**/api/v1/search/web?*', route => route.fulfill({ json: {
+    offers: [], incomplete: false, warnings: [], received_at: new Date().toISOString(),
+  } }));
+  const menu = page.locator('#picker');
+  const input = menu.locator('#pickerInput');
+  const open = () => page.locator('[data-field="destination"]').click();
+  const initial = ['any', 'russia', 'turkey', 'egypt', 'tunisia', 'europe', 'asia', 'usa'];
+  const visibleScopes = () => menu.locator('[data-region]:visible').evaluateAll(rows => rows.map(row => row.dataset.region));
+  await page.goto(base);
+  for (const [scope, names] of [
+    ['thailand', ['Таил', 'Тайланд', 'Thailand']],
+    ['uae', ['ОАЭ', 'эмир', 'Объединённые Арабские Эмираты', 'UAE']],
+  ]) {
+    await open();
+    assert.deepEqual(await visibleScopes(), initial);
+    for (const name of names) {
+      await input.fill(name);
+      assert.deepEqual(await visibleScopes(), [scope]);
+    }
+    await input.fill('DXB');
+    assert.deepEqual(await visibleScopes(), []);
+    await menu.locator('[data-iata="DXB"]').first().waitFor();
+    await input.fill(names[0]);
+    await menu.locator('[data-region="' + scope + '"]').click();
+    const requested = page.waitForRequest(r => new URL(r.url()).pathname === '/api/v1/search/web');
+    await page.locator('#searchButton').click();
+    assert.equal(new URL((await requested).url()).searchParams.get('region'), scope);
+    await page.reload();
+    await open();
+    assert.deepEqual(await visibleScopes(), initial);
+    await input.fill(names[0]);
+    await menu.locator('[data-region="' + scope + '"][aria-current]').waitFor();
+    await input.fill('');
+    assert.deepEqual(await visibleScopes(), initial);
+    await input.press('Escape');
+  }
+});

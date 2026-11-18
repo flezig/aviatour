@@ -20,6 +20,13 @@ const SCOPE_TERMS = {
   europe: 'Европу Европе Европой Европы',
   asia: 'Азию Азии Азией',
 };
+// Эти страны появляются только при вводе названия в поле «Куда».
+const COUNTRIES_ON_INPUT = {
+  thailand: ['таиланд', 'таиланда', 'таиланде', 'таиланду', 'таиландом', 'thailand'],
+  uae: ['оаэ', 'эмираты', 'эмиратов', 'эмиратах', 'эмиратам', 'эмиратами',
+    'объединенные арабские эмираты', 'объединенных арабских эмиратах', 'арабские эмираты',
+    'uae', 'united arab emirates', 'emirates'],
+};
 // По умолчанию — поездки на 1–14 ночей: «туда и обратно в один день» и поездки на месяц в выдаче мешали. Предел 7 ночей — только в подборках:
 // в поиске он срезал половину городов (из Москвы на декабрь — 11 вместо 25).
 const LENGTHS = { any: '1–14 ночей', short: '1–2 ночи', mid: '3–4 ночи', week: '5–7 ночей', long: '8–14 ночей', more: 'Больше 14 ночей', day: 'В тот же день', all: 'Любая длина' };
@@ -821,9 +828,9 @@ function airportLabel(iata, cityCode) {
 }
 const matchesText = (text, term) => text.toLocaleLowerCase('ru').replaceAll('ё', 'е').includes(term);
 function renderScopeCoverage() {
-  $('pickerScopeCities').innerHTML = Object.values(DESTINATION_SCOPES)
-    .filter(({ cities }) => cities.length)
-    .map(({ label, cities }) => `<div><dt>${esc(label)}</dt><dd>${esc(cities.map(code => state.cities?.get(code)?.name ?? code).join(', '))}</dd></div>`)
+  $('pickerScopeCities').innerHTML = Object.entries(DESTINATION_SCOPES)
+    .filter(([key, scope]) => scope.cities.length && (!COUNTRIES_ON_INPUT[key] || key === state.query.region))
+    .map(([, { label, cities }]) => `<div><dt>${esc(label)}</dt><dd>${esc(cities.map(code => state.cities?.get(code)?.name ?? code).join(', '))}</dd></div>`)
     .join('');
 }
 function renderPicker() {
@@ -833,7 +840,15 @@ function renderPicker() {
   if (!origin) {
     for (const option of $('pickerRegions').querySelectorAll('[data-region]')) {
       const { region } = option.dataset;
-      option.hidden = !matchesText(DESTINATION_SCOPES[region].label, term) && !matchesText(SCOPE_TERMS[region] ?? '', term);
+      if (!state.query.destination && region === state.query.region) option.setAttribute('aria-current', 'true');
+      else option.removeAttribute('aria-current');
+      const aliases = COUNTRIES_ON_INPUT[region];
+      if (aliases) {
+        const name = term.replace(/^тай(?=л|$)/, 'таи');
+        option.hidden = !name || !aliases.some(alias => alias.startsWith(name));
+      } else {
+        option.hidden = !matchesText(DESTINATION_SCOPES[region].label, term) && !matchesText(SCOPE_TERMS[region] ?? '', term);
+      }
     }
   }
   const matchedScope = !origin && Boolean($('pickerRegions').querySelector('[data-region]:not([hidden])'));
@@ -898,10 +913,9 @@ function openPicker(target) {
   input.setAttribute('aria-label', placeholder);
   input.value = '';
   if (destination) {
-    $('pickerRegions').innerHTML = Object.entries(DESTINATION_SCOPES).map(([key, { label }]) => {
-      const selected = !state.query.destination && key === state.query.region;
-      return `<button type="button" class="region-option" data-region="${key}"${selected ? ' aria-current="true"' : ''}>${esc(label)}${selected ? icon('check') : ''}</button>`;
-    }).join('');
+    $('pickerRegions').innerHTML = Object.entries(DESTINATION_SCOPES).map(([key, { label }]) =>
+      `<button type="button" class="region-option" data-region="${key}">${esc(label)}${icon('check')}</button>`
+    ).join('');
     $('pickerCoverage').open = false;
     renderScopeCoverage();
   }
@@ -1182,6 +1196,7 @@ document.fonts?.ready.then(fitHero);
   }
   renderForm();
   fitHero();
+  if (restored && $('picker').open) { renderScopeCoverage(); renderPicker(); }
   // Прочитать до поиска: поиск переписывает адрес и убирает хеш.
   const linked = restored && /^#trip=([0-9a-f]{32})$/.exec(location.hash)?.[1];
   // Вариант A эксперимента — голая форма: ничего не грузится, пока посетитель не начнёт поиск.
