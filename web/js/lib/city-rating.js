@@ -59,7 +59,14 @@ async function enhance(badge) {
     badge.setAttribute('aria-expanded', String(active === badge));
   }
   const value = badge.querySelector('.city-rating-value');
-  if (!value || badge.closest('.rating-tile')) return;
+  if (!value) return;
+  if (badge.closest('.rating-tile')) {
+    // For an international city with four inputs, the API also checks current travel advice.
+    if (value.textContent === '4 из 4') {
+      try { setValue(badge, await reportFor(badge)); } catch { /* Keep the server-rendered coverage. */ }
+    }
+    return;
+  }
   const { ratingCity, ratingMonth, ratingYear } = badge.dataset;
   try {
     const index = await read('/api/v1/city-rating-index' + (ratingYear ? '?year=' + encodeURIComponent(ratingYear) : ''));
@@ -236,7 +243,8 @@ new MutationObserver(records => {
 }).observe(document.body, { childList: true, subtree: true });
 
 panel.addEventListener('click', event => {
-  if (event.target.closest('.rating-close')) dismiss(true);
+  if (event.target.closest('a')) setTimeout(() => dismiss(), 0);
+  else if (event.target.closest('.rating-close')) dismiss(true);
   else if (event.target.closest('.rating-open-sources, .rating-back') && report) {
     pinned = true;
     view = view === 'summary' ? 'sources' : 'summary';

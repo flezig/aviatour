@@ -72,3 +72,35 @@ for (const mobile of [false, true]) {
     await panel.waitFor({ state: 'hidden' });
   });
 }
+
+for (const mobile of [false, true]) {
+  test('каталог рейтингов · ' + (mobile ? 'нижняя панель' : 'боковая панель'), async t => {
+    const browser = await (mobile ? webkit : chromium).launch();
+    t.after(() => browser.close());
+    const page = await browser.newPage({ hasTouch: mobile, viewport: { width: mobile ? 390 : 1280, height: 840 } });
+    await page.goto(base + '/season/?q=LED&month=12');
+    const badge = page.locator('.city-rating[data-rating-city="LED"]');
+    const panel = page.locator('#city-rating-popover');
+    if (mobile) {
+      assert.equal(await panel.isVisible(), false);
+      await badge.tap();
+      assert.equal(await page.locator('.rating-sheet').evaluate(dialog => dialog.matches(':modal')), true);
+    }
+    await panel.locator('tbody').waitFor();
+    assert.equal(await panel.locator('tbody tr').count(), 4);
+    assert.equal(await panel.locator('h2').innerText(), 'Санкт-Петербург');
+    await panel.getByRole('button', { name: 'Источники и расчёт' }).click();
+    assert.ok(await panel.locator('.rating-document li a').count() > 0);
+    const back = panel.getByRole('button', { name: 'К рейтингу' });
+    assert.equal(await back.evaluate(el => document.activeElement === el), true);
+    await back.click();
+    await panel.getByRole('button', { name: 'Закрыть рейтинг' }).click();
+    assert.equal(await badge.evaluate(el => document.activeElement === el), true);
+    await page.getByRole('searchbox').fill('SAW');
+    const istanbul = page.locator('.city-rating[data-rating-city="IST"]');
+    await istanbul.waitFor();
+    await page.getByRole('combobox', { name: 'Месяц' }).selectOption('1');
+    await page.locator('.city-rating[data-rating-city="IST"][data-rating-month="1"]').waitFor();
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
+  });
+}

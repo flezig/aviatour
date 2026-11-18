@@ -441,8 +441,9 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
     @app.get('/season/', response_class=HTMLResponse)
     async def season_index(month: int | None = Query(None, ge=1, le=12), q: str = Query('', max_length=100),
                            full: bool = False, page: int = Query(1, ge=1, le=10000)):
-        today = now().astimezone(ZoneInfo('Europe/Moscow')).date()
-        current = month or today.month
+        moment = now()
+        today = moment.date()
+        current = month or moment.astimezone(ZoneInfo('Europe/Moscow')).month
         checked = {}
         if full:
             year = city_rating.target_year(current, None, today)
