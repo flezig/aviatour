@@ -118,5 +118,122 @@
     "router_info_url": "https://routing.openstreetmap.de/about.html",
     "attribution_url": "https://www.openstreetmap.org/copyright",
     "map_feedback_url": "https://www.openstreetmap.org/fixthemap"
+  },
+  "LED": {
+    "starts": [
+      {
+        "name": "Отель «Англетер»",
+        "lat": 59.9335474,
+        "lon": 30.3086352,
+        "url": "https://www.openstreetmap.org/node/8032152668",
+        "area": "Исаакиевская площадь"
+      },
+      {
+        "name": "Гранд Отель Европа",
+        "lat": 59.9359473,
+        "lon": 30.330709,
+        "url": "https://www.openstreetmap.org/node/5563229125",
+        "area": "площадь Искусств"
+      }
+    ],
+    "places": [
+      {
+        "name": "Зимний дворец, ворота с Дворцовой площади",
+        "lat": 59.9397735,
+        "lon": 30.3147302,
+        "url": "https://www.openstreetmap.org/node/1380389454"
+      },
+      {
+        "name": "Исаакиевский собор",
+        "lat": 59.933776,
+        "lon": 30.3065033,
+        "url": "https://www.openstreetmap.org/node/4173088437"
+      },
+      {
+        "name": "Казанский собор",
+        "lat": 59.9343401,
+        "lon": 30.3236505,
+        "url": "https://www.openstreetmap.org/node/7756205352"
+      },
+      {
+        "name": "Михайловский дворец Русского музея",
+        "lat": 59.9383872,
+        "lon": 30.3330454,
+        "url": "https://www.openstreetmap.org/node/5339175326"
+      },
+      {
+        "name": "Спас на Крови",
+        "lat": 59.9402675,
+        "lon": 30.3285591,
+        "url": "https://www.openstreetmap.org/node/7929218848"
+      }
+    ],
+    "walk_minutes": [
+      [
+        13.5,
+        3.65,
+        15.83,
+        25.1,
+        24.1
+      ],
+      [
+        18.75,
+        21.53,
+        8.26,
+        4.89,
+        10.13
+      ]
+    ],
+    "walk_seconds": [
+      [
+        810.3,
+        218.7,
+        950,
+        1505.8,
+        1445.9
+      ],
+      [
+        1125,
+        1291.8,
+        495.4,
+        293.1,
+        608
+      ]
+    ],
+    "walk_metres": [
+      [
+        1003.7,
+        271,
+        1187.1,
+        1882.4,
+        1807.4
+      ],
+      [
+        1406.7,
+        1612.6,
+        619.3,
+        366.2,
+        759.8
+      ]
+    ],
+    "source": "Пешеходные маршруты FOSSGIS OSRM · © OpenStreetMap contributors",
+    "url": "https://routing.openstreetmap.de/routed-foot/table/v1/foot/30.3086352,59.9335474;30.330709,59.9359473;30.3147302,59.9397735;30.3065033,59.933776;30.3236505,59.9343401;30.3330454,59.9383872;30.3285591,59.9402675?sources=0;1&destinations=2;3;4;5;6&annotations=duration,distance&generate_hints=false",
+    "checked": "2026-11-18",
+    "valid_until": "2027-02-16",
+    "review_interval_days": 90,
+    "selection": "До замера выбраны два отеля в разных центральных кварталах и пять городских достопримечательностей. Маршруты ведут от главных входов отелей до входов или ворот со стороны улицы.",
+    "selection_urls": [
+      "https://angleterrehotel.ru/contacts/",
+      "https://grandhoteleurope.com/"
+    ],
+    "saturday_local_times": [
+      "10:00",
+      "15:00"
+    ],
+    "time_zone": "Europe/Moscow",
+    "scope": "Путь до достопримечательности по карте при открытом проходе. Для обоих часов используется одинаковая оценка ходьбы. Посещение интерьера, очередь, снег и временные перекрытия в модель не входят.",
+    "router_info_url": "https://routing.openstreetmap.de/about.html",
+    "attribution_url": "https://www.openstreetmap.org/copyright",
+    "map_feedback_url": "https://www.openstreetmap.org/fixthemap"
   }
 }

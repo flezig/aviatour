@@ -92,3 +92,17 @@ def test_api_directory_and_fallback_match():
         page = client.get("/season/KZN?month=11&year=2026&from=SVO&fc=MOW").text
         assert 'id="city-rating"' in page and "184 ₽" in page and "Сравнить расходы в 42 городах" in page
         assert 'data-rating-city="KZN"' in client.get("/season/?q=Казань&month=11").text
+
+
+def test_petersburg_and_kazan_pilot_comparison():
+    with TestClient(create_app(now=lambda: datetime(2026, 11, 18, tzinfo=UTC))) as client:
+        for month, score in [(11, 7.7), (12, 7.5)]:
+            report = client.get(f"/api/v1/city-rating/LED?month={month}&year=2026").json()
+            assert (report["available"], report["score"]) == (4, score)
+            assert report["components"][1]["score"] == 4.9
+            assert report["components"][3]["score"] == 10
+            assert "3,6–25,1 мин" in report["components"][3]["detail"]
+        page = client.get("/season/LED?month=11&year=2026").text
+        assert 'id="city-weekend-comparison"' in page and "Спас на Крови" in page
+        assert all(s in page for s in ("7,7/10", "7,5/10", "7,4/10", "7,0/10"))
+        assert 'id="city-weekend-comparison"' not in client.get("/season/LED?month=11&year=2027").text

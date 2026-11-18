@@ -230,6 +230,10 @@ def mobility(routes, month, year, today):
     detail = (f'Исторический центр · {areas}. Из двух отелей до пяти мест за 30 минут '
               f'можно добраться в {count} из 20 случаев. Модель на субботу в 10:00 и 15:00, '
               f'при открытом проходе, без учёта погоды. Проверено {routes["checked"]}.')
+    times = [t for row in routes["walk_minutes"] for t in row if t is not None]
+    if len(times) == 10 and max(times) <= 30:
+        detail += (f' Все десять путей укладываются в порог пешком. Расчётное время — '
+                   f'{number(round(min(times), 1))}–{number(round(max(times), 1))} мин.')
     links = [source("Расчёт маршрутов OSRM", routes["url"]),
              source("© Участники OpenStreetMap", routes["attribution_url"]),
              source("Исправить карту", routes["map_feedback_url"])]
@@ -311,14 +315,48 @@ def badge(code, month, origin=None, year=None, today=None, checked_report=None):
             '<svg class="icon" aria-hidden="true"><use href="/icons.svg#chevron-down"></use></svg></a>')
 
 
-def report_html(data):
+def city_pair_html(data, today, origin):
+    if data["code"] not in ("LED", "KZN") or data["year"] != 2026 or data["month"] not in (11, 12):
+        return ""
+    rows = []
+    for code in ("LED", "KZN"):
+        cells = []
+        for month in (11, 12):
+            item = data if (code, month) == (data["code"], data["month"]) else report(code, month, 2026, today)
+            href = season.link(code, month, origin, year=2026) + "#city-rating"
+            label = (f'{item["score"]:.1f}/10'.replace(".", ",") if item["score"] is not None
+                     else f'Данные: {item["available"]} из 4')
+            cells.append(f'<td><a href="{esc(href)}">{esc(label)}</a></td>')
+        rows.append(f'<tr><th scope="row">{esc(season.CITIES[code]["city"])}</th>{"".join(cells)}</tr>')
+    return ('<section class="rating-comparison" id="city-weekend-comparison"><h3>Петербург и Казань</h3>'
+            '<table><caption>Рейтинг для поездки на выходные · 2026</caption>'
+            '<thead><tr><th scope="col">Город</th><th scope="col">Ноябрь</th><th scope="col">Декабрь</th></tr></thead>'
+            f'<tbody>{"".join(rows)}</tbody></table></section>')
+
+
+def walking_table(routes):
+    cells = []
+    for j, place in enumerate(routes["places"]):
+        durations = "".join("<td>—</td>" if row[j] is None else f'<td>{number(round(row[j], 1))} мин</td>'
+                            for row in routes["walk_minutes"])
+        cells.append(f'<tr><th scope="row">{esc(place["name"])}</th>{durations}</tr>')
+    headers = "".join(f'<th scope="col">{esc(p["name"])}</th>' for p in routes["starts"])
+    return ('<details class="rating-comparison"><summary>Посмотреть время пешком по маршрутам</summary>'
+            '<div class="rating-comparison-scroll"><table><caption>Путь от отеля до места</caption>'
+            f'<thead><tr><th scope="col">Место</th>{headers}</tr></thead><tbody>{"".join(cells)}</tbody>'
+            f'</table></div><p>{esc(routes["scope"])}</p></details>')
+
+
+def report_html(data, today, origin):
     def row(c):
         score = f'{number(c["score"])}/10' if c["score"] is not None else "Недостаточно данных"
         links = " · ".join(f'<a href="{esc(s["url"])}">{esc(s["label"])}</a>' for s in c["sources"])
         missing = " ".join(c["missing"])
+        routes = ROUTES.get(data["code"])
+        walking = walking_table(routes) if c["key"] == "mobility" and routes and applicable(routes, data["month"], data["year"], today) else ""
         return (f'<div><dt>{esc(c["label"])} · {c["weight"]}% · {score}</dt><dd>{esc(c["detail"])}'
                 + (f'<p><b>Ориентир на даты поездки.</b> {esc(c["trip_detail"])}</p>' if c.get("trip_detail") else "")
-                + (f' {esc(missing)}' if missing else "") + (f'<p>{links}</p>' if links else "") + '</dd></div>')
+                + (f' {esc(missing)}' if missing else "") + (f'<p>{links}</p>' if links else "") + walking + '</dd></div>')
     cost = next(c for c in data["components"] if c["key"] == "cost")
     comparison = ""
     if cost.get("comparison"):
@@ -334,7 +372,8 @@ def report_html(data):
     rows = "".join(row(c) for c in data["components"])
     return (f'<section class="season-method city-rating-report" id="city-rating"><h2>Рейтинг города</h2>'
             f'<p>{esc(data["city"])} · {MONTH_NAMES[data["month"] - 1].lower()} {data["year"]} · {verdict}</p>'
-            '<details open><summary>Из чего складывается балл</summary><p>Оценка для поездки на выходные. '
+            + city_pair_html(data, today, origin)
+            + '<details open><summary>Из чего складывается балл</summary><p>Оценка для поездки на выходные. '
             'Каждый показатель оцениваем от 0 до 10. Общий балл публикуем, когда собраны все четыре.</p>'
             + (f'<p>{esc(data["notice"])}</p>' if data["notice"] else "") + f'<dl>{rows}</dl></details>{comparison}</section>')
 

@@ -172,7 +172,7 @@ def source_info(n):
     return f"Станция {n['name']} · {n['km']} км от координат города · ВМО", WMO
 
 
-def city_page(catalog, code, month, requested_mode, origin, rating, year=None):
+def city_page(catalog, code, month, requested_mode, origin, rating, year, today):
     from .city_rating import badge, report_html
 
     city = CITIES[code]
@@ -278,7 +278,7 @@ def city_page(catalog, code, month, requested_mode, origin, rating, year=None):
 {choice}<div class="season-summary"><div><p>{esc(mode_name)} · {MONTH_NAMES[idx].lower()}</p><h2 id="seasonVerdict" aria-live="polite">{"Проверяем цены и сведения по направлению…" if trip else esc(note)}</h2></div><strong id="seasonValue">{value}</strong></div>
 <nav class="season-months" aria-label="Сравнить месяцы">{chart}</nav></section>
 <div class="season-facts">{climate}{demand}{fare}{safety}</div>
-{report_html(rating)}
+{report_html(rating, today, origin)}
 <details class="season-method"><summary>Как сравниваются сезоны</summary><p>Шкала Aviator рассчитана на прогулки по городу. Температура даёт 80% балла, месячная сумма осадков — 20%. Для пляжа и горнолыжных трасс условия могут отличаться.</p>
 <p>От 16 до 25 °C температура получает 10 баллов. За каждые 3 °C ниже или 1,7 °C выше снимаем один балл. За каждые 18 мм осадков за месяц снимаем один из 10 баллов. Минимум каждого показателя — ноль. Итог округляем один раз.</p>
 <p>В режиме «Погода и турпоток» погода даёт 70%, спрос — 30%. Балл спроса равен десяти, умноженным на долю снижения числа поездок относительно самого загруженного квартала 2025 года. Меньший поток повышает оценку. </p><p>В режиме «С учётом перелёта» погода даёт 50%, турпоток — 20%, цена — 30%. Сравниваем найденные цены за три или больше месяцев на одном маршруте. Медиана получает 5 баллов, цена на 50% дешевле — 10, на 50% дороже — ноль. При отсутствии цены или серьёзном предупреждении по всей стране итог скрывается. Официальные предупреждения о безопасности проверяйте перед покупкой.</p></details>

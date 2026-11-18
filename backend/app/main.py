@@ -471,7 +471,7 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
             origin = default_origin({'code': code})
         current = month or now().astimezone(ZoneInfo(city['timezone'] or 'UTC')).month
         rating = await monthly_city_rating(code, current, year)
-        return HTMLResponse(season_pages.city_page(catalog, code, current, mode, origin, rating, year),
+        return HTMLResponse(season_pages.city_page(catalog, code, current, mode, origin, rating, year, now().date()),
                             headers={'Cache-Control': page_cache})
 
     @app.get('/api/v1/season/{code}/fares')

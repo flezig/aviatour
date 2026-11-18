@@ -440,6 +440,7 @@
     }
   },
   "LED": {
+    "price_survey_city": "Санкт-Петербург",
     "activities": [
       {
         "name": "Музей Фаберже",
