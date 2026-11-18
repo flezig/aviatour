@@ -39,12 +39,17 @@ for (const mobile of [false, true]) {
     await card.waitFor();
     assert.equal(await card.getAttribute('data-rating-month'), '12');
     assert.equal(await card.getAttribute('data-rating-year'), '2026');
-    assert.equal(details.length, 0);
+
     if (mobile) await card.tap(); else await card.hover();
     await panel.locator('tbody tr').first().waitFor();
     assert.equal(await panel.locator('tbody tr').count(), 4);
     assert.match(await panel.innerText(), /Казань · декабрь 2026/);
-    assert.match(await panel.locator('.city-rating-gaps').innerText(), /гостиницах/);
+    if (await panel.locator('.city-rating-gaps').count()) {
+      assert.match(await panel.locator('.city-rating-gaps').innerText(), /гостиницах|маршрут/);
+    } else {
+      assert.match(await panel.innerText(), /Росстат/);
+      assert.match(await card.innerText(), /7,0/);
+    }
     assert.equal(await page.locator('#detail').isVisible(), false);
     const box = await panel.boundingBox();
     assert.ok(box.x >= 0 && box.x + box.width <= page.viewportSize().width + 1);

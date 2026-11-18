@@ -94,6 +94,48 @@ def activities(code, evidence, month, year, today):
     return result("activities", None if missing else len(items), detail, missing, links)
 
 
+def rubles(amount):
+    return f"{amount:,.2f}".replace(",", " ").replace(".", ",").removesuffix(",00") + " ₽"
+
+
+def survey_cost(city, year, month, today):
+    if city not in PRICES["cities"] or not (PRICES["checked"] <= today.isoformat() <= PRICES["review_by"]):
+        return None
+    observed = date.fromisoformat(PRICES["observed"])
+    age = 12 * (year - observed.year) + month - observed.month
+    if not 0 <= age <= 3 or date(year, month, 1) > date.fromisoformat(PRICES["review_by"]):
+        return None
+    rows = []
+    for name, prices in PRICES["cities"].items():
+        rates = [prices.get(key) for key in ("hotel", "meal", "bus")]
+        if any(rate is None or rate <= 0 for rate in rates):
+            return None  # Never silently change the fixed peer group.
+        hotel, meal, bus = rates
+        rows.append((name, 2 * hotel + 4 * meal + 4 * bus))
+    peers = [amount for name, amount in rows if name != city]
+    if len(peers) < 20:
+        return None
+    reference = median(peers)
+    basket = dict(rows)[city]
+    period = observed.strftime("%d.%m.%Y")
+    rates = PRICES["cities"][city]
+    score = min(10, max(0, 5 + 5 * math.log2(reference / basket)))
+    detail = (f'Средние городские цены Росстата на {period}. Две ночи в гостинице 3★ по '
+              f'{rubles(rates["hotel"])} с человека, четыре обеда в столовой или кафе по {rubles(rates["meal"])} '
+              f'и четыре поездки на автобусе по {rubles(rates["bus"])}. Корзина — {rubles(basket)}, '
+              f'медиана группы сравнения — {rubles(reference)} (других городов: {len(peers)}). '
+              'На уровне медианы расходы получают 5/10, вдвое дешевле — 10/10, вдвое дороже — 0/10.')
+    part = result("cost", score, detail, sources=[source("Росстат · ЕМИСС", PRICES["source"])])
+    part["budget_label"] = f"Росстат · {period} · {rubles(basket)}"
+    part["comparison_period"] = period
+    part["comparison"] = []
+    for name, total in sorted(rows, key=lambda row: row[1]):
+        prices = PRICES["cities"][name]
+        part["comparison"].append(dict(city=name, total=round(total, 2), hotel=round(2 * prices["hotel"], 2),
+                                       meals=round(4 * prices["meal"], 2), bus=round(4 * prices["bus"], 2)))
+    return part
+
+
 def costs(evidence, month, year, today):
     detail = "Корзина на человека: две ночи, четыре приёма пищи и четыре поездки по городу."
     # Reviewed price sets share one currency, collection date and comparison cohort.
@@ -105,11 +147,20 @@ def costs(evidence, month, year, today):
     missing, links = [], list(sample.get("sources", []))
     stays = [median(prices.values()) for prices in sample.get("hotel_weekends", {}).values()
              if len(prices) >= 10 and all(price > 0 for price in prices.values())]
+    dates = sample.get("hotel_weekends", {})
+    if dates:
+        observations = [f"{d}: {number(median(prices.values()))} ₽ ({len(prices)} гостиниц)" for d, prices in sorted(dates.items()) if prices]
+        detail += f' Цены на {sample["as_of"]}. Медианы за две ночи в отдельном стандартном номере без питания, заезды ' + ", ".join(observations) + "."
+    if sample.get("fees_confirmed") is False:
+        missing.append("Подтверждение всех обязательных сборов в цене номера.")
     if len(stays) < 3:
         missing.append("Цены номеров в десяти гостиницах на каждые из трёх выходных.")
     meals = sample.get("meal_prices", {})
     if len(meals) < 5 or not all(price > 0 for price in meals.values()):
         missing.append("Цены блюд в пяти заведениях или сопоставимые городские данные о питании.")
+    elif sample.get("meal_unit"):
+        meal = median(meals.values())
+        detail += f' Еда в {len(meals)} заведениях: {sample["meal_unit"]}, медиана {number(meal)} ₽, четыре порции — {number(meal * 4)} ₽.'
     if fare.get("year") == year and fare["checked"] <= today.isoformat():
         price = fare["amount"]
         detail += f' Тариф {year} года — {number(price)} {fare["currency"]} за поездку, {number(price * 4)} {fare["currency"]} за четыре.'
@@ -122,6 +173,12 @@ def costs(evidence, month, year, today):
     cohort = sample.get("cohort_baskets", {})
     if len(cohort) < 20 or not all(price > 0 for price in cohort.values()):
         missing.append("Сопоставимые корзины минимум для 20 городов за тот же месяц.")
+    estimate = None
+    if len(stays) >= 3 and len(meals) >= 5 and fare.get("year") == year and fare.get("checked", "") <= today.isoformat() and sample["currency"] == fare.get("currency"):
+        estimate = median(stays) + 4 * median(meals.values()) + 4 * fare["amount"]
+        detail += f' Ориентир по опубликованным ценам — {rubles(estimate)} на человека за выходные, без перелёта.'
+    if sample.get("comparison_note"):
+        detail += " " + sample["comparison_note"]
     score = None
     if not missing:
         basket = median(stays) + 4 * median(meals.values()) + 4 * price
@@ -132,6 +189,13 @@ def costs(evidence, month, year, today):
     part = result("cost", score, detail, missing, links)
     if len(stays) < 3 and len(meals) < 5:
         part["gap"] = "Нет сопоставимых цен на жильё и питание."
+    if estimate is not None:
+        part["budget_label"] = f"Около {estimate:,.0f} ₽ за выходные".replace(",", " ")
+    survey = survey_cost(evidence.get("price_survey_city"), year, month, today)
+    if survey:
+        survey["trip_detail"] = detail + (" Включение всех обязательных сборов продавец отдельно не подтвердил." if dates and sample.get("fees_confirmed") is False else "")
+        survey["sources"].extend(links)
+        return survey
     return part
 
 
@@ -253,16 +317,28 @@ def report_html(data):
         links = " · ".join(f'<a href="{esc(s["url"])}">{esc(s["label"])}</a>' for s in c["sources"])
         missing = " ".join(c["missing"])
         return (f'<div><dt>{esc(c["label"])} · {c["weight"]}% · {score}</dt><dd>{esc(c["detail"])}'
+                + (f'<p><b>Ориентир на даты поездки.</b> {esc(c["trip_detail"])}</p>' if c.get("trip_detail") else "")
                 + (f' {esc(missing)}' if missing else "") + (f'<p>{links}</p>' if links else "") + '</dd></div>')
-    verdict = (f'Общий балл {number(data["score"])}/10' if data["score"] is not None
+    cost = next(c for c in data["components"] if c["key"] == "cost")
+    comparison = ""
+    if cost.get("comparison"):
+        items = "".join(f'<tr><th scope="row">{esc(r["city"])}</th>'
+                        + "".join(f'<td>{rubles(r[k])}</td>' for k in ("hotel", "meals", "bus", "total"))
+                        + "</tr>" for r in cost["comparison"])
+        comparison = (f'<details class="rating-comparison"><summary>Сравнить расходы в {len(cost["comparison"])} городах</summary>'
+                      f'<div class="rating-comparison-scroll"><table><caption id="rating-comparison">Стоимость одной корзины · {esc(cost["comparison_period"])}</caption>'
+                      '<thead><tr><th scope="col">Город</th><th scope="col">2 ночи</th><th scope="col">4 обеда</th><th scope="col">4 поездки</th><th scope="col">Итого</th></tr></thead>'
+                      f'<tbody>{items}</tbody></table></div></details>')
+    verdict = (f'Общий балл {number(data["score"])}/10 · 4 из 4 показателей' if data["score"] is not None
                else f'Показателей с оценкой: {data["available"]} из 4')
     rows = "".join(row(c) for c in data["components"])
     return (f'<section class="season-method city-rating-report" id="city-rating"><h2>Рейтинг города</h2>'
             f'<p>{esc(data["city"])} · {MONTH_NAMES[data["month"] - 1].lower()} {data["year"]} · {verdict}</p>'
             '<details open><summary>Из чего складывается балл</summary><p>Оценка для поездки на выходные. '
             'Каждый показатель оцениваем от 0 до 10. Общий балл публикуем, когда собраны все четыре.</p>'
-            + (f'<p>{esc(data["notice"])}</p>' if data["notice"] else "") + f'<dl>{rows}</dl></details></section>')
+            + (f'<p>{esc(data["notice"])}</p>' if data["notice"] else "") + f'<dl>{rows}</dl></details>{comparison}</section>')
 
 
 EVIDENCE = load_snapshot("city_rating_evidence.json")
 ROUTES = load_snapshot("city_rating_routes.json")
+PRICES = load_snapshot("city_rating_prices.json")

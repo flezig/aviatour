@@ -89,19 +89,23 @@ const gapsByKey = {
   climate: 'Не хватает климатических наблюдений.',
   mobility: 'Не подтверждено время на всех маршрутах.',
 };
-function criteria(report) {
+function criteria(report, pageUrl) {
+  const comparisonUrl = new URL(pageUrl);
+  comparisonUrl.hash = 'rating-comparison';
   const rows = report.components.map(component => {
     const links = sources(component.sources);
     const detailLabel = links ? `Данные и источники · ${component.sources.length}` : 'Данные';
-    const description = component.missing.length ? (component.gap || gapsByKey[component.key]) : descriptions[component.key];
+    const description = component.budget_label || (component.missing.length ? (component.gap || gapsByKey[component.key]) : descriptions[component.key]);
     return `<tr><th scope="row">${esc(component.label)}<small>${esc(description)}</small>
       <details><summary>${detailLabel}</summary><p>${esc(component.detail)}</p>
+        ${component.comparison ? `<p><a href="${esc(comparisonUrl.href)}">Сравнить расходы в ${component.comparison.length} городах</a></p>` : ''}
+        ${component.trip_detail ? `<p><b>Ориентир на даты поездки.</b> ${esc(component.trip_detail)}</p>` : ''}
         ${links ? `<p>${links}</p>` : ''}</details></th>
       <td>${Number.isFinite(component.score) ? scoreFormat.format(component.score) : '—'}</td><td>${esc(component.weight)}%</td></tr>`;
   }).join('');
   const gaps = report.components.filter(component => component.missing.length)
     .map(component => `<dt>${esc(component.label)}</dt><dd>${esc(component.missing.join(' '))}</dd>`).join('');
-  const notice = report.notice || (report.available < 4 ? 'Для общего балла нужны все четыре показателя.' : '');
+  const notice = report.notice || (report.available < 4 ? 'Для общего балла нужны все четыре показателя.' : 'Оценены все 4 показателя.');
   return `${notice ? `<p class="city-rating-notice">${esc(notice)}</p>` : ''}
     <table><thead><tr><th scope="col">Критерий</th><th scope="col">Балл /10</th><th scope="col">Вес</th></tr></thead><tbody>${rows}</tbody></table>
     ${gaps ? `<section class="city-rating-gaps"><h3>Чего не хватает</h3><dl>${gaps}</dl></section>` : ''}`;
@@ -162,7 +166,7 @@ async function open(badge) {
     const report = await reportFor(badge);
     if (active !== badge) return;
     caption.textContent = subtitle + (report.year ? ' ' + report.year : '');
-    body.innerHTML = criteria(report);
+    body.innerHTML = criteria(report, badge.href);
     total.innerHTML = scoreValue(report);
     setValue(badge, report);
   } catch {

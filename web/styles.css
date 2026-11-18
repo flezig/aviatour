@@ -808,3 +808,11 @@ a.month:hover .month-bar rect { fill: var(--cobalt); }
   .season-find label:first-child {width:100%;}
   .season-mode a {padding:6px 9px;}
 }
+
+.rating-comparison { margin-block-start: 1rem; }
+.rating-comparison-scroll { overflow-x: auto; }
+.rating-comparison table { width: min(100%, 48rem); border-collapse: collapse; }
+.rating-comparison caption { text-align: left; padding: .75rem 0; }
+.rating-comparison th, .rating-comparison td { padding: .35rem .5rem; border-bottom: 1px solid var(--line); text-align: left; }
+.rating-comparison td { white-space: nowrap; }
+.rating-comparison tr > :last-child { text-align: right; font-variant-numeric: tabular-nums; }

@@ -14,12 +14,17 @@ def test_real_components_explicit_gaps_and_time_limits():
     november = rating.report("KZN", 11, None, TODAY)
     activities, costs, climate, routes = november["components"]
     assert [c["weight"] for c in november["components"]] == [35, 25, 25, 15]
-    assert november["available"] == 3 and november["score"] is None
+    assert november["available"] == 4 and november["score"] == 7.4
     assert activities["score"] == 10 and len(activities["sources"]) == 10
     assert climate["score"] == 5.2 and "45,3 мм" in climate["detail"]
     assert routes["score"] == 10 and "20" in routes["detail"]
-    assert costs["score"] is None and "184 ₽" in costs["detail"]
-    assert "гостиницах" in " ".join(costs["missing"])
+    assert costs["score"] == 4.3 and "184 ₽" in costs["trip_detail"]
+    assert len(costs["comparison"]) == 42 and not costs["missing"]
+    assert "8 034,98 ₽" in costs["detail"] and "7 286,28 ₽" in costs["detail"]
+    december = rating.report("KZN", 12, 2026, TODAY)
+    assert december["score"] == 7.0 and "10 784 ₽" in december["components"][1]["trip_detail"]
+    assert rating.survey_cost("Казань", 2026, 12, date(2027, 1, 1)) is None
+    assert rating.survey_cost("Казань", 2026, 8, TODAY) is None
     january = rating.report("KZN", 1, None, TODAY)
     assert january["year"] == 2027 and january["available"] == 3
     assert "46 ₽" not in january["components"][1]["detail"]
@@ -30,6 +35,7 @@ def test_real_components_explicit_gaps_and_time_limits():
 
 def test_basket_uses_medians_and_requires_all_samples(monkeypatch):
     city = deepcopy(rating.EVIDENCE["KZN"])
+    city.pop("price_survey_city")
     # Test fixture only. All amounts include fees and are in the fare currency.
     city["baskets"] = {"2026-11": {
         "hotel_weekends": {str(w): {str(i): 816 for i in range(10)} for w in range(3)},
@@ -79,10 +85,10 @@ def test_api_directory_and_fallback_match():
         assert len(index) == len(rating.season.CITIES)
         assert index["KZN"][0] == "3" and index["KZN"][5] == "1"
         response = client.get("/api/v1/city-rating/KZN?month=11")
-        assert response.status_code == 200 and response.json()["available"] == 3
+        assert response.status_code == 200 and response.json()["available"] == 4
         assert client.get("/api/v1/city-rating/БНГ?month=6").json()["available"] == 1
         assert client.get("/api/v1/city-rating/QQ0?month=6").status_code == 404
         assert client.get("/api/v1/city-rating/KZN?month=13").status_code == 422
         page = client.get("/season/KZN?month=11&year=2026&from=SVO&fc=MOW").text
-        assert 'id="city-rating"' in page and "184 ₽" in page and "гостиницах" in page
+        assert 'id="city-rating"' in page and "184 ₽" in page and "Сравнить расходы в 42 городах" in page
         assert 'data-rating-city="KZN"' in client.get("/season/?q=Казань&month=11").text
