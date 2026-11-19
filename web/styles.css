@@ -45,6 +45,7 @@
   /* Шрифт */
   --f-head: 'Geologica', system-ui, sans-serif;
   --f-text: 'Golos Text', system-ui, sans-serif;
+  --city-title: 500 18px/22px 'Rubik', var(--f-text);
   --f-mono: 'Martian Mono', ui-monospace, monospace;
   --fs-micro: 12px;                 /* пометка «Реклама», подписи в талоне */
   --fs-cap: 13px;   --lh-cap: 1.35;
@@ -264,7 +265,7 @@ img { display: block; max-width: 100%; }
 .tile:nth-child(2n) .stamp, .offer:nth-child(2n) .stamp { transform: rotate(1deg); }
 .tile:hover .stamp, .offer:hover .stamp { transform: rotate(0) translateY(-2px); }
 .tile-body { display: grid; gap: var(--s-0); }
-.tile-city { font: 500 18px/22px 'Rubik', var(--f-text); letter-spacing: 0; overflow-wrap: anywhere; }
+.tile-city, .offer-city { font: var(--city-title); letter-spacing: 0; overflow-wrap: anywhere; }
 .tile-price-row { display: flex; flex-wrap: wrap; align-items: center; column-gap: var(--s-2); }
 .tile-price { font: 700 var(--fs-small)/1.3 var(--f-mono); letter-spacing: -.03em; white-space: nowrap; }
 .tile-dates, .tile-note { font-size: var(--fs-cap); color: var(--ink-2); }
@@ -422,7 +423,7 @@ img { display: block; max-width: 100%; }
 .offer { position: relative; display: grid; gap: var(--s-3); align-content: start; }
 .offer-body { display: grid; gap: var(--s-0); }
 .offer-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-3); }
-.offer-city { font-size: var(--fs-h3); min-width: 0; overflow-wrap: anywhere; }
+.offer-city { min-width: 0; }
 .offer-open { font: inherit; text-align: left; }
 .offer-open::after { content: ''; position: absolute; inset: 0; z-index: 1; }
 .offer-price { font: 700 var(--fs-h3)/1.2 var(--f-mono); letter-spacing: -.03em; white-space: nowrap; }
