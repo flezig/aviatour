@@ -95,7 +95,7 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
         # Share source data across budgets/direct/weekend toggles; filter after cache.
         key = (request.origin, request.origin_city_code, request.month, request.departure_date,
                request.return_date, request.destination, request.destination_city_code, request.region, settings.market, 'rub')
-        broad = request.model_copy(update={'max_budget_minor': 50000000, 'direct_only': False, 'weekend_only': False})
+        broad = request.model_copy(update={'max_budget_minor': None, 'direct_only': False, 'weekend_only': False})
         def load():
             # check is the rate limit: only a cache miss reaches Travelpayouts, so a cached answer costs nothing.
             if check:
@@ -156,14 +156,14 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
         return await search(request, limiter.check)
 
     @app.get('/api/v1/search/web')
-    async def web_search_endpoint(budget: int, month: str = '', dep: str | None = None, ret: str | None = None, region: str = 'any',
+    async def web_search_endpoint(budget: int | None = None, month: str = '', dep: str | None = None, ret: str | None = None, region: str = 'any',
                                   weekend: str = '1', direct: str = '0', fc: str | None = None, to: str | None = None, tc: str | None = None,
                                   origin: str = Query(alias='from')):
         # The site's search: the page's own URL parameters, a GET so the CDN shares one answer per query among visitors,
         # and only the rating fields the page shows (the full rating is ~80% of an offer).
         try:
             request = SearchRequest(origin=origin, origin_city_code=fc, destination=to, destination_city_code=tc, region=region,
-                month=dep[:7] if dep else month, departure_date=dep, return_date=ret, max_budget_minor=budget * 100,
+                month=dep[:7] if dep else month, departure_date=dep, return_date=ret, max_budget_minor=budget * 100 if budget is not None else None,
                 weekend_only=weekend != '0', direct_only=direct == '1')
         except ValidationError:
             raise SearchError('validation', 'Проверьте аэропорты, даты и бюджет.', 422) from None

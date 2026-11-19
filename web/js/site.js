@@ -13,7 +13,7 @@ const teamBlock = document.getElementById('team');
 if (teamBlock && (team.length || safeLink(config.contact))) {
   teamBlock.hidden = false;
   teamBlock.innerHTML = '<h2>Кто мы</h2>'
-    + (team.length ? `<ul>${team.map((person) => `<li><b>${esc(person.name)}</b>${person.role ? ' — ' + esc(person.role) : ''}${safeLink(person.link) ? ` · <a href="${esc(person.link)}" rel="noopener">написать</a>` : ''}</li>`).join('')}</ul>` : '')
+    + (team.length ? `<ul>${team.map((person) => `<li><b>${esc(person.name)}</b>${person.role ? ' — ' + esc(person.role) : ''}${safeLink(person.link) ? ` <a href="${esc(person.link)}" rel="noopener">написать</a>` : ''}</li>`).join('')}</ul>` : '')
     + (safeLink(config.contact) ? `<p><a class="btn-inline" href="${esc(config.contact)}" rel="noopener">Связаться с нами</a></p>` : '');
 }
 
@@ -23,7 +23,7 @@ if (operator) {
   const name = config.operator?.name, email = /^[^@\s]+@[^@\s]+$/.test(config.operator?.email ?? '') ? config.operator.email : null;
   if (name || email) {
     operator.hidden = false;
-    operator.querySelector('[data-fill]').innerHTML = [name && esc(name), email && `<a href="mailto:${esc(email)}">${esc(email)}</a>`].filter(Boolean).join(' · ');
+    operator.querySelector('[data-fill]').innerHTML = [name && esc(name), email && `<a href="mailto:${esc(email)}">${esc(email)}</a>`].filter(Boolean).join(', ');
   }
 }
 

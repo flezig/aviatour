@@ -203,7 +203,7 @@ def test_scenario_pages_budget_weekend_holidays():
         page = client.get('/kuda/moskva/do-10000')
         html = page.text
         assert page.status_code == 200 and 's-maxage' in page.headers['Cache-Control']
-        assert '<title>Куда улететь из Москвы до 10 000 ₽ — 4 направления от 3 000 ₽ · Aviator</title>' in html
+        assert '<title>Куда улететь из Москвы до 10 000 ₽: 4 направления от 3 000 ₽ — Aviator</title>' in html
         assert '<link rel="canonical" href="https://aviatour.vercel.app/kuda/moskva/do-10000">' in html and 'noindex' not in html
         # Дешевле — выше; ссылка открывает поездку на главной по её поиску.
         assert html.index('Казань') < html.index('Санкт-Петербург') < html.index('Уфа') < html.index('Сочи')

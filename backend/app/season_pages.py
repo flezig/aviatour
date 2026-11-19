@@ -101,7 +101,7 @@ def layout(title, description, path, crumbs, main, script="/js/site.js", photo=N
     head = PHOTO_HEAD if photo else HEAD
     return (
         head.format(
-            title=esc(title + " · Aviator"),
+            title=esc(title + " — Aviator"),
             description=esc(description),
             url=esc(SITE + path),
             image=SITE + (f"/photos/{photo}.jpg" if photo else "/og.jpg"),
@@ -171,7 +171,7 @@ def directory(catalog, month, query, today, photos, full=False, page=1, checked=
         photo = (f'<img src="/photos/s/{esc(code)}.webp" alt="" width="320" height="155" loading="lazy">'
                  if code in photos else "")
         items.append(f'<article class="rating-tile"><a class="rating-tile-city" href="{url}">{photo}'
-                     f'<h2>{esc(city["city"])}</h2></a><p>{esc(city["country"])} · {esc(code)}</p>'
+                     f'<h2>{esc(city["city"])}</h2></a><p>{esc(city["country"])}, {esc(code)}</p>'
                      f'{badge(code, month, year=year, today=today, checked_report=checked.get(code))}</article>')
     params = {"month": month}
     if query:
@@ -223,10 +223,10 @@ def source_info(n):
         )
     if n["source"] == "Meteostat":
         return (
-            f"Станция {n['name']} · {n['km']} км от координат города · Meteostat (CC BY 4.0)",
+            f"Станция {n['name']}, в {n['km']} км от координат города, Meteostat (CC BY 4.0)",
             "https://meteostat.net/en/station/" + n["id"],
         )
-    return f"Станция {n['name']} · {n['km']} км от координат города · ВМО", WMO
+    return f"Станция {n['name']}, в {n['km']} км от координат города, ВМО", WMO
 
 
 def city_page(catalog, code, month, requested_mode, origin, rating, year, today, other_month, *, photo=False):
@@ -286,7 +286,7 @@ def city_page(catalog, code, month, requested_mode, origin, rating, year, today,
         src, url = source_info(normal)
         temp_label = f"{temp:+g}".replace(".", ",") + " °C"
         climate = f'''<article><h2>Погода днём</h2><strong>{temp_label}</strong><p>Средний дневной максимум. Осадки за месяц — {str(precip).replace(".", ",")} мм.</p>
-        <small>1991–2020 · <a href="{esc(url)}">{esc(src)}</a></small></article>'''
+        <small>Нормы за 1991–2020 годы. <a href="{esc(url)}">{esc(src)}</a></small></article>'''
         note = f"Средний дневной максимум {temp_label}"
     else:
         climate = "<article><h2>Погода днём</h2><p>Для этого города пока нет полного климатического ряда.</p></article>"
@@ -301,8 +301,8 @@ def city_page(catalog, code, month, requested_mode, origin, rating, year, today,
         area = {"г.Москва": "Москва", "г.Санкт-Петербург": "Санкт-Петербург"}.get(
             name, name
         )
-        demand = f'''<article><h2>Туристический спрос</h2><strong>{percent}% годового потока</strong><p>{QUARTERS[quarter]} 2025 · {group(counts[quarter])} поездок. {scope} · {esc(area)}.</p>
-        <small><a href="{ROS}">Росстат</a> · доля поездок за квартал. Очереди в городе в эту статистику не входят.</small></article>'''
+        demand = f'''<article><h2>Туристический спрос</h2><strong>{percent}% годового потока</strong><p>{QUARTERS[quarter]} 2025 года — {group(counts[quarter])} поездок. {scope} ({esc(area)}).</p>
+        <small>Доля поездок за квартал по данным <a href="{ROS}">Росстата</a>. Очереди в городе в эту статистику не входят.</small></article>'''
     else:
         demand = "<article><h2>Туристический спрос</h2><p>Сопоставимых данных о поездках за квартал пока нет.</p></article>"
     advice = ADVICE.get(cc, {})
@@ -320,9 +320,9 @@ def city_page(catalog, code, month, requested_mode, origin, rating, year, today,
         if official and official.get("photo")
         else ""
     )
-    body = f'''{tabs}<header class="season-heading"><div><p>{esc(city["country"])} · {code}</p><h1>{esc(title)}</h1>{badge(code, month, origin, rating["year"], checked_report=rating)}</div>{hero}</header>
+    body = f'''{tabs}<header class="season-heading"><div><p>{esc(city["country"])}, {code}</p><h1>{esc(title)}</h1>{badge(code, month, origin, rating["year"], checked_report=rating)}</div>{hero}</header>
 <section class="season-panel" id="season" data-code="{code}" data-month="{month}" data-domestic="{int(cc == "RU")}" data-mode="{mode}" data-walk="{esc(json.dumps([walk_score(t, p) for t, p in zip(normal["temperature"], normal["precipitation"])] if normal else []))}" data-counts="{esc(json.dumps(counts or []))}" data-fcdo="{int(bool(advice.get("fcdo")) and cc != "RU")}" data-origin="{esc(origin["iata"])}" data-all="{esc(origin["code"] if origin["all"] else "")}">
-{choice}<div class="season-summary"><div><p>{esc(mode_name)} · {MONTH_NAMES[idx].lower()}</p><h2 id="seasonVerdict" aria-live="polite">{"Проверяем цены и сведения по направлению…" if trip else esc(note)}</h2></div><strong id="seasonValue">{value}</strong></div>
+{choice}<div class="season-summary"><div><p>{esc(mode_name)}, {MONTH_NAMES[idx].lower()}</p><h2 id="seasonVerdict" aria-live="polite">{"Проверяем цены и сведения по направлению…" if trip else esc(note)}</h2></div><strong id="seasonValue">{value}</strong></div>
 <nav class="season-months" aria-label="Сравнить месяцы">{chart}</nav></section>
 <div class="season-facts">{climate}{demand}{fare}{safety}</div>
 {report_html(rating, today, origin, other_month)}
@@ -332,7 +332,7 @@ def city_page(catalog, code, month, requested_mode, origin, rating, year, today,
 <a class="btn-inline" href="/season/?month={month}">Проверить другой город</a>'''
     path = "/season/" + code
     return layout(
-        title + " · сезонный рейтинг",
+        title + ": сезонный рейтинг",
         "Сравните месяцы для прогулок, туристический спрос и стоимость перелёта.",
         path,
         [("Aviator", "/"), ("Сезонный рейтинг", "/season/"), (title, path)],

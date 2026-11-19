@@ -91,6 +91,8 @@ def test_api_directory_and_fallback_match():
         assert client.get("/api/v1/city-rating/KZN?month=13").status_code == 422
         page = client.get("/season/KZN?month=11&year=2026&from=SVO&fc=MOW").text
         assert 'id="city-rating"' in page and "184 ₽" in page and "Сравнить расходы в 42 городах" in page
+        assert "<p>Казань</p>" in page and '<time datetime="2026-11">Ноябрь 2026</time>' in page
+        assert "Номера на 20–22 ноября 2026 года" in page
         assert 'data-rating-city="KZN"' in client.get("/season/?q=Казань&month=11").text
 
 

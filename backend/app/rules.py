@@ -117,7 +117,7 @@ def matches(offer, request, now):
     if not includes(request.region, offer.country_code):
         return False
     dep, ret = offer.departure_at, offer.return_at
-    if dep <= now or ret <= dep or offer.price_minor > request.max_budget_minor:
+    if dep <= now or ret <= dep or (request.max_budget_minor is not None and offer.price_minor > request.max_budget_minor):
         return False
     if request.destination_city_code:
         if offer.city_code != request.destination_city_code:

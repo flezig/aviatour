@@ -6,8 +6,6 @@
   <title>Aviator — куда улететь дешево</title>
   <meta name="description" content="Билеты туда и обратно на выходные и праздники. Сравните цены из кеша Aviasales и время на месте.">
   <meta name="theme-color" content="#eef3f9">
-  <link rel="preload" href="/photos/hero-960.webp" as="image" media="(max-width: 699px)">
-  <link rel="preload" href="/photos/hero-1920.webp" as="image" media="(min-width: 700px)">
   <link rel="canonical" href="https://aviatour.vercel.app/">
   <!-- preview:start -->
   <meta property="og:type" content="website">
@@ -70,7 +68,22 @@
 </svg>
 <!-- icons:end -->
   <a class="skip" href="#search">К поиску</a>
-  <div class="hero-photo" aria-hidden="true"><picture><source media="(min-width: 700px)" srcset="/photos/hero-1920.webp"><img src="/photos/hero-960.webp" alt="" fetchpriority="high" decoding="async"></picture></div>
+  <div class="hero-photo" aria-hidden="true">
+    <picture>
+      <source media="(max-width: 699px), (horizontal-viewport-segments: 2)" type="image/avif" sizes="(horizontal-viewport-segments: 2) 50vw, 100vw"
+              srcset="/photos/hero-mobile-480.avif 480w, /photos/hero-mobile-900.avif 900w,
+                      /photos/hero-mobile-1320.avif 1320w, /photos/hero-mobile-2100.avif 2100w">
+      <source media="(max-width: 699px), (horizontal-viewport-segments: 2)" type="image/webp" sizes="(horizontal-viewport-segments: 2) 50vw, 100vw"
+              srcset="/photos/hero-mobile-900.webp 900w, /photos/hero-mobile-1320.webp 1320w">
+      <source type="image/avif" sizes="(min-width: 900px) 73vw, 100vw"
+              srcset="/photos/hero-wide-768.avif 768w, /photos/hero-wide-1024.avif 1024w,
+                      /photos/hero-wide-1600.avif 1600w, /photos/hero-wide-2304.avif 2304w,
+                      /photos/hero-wide-3072.avif 3072w, /photos/hero-wide-4200.avif 4200w">
+      <source type="image/webp" sizes="(min-width: 900px) 73vw, 100vw"
+              srcset="/photos/hero-wide-1600.webp 1600w, /photos/hero-wide-3072.webp 3072w">
+      <img src="/photos/hero-1920.jpg" alt="" fetchpriority="high" decoding="async">
+    </picture>
+  </div>
   <header class="top wrap">
     <a class="brand" href="/"><span class="brand-mark"><svg class="icon" aria-hidden="true"><use href="#ui-plane"></use></svg></span>Aviator</a>
     <nav class="nav" aria-label="Разделы сайта">
@@ -85,7 +98,7 @@
   <main class="wrap">
     <section class="intro">
       <div>
-        <h1>Куда улететь <button type="button" class="origin" id="originTitle" aria-label="Город вылета. Изменить">из&nbsp;Москвы</button></h1>
+        <h1>Куда улететь <button type="button" class="origin" id="originTitle" aria-label="Город вылета. Изменить" aria-haspopup="dialog" aria-controls="picker">из&nbsp;Москвы</button></h1>
         <p class="intro-lead">Цены за перелёт туда и обратно на одного. Проверьте цену на Aviasales перед покупкой.</p>
       </div>
       <!-- Место под поиск словами. Скрыто до запуска функции (решение владельца 16.11.2026): выключенное поле на первом экране
@@ -100,15 +113,15 @@
         <span class="search-summary-edit">Изменить</span>
       </button>
       <div class="search-line" id="searchLine">
-        <button type="button" class="line-field" data-field="origin"><span class="label">Откуда</span><span class="line-value"><b class="code" id="lineCode">MOW</b> <span id="lineOrigin">Москва</span></span></button>
+        <button type="button" class="line-field" data-field="origin" aria-haspopup="dialog" aria-controls="picker"><span class="label">Откуда</span><span class="line-value"><b class="code" id="lineCode">MOW</b> <span id="lineOrigin">Москва</span></span></button>
         <button type="button" class="line-field" data-field="destination" aria-haspopup="dialog" aria-controls="picker"><span class="label">Куда</span><span class="line-value" id="lineTo">Куда угодно</span></button>
         <button type="button" class="line-field" data-field="when"><span class="label">Когда</span><span class="line-value" id="lineWhen"></span></button>
-        <button type="button" class="line-field" data-field="budget"><span class="label">Бюджет на билеты</span><span class="line-value" id="lineBudget">до 25 000 ₽</span></button>
+        <button type="button" class="line-field" data-field="budget"><span class="label">Бюджет на билеты</span><span class="line-value" id="lineBudget">Без лимита</span></button>
       </div>
       <div class="search-fields" id="searchFields">
         <div class="field-group">
-          <button type="button" class="pick" id="originPick">
-            <span class="pick-text"><span class="label">Откуда</span><span class="pick-value" id="originLabel">Москва · все аэропорты</span></span>
+          <button type="button" class="pick" id="originPick" aria-haspopup="dialog" aria-controls="picker">
+            <span class="pick-text"><span class="label">Откуда</span><span class="pick-value" id="originLabel">Москва, все аэропорты</span></span>
             <svg class="icon" aria-hidden="true"><use href="#ui-chevron-down"></use></svg>
           </button>
         </div>
@@ -120,33 +133,33 @@
           </button>
         </div>
 
-        <div class="field-group">
-          <span class="label" id="datesLabel">Когда</span>
-          <div class="segmented" role="radiogroup" aria-labelledby="datesLabel">
-            <label><input type="radio" name="dateMode" value="month" checked><span>Месяц</span></label>
-            <label><input type="radio" name="dateMode" value="exact"><span>Точные даты</span></label>
+        <div class="field-group search-dates">
+          <div class="date-mode-row">
+            <span class="label" id="datesLabel">Когда</span>
+            <div class="segmented" role="radiogroup" aria-labelledby="datesLabel">
+              <label><input type="radio" name="dateMode" value="month" checked><span>Месяц</span></label>
+              <label><input type="radio" name="dateMode" value="exact"><span>Точные даты</span></label>
+            </div>
           </div>
           <div class="stack when-fields" id="monthFields">
             <select class="menu" id="month" aria-label="Месяц"></select>
-            <label class="toggle"><span>Только короткие выходные</span><input type="checkbox" class="switch" id="weekendOnly"></label>
+            <label class="search-check"><input type="checkbox" id="weekendOnly"><span>Только на выходные</span></label>
           </div>
           <div class="stack when-fields" id="exactFields" hidden>
             <div class="date-pair">
               <label class="date-cell"><span class="label">Туда</span><input type="date" id="departureDate"></label>
               <label class="date-cell"><span class="label">Обратно</span><input type="date" id="returnDate"></label>
             </div>
-            <p class="caption">Местное время аэропортов</p>
           </div>
         </div>
 
         <div class="field-group">
           <div class="budget">
             <label class="label" for="budget">Бюджет на билеты</label>
-            <output class="budget-value" id="budgetValue" for="budget">25 000 ₽</output>
-            <input type="range" class="slider" id="budget" min="5000" max="500000" step="1000" value="25000">
-            <p class="caption">Туда и обратно на одного</p>
+            <output class="budget-value" id="budgetValue" for="budget">Без лимита</output>
+            <input type="range" class="slider" id="budget" min="4000" max="500000" step="1000" value="4000" aria-valuetext="Без лимита">
           </div>
-          <label class="toggle"><span>Только прямые рейсы</span><input type="checkbox" class="switch" id="directOnly"></label>
+          <label class="search-check"><input type="checkbox" id="directOnly"><span>Только прямые рейсы</span></label>
         </div>
       </div>
       <button class="btn-primary search-go" type="submit" id="searchButton"><svg class="icon" aria-hidden="true"><use href="#ui-search"></use></svg><span id="searchAction">Показать направления</span></button>
@@ -174,12 +187,12 @@
   </footer>
 
   <dialog class="sheet" id="picker" aria-labelledby="pickerTitle">
-    <div class="sheet-bar">
-      <h2 id="pickerTitle">Откуда вылетаете?</h2>
-      <button class="sheet-done" type="button" data-close>Закрыть</button>
+    <div class="picker-toolbar">
+      <h2 id="pickerTitle" tabindex="-1">Откуда</h2>
+      <label class="picker-input"><svg class="icon" aria-hidden="true"><use href="#ui-search"></use></svg><input type="search" id="pickerInput" placeholder="Город, аэропорт или код" aria-label="Город, аэропорт или код" autocomplete="off"></label>
+      <button class="picker-close" type="button" data-close aria-label="Закрыть"><svg class="icon" aria-hidden="true"><use href="#ui-close"></use></svg></button>
     </div>
     <div class="sheet-body">
-      <div class="picker-search"><label class="picker-input"><svg class="icon" aria-hidden="true"><use href="#ui-search"></use></svg><input type="search" id="pickerInput" placeholder="Город, аэропорт или код" aria-label="Город, аэропорт или код" autocomplete="off"></label></div>
       <p class="picker-section picker-scope-heading" id="pickerScopeHeading" hidden>Страны и регионы</p>
       <div id="pickerRegions" class="picker-regions" role="group" aria-label="Направления" hidden></div>
       <details class="picker-coverage" id="pickerCoverage" hidden>

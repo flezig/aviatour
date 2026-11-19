@@ -192,7 +192,7 @@ def fares(catalog, city, origin, cheapest, received_at, fixed=False):
         best_month = best.departure_at.strftime('%Y-%m')
         price = f'''<p class="fares-from">Билеты {pick}</p>
 <p class="fares-price"><span>от</span> <b>{money(best.price_minor)}</b></p>
-<p class="caption">туда и обратно на одного · {date_range(best.departure_at, best.return_at)}, {nights_label(nights(best))} · цены Aviasales на {received_html(received_at)}</p>
+<p class="caption">Туда и обратно на одного, {date_range(best.departure_at, best.return_at)} ({nights_label(nights(best))}). Цены Aviasales на {received_html(received_at)}.</p>
 <a class="btn-primary" href="{esc(search_link(origin, city, best_month, best.price_minor))}">Выбрать даты<svg class="icon" aria-hidden="true"><use href="/icons.svg#arrow-right"></use></svg></a>'''
     else:
         price = f'''<p class="fares-from">Билеты {pick}</p>
@@ -229,7 +229,7 @@ def fares(catalog, city, origin, cheapest, received_at, fixed=False):
     stay = f'''<h2 id="stayTitle"><svg class="icon" aria-hidden="true"><use href="/icons.svg#bed"></use></svg>Где жить</h2>
 <p>{'Aviasales — на даты самой дешёвой поездки, один взрослый. ' if dates else ''}{'Островок — даты и число гостей выберете на сайте.' if city.get('ostrovok') else ''}</p>
 <div class="stay-links">{''.join(links)}</div>
-{''.join(f'<p class="ad-mark" data-ad="{partner}">Реклама · {"Aviasales" if partner == "aviasales" else "Островок"}</p>' for partner in partners)}''' if links else ''
+{''.join(f'<p class="ad-mark" data-ad="{partner}">Реклама: {"Aviasales" if partner == "aviasales" else "Островок"}</p>' for partner in partners)}''' if links else ''
     return {'price': price, 'months': months, 'stay': stay, 'has_prices': bool(best), 'best': best}
 
 
@@ -348,7 +348,7 @@ def population(city):
     value = city.get('population')
     if not value:
         return ''
-    return f' · население {group(value["value"])} ({value["year"]}, <a href="https://www.wikidata.org/wiki/{esc(city["qid"])}" target="_blank" rel="noopener">Wikidata</a>)'
+    return f', население {group(value["value"])} ({value["year"]}, <a href="https://www.wikidata.org/wiki/{esc(city["qid"])}" target="_blank" rel="noopener">Wikidata</a>)'
 
 
 def page(catalog, city, origin, parts, route=False):
@@ -359,12 +359,12 @@ def page(catalog, city, origin, parts, route=False):
     best = parts['best']
     price = f' от {money(best.price_minor)}' if best else ''
     if route:
-        title = f'{origin["name"]} — {name}: билеты туда и обратно{price} · Aviator'
+        title = f'{origin["name"]} — {name}: билеты туда и обратно{price} — Aviator'
         description = f'Самые низкие найденные цены на билеты из {origin["from"]} {city["to"]} по месяцам, идеи прогулок и жильё. Покупка — на Aviasales.'
         crumbs = [('Aviator', '/'), ('Города', '/city/'), (name, f'/city/{city["slug"]}'), (f'Из {origin["from"]}', url[len(SITE):])]
         heading = f'{esc(origin["name"])} — {esc(name)}'
     else:
-        title = f'{name}: билеты из {origin["from"]}{price}, когда лететь дешевле · Aviator'
+        title = f'{name}: билеты из {origin["from"]}{price}, когда лететь дешевле — Aviator'
         description = f'Когда лететь {city["to"]} дешевле: цены на билеты туда и обратно по месяцам, что посмотреть и где жить. Покупка — на Aviasales.'
         crumbs = [('Aviator', '/'), ('Города', '/city/'), (name, url[len(SITE):])]
         heading = esc(name)
@@ -381,7 +381,7 @@ def page(catalog, city, origin, parts, route=False):
     <section class="city-hero">
       <div class="stamp stamp--hero"><div class="photo"><img src="/photos/{esc(city['code'])}.jpg" alt="{esc(name)}" width="720" height="480" fetchpriority="high"></div></div>
       <div class="city-head">
-        <p class="city-code"><b>{esc(city['code'])}</b> · {esc(city['country'])}{population(city)}</p>
+        <p class="city-code"><b>{esc(city['code'])}</b>, {esc(city['country'])}{population(city)}</p>
         <h1>{heading}</h1>
         {badge(city['code'],month,origin)}
         <div class="fares" id="fares" aria-live="polite">{parts['price']}</div>
@@ -484,10 +484,10 @@ def directory_row(city, show_places):
     url = f'/city/{city.slug}' if city.slug else f'/season/{city.code}'
     photo = (f'<img src="/photos/s/{esc(city.code)}.webp" width="76" height="55" alt="" loading="lazy" decoding="async">'
              if city.slug else '')
-    qualifier = 'Погода по месяцам' if not city.slug else 'Путеводитель' if city.guide else ''
-    places = f'<span class="directory-places">{esc(" · ".join(city.places))}</span>' if show_places and city.places else ''
+    qualifier = 'погода по месяцам' if not city.slug else 'путеводитель' if city.guide else ''
+    places = f'<span class="directory-places">{esc(", ".join(city.places))}</span>' if show_places and city.places else ''
     return f'''<li><a class="directory-city" data-city="{esc(city.code)}" href="{esc(url)}">{photo}
-    <span><strong>{esc(city.name)}</strong><small>{esc(city.country)}{' · ' + qualifier if qualifier else ''}</small>{places}</span>
+    <span><strong>{esc(city.name)}</strong><small>{esc(city.country)}{', ' + qualifier if qualifier else ''}</small>{places}</span>
     <span class="directory-arrow" aria-hidden="true">→</span></a></li>'''
 
 
@@ -551,7 +551,7 @@ def index_page(catalog, q='', region='all', guide=False, page=1):
     <p class="directory-season"><a href="/season/">Рейтинги и погода по месяцам</a></p></div>
   </main>'''
     canonical = directory_url(page=page if not (q or guide or region != 'all') else 1)
-    head = HEAD.format(title='Города: когда лететь дешевле · Aviator',
+    head = HEAD.format(title='Города: когда лететь дешевле — Aviator',
                        description='Найдите город по названию, стране или коду аэропорта. Путеводители, цены на билеты и погода по месяцам.',
                        url=esc(SITE + canonical), image=f'{SITE}/og.jpg', robots='', ld=ld, cities_current=' aria-current="page"')
     head = head.replace('</head>', '  <link rel="stylesheet" href="/city-directory.css">\n</head>')

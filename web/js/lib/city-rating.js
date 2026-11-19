@@ -109,7 +109,7 @@ function evidence(report, pageUrl) {
     + ' ≈ ' + scoreFormat.format(report.score) + '.' : '';
   return `<div class="rating-document" tabindex="0" aria-label="Расчёт и список источников"><h3>Общая оценка</h3>
     <p>${hasScore(report) ? 'Умножаем баллы на веса, складываем и округляем результат до десятых. ' + formula : esc(verdict(report))}</p>`
-    + report.components.map(item => `<section><h3>${esc(item.label)} · ${esc(item.weight)}%</h3><p>${esc(item.detail)}</p>
+    + report.components.map(item => `<section><h3>${esc(item.label)} (${esc(item.weight)}%)</h3><p>${esc(item.detail)}</p>
       ${item.missing.length ? `<p><b>Чего не хватает.</b> ${esc(item.missing.join(' '))}</p>` : ''}
       ${item.trip_detail ? `<p><b>Цены на конкретные выходные.</b> ${esc(item.trip_detail)}</p>` : ''}
       ${item.comparison ? `<p><a href="${esc(comparisonUrl.href)}">Сравнить расходы в ${item.comparison.length} городах</a></p>` : ''}
@@ -191,11 +191,9 @@ function fillBody() {
   const back = view === 'sources';
   panel.querySelector('.rating-back').hidden = !back;
   panel.querySelector('.rating-type').hidden = back;
-  const split = active.closest('.rating-directory') && !back;
-  panel.querySelector('h2').textContent = back ? 'Источники и расчёт' : split ? report.city : report.city + ' · ' + period;
+  panel.querySelector('h2').textContent = back ? 'Источники и расчёт' : report.city;
   const caption = panel.querySelector('.rating-caption');
-  caption.hidden = !split && !back;
-  caption.textContent = back ? report.city + ' · ' + period : period;
+  caption.textContent = back ? report.city + ', ' + period : period;
   panel.scrollTop = 0;
   position();
 }

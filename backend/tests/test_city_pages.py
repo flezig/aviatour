@@ -97,7 +97,7 @@ def test_city_page_is_ready_html_with_price_months_seo_and_partner_links():
         assert 'Что посмотреть' in page and 'Казанский кремль' in page  # заметки редакции есть только у 25 городов
         links = re.findall(r'href="(/go\?[^"]+)"', page)
         assert links and all(parse_qs(urlsplit(link.replace('&amp;', '&')).query)['s'] == ['kzn-city-stay'] for link in links)
-        assert 'Реклама · Aviasales' in page and 'Реклама · Островок' in page
+        assert 'Реклама: Aviasales' in page and 'Реклама: Островок' in page
         # Поиск маршрута на каждый из шести месяцев, тот же запрос, что делает выдача сайта.
         searches = [call for call in calls if 'departure_at' in call]
         assert len(searches) == 6 and {call['destination'] for call in searches} == {'KZN'} and {call['origin'] for call in searches} == {'MOW'}
