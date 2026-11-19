@@ -648,8 +648,8 @@ img { display: block; max-width: 100%; }
 /* --- Текстовые страницы --- */
 .page-head { display: grid; gap: var(--s-2); padding: var(--s-4) 0 var(--s-5); max-width: 40em; }
 .page-head p { color: var(--ink-2); font-size: var(--fs-lead); }
-.prose { display: grid; gap: var(--s-4); max-width: 46em; }
-.prose .card { gap: var(--s-3); }
+.prose { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s-4); max-width: 46em; min-width: 0; overflow-wrap: anywhere; }
+.prose .card { grid-template-columns: minmax(0, 1fr); gap: var(--s-3); }
 .prose .card > ul, .prose .card > ol { padding-left: 1.2em; display: grid; gap: var(--s-1); }
 .prose dl { display: grid; gap: var(--s-3); margin: 0; }
 .prose dt { font-weight: 600; }

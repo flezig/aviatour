@@ -19,12 +19,13 @@ async function visit(page, path) {
   const response = await page.goto(base + path, { waitUntil: 'domcontentloaded' });
   if (path === '/#fav') await page.waitForSelector('body.favorites-page');
   else assert.equal(response.status(), 200, path);
+  if (path === '/credits.html') await page.locator('#credits li').first().waitFor();
   await page.evaluate(() => document.fonts.ready);
   const [viewport, documentWidth, contentWidth] = await page.evaluate(() => [
     innerWidth, document.documentElement.clientWidth, document.documentElement.scrollWidth,
   ]);
   assert.equal(viewport, page.viewportSize().width, path + ' расширилась');
-  assert.ok(contentWidth <= documentWidth + 1, path + ' прокручивается поперёк');
+  assert.ok(contentWidth <= documentWidth + 1, path + ' на ширине ' + viewport + ' прокручивается до ' + contentWidth);
 }
 
 async function rect(page, selector) {
