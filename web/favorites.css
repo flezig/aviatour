@@ -20,7 +20,8 @@ body.favorites-page { background: #f4f6fa; }
 .favorite-ticket { display: grid; grid-template-columns: 150px minmax(0,1fr) auto var(--tap); align-items: center; gap: 20px; padding: 18px 24px; }
 .favorite-ticket + .favorite-ticket { border-top: 1px solid var(--line); }
 .favorite-ticket .photo { width: 100%; height: 88px; aspect-ratio: auto; }
-.favorite-info .favorite-link { min-height: 0; color: var(--ink); font: 800 24px/1.15 var(--f-head); letter-spacing: -.03em; }
+.favorite-info .favorite-link { min-height: 0; color: var(--ink); overflow-wrap: anywhere; }
+.favorite-info .favorite-link, .favorite-comparison .compare thead th, .favorite-option-city, .favorite-details .favorite-link { font: var(--city-title); letter-spacing: 0; }
 .favorite-info p { margin-top: 4px; font-size: 15px; }
 .favorite-info .caption { font-size: 13px; }
 .favorite-fare { text-align: right; }
@@ -53,7 +54,6 @@ body.favorites-page { background: #f4f6fa; }
   .favorite-ticket { grid-template-columns: 70px minmax(0,1fr) var(--tap); grid-template-rows: auto auto; gap: 3px 10px; padding: 14px 10px; }
   .favorite-ticket .photo { grid-area: 1 / 1 / 3 / 2; height: 66px; align-self: start; }
   .favorite-info { grid-area: 1 / 2; }
-  .favorite-info .favorite-link { font-size: 18px; overflow-wrap: anywhere; }
   .favorite-info p { font-size: 13px; line-height: 1.35; }
   .favorite-info .caption { font-size: 12px; }
   .favorite-fare { grid-area: 2 / 2 / 3 / 4; text-align: left; }

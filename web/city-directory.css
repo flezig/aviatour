@@ -33,7 +33,7 @@ body { background: var(--card); }
 .directory-city:hover { background: #f6f8fc; }
 .directory-city:hover strong, .directory-cover a:hover { text-decoration: underline; text-underline-offset: 3px; }
 .directory-city img { flex: none; width: 76px; height: 55px; object-fit: cover; border-radius: 5px; }
-.directory-city strong { display: block; font: 800 18px/1.18 var(--f-head); letter-spacing: -.035em; overflow-wrap: anywhere; }
+.directory-city strong { display: block; font: var(--city-title); letter-spacing: 0; overflow-wrap: anywhere; }
 .directory-city small, .directory-places { display: block; font-size: 13px; margin-top: 3px; }
 .directory-city small { color: var(--ink-2); }
 .directory-arrow { margin-left: auto; color: var(--ink-2); }
@@ -65,5 +65,4 @@ body { background: var(--card); }
   .directory-list { display: block; }
   .directory-city { min-height: 70px; gap: 12px; }
   .directory-city img { width: 62px; height: 47px; }
-  .directory-city strong { font-size: 17px; }
 }

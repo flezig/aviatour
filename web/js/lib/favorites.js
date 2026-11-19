@@ -66,5 +66,5 @@ export function favoriteComparison(chosen, canChoose, table, removed) {
 
 export function favoriteOptions(offers, ids) {
   return offers.map(offer => `<label class="favorite-option"><input type="checkbox" value="${esc(offer.id)}" ${ids.includes(offer.id) ? 'checked' : ''}>
-    <span><b>${esc(offer.city)} · ${esc(fmtMoney(offer.price_minor))}</b><small>${esc([dates(offer), fmtTime(new Date(offer.departure_at), offer.origin_timezone), route(offer), offer.flight_number].filter(Boolean).join(' · '))}</small></span></label>`).join('');
+    <span><b><span class="favorite-option-city">${esc(offer.city)}</span> · ${esc(fmtMoney(offer.price_minor))}</b><small>${esc([dates(offer), fmtTime(new Date(offer.departure_at), offer.origin_timezone), route(offer), offer.flight_number].filter(Boolean).join(' · '))}</small></span></label>`).join('');
 }
