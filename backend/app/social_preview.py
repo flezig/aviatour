@@ -6,15 +6,19 @@ from .city_pages import SITE
 
 # Include the route and offer identity so messengers can open the same search.
 PUBLIC_PARAMS = ('from', 'fc', 'to', 'tc', 'region', 'month', 'weekend', 'budget',
-                 'dep', 'ret', 'direct', 'city', 'trip')
+                 'dep', 'ret', 'direct', 'group', 'length', 'city', 'trip')
 
 
 def city_metadata(template, path, params, city, has_photo):
     code, name = city['city_code'], city['city']
     image = SITE + (f'/photos/{code}.jpg' if has_photo else '/og.jpg')
-    title = escape(f"{name} · {'План поездки' if path == '/trip.html' else 'Билеты'} · Aviator")
+    title = escape(f"{name}: {'план поездки' if path == '/trip.html' else 'билеты'} — Aviator")
     alt = escape(name) if has_photo else 'Aviator'
-    query = urlencode([(key, params[key]) for key in PUBLIC_PARAMS if key in params])
+    items = [(key, params[key]) for key in PUBLIC_PARAMS if key in params]
+    if 'filter' in params:
+        values = params.getlist('filter') if hasattr(params, 'getlist') else [params['filter']]
+        items.extend(('filter', value) for value in values if value in {'near', 'noLeave', 'cheap', 'comfy', 'russia'})
+    query = urlencode(items)
     url = escape(f'{SITE}{path}?{query}')
     meta = f'''<meta property="og:type" content="website">
   <meta property="og:site_name" content="Aviator">

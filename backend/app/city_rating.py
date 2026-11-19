@@ -88,7 +88,7 @@ def activities(code, evidence, month, year, today):
         places = guide.get("places", [])
         if places:
             detail = "В городском гиде есть " + ", ".join(places) + ". Доступность по выходным в выбранном месяце требует проверки."
-            links = [source("Городской гид · " + guide["editorial_updated"], guide["tourism_url"])]
+            links = [source("Городской гид от " + guide["editorial_updated"], guide["tourism_url"])]
         else:
             detail = "Проверяем, куда можно сходить в городе в обычные выходные."
     missing = ["Нужны подтверждённые расписания по категориям: " + ", ".join(missing_categories) + "."] if missing_categories else []
@@ -119,7 +119,7 @@ def survey_cost(city, year, month, today):
         absent = ", ".join(label for key, label in units.items() if key not in rates)
         missing = f"Нет цены в обследовании: {absent}."
         part = result("cost", detail=f"Средние цены Росстата на {period}: {details}.",
-                      missing=[missing], sources=[source("Росстат · ЕМИСС", PRICES["source"])])
+                      missing=[missing], sources=[source("Росстат (ЕМИСС)", PRICES["source"])])
         part["gap"] = missing
         return part
     rows = []
@@ -141,8 +141,8 @@ def survey_cost(city, year, month, today):
               f'и четыре поездки на автобусе по {rubles(rates["bus"])}. Корзина — {rubles(basket)}, '
               f'медиана группы сравнения — {rubles(reference)} (других городов: {len(peers)}). '
               'На уровне медианы расходы получают 5/10, вдвое дешевле — 10/10, вдвое дороже — 0/10.')
-    part = result("cost", score, detail, sources=[source("Росстат · ЕМИСС", PRICES["source"])])
-    part["budget_label"] = f"Росстат · {period} · {rubles(basket)}"
+    part = result("cost", score, detail, sources=[source("Росстат (ЕМИСС)", PRICES["source"])])
+    part["budget_label"] = f"{rubles(basket)} по данным Росстата на {period}"
     part["fact"] = f"{rubles(basket)} на человека за две ночи, четыре обеда и проезд. Росстат, {period}."
     part["comparison_period"] = period
     part["comparison"] = []
@@ -236,7 +236,7 @@ def climate(code, month):
     temp = normal["temperature"][month - 1]
     rain = normal["precipitation"][month - 1]
     label, url = season.source_info(normal)
-    detail = (f'Днём {"+" if temp > 0 else ""}{number(temp)} °C · {number(rain)} мм осадков за месяц. '
+    detail = (f'Днём {"+" if temp > 0 else ""}{number(temp)} °C, {number(rain)} мм осадков за месяц. '
               'Нормы 1991–2020. Температура даёт 80% оценки, осадки — 20%.')
     part = result("climate", season.walk_score(temp, rain), detail, sources=[source(label, url)])
     signed_temp = f"{temp:+g}".replace(".", ",").replace("-", "−")
@@ -260,7 +260,7 @@ def mobility(routes, month, year, today):
                     checks.append(ride <= 30)
     count = sum(checks)
     areas = " и ".join(p["area"] for p in routes["starts"])
-    detail = (f'Исторический центр · {areas}. Из двух отелей до пяти мест за 30 минут '
+    detail = (f'Районы исторического центра: {areas}. Из двух отелей до пяти мест за 30 минут '
               f'можно добраться в {count} из 20 случаев. Модель на субботу в 10:00 и 15:00, '
               f'при открытом проходе, без учёта погоды. Проверено {routes["checked"]}.')
     times = [t for row in routes["walk_minutes"] for t in row if t is not None]
@@ -393,7 +393,7 @@ def city_comparison_html(data, today, origin, other_month):
             cells.append(f'<td><a href="{esc(href)}">{esc(label)}</a></td>')
         rows.append(f'<tr><th scope="row">{esc(season.CITIES[code]["city"])}</th>{"".join(cells)}</tr>')
     return ('<section class="rating-comparison" id="city-weekend-comparison"><h3>Сравнение городов</h3>'
-            '<table><caption>Рейтинг для поездки на выходные · 2026</caption>'
+            '<table><caption>Рейтинг для поездки на выходные в 2026 году</caption>'
             '<thead><tr><th scope="col">Город</th><th scope="col">Ноябрь</th><th scope="col">Декабрь</th></tr></thead>'
             f'<tbody>{"".join(rows)}</tbody></table>'
             '<p><a href="/season/compare/">Сравнить другие города</a></p></section>')
@@ -425,14 +425,14 @@ def comparison_directory(query, page, today, region="all"):
                     label = "Проверить оценку"
             href = season.link(code, month, year=2026) + "#city-rating"
             cells.append(f'<td><a href="{esc(href)}">{esc(label)}</a></td>')
-        rows.append(f'<tr><th scope="row">{esc(city["city"])} <small>· {esc(city["country"])} · {esc(code)}</small></th>{"".join(cells)}</tr>')
+        rows.append(f'<tr><th scope="row">{esc(city["city"])} <small>({esc(city["country"])}, {esc(code)})</small></th>{"".join(cells)}</tr>')
     navigation = []
     for target, label in ((page - 1, "Назад"), (page + 1, "Дальше")):
         if 0 < target and (target - 1) * page_size < len(codes):
             href = "/season/compare/?" + urlencode({"q": query, "region": region, "page": target})
             navigation.append(f'<a href="{esc(href)}">{label}</a>')
     title = "Сравнение городов на выходные"
-    table = (f'<div class="rating-comparison rating-comparison-scroll"><table><caption>Ноябрь и декабрь 2026 · направлений: {len(codes)} · с четырьмя показателями за оба месяца: {complete}</caption>'
+    table = (f'<div class="rating-comparison rating-comparison-scroll"><table><caption>Ноябрь и декабрь 2026 года. Всего направлений: {len(codes)}, с четырьмя показателями за оба месяца: {complete}</caption>'
              '<thead><tr><th scope="col">Город</th><th scope="col">Ноябрь</th><th scope="col">Декабрь</th></tr></thead>'
              f'<tbody>{"".join(rows)}</tbody></table></div>') if rows else "<p>Городов на этой странице нет.</p>"
     body = (f'<header class="page-head"><h1>{title}</h1><p>Сначала города, где собраны все четыре показателя.</p></header>'
@@ -440,7 +440,7 @@ def comparison_directory(query, page, today, region="all"):
             f'<input type="search" name="q" maxlength="100" value="{esc(query)}" placeholder="Например, Казань или DXB"></label>'
             f'<label>Где<select name="region">{options}</select></label>'
             '<button class="btn-inline" type="submit">Найти</button></form>'
-            + table + '<nav aria-label="Страницы сравнения">' + " · ".join(navigation) + '</nav>')
+            + table + '<nav class="rating-pages" aria-label="Страницы сравнения">' + "".join(navigation) + '</nav>')
     return season.layout(title, "Рейтинг городов за ноябрь и декабрь 2026 года.", "/season/compare/",
                          [("Aviator", "/"), ("Города", "/season/"), ("Сравнение", "/season/compare/")], body)
 
@@ -461,17 +461,14 @@ def walking_table(routes):
 def report_html(data, today, origin, other_month):
     def row(c):
         score = f'{number(c["score"])}/10' if c["score"] is not None else "Недостаточно данных"
-        links = " · ".join(f'<a href="{esc(s["url"])}">{esc(s["label"])}</a>' for s in c["sources"])
-        if any(s.get("note") for s in c["sources"]):
-            links = "<ul>" + "".join(
-                f'<li><a href="{esc(s["url"])}">{esc(s["label"])}</a> {esc(s.get("note", ""))}</li>'
-                for s in c["sources"]) + "</ul>"
-        elif links:
-            links = f"<p>{links}</p>"
+        items = "".join(f'<li><a href="{esc(s["url"])}">{esc(s["label"])}</a>'
+                        + (f' {esc(s["note"])}' if s.get("note") else "") + '</li>'
+                        for s in c["sources"])
+        links = f"<ul>{items}</ul>" if items else ""
         missing = " ".join(c["missing"])
         routes = ROUTES.get(data["code"])
         walking = walking_table(routes) if c["key"] == "mobility" and routes and applicable(routes, data["month"], data["year"], today) else ""
-        return (f'<div><dt>{esc(c["label"])} · {c["weight"]}% · {score}</dt><dd>{esc(c["detail"])}'
+        return (f'<div><dt>{esc(c["label"])} ({c["weight"]}%) — {score}</dt><dd>{esc(c["detail"])}'
                 + (f'<p><b>Ориентир на даты поездки.</b> {esc(c["trip_detail"])}</p>' if c.get("trip_detail") else "")
                 + (f' {esc(missing)}' if missing else "") + links + walking + '</dd></div>')
     cost = next(c for c in data["components"] if c["key"] == "cost")
@@ -481,7 +478,7 @@ def report_html(data, today, origin, other_month):
                         + "".join(f'<td>{rubles(r[k])}</td>' for k in ("hotel", "meals", "bus", "total"))
                         + "</tr>" for r in cost["comparison"])
         comparison = (f'<details class="rating-comparison"><summary>Сравнить расходы в {len(cost["comparison"])} городах</summary>'
-                      f'<div class="rating-comparison-scroll"><table><caption id="rating-comparison">Стоимость одной корзины · {esc(cost["comparison_period"])}</caption>'
+                      f'<div class="rating-comparison-scroll"><table><caption id="rating-comparison">Стоимость одной корзины на {esc(cost["comparison_period"])}</caption>'
                       '<thead><tr><th scope="col">Город</th><th scope="col">2 ночи</th><th scope="col">4 обеда</th><th scope="col">4 поездки</th><th scope="col">Итого</th></tr></thead>'
                       f'<tbody>{items}</tbody></table></div></details>')
     rows = "".join(row(c) for c in data["components"])
@@ -495,7 +492,7 @@ def report_html(data, today, origin, other_month):
     formula = (" + ".join(f'{c["score"]:.1f} × {c["weight"]}%'.replace(".", ",") for c in data["components"])
                + f' ≈ {numeric:.1f}.'.replace(".", ",")) if numeric is not None else ""
     return (f'<section class="season-method city-rating-report" id="city-rating"><h2>Рейтинг города</h2>'
-            f'<p>{esc(data["city"])} · {MONTH_NAMES[data["month"] - 1].lower()} {data["year"]}</p>'
+            f'<p>{esc(data["city"])}</p><p><time datetime="{data["year"]}-{data["month"]:02d}">{MONTH_NAMES[data["month"] - 1]} {data["year"]}</time></p>'
             f'<div class="rating-lead"><strong>{value}</strong><span>{esc(data["notice"] or data["verdict"])}</span></div>'
             '<div class="city-rating-criteria"><table><thead><tr><th scope="col">Показатель</th>'
             '<th scope="col">Балл /10</th><th scope="col">Вес</th></tr></thead>'

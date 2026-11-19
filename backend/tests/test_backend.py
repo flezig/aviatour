@@ -187,6 +187,20 @@ def test_web_search_is_cacheable_and_compact():
         bad=client.get('/api/v1/search/web',params={'from':'svo','month':'2026-10','budget':25000})
         assert bad.status_code==422 and 'Cache-Control' not in bad.headers
 
+def test_web_search_without_budget_includes_fares_above_slider_maximum():
+    rows = [
+        record() | {'price': price, 'departure_at': f'2026-10-02T{hour}:00:00+03:00'}
+        for price, hour in [(25000, '08'), (35000, '10'), (510001, '12')]
+    ]
+    transport = httpx.MockTransport(lambda req: httpx.Response(200, json={'success': True, 'data': rows}))
+    params = {'from': 'SVO', 'month': '2026-10', 'weekend': '0'}
+    with TestClient(create_app(Settings(token='fixture'), transport=transport, now=lambda: NOW)) as client:
+        for budget, expected in [(25000, [25000]), (500000, [25000, 35000]), (None, [25000, 35000, 510001])]:
+            query = params if budget is None else params | {'budget': budget}
+            response = client.get('/api/v1/search/web', params=query)
+            assert response.status_code == 200
+            assert sorted(offer['price_minor'] for offer in response.json()['offers']) == [rub * 100 for rub in expected]
+
 def test_web_search_suggests_longer_cheaper_trip():
     # Friday 2 Oct → Sunday 4 Oct is the weekend trip; coming back later is cheaper in some cases.
     rows=[record()|{'price':8500},

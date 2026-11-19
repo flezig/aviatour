@@ -260,31 +260,31 @@
         "meal_unit": "порция карбонары без напитка",
         "sources": [
           {
-            "label": "Номера на две ночи · 2026-11-20",
+            "label": "Номера на 20–22 ноября 2026 года",
             "url": "https://po-kurortam.ru/hotels/kazan/?date_from=2026-11-20&date_to=2026-11-22&adults=1"
           },
           {
-            "label": "Номера на две ночи · 2026-11-27",
+            "label": "Номера на 27–29 ноября 2026 года",
             "url": "https://po-kurortam.ru/hotels/kazan/?date_from=2026-11-27&date_to=2026-11-29&adults=1"
           },
           {
-            "label": "Friends’ Party · 460 ₽",
+            "label": "Friends’ Party — 460 ₽",
             "url": "https://friendskazan.ru/category?catid=7"
           },
           {
-            "label": "ViELento · 470 ₽",
+            "label": "ViELento — 470 ₽",
             "url": "https://vielentocafe.qr-cafe.ru/category?catid=1"
           },
           {
-            "label": "Итальяно · 650 ₽",
+            "label": "Итальяно — 650 ₽",
             "url": "https://disk.yandex.ru/i/KZodVjB-7X8XnQ"
           },
           {
-            "label": "4STARS (Cosmos Казань) · 720 ₽",
+            "label": "4STARS (Cosmos Казань) — 720 ₽",
             "url": "https://kazan.cosmosgroup.ru/files/hotel_restaurant_menu/49_RU_1770126554.pdf#page=7"
           },
           {
-            "label": "ZOLOTO · 870 ₽",
+            "label": "ZOLOTO — 870 ₽",
             "url": "https://zolotokzn.ru/"
           }
         ]
@@ -394,43 +394,43 @@
         "meal_unit": "порция карбонары без напитка",
         "sources": [
           {
-            "label": "Номера на две ночи · 2026-12-04",
+            "label": "Номера на 4–6 декабря 2026 года",
             "url": "https://po-kurortam.ru/hotels/kazan/?date_from=2026-12-04&date_to=2026-12-06&adults=1"
           },
           {
-            "label": "Номера на две ночи · 2026-12-11",
+            "label": "Номера на 11–13 декабря 2026 года",
             "url": "https://po-kurortam.ru/hotels/kazan/?date_from=2026-12-11&date_to=2026-12-13&adults=1"
           },
           {
-            "label": "Номера на две ночи · 2026-12-18",
+            "label": "Номера на 18–20 декабря 2026 года",
             "url": "https://po-kurortam.ru/hotels/kazan/?date_from=2026-12-18&date_to=2026-12-20&adults=1"
           },
           {
-            "label": "Friends’ Party · 460 ₽",
+            "label": "Friends’ Party — 460 ₽",
             "url": "https://friendskazan.ru/category?catid=7"
           },
           {
-            "label": "ViELento · 470 ₽",
+            "label": "ViELento — 470 ₽",
             "url": "https://vielentocafe.qr-cafe.ru/category?catid=1"
           },
           {
-            "label": "Итальяно · 650 ₽",
+            "label": "Итальяно — 650 ₽",
             "url": "https://disk.yandex.ru/i/KZodVjB-7X8XnQ"
           },
           {
-            "label": "4STARS (Cosmos Казань) · 720 ₽",
+            "label": "4STARS (Cosmos Казань) — 720 ₽",
             "url": "https://kazan.cosmosgroup.ru/files/hotel_restaurant_menu/49_RU_1770126554.pdf#page=7"
           },
           {
-            "label": "ZOLOTO · 870 ₽",
+            "label": "ZOLOTO — 870 ₽",
             "url": "https://zolotokzn.ru/"
           },
           {
-            "label": "Декабрьские цены · Санкт-Петербург",
+            "label": "Декабрьские цены в Санкт-Петербурге",
             "url": "/season/LED?month=12&year=2026#city-rating"
           },
           {
-            "label": "Декабрьские цены · Москва",
+            "label": "Декабрьские цены в Москве",
             "url": "/season/MOW?month=12&year=2026#city-rating"
           }
         ],
@@ -590,7 +590,7 @@
     "fare": {
       "amount": 88,
       "currency": "₽",
-      "source": "Администрация Санкт-Петербурга · наземный транспорт",
+      "source": "Администрация Санкт-Петербурга, наземный транспорт",
       "url": "https://www.gov.spb.ru/gov/otrasl/energ_kom/news/309932/",
       "year": 2026,
       "checked": "2026-11-18",
@@ -702,35 +702,35 @@
         "meal_unit": "порция карбонары без напитка",
         "sources": [
           {
-            "label": "Номера на две ночи · 2026-12-04",
+            "label": "Номера на 4–6 декабря 2026 года",
             "url": "https://po-kurortam.ru/hotels/sankt-peterburg/?date_from=2026-12-04&date_to=2026-12-06&adults=1"
           },
           {
-            "label": "Номера на две ночи · 2026-12-11",
+            "label": "Номера на 11–13 декабря 2026 года",
             "url": "https://po-kurortam.ru/hotels/sankt-peterburg/?date_from=2026-12-11&date_to=2026-12-13&adults=1"
           },
           {
-            "label": "Номера на две ночи · 2026-12-18",
+            "label": "Номера на 18–20 декабря 2026 года",
             "url": "https://po-kurortam.ru/hotels/sankt-peterburg/?date_from=2026-12-18&date_to=2026-12-20&adults=1"
           },
           {
-            "label": "Harat’s Pub · 640 ₽",
+            "label": "Harat’s Pub — 640 ₽",
             "url": "https://spb.harats.com/zemledelcheskaya/menu/"
           },
           {
-            "label": "Palermo · 680 ₽",
+            "label": "Palermo — 680 ₽",
             "url": "https://www.palermo-spb.ru/menu/a-la-carte/"
           },
           {
-            "label": "7AM Читатели · 690 ₽",
+            "label": "7AM Читатели — 690 ₽",
             "url": "https://7am-chitateli.ru/"
           },
           {
-            "label": "Тоскана гриль · 760 ₽",
+            "label": "Тоскана гриль — 760 ₽",
             "url": "https://toscanagrill.spb.ru/menu/"
           },
           {
-            "label": "Amarcord · 890 ₽",
+            "label": "Amarcord — 890 ₽",
             "url": "https://amarcord.clients.site/service/spagetti-karbonara/TYCOON_82249718272"
           }
         ]
@@ -889,7 +889,7 @@
     "fare": {
       "amount": 83,
       "currency": "₽",
-      "source": "Московский транспорт · тарифный калькулятор",
+      "source": "Московский транспорт, тарифный калькулятор",
       "url": "https://transport.mos.ru/mostrans/oplata_proezda/calc",
       "year": 2026,
       "checked": "2026-11-18",
@@ -1001,35 +1001,35 @@
         "meal_unit": "порция карбонары без напитка",
         "sources": [
           {
-            "label": "Номера на две ночи · 2026-12-04",
+            "label": "Номера на 4–6 декабря 2026 года",
             "url": "https://po-kurortam.ru/hotels/moskva/?date_from=2026-12-04&date_to=2026-12-06&adults=1"
           },
           {
-            "label": "Номера на две ночи · 2026-12-11",
+            "label": "Номера на 11–13 декабря 2026 года",
             "url": "https://po-kurortam.ru/hotels/moskva/?date_from=2026-12-11&date_to=2026-12-13&adults=1"
           },
           {
-            "label": "Номера на две ночи · 2026-12-18",
+            "label": "Номера на 18–20 декабря 2026 года",
             "url": "https://po-kurortam.ru/hotels/moskva/?date_from=2026-12-18&date_to=2026-12-20&adults=1"
           },
           {
-            "label": "РичБро · 520 ₽",
+            "label": "РичБро — 520 ₽",
             "url": "https://richbro.qr-cafe.ru/category?catid=12"
           },
           {
-            "label": "Peri · 690 ₽",
+            "label": "Peri — 690 ₽",
             "url": "https://peri-restobar.ru/pasta"
           },
           {
-            "label": "Segreto · 700 ₽",
+            "label": "Segreto — 700 ₽",
             "url": "https://segretorestoran.ru/menu"
           },
           {
-            "label": "СУП-кафе · 773 ₽",
+            "label": "СУП-кафе — 773 ₽",
             "url": "https://www.soupcafe.ru/menu/dish/osnovnoe-menyu/pasta/spagetti-karbonara/"
           },
           {
-            "label": "Blanc de Blancs · 850 ₽",
+            "label": "Blanc de Blancs — 850 ₽",
             "url": "https://blanc-de-blancs.ru/menu/pasta/karbonara/"
           }
         ]

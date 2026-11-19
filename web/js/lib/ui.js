@@ -10,5 +10,5 @@ const BRANDS = { aviasales: 'Aviasales', ostrovok: 'Островок', tripster:
 export function adMark(partner) {
   const info = window.AVIATOR?.ads?.[partner] ?? {};
   const details = [info.advertiser, info.inn ? `ИНН ${info.inn}` : '', info.erid ? `erid ${info.erid}` : ''].filter(Boolean).join(', ');
-  return `<p class="ad-mark">Реклама · ${esc(BRANDS[partner] ?? partner)}${details ? ` · ${esc(details)}` : ''}</p>`;
+  return `<p class="ad-mark">Реклама: ${esc(BRANDS[partner] ?? partner)}${details ? `, ${esc(details)}` : ''}</p>`;
 }

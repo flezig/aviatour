@@ -43,7 +43,8 @@ for (const mobile of [false, true]) {
     if (mobile) await card.tap(); else await card.hover();
     await panel.locator('tbody tr').first().waitFor();
     assert.equal(await panel.locator('tbody tr').count(), 4);
-    assert.match(await panel.innerText(), /Казань · декабрь 2026/);
+    assert.equal(await panel.locator('h2').innerText(), 'Казань');
+    assert.equal(await panel.locator('.rating-caption').innerText(), 'декабрь 2026');
     if (await panel.locator('.city-rating-gaps').count()) {
       assert.match(await panel.locator('.city-rating-gaps').innerText(), /гостиницах|маршрут/);
     } else {

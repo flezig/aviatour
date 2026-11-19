@@ -1,6 +1,6 @@
 body { background: var(--card); }
 .directory { border-top: 1px solid var(--line); }
-.directory .wrap { max-width: 1144px; padding-inline: 32px; }
+.directory .wrap { --gutter: 32px; }
 .directory-hero { background: var(--paper); border-bottom: 1px solid var(--line); }
 .directory-intro { display: grid; grid-template-columns: minmax(0, 1fr) minmax(255px, 32%); gap: 64px; align-items: center; padding-block: 28px; }
 .directory h1 { font-size: clamp(40px, 5.5vw, 66px); line-height: 1.02; letter-spacing: -.055em; margin-bottom: 20px; }
@@ -43,12 +43,12 @@ body { background: var(--card); }
 .directory-pager a:hover, .directory-empty a:hover { background: var(--fill); }
 .directory-season { margin: 24px 0; font-size: 14px; }
 @media (max-width: 850px) {
-  .directory .wrap { padding-inline: 22px; }
+  .directory .wrap { --gutter: 22px; }
   .directory-intro { gap: 24px; }
   .directory-list { column-gap: 22px; }
 }
 @media (max-width: 680px) {
-  .directory .wrap { padding-inline: 16px; }
+  .directory .wrap { --gutter: 16px; }
   .directory-intro { display: block; padding-block: 21px; }
   .directory h1 { font-size: 39px; margin-bottom: 14px; }
   .directory-cover { display: none; }
@@ -65,4 +65,15 @@ body { background: var(--card); }
   .directory-list { display: block; }
   .directory-city { min-height: 70px; gap: 12px; }
   .directory-city img { width: 62px; height: 47px; }
+}
+
+@media (min-width: 1400px) {
+  .directory-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (horizontal-viewport-segments: 2) {
+  .directory { display: grid; grid-template-columns: var(--pane-left) var(--pane-right); column-gap: var(--hinge); align-items: start; }
+  .directory .wrap { --gutter: 16px; }
+  .directory > .wrap { width: 100%; padding-top: 28px; }
+  .directory-intro, .directory-list { display: block; }
+  .directory-cover { margin-top: 16px; }
 }

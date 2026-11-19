@@ -52,7 +52,7 @@ async function fares() {
     const a = document.createElement('a');
     a.href=offer.url;
     a.textContent='Посмотреть билеты';
-    document.getElementById('seasonFareLink').append('Aviasales · '+fmtDay(new Date(offer.received),localZone)+' · ',a);
+    document.getElementById('seasonFareLink').append('Aviasales, '+fmtDay(new Date(offer.received),localZone)+', ',a);
     return offers;
   } catch {
     fareNote.textContent='Не удалось загрузить цены на перелёт. Обновите страницу, чтобы проверить ещё раз.';
@@ -69,7 +69,7 @@ async function advice() {
     const a = document.createElement('a');
     a.href=result.source_url;
     a.textContent='Предупреждение FCDO для британских граждан';
-    p.parentElement.querySelector('small').append(' · ',a);
+    p.parentElement.querySelector('small').append(', ',a);
     p.parentElement.classList.add('season-warning');
     return whole || result.alerts.some(a => !a.includes('parts')) ? 'whole' : 'regional';
   } catch { /* The Russian source is always available in the original page. */ }

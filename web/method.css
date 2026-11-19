@@ -36,3 +36,13 @@
   .method.is-enhanced .method-chapters { display: none; }
   .method-head h1 { font-size: 1.65rem; }
 }
+
+@media (min-width: 1280px) {
+  .method { max-width: 1320px; }
+  .method-topic { max-width: 82ch; }
+}
+@media (horizontal-viewport-segments: 2) {
+  .method-layout { grid-template-columns: var(--pane-columns); column-gap: var(--pane-gap); }
+  .method-outline { display: none; }
+  #method-open:not([hidden]) { display: block; }
+}

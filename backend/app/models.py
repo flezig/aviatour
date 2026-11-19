@@ -9,7 +9,7 @@ class SearchRequest(BaseModel):
     origin: str = Field(pattern=r'^[A-Z]{3}$')
     origin_city_code: str | None = Field(default=None, pattern=r'^[A-Z]{3}$')
     month: str = Field(pattern=r'^\d{4}-(0[1-9]|1[0-2])$')
-    max_budget_minor: int = Field(default=2500000, ge=500000, le=50000000)
+    max_budget_minor: int | None = Field(default=2500000, ge=500000, le=50000000)
     trip_preferences: TripPreferences = Field(default_factory=TripPreferences)
     direct_only: bool = False
     force_refresh: bool = False
