@@ -370,3 +370,36 @@ for (const mobile of [false, true]) {
     assert.equal((await visibleIds(page)).length, sample.length);
   });
 }
+
+for (const mobile of [false, true]) {
+  test('Список в один город сохраняет каждый билет и различает клик и клавиатурный фокус, ' + (mobile ? 'телефон' : 'компьютер'), async t => {
+    const flights = Array.from({ length: 49 }, (_, i) => offer('case-' + i, 'Казань', 'KZN', 15, 5000 + i));
+    const page = await setup(t, mobile, flights);
+    await page.goto(base + '/?from=SVO&fc=MOW&to=KZN&tc=KZN&month=2030-02&weekend=0#ab=B');
+    const results = page.locator('#results');
+    await results.locator('.city-flight').first().waitFor();
+    const seen = [];
+    for (let n = 1; n <= 3; n++) {
+      if (n > 1) await results.getByRole('button', { name: 'Следующая страница' }).click();
+      assert.equal(await results.locator('.city-flights-heading .photo').count(), 1);
+      assert.equal(await results.locator('.city-flight .photo').count(), 0);
+      seen.push(...await visibleIds(page));
+    }
+    assert.deepEqual(seen, flights.map(o => o.id));
+    await results.locator('[data-fav="case-48"]').click();
+    assert.equal(await results.locator('[data-fav="case-48"]').getAttribute('aria-pressed'), 'true');
+    await results.locator('[data-offer="case-48"]').click();
+    await page.locator('#detail[open]').waitFor();
+    await page.locator('#detail [data-close], #detail button[aria-label="Закрыть"], #detailClose').first().click();
+    const sort = results.locator('#sort');
+    if (mobile) await sort.tap(); else await sort.click();
+    await sort.selectOption('priceDescending');
+    assert.equal(await sort.evaluate(el => getComputedStyle(el).outlineStyle), 'none');
+    assert.equal((await visibleIds(page))[0], 'case-48');
+    if (!mobile) {
+      await page.keyboard.press('Tab');
+      assert.equal(await page.evaluate(() => document.activeElement.id), 'length');
+      assert.equal(await results.locator('#length').evaluate(el => getComputedStyle(el).outlineStyle), 'solid');
+    }
+  });
+}

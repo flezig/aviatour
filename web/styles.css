@@ -1053,3 +1053,33 @@ body:has(.rating-sheet[open]) { overflow: hidden; }
     inset-block: 0 auto; margin-block: 8px; max-height: calc(env(viewport-segment-height 0 0) - 16px);
   }
 }
+
+.stay-page { display: grid; gap: var(--s-5); max-width: 65rem; margin: 0 auto; }
+.stay-page fieldset { display: grid; gap: 2px; border: 0; padding: 0; margin: 0 0 var(--s-3); }
+.stay-page legend, .stay-hotels caption { font-weight: 650; text-align: start; margin-bottom: var(--s-2); }
+.stay-page fieldset label { display: flex; gap: var(--s-2); align-items: center; min-height: 44px; }
+.stay-page input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--cobalt); }
+.stay-page .btn-primary { width: fit-content; }
+.stay-hotels { display: grid; gap: var(--s-4); grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); }
+.stay-hotels table { width: 100%; border-collapse: collapse; margin-top: var(--s-3); }
+.stay-hotels th, .stay-hotels td { border-top: 1px solid var(--line); padding-block: var(--s-2); text-align: start; }
+.stay-hotels th { font-weight: 400; padding-right: var(--s-2); }
+.stay-hotels td { white-space: nowrap; text-align: end; }
+
+.city-flights-heading { display: flex; align-items: center; gap: var(--s-4); margin: var(--s-2) 0 var(--s-4); }
+.city-flights-heading .photo { width: clamp(64px, 10vw, 112px); aspect-ratio: 3 / 2; flex: none; border-radius: var(--r-field); overflow: hidden; }
+.city-flights-heading .photo img { width: 100%; height: 100%; object-fit: cover; }
+.city-flights-heading h3 { margin-bottom: var(--s-1); font: var(--city-title); letter-spacing: 0; }
+.city-flights-list { list-style: none; padding: 0; margin: 0; border-radius: var(--r-pass); border: 1px solid var(--line); background: var(--card); }
+.city-flight { display: flex; gap: var(--s-2); align-items: center; padding: var(--s-2) var(--s-3); }
+.city-flight + .city-flight { border-top: 1px solid var(--line); }
+.city-flight-open { flex: 1; min-width: 0; min-height: var(--tap); display: grid; grid-template-columns: 1.35fr 1fr auto; align-items: center; gap: var(--s-3); text-align: start; }
+.city-flight-open small { display: block; font-size: var(--fs-cap); color: var(--ink-2); }
+.city-flight .fav { position: static; flex: none; }
+@media (max-width: 620px) {
+  .city-flight { padding-inline: var(--s-2); gap: 2px; }
+  .city-flight-open { grid-template-columns: minmax(0, 1fr) auto; gap: var(--s-1) var(--s-2); }
+  .city-flight-airline { grid-column: 1; font-size: var(--fs-cap); }
+  .city-flight-airline small { display: inline; margin-left: var(--s-1); }
+  .city-flight-open .offer-price { grid-column: 2; grid-row: 1 / 3; font-size: var(--fs-small); }
+}

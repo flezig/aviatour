@@ -1,0 +1,36 @@
+.together { max-width: 1050px; display: grid; gap: var(--s-5); padding-block: var(--s-5); }
+.together [hidden] { display: none !important; }
+.together-modes { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+.together-modes a { display: inline-flex; align-items: center; min-height: var(--tap); padding: 8px 14px; border-radius: var(--r-chip); background: var(--fill); color: var(--ink); font-weight: 600; text-decoration: none; }
+.together-modes a[aria-current="page"] { background: var(--cobalt); color: var(--on-cobalt); }
+.together-panel, .together .card { display: grid; gap: var(--s-4); min-width: 0; }
+.together-panel header p { margin-top: var(--s-2); max-width: 70ch; color: var(--ink-2); }
+.together .card { padding: var(--s-4); }
+.together-form, .together .together-form { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--s-3); }
+.together-form label { flex: 1 1 170px; }
+.together label { display: grid; gap: 4px; min-width: 0; color: var(--ink-2); font-size: var(--fs-small); }
+.together select, .together input { width: 100%; min-width: 0; min-height: var(--tap); padding: 8px; border: 1px solid var(--line-strong); border-radius: var(--r-chip); background: var(--card); color: var(--ink); font: inherit; }
+.together select { appearance: none; padding-right: 26px; background-image: linear-gradient(45deg, transparent 50%, var(--ink-2) 50%), linear-gradient(135deg, var(--ink-2) 50%, transparent 50%); background-position: right 13px center, right 8px center; background-size: 5px 5px; background-repeat: no-repeat; }
+.together-status { scroll-margin-block-start: var(--s-4); }
+.together .together-count { width: fit-content; max-width: 100%; }
+.together-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-4); }
+.together-grid > *, .together .card > * { min-width: 0; }
+.together fieldset { display: grid; grid-template-columns: minmax(0, 1fr) 76px; gap: 8px; margin: 0; padding: var(--s-3); border: 1px solid var(--line); border-radius: var(--r-field); }
+.together legend { padding-inline: 5px; font-weight: 600; }
+.together-status:empty, .together-verdict:empty, #meetResults:empty { display: none; }
+.together-verdict { padding: var(--s-3) var(--s-4); background: var(--cobalt-soft); border-radius: var(--r-field); font-weight: 600; }
+.together-summary { display: grid; gap: 3px; margin: 0; }
+.together-summary div { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s-3); }
+.together-summary dd { margin: 0; text-align: right; font-weight: 600; }
+.together-summary .sum { border-top: 1px solid var(--line); padding-top: 6px; margin-top: 3px; }
+.together-fare { padding-block: var(--s-2); border-block: 1px dashed var(--line-strong); }
+.together-links { display: flex; gap: 6px 16px; flex-wrap: wrap; padding-block: 4px; }
+.together-fare a, .together-status a { color: var(--cobalt); }
+.together .caption { color: var(--ink-2); }
+.together-meeting { display: grid; gap: 4px; }
+.together-meeting strong { color: var(--cobalt); }
+@media (max-width: 680px) {
+  .together-grid { grid-template-columns: minmax(0, 1fr); }
+  .together .card { padding: var(--s-3); }
+  .together-form button { flex: 1 1 155px; }
+}

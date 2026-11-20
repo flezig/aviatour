@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="Сравните расходы на две поездки или найдите город, куда удобно прилететь из разных мест.">
+  <title>Поездка вместе — Aviator</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/together.css">
+</head>
+<body>
+  <header class="top wrap">
+    <a class="brand" href="/"><span class="brand-mark"><svg class="icon" aria-hidden="true"><use href="/icons.svg#plane"></use></svg></span>Aviator</a>
+    <nav class="nav" aria-label="Разделы сайта"><a href="/">Билеты</a><a href="/city/">Города</a><a href="/#fav">Избранное</a><a href="/trip.html">Мои поездки</a></nav>
+  </header>
+  <main class="wrap together">
+    <h1>Поездка вместе</h1>
+    <nav class="together-modes" aria-label="Способ подбора"><a href="#budget">Сравнить расходы</a><a href="#meet">Встретиться в городе</a></nav>
+    <noscript>Включите JavaScript, чтобы сравнить поездки.</noscript>
+    <section id="budget" class="together-panel" aria-labelledby="budgetTitle">
+      <header><h2 id="budgetTitle">Сколько стоит поездка на всех</h2><p>Выберите два билета из избранного или найдите рейсы. Добавьте свою оценку жилья и остальных расходов.</p></header>
+      <form id="budgetSearch" class="card together-form">
+        <label>Город вылета<select id="budgetOrigin" required></select></label>
+        <label>Месяц вылета<select id="budgetMonth" required></select></label>
+        <button class="btn-inline" type="submit">Найти варианты</button>
+      </form>
+      <p class="together-status" id="budgetStatus" role="status" tabindex="-1"></p>
+      <div class="together-panel" id="budgetComparison" hidden>
+        <label class="together-count">Путешественников в группе<select id="budgetPeople"></select></label>
+        <div id="budgetCards" class="together-grid"></div>
+        <p id="budgetDifference" class="together-verdict" role="status"></p>
+        <p class="caption">Расчёт билетов использует найденную цену на одного взрослого. Количество мест по этой цене и итоговую стоимость проверьте при покупке.</p>
+      </div>
+    </section>
+    <section id="meet" class="together-panel" aria-labelledby="meetTitle" hidden>
+      <header><h2 id="meetTitle">Куда прилететь из двух городов</h2><p>Сравните стоимость билетов для каждой стороны и время, которое вы проведёте в одном городе.</p></header>
+      <form id="meetSearch" class="card together-meet-form">
+        <div class="together-grid">
+          <fieldset><legend>Первая группа</legend><label>Город вылета<select id="firstOrigin" required></select></label><label>Человек<select id="firstPeople"></select></label></fieldset>
+          <fieldset><legend>Вторая группа</legend><label>Город вылета<select id="secondOrigin" required></select></label><label>Человек<select id="secondPeople"></select></label></fieldset>
+        </div>
+        <div class="together-form"><label>Месяц вылета<select id="meetMonth" required></select></label><label>Где встретиться<select id="meetDestination"><option value="">Любой город</option></select></label><button class="btn-primary" type="submit">Найти город встречи</button></div>
+      </form>
+      <p id="meetStatus" class="together-status" role="status" tabindex="-1"></p>
+      <div id="meetOptions" hidden><label class="together-count">Как выбрать пару рейсов для каждого города<select id="meetSort"><option value="cheap">Дешевле на всех</option><option value="longest">Больше времени вместе</option></select></label></div>
+      <div id="meetResults" class="together-panel"></div>
+    </section>
+  </main>
+  <footer class="wrap footer"><nav aria-label="Информация"><a href="/how-we-count.html">Как мы считаем</a><a href="/privacy.html">Конфиденциальность</a></nav></footer>
+  <script src="/config.js" defer></script>
+  <script type="module" src="/js/together.js"></script>
+</body>
+</html>

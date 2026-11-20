@@ -1,8 +1,9 @@
 import { $, esc, icon } from './lib/ui.js';
 import { goal } from './lib/measure.js';
 import { daysLabel, fmtDate, fmtDay, fmtMoney, nightsLabel, zoned, addDays, localZone } from './lib/format.js';
-import { budget, countdown, decodeTrip, savedTrips, saveTrip, tripDates, tripPath } from './lib/trip.js';
+import { budget, countdown, decodeTrip, localTripEvent, savedTrips, saveTrip, tripDates, tripPath } from './lib/trip.js';
 import { localActivities, planCatalog } from './lib/plan-links.js';
+import { mountItinerary } from './itinerary.js';
 import { cityRating } from './lib/city-rating.js';
 
 const airportRoutes = {
@@ -71,6 +72,8 @@ async function showWeather(p) {
 function render() {
   plan = decodeTrip(location.hash);
   if (!plan) { listPlans(Boolean(location.hash)); return; }
+  const event = plan.event ?? localTripEvent(plan);
+  if (event) plan.event = event;
   stored = savedTrips().some(p => p.id === plan.id && tripPath(p) === tripPath(plan));
   const dates = tripDates(plan), route = airportRoutes[plan.toCode];
   document.title = plan.city + ' — Моя поездка — Aviator';
@@ -80,8 +83,9 @@ function render() {
     <div><dt>Обратно: ${esc(plan.city)} (${plan.toCode})</dt><dd>${dateTime(plan.back, plan.zone)}</dd></div></dl><p class="caption">Местное время аэропортов</p>
     ${plan.flight ? `<a class="plan-flight" href="https://www.flightradar24.com/data/flights/${plan.flight.toLowerCase()}" rel="noopener" target="_blank">Рейс ${esc(plan.flight)} на Flightradar24 ↗</a><small class="caption">Сверьте дату и маршрут на странице рейса.</small>` : ''}</section>
     <div class="plan-actions"><button class="btn-primary" type="button" id="savePlan" ${stored ? 'hidden' : ''}>Сохранить в мои поездки</button>
-    <a class="btn-inline" id="telegram" target="_blank" rel="noopener">Отправить себе в Telegram</a><button class="btn-inline" type="button" id="copyPlan">Скопировать ссылку</button></div>
+    <a class="btn-inline" id="telegram" target="_blank" rel="noopener">Отправить себе в Telegram</a><button class="btn-inline" type="button" id="copyPlan">Скопировать ссылку на рейс и бюджет</button></div>
     <p class="caption" id="planStatus" role="status">${stored ? 'Сохранено в этом браузере' : ''}</p>
+    <section class="card itinerary" id="itinerary"></section>
     <section class="card"><h2>Бюджет поездки</h2><p>Билеты туда и обратно: <strong id="planTickets"></strong></p>
     <p class="caption">Цена Aviasales на ${dateTime(plan.quoted, localZone)}. Жильё и питание можно добавить по своей оценке.</p>
     <div class="plan-inputs"><label>Путешественники<select id="people" class="menu">${[1,2,3,4].map(n => `<option ${plan.people === n ? 'selected' : ''}>${n}</option>`).join('')}</select></label>
@@ -90,6 +94,7 @@ function render() {
     <p class="caption">${esc(nightsLabel(dates.nights))}, ${esc(daysLabel(dates.nights + 1))} на месте</p><strong id="planTotal" aria-live="polite"></strong></section>
     <section class="card" id="weather" hidden></section><div class="plan-options" id="activities"></div><section class="card" id="places" hidden></section>
     ${route ? `<section class="card"><h2>Из аэропорта в город</h2><p>${esc(route[0])}</p><p class="caption"><a href="${route[2]}">${esc(route[1])}</a>, проверено 17 ноября 2026</p></section>` : ''}`;
+  mountItinerary($('itinerary'), plan);
   showBudget();
   updateLinks();
   const current = plan;

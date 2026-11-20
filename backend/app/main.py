@@ -22,7 +22,7 @@ from .runtime import TTLCache, RateLimiter
 from .settings import Settings
 from .upstream import Travelpayouts
 from .rules import matches, safe_search_url, safe_hotel_url, safe_stay_url, safe_tour_url, longer_stays
-from . import city_pages, city_rating, scenario_pages, season_pages, showcase
+from . import city_pages, city_rating, scenario_pages, season_pages, showcase, stay_page
 from .regions import includes, REGION_CITIES
 from .rating import evaluate, round_int
 from .rating_sources import RatingSources, load_reviewed_data
@@ -437,6 +437,14 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
 
     def default_origin(city):
         return catalog.origin_by_code['LED' if city['code'] == catalog.default_origin else catalog.default_origin]
+
+    @app.get('/stay.html', response_class=HTMLResponse)
+    async def stay_comparison(request: Request):
+        params = request.query_params
+        selected = params.getlist('place') if 'pick' in params or 'place' in params else None
+        if selected is None and 'places' in params:
+            selected = params['places'].split(',')
+        return HTMLResponse(stay_page.comparison(selected, now().date()), headers={'Cache-Control': page_cache})
 
     @app.get('/season/', response_class=HTMLResponse)
     async def season_index(month: int | None = Query(None, ge=1, le=12), q: str = Query('', max_length=100),
