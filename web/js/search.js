@@ -80,6 +80,7 @@ searchShortcuts.innerHTML = QUICK_FILTERS.map(name =>
   `<button type="button" class="chip" data-quick="${name}">${CHIPS[name]}</button>`).join('');
 $('search').after(searchShortcuts);
 let request = null;
+let budgetPool = null;
 // «Продолжить планирование»: последние открытые поездки — только в этом браузере, до восьми.
 function readRecent() {
   try {
@@ -426,10 +427,55 @@ function pager(pages) {
   const button = (n, label = n, extra = '') => `<button type="button" data-page="${n}" ${n === state.page && label === n ? 'aria-current="page"' : ''} ${extra}>${label}</button>`;
   return `<nav class="pager" aria-label="Страницы выдачи">${button(state.page - 1, '‹', `aria-label="Предыдущая страница" ${state.page === 1 ? 'disabled' : ''}`)}${shown.map((n, i) => (i && n - shown[i - 1] > 1 ? '<span class="gap">…</span>' : '') + button(n)).join('')}${button(state.page + 1, '›', `aria-label="Следующая страница" ${state.page === pages ? 'disabled' : ''}`)}</nav>`;
 }
-function statusPanel(symbol, title, message) {
-  return `<div class="status">${icon(symbol)}<h3>${esc(title)}</h3><p>${esc(message)}</p></div>`;
+function statusPanel(symbol, title, message, extra = '') {
+  return `<div class="status">${icon(symbol)}<h3>${esc(title)}</h3><p>${esc(message)}</p>${extra}</div>`;
 }
 const action = (name, title, primary = true) => `<button type="button" class="${primary ? 'btn-primary' : 'btn-inline'}" data-action="${name}">${esc(title)}</button>`;
+
+function closestOverBudget() {
+  const limit = state.performed.budget * 100;
+  const now = Date.now();
+  let best = null;
+  for (const offer of budgetPool?.offers ?? []) {
+    if (offer.availability === 'unavailable' || (offer.expires_at && Date.parse(offer.expires_at) <= now) || !accepts(offer)) continue;
+    // A newer price within the limit makes an over-budget suggestion misleading.
+    if (offer.price_minor <= limit) return null;
+    if (!best || offer.price_minor < best.price_minor || (offer.price_minor === best.price_minor && offer.id < best.id)) best = offer;
+  }
+  return best;
+}
+
+async function updateBudgetHint() {
+  if (!$('budgetHint') || state.view !== 'results') return;
+  const q = state.performed;
+  if (!budgetPool) {
+    budgetPool = { offers: [] };
+    const signal = request.signal;
+    try {
+      const params = toParams({ ...q, budget: null });
+      const response = await fetch('/api/v1/search/web?' + params, { signal });
+      if (!response.ok) return;
+      const data = await response.json();
+      if (signal.aborted || !Array.isArray(data?.offers)) return;
+      budgetPool = { offers: data.offers, incomplete: data.incomplete, receivedAt: data.received_at };
+    } catch { return; }
+  }
+  // Render against the current filters even if they changed during the fetch.
+  const slot = $('budgetHint');
+  if (!slot || state.view !== 'results') return;
+  const offer = closestOverBudget();
+  if (!offer) { slot.replaceChildren(); return; }
+  const x = facts(offer);
+  const dates = fmtRange(x.dep, x.ret, offer.origin_timezone, offer.destination_timezone);
+  const stamp = offer.received_at ?? budgetPool.receivedAt;
+  const received = stamp && receivedLabel(stamp);
+  const note = [budgetPool.incomplete && 'Проверена часть предложений.',
+    received && (!state.result.received_at || received !== receivedLabel(state.result.received_at)) && `Цена получена ${received}.`].filter(Boolean).join(' ');
+  slot.innerHTML = `<p><strong>${esc(offer.origin_city)} → ${esc(offer.city)}</strong><br>${esc(dates)}, ${esc(stayLabel(offer))}</p>
+    <p>${esc(fmtMoney(offer.price_minor))} туда и обратно, на ${esc(fmtMoney(offer.price_minor - q.budget * 100))} выше бюджета</p>
+    ${note ? `<span class="caption">${esc(note)}</span>` : ''}
+    <button type="button" class="btn-primary" data-action="budgetTicket" data-ticket="${esc(offer.id)}">Открыть билет</button>`;
+}
 
 function renderResults() {
   if (state.view === 'fav') { renderFavorites(); return; }
@@ -476,16 +522,18 @@ function renderResults() {
       ${state.sort === 'stay' || state.sort === 'value' ? '<p class="caption">Время на месте — от расчётного прилёта до обратного вылета, включая ночи.</p>' : ''}
       ${!collection && state.result.incomplete ? (state.result.warnings?.length ? state.result.warnings : ['Удалось проверить только часть вариантов.']).map(text => `<p class="caption">${esc(text)}</p>`).join('') : ''}`;
     if (!offers.length) {
+      const hint = !collection && q.budget !== null && !(state.filters.cheap && q.budget >= 20000)
+        ? '<div id="budgetHint" class="budget-hint" aria-live="polite"></div>' : '';
       if (collection || (hiding && state.result.offers.length)) {
-        body += statusPanel('send', 'Пока без вариантов', 'Фильтры скрыли все найденные варианты. Сбросьте их, чтобы увидеть результаты поиска.')
+        body += statusPanel('send', 'Пока без вариантов', 'Фильтры скрыли все найденные варианты.', hint)
           + `<div class="status-actions">${action('resetFilters', 'Сбросить фильтры')}</div>`;
       } else {
-        const message = state.result.offers.length ? 'Попробуйте изменить длительность поездки.' : 'Среди проверенных городов предложений не найдено';
-        body += statusPanel('send', 'Пока без вариантов', message)
+        const message = state.result.offers.length ? 'Попробуйте изменить длительность поездки.'
+          : q.budget !== null ? 'Среди проверенных билетов нет подходящих в пределах бюджета.' : 'Среди проверенных городов предложений не найдено';
+        body += statusPanel('send', 'Пока без вариантов', message, hint)
           + `<div class="status-actions">
             ${(state.result?.offers ?? []).some((offer) => facts(offer).dep > Date.now() && !FITS.any(facts(offer).days)) ? action('allLengths', 'Показать поездки любой длины') : ''}
             ${!q.exact && q.weekend ? action('allTrips', 'Показать не только короткие выходные') : ''}
-            ${q.budget !== null && q.budget < 500000 ? action('moreBudget', 'Увеличить бюджет на 10 000 ₽') : ''}
             ${q.direct ? action('allowTransfers', 'Разрешить пересадки') : ''}
             ${action('edit', 'Изменить даты и направление', false)}
           </div>`;
@@ -498,6 +546,7 @@ function renderResults() {
   }
   const back = homeVariant === 'B' ? `<button type="button" class="chip" data-action="showcase">${icon('arrow-left')}Подборки</button>` : '';
   section.innerHTML = `<div class="results-head"><h2>${esc(title)}</h2>${tools}${back}<button type="button" class="chip chip--fav" data-action="favorites">${icon('heart')}Избранное <span id="favCount">${state.favs.size}</span></button></div>${body}`;
+  if ($('budgetHint')) updateBudgetHint();
 }
 
 function endpoint(date, estimated, zone, city, airport, code) {
@@ -959,6 +1008,7 @@ function updateFilterAddress() {
 async function search({ scroll = true, auto = false } = {}) {
   request?.abort();
   request = new AbortController();
+  budgetPool = null;
   const q = { ...state.query }, signal = request.signal, label = summary(q), fromShowcase = state.view === 'showcase' || state.view === 'collection';
   Object.assign(state, { performed: q, performedLabels: { ...state.labels }, performedSummary: label, performedLabel: `${state.labels.origin} → ${label.route}, ${label.details}`, status: 'loading', page: 1, view: 'results' });
   if (!auto) {
@@ -1426,6 +1476,15 @@ $('results').addEventListener('click', (event) => {
     $('results').querySelector(`[data-chip="${name}"]`)?.focus({ preventScroll: true });
   } else if (act) {
     const name = act.dataset.action, q = state.query;
+    if (name === 'budgetTicket') {
+      const offer = closestOverBudget();
+      if (offer && offer.id === act.dataset.ticket) {
+        // A shared detail URL must still find this ticket. Back restores the original capped search.
+        openDetail({ ...offer, q: toParams({ ...state.performed, budget: null }).toString() });
+      }
+      else updateBudgetHint();
+      return;
+    }
     if (name === 'favorites') { history.pushState(null, '', '/#fav'); showFavorites(); return; }
     if (name === 'showcase' || (name === 'results' && !state.performed && homeVariant === 'B')) { history.pushState(null, '', location.pathname); showShowcase(); window.scrollTo({ top: 0 }); return; }
     if (name === 'results') { setView(state.collection && !state.performed ? 'collection' : 'results'); if (location.hash === '#fav') history.replaceState(history.state, '', location.pathname + location.search); renderResults(); $('results').scrollIntoView({ block: 'start' }); return; }
@@ -1433,7 +1492,6 @@ $('results').addEventListener('click', (event) => {
     if (name === 'resetFilters') { resetResultFilters(); updateFilterAddress(); renderResults(); return; }
     if (name === 'edit') { collapseForm(false); $('search').scrollIntoView({ block: 'start' }); return; }
     if (name !== 'retry') { Object.assign(q, state.performed); state.labels = { ...state.performedLabels }; }
-    if (name === 'moreBudget') q.budget = Math.min(500000, q.budget + 10000);
     if (name === 'allowTransfers') q.direct = false;
     if (name === 'allTrips') q.weekend = false;
     renderForm();
