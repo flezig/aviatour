@@ -471,8 +471,9 @@ async function updateBudgetHint() {
   const received = stamp && receivedLabel(stamp);
   const note = [budgetPool.incomplete && 'Проверена часть предложений.',
     received && (!state.result.received_at || received !== receivedLabel(state.result.received_at)) && `Цена получена ${received}.`].filter(Boolean).join(' ');
-  slot.innerHTML = `<p><strong>${esc(offer.origin_city)} → ${esc(offer.city)}</strong><br>${esc(dates)}, ${esc(stayLabel(offer))}</p>
-    <p>${esc(fmtMoney(offer.price_minor))} туда и обратно, на ${esc(fmtMoney(offer.price_minor - q.budget * 100))} выше бюджета</p>
+  slot.innerHTML = `<h3>Билет выше бюджета</h3>
+    <p><strong>${esc(offer.origin_city)} → ${esc(offer.city)}</strong><br>${esc(dates)}, ${esc(stayLabel(offer))}</p>
+    <p><b class="offer-price">${esc(fmtMoney(offer.price_minor))}</b> туда и обратно<br>На ${esc(fmtMoney(offer.price_minor - q.budget * 100))} выше бюджета</p>
     ${note ? `<span class="caption">${esc(note)}</span>` : ''}
     <button type="button" class="btn-primary" data-action="budgetTicket" data-ticket="${esc(offer.id)}">Открыть билет</button>`;
 }

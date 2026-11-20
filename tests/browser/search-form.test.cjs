@@ -269,7 +269,7 @@ for (const mobile of [false, true]) {
       const button = page.getByRole('button', { name: 'Открыть билет', exact: true });
       await button.waitFor();
       assert.equal(await button.getAttribute('data-ticket'), 'a-fare', selection);
-      assert.match((await page.locator('#budgetHint').innerText()).replace(/\s/g, ''), /10000,50₽тудаиобратно,на0,50₽вышебюджета/);
+      assert.match((await page.locator('#budgetHint').innerText()).replace(/\s/g, ''), /10000,50₽тудаиобратноНа0,50₽вышебюджета/);
       assert.equal(requests.length, 2);
       const [original, broad] = requests.map(p => new URLSearchParams(p));
       assert.equal(original.get('budget'), String(budget));
