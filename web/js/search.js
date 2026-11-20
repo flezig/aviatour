@@ -8,7 +8,6 @@ import { goal } from './lib/measure.js';
 import { currentOrigin, saveOrigin } from './lib/origin.js';
 import { priceLevel, usualKey, hotLine, leaveLine, levelNote, priceChange } from './lib/levels.js';
 import { mountSky } from './lib/sky.js';
-import { flightLoader } from './lib/art.js';
 import { sticker, rowSticker } from './lib/stickers.js';
 import { favoriteList, favoriteComparison, favoriteOptions, hoursMinutes } from './lib/favorites.js';
 import { DESTINATION_SCOPES } from './lib/destination-scopes.js';
@@ -429,8 +428,15 @@ function pager(pages) {
   const button = (n, label = n, extra = '') => `<button type="button" data-page="${n}" ${n === state.page && label === n ? 'aria-current="page"' : ''} ${extra}>${label}</button>`;
   return `<nav class="pager" aria-label="Страницы выдачи">${button(state.page - 1, '‹', `aria-label="Предыдущая страница" ${state.page === 1 ? 'disabled' : ''}`)}${shown.map((n, i) => (i && n - shown[i - 1] > 1 ? '<span class="gap">…</span>' : '') + button(n)).join('')}${button(state.page + 1, '›', `aria-label="Следующая страница" ${state.page === pages ? 'disabled' : ''}`)}</nav>`;
 }
+<<<<<<< HEAD
 function statusPanel(symbol, title, message, extra = '') {
   return `<div class="status">${icon(symbol)}<h3>${esc(title)}</h3><p>${esc(message)}</p>${extra}</div>`;
+=======
+const loadingTrack = '<div class="loading-track" aria-hidden="true"></div>';
+
+function statusPanel(symbol, title, message) {
+  return `<div class="status">${icon(symbol)}<h3>${esc(title)}</h3><p>${esc(message)}</p></div>`;
+>>>>>>> origin/pr55
 }
 const action = (name, title, primary = true) => `<button type="button" class="${primary ? 'btn-primary' : 'btn-inline'}" data-action="${name}">${esc(title)}</button>`;
 
@@ -493,9 +499,9 @@ function renderResults() {
   let body = '', title = 'Варианты', tools = '';
   const announce = (text) => { $('resultsStatus').textContent = text; };
   if (status === 'loading') {
-    // Заготовки карточек: страница держит форму, пока грузятся цены.
-    body = flightLoader('Ищем варианты поездки…');
-    announce('Ищем варианты поездки');
+    title = 'Ищем билеты…';
+    body = loadingTrack;
+    announce(title);
   } else if (status === 'error') {
     body = statusPanel('alert', 'Поиск не завершён', state.error) + `<div class="status-actions">${action('retry', 'Попробовать ещё раз')}</div>`;
     announce('Поиск не завершён. ' + state.error);
@@ -788,11 +794,13 @@ function recentRow() {
 function renderShowcase() {
   const section = $('showcase');
   if (state.homeStatus === 'loading') {
-    section.innerHTML = flightLoader('Подбираем билеты из вашего города…') + recentRow();
-    $('resultsStatus').textContent = 'Подбираем билеты';
+    const title = 'Подбираем билеты…';
+    section.innerHTML = recentRow() + `<div class="showcase-loading"><h2>${title}</h2>${loadingTrack}</div>`;
+    if (state.view === 'showcase') $('resultsStatus').textContent = title;
     return;
   }
   if (state.homeStatus === 'error' || !state.home) {
+    if (state.view === 'showcase') $('resultsStatus').textContent = 'Подборки не загрузились';
     section.innerHTML = recentRow() + statusPanel('alert', 'Подборки не загрузились', 'Поиск в форме выше работает. Подборки можно загрузить ещё раз.')
       + `<div class="status-actions">${action('retryHome', 'Загрузить подборки')}</div>`;
     return;
