@@ -14,6 +14,8 @@ class RolloutMeter:
         self.offset = 0
         self.ids = set()
         self.counts = dict.fromkeys(FIELDS, 0)
+        self.writes = 0
+        self.writes_reported = 0
 
     def update(self, path):
         with path.open('rb') as stream:
@@ -33,9 +35,13 @@ class RolloutMeter:
                 if payload.get('thread_id') != self.thread or not key or key in self.ids:
                     continue
                 self.ids.add(key)
+                if payload['usage'].get('cache_write_input_tokens') is not None:
+                    self.writes += int(payload['usage']['cache_write_input_tokens'])
+                    self.writes_reported += 1
                 for field in FIELDS:
                     self.counts[field] += int(payload['usage'].get(field) or 0)
         return dict(self.counts, requests=len(self.ids),
+                    cache_write_input_tokens=self.writes if self.writes_reported == len(self.ids) and self.ids else None,
                     uncached=self.counts['input_tokens'] - self.counts['cached_input_tokens'],
                     total=self.counts['input_tokens'] + self.counts['output_tokens'])
 

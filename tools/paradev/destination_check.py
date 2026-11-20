@@ -116,20 +116,30 @@ def browser_checks(folder):
             'cards': (folder / 'cards.log').read_text().strip()}
 
 
-def model_review(folder, role, model, prompt):
-    usage_file = folder / (role + '.usage.json')
-    previous = sorted(folder.glob(role + '.attempt-*.json'))
-    if not (folder / (role + '.md')).is_file():
-        if usage_file.is_file():
-            if previous:
-                raise RuntimeError('Обе попытки исчерпаны: ' + role)
-            usage_file.rename(folder / (role + '.attempt-1.json'))
-        invoke(folder, role, 'Сразу дай конечный ответ по готовой карточке. ' + prompt
-               + '\nПоследняя строка SUPERSET_WORKER_DONE.', (model, 'xhigh', [], 3, 26000))
-    attempts = [json.loads(path.read_text()) for path in sorted(folder.glob(role + '.attempt-*.json')) + [usage_file]]
+def review_usage(folder, role, model):
+    paths = sorted(folder.glob(role + '.attempt-*.json')) + list(folder.glob(role + '.usage.json'))
+    attempts = [json.loads(path.read_text()) for path in paths]
+    marker = folder / (role + '.started.json')
+    started = json.loads(marker.read_text()) if marker.exists() else len(attempts)
     fields = ('requests', 'uncached', 'cached_input_tokens', 'input_tokens', 'output_tokens', 'total')
-    return dict(model=model, effort='xhigh', attempts=len(attempts),
+    writes = [a.get('cache_write_input_tokens') for a in attempts]
+    return dict(model=model, effort='xhigh', attempts=started, measured_attempts=len(attempts),
+                cache_write_input_tokens=sum(writes) if writes and None not in writes else None,
                 **{key: sum(attempt[key] for attempt in attempts) for key in fields})
+
+
+def model_review(folder, role, model, prompt):
+    if not (folder / (role + '.md')).is_file():
+        started = review_usage(folder, role, model)['attempts']
+        if started >= 2:
+            raise RuntimeError('Обе попытки исчерпаны: ' + role)
+        usage_file = folder / (role + '.usage.json')
+        if usage_file.exists():
+            usage_file.rename(folder / (role + '.attempt-1.json'))
+        write_json(folder / (role + '.started.json'), started + 1)
+        invoke(folder, role, 'Сразу дай конечный ответ по готовой карточке. ' + prompt
+               + '\nПоследняя строка SUPERSET_WORKER_DONE.', (model, 'xhigh', [], 3, 26000), card_only=True)
+    return review_usage(folder, role, model)
 
 
 def run(folder):
@@ -184,8 +194,9 @@ def main():
             result = run(folder)
         except Exception as e:
             result = {'state': 'failed', 'error': str(e), 'directory': str(folder),
-                      'agents': {p.stem.split('.')[0]: json.loads(p.read_text())
-                                 for p in folder.glob('*.usage.json')}}
+                      'agents': {role: row for role, model in [('interface', 'sol'), ('datajudge', 'astra')]
+                                 if (row := review_usage(folder, role, model))['attempts']},
+                      'coordinator_tokens': 0}
             write_json(folder / 'result.json', result)
             raise
         write_json(folder / 'result.json', result)

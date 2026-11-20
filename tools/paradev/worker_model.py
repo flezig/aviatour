@@ -26,14 +26,20 @@ def read_events(events, thread):
             thread = event["thread_id"]
     return thread
 
-def invoke(folder, key, prompt, settings):
+
+def card_skill_rules():
+    roots = (Path.home() / ".agents/skills", Path(os.environ.get("CODEX_HOME", Path.home() / ".codex")) / "skills")
+    paths = sorted({str(p.resolve()) for root in roots for p in root.glob("**/SKILL.md")})
+    return "skills.config=[" + ",".join("{path=" + json.dumps(path) + ",enabled=false}" for path in paths) + "]"
+
+def invoke(folder, key, prompt, settings, *, card_only=False):
     family, effort, _, steps, budget = settings
     draft = folder / (key + ".partial")
     model = "gpt-6.2-" + family
     args = [CLI, "exec", "--ignore-user-config", "-C", str(REPO), "-s", "read-only",
             "--disable", "apps", "--disable", "plugins", "-c", 'web_search="disabled"',
             "-c", f'model_reasoning_effort="{effort}"', "-m", model, "--json", "-o", str(draft)]
-    if key != "review":
+    if card_only or key != "review":
         args += ["--disable", "shell_tool", "--disable", "unified_exec"]
     start = time.time()
     thread = path = counter = None
@@ -52,10 +58,21 @@ def invoke(folder, key, prompt, settings):
             write_json(usage_path, dict(usage, model=model, effort=effort, thread=thread))
             seen = usage["requests"]
         return usage
-    with tempfile.TemporaryDirectory(dir=folder) as temp:
+    with tempfile.TemporaryDirectory(dir=None if card_only else folder) as temp:
+        if card_only:
+            card_cwd = folder.parent / ".card-workspace"
+            card_cwd.mkdir(exist_ok=True, mode=0o700)
+            args[args.index("-C") + 1] = str(card_cwd)
+            args += ["--skip-git-repo-check", "-c", "project_doc_max_bytes=0", "-c", "mcp_servers={}"]
+            args += ["-c", "skills.bundled.enabled=false", "-c", card_skill_rules()]
+            for feature in ("skill_search", "skill_mcp_dependency_install", "remote_plugin", "multi_agent",
+                            "browser_use", "browser_use_external", "in_app_browser", "computer_use",
+                            "image_generation", "view_image"):
+                args += ["--disable", feature]
         events_path = Path(temp) / "events"
         with events_path.open("wb") as out, events_path.open("rb") as events, (folder/(key+".log")).open("w") as log:
-            proc = subprocess.Popen(args + ["-"], stdin=subprocess.PIPE, stdout=out, stderr=log, start_new_session=True)
+            proc = subprocess.Popen(args + ["-"], cwd=card_cwd if card_only else None, stdin=subprocess.PIPE,
+                                    stdout=out, stderr=log, start_new_session=True)
             try:
                 proc.stdin.write(prompt.encode())
                 proc.stdin.close()
