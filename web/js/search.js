@@ -34,7 +34,8 @@ const LENGTHS = { any: '1–14 ночей', short: '1–2 ночи', mid: '3–4
 const FITS = { any: (d) => d >= 1 && d <= 14, short: (d) => d >= 1 && d <= 2, mid: (d) => d >= 3 && d <= 4, week: (d) => d >= 5 && d <= 7, long: (d) => d >= 8 && d <= 14, more: (d) => d > 14, day: (d) => d === 0, all: () => true };
 const SORTS = { price: 'Сначала дешевле', priceDescending: 'Сначала дороже', departure: 'Ближайший вылет', duration: 'Меньше времени в пути', stay: 'Больше времени на месте', value: 'Выгоднее час поездки', flightRating: 'По оценке перелёта' };
 const QUICK_FILTERS = ['direct', 'noLeave', 'near'];
-const CHIPS = { direct: 'Без пересадок', noLeave: 'Без отпуска', near: 'В пути до 3 ч', cheap: 'До 20 000 ₽', comfy: 'Удобное время вылета', russia: 'Россия', unique: 'Один вариант на город' };
+const CHIPS = { direct: 'Без пересадок', noLeave: 'Домой к утру понедельника', near: 'В пути до 3 ч', cheap: 'До 20 000 ₽', comfy: 'Удобное время вылета', russia: 'Россия', unique: 'Один вариант на город' };
+const WEEKEND_HINT = 'Вылет в пятницу с 18:00 или в субботу. Обратный рейс прилетает в ближайшее воскресенье или в понедельник до 09:00. Время местное.';
 const TAGS = { sea: 'Море', culture: 'Музеи и культура', food: 'Гастрономия', architecture: 'Архитектура', nature: 'Природа', nightlife: 'Вечерняя жизнь' };
 const POPULAR = ['MOW', 'LED', 'SVX', 'OVB', 'KZN', 'GOJ', 'KUF', 'UFA', 'AER', 'KGD'];
 // «Куда улететь из …»: родительный падеж для частых городов вылета; для остальных — «Вылет: город».
@@ -77,7 +78,7 @@ searchShortcuts.setAttribute('role', 'group');
 searchShortcuts.setAttribute('aria-label', 'Быстрый поиск по условию');
 searchShortcuts.hidden = true;
 searchShortcuts.innerHTML = QUICK_FILTERS.map(name =>
-  `<button type="button" class="chip" data-quick="${name}">${CHIPS[name]}</button>`).join('');
+  `<button type="button" class="chip" data-quick="${name}"${name === 'noLeave' ? ` title="${WEEKEND_HINT}"` : ''}>${CHIPS[name]}</button>`).join('');
 $('search').after(searchShortcuts);
 let request = null;
 // «Продолжить планирование»: последние открытые поездки — только в этом браузере, до восьми.
@@ -160,8 +161,9 @@ function accepts(offer) {
   if (!FITS[effectiveLength()](x.days)) return false;
   if (f.noLeave) {
     const departureOK = (x.out.weekday === 6 && x.out.hour >= 18) || x.out.weekday === 7;
-    const returnOK = x.homeZone && (x.homeZone.weekday === 1 || (x.homeZone.weekday === 2 && x.homeZone.hour < 9));
-    if (!departureOK || !returnOK) return false;
+    if (!departureOK || !x.homeZone) return false;
+    const sunday = addDays(x.out.key, 8 - x.out.weekday);
+    if (x.homeZone.key !== sunday && !(x.homeZone.key === addDays(sunday, 1) && x.homeZone.hour < 9)) return false;
   }
   return true;
 }
@@ -465,13 +467,14 @@ function renderResults() {
     title = collection ? `${collection.title} (${countLabel(offers.length)})` : countLabel(offers.length);
     announce(offers.length ? `Найдено: ${countLabel(offers.length)}` : 'Подходящих вариантов нет');
     const chips = `<button type="button" class="chip" data-chip="all" aria-pressed="${!active}">Все</button>` + filters
-      .map(([name, title]) => `<button type="button" class="chip" data-chip="${name}" aria-pressed="${Boolean(selected(name))}">${title}</button>`).join('');
+      .map(([name, title]) => `<button type="button" class="chip" data-chip="${name}" aria-pressed="${Boolean(selected(name))}"${name === 'noLeave' ? ' aria-describedby="weekendHint"' : ''}>${title}</button>`).join('');
     const menu = (id, label, options, value) => `<select class="menu menu--plain" id="${id}" aria-label="${label}">${Object.entries(options).map(([name, title]) => `<option value="${name}" ${value === name ? 'selected' : ''}>${title}</option>`).join('')}</select>`;
     tools = `<div class="sort-menus">${menu('sort', 'Сортировка', SORTS, state.sort)}${menu('length', 'Длительность поездки', LENGTHS, effectiveLength())}</div>`;
     body = collection ? `<p class="source">${esc(collection.hint)}. ${esc(cachedPriceLabel(state.home.received_at))} для поездки туда и обратно на одного. <a href="/how-we-count.html#home">Как мы считаем</a></p>`
       : `<p class="source"><span class="summary">${esc(state.performedLabel)}. </span>${esc(cachedPriceLabel(state.result.received_at))} для поездки туда и обратно на одного. <a href="/how-we-count.html">Как мы считаем</a></p>`;
     body += `
       <div class="chips" role="group" aria-label="Быстрые фильтры">${chips}</div>
+      <p class="caption" id="weekendHint"${state.filters.noLeave ? '' : ' hidden'}>${WEEKEND_HINT}</p>
       ${state.sort === 'flightRating' ? '<p class="caption">Оценка перелёта — цена и дорога, 0–100. Варианты без оценки идут в конце.</p>' : ''}
       ${state.sort === 'stay' || state.sort === 'value' ? '<p class="caption">Время на месте — от расчётного прилёта до обратного вылета, включая ночи.</p>' : ''}
       ${!collection && state.result.incomplete ? (state.result.warnings?.length ? state.result.warnings : ['Удалось проверить только часть вариантов.']).map(text => `<p class="caption">${esc(text)}</p>`).join('') : ''}`;
