@@ -27,11 +27,16 @@ class DiscussionTests(unittest.TestCase):
         write_json(self.folder / 'card.json', read_card(ROOT / 'kazan-results.json'))
 
     def test_wait_for_both_judges_and_keep_dissent(self):
+        card = read_card(self.folder / 'card.json')
+        card['models'] = {'designer': 'sol', 'ux_judge': 'sol'}
+        write_json(self.folder / 'card.json', card)
         arrived = threading.Event()
         release = threading.Event()
         prompts = {}
         def worker(folder, role, prompt, settings, *, card_only):
             self.assertTrue(card_only)
+            self.assertEqual(settings[:2], ('astra' if role == 'data_judge' else 'sol', 'xhigh'))
+            self.assertNotIn('models', prompt)
             prompts[role] = prompt
             if role == 'data_judge':
                 arrived.set()

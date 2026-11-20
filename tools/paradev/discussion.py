@@ -34,6 +34,12 @@ def read_card(path):
     if not isinstance(facts, list) or not facts or not all(isinstance(f, str) and f.strip() for f in facts):
         raise ValueError('Нужен список наблюдений')
     card = {'question': question, 'options': options, 'facts': facts}
+    models = data.get('models', {})
+    if not isinstance(models, dict) or any(role not in ROLES or model not in ('sol', 'astra')
+                                           for role, model in models.items()):
+        raise ValueError('Для роли можно выбрать sol или astra')
+    if models:
+        card['models'] = models
     if len(render_card(card)) > 2400:
         raise ValueError('В карточке больше 2400 знаков')
     return card
@@ -83,7 +89,8 @@ def discuss(folder, worker):
 
         def ask(role):
             prompt = role_prompt(role, card)
-            worker(folder, role, prompt, SETTINGS, card_only=True)
+            family = card.get('models', {}).get(role, SETTINGS[0])
+            worker(folder, role, prompt, (family, *SETTINGS[1:]), card_only=True)
             return decision((folder / (role + '.md')).read_text(), card['options'])[0]
 
         result['choices']['designer'] = ask('designer')
