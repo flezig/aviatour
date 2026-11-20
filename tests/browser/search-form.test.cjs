@@ -237,3 +237,169 @@ for (const mobile of [false, true]) {
     assert.equal((await submit(page)).has('budget'), false);
   });
 }
+
+for (const mobile of [false, true]) {
+  test('Ближайший билет сверх бюджета сохраняет все условия и ID, ' + (mobile ? 'телефон' : 'компьютер'), async t => {
+    const page = await setup(t, mobile);
+    const budget = 10000;
+    const first = { ...offer('a-fare', 'Казань', 'KZN', 12, 10018), price_minor: 1000050 };
+    const tied = { ...first, id: 'z-fare' };
+    const cheaperButExpired = { ...first, id: 'expired', price_minor: 1000001, expires_at: today };
+    const unavailable = { ...first, id: 'unavailable', price_minor: 1000002, availability: 'unavailable' };
+    const more = { ...first, id: 'more', price_minor: 1001100 };
+    let requests;
+    await page.route('**/api/v1/search/web?*', route => {
+      const params = new URL(route.request().url()).searchParams;
+      requests.push(params);
+      const over = [tied, unavailable, more, cheaperButExpired, first];
+      if (params.has('direct')) over.reverse();
+      const outsideLocalFilters = { ...first, id: 'other', duration_to: 300, price_minor: 1000010 };
+      if (params.get('region') === 'russia') over.push(outsideLocalFilters);
+      return route.fulfill({ json: { offers: params.has('budget') ? [] : over,
+        received_at: today, incomplete: true, warnings: ['Часть предложений недоступна.'] } });
+    });
+    for (const selection of [
+      'month=2030-02', 'month=2030-02&fc=MOW', 'month=2030-02&to=KZN',
+      'month=2030-02&to=KZN&tc=KZN', 'month=2030-02&direct=1', 'month=2030-02&filter=cheap',
+      'month=2030-02&filter=comfy', 'month=2030-02&region=russia&filter=near',
+      'dep=2030-02-12&ret=2030-02-14', 'dep=2030-02-12&ret=2030-02-14&direct=1&length=short',
+    ]) {
+      requests = [];
+      await page.goto(base + '/?from=SVO&budget=' + budget + '&weekend=0&' + selection);
+      const button = page.getByRole('button', { name: 'Открыть билет', exact: true });
+      await button.waitFor();
+      assert.equal(await button.getAttribute('data-ticket'), 'a-fare', selection);
+      assert.match((await page.locator('#budgetHint').innerText()).replace(/\s/g, ''), /10000,50₽тудаиобратноНа0,50₽вышебюджета/);
+      assert.equal(requests.length, 2);
+      const [original, broad] = requests.map(p => new URLSearchParams(p));
+      assert.equal(original.get('budget'), String(budget));
+      original.delete('budget');
+      assert.deepEqual([...broad], [...original], selection);
+      const address = page.url();
+      await button.click();
+      await page.locator('#detail[open]').waitFor();
+      assert.equal(new URL(page.url()).searchParams.get('trip'), 'a-fare');
+      assert.equal(new URL(page.url()).searchParams.has('budget'), false);
+      await page.goBack();
+      await button.waitFor();
+      assert.equal(page.url(), address);
+      assert.equal(requests.length, 2, 'открытие и возврат используют один снимок');
+    }
+  });
+}
+
+test('Подсказка о доплате появляется только при подтверждённом пустом поиске', async t => {
+  const page = await setup(t, false);
+  let mode, broadCount = 0;
+  await page.route('**/api/v1/search/web?*', route => {
+    const p = new URL(route.request().url()).searchParams;
+    if (!p.has('budget')) {
+      broadCount++;
+      if (mode === 'error') return route.fulfill({ status: 503, json: {} });
+    }
+    const sample = mode === 'equal' || mode === 'nonempty' ? [offer('limit', 'Казань', 'KZN', 12, 20000)] : [];
+    return route.fulfill({ json: { offers: p.has('budget') && mode !== 'nonempty' ? [] : sample, received_at: today } });
+  });
+  for (const current of ['error', 'equal', 'none', 'nonempty', 'hardcap', 'unlimited']) {
+    mode = current;
+    broadCount = 0;
+    await page.goto(base + '/?from=SVO&month=2030-02&weekend=0' + (mode === 'unlimited' ? '' : '&budget=20000') + (mode === 'hardcap' ? '&filter=cheap' : ''));
+    await page.locator('#results .chips').waitFor();
+    await page.waitForLoadState('networkidle');
+    assert.equal(await page.locator('[data-action="budgetTicket"]').count(), 0, mode);
+    assert.equal(broadCount, ['nonempty', 'hardcap'].includes(mode) ? 0 : 1, mode);
+  }
+});
+
+test('Смена фильтра во время проверки доплаты и после неё сохраняет один запрос', async t => {
+  const page = await setup(t, false);
+  let release, requested;
+  const pending = new Promise(resolve => { release = resolve; });
+  const started = new Promise(resolve => { requested = resolve; });
+  let broadCount = 0;
+  await page.route('**/api/v1/search/web?*', async route => {
+    const p = new URL(route.request().url()).searchParams;
+    if (p.has('budget')) return route.fulfill({ json: { offers: [], received_at: today } });
+    broadCount++;
+    requested();
+    await pending;
+    return route.fulfill({ json: { offers: [
+      { ...offer('slow', 'Казань', 'KZN', 12, 12000), duration_back: 181 },
+      offer('fast', 'Казань', 'KZN', 12, 13000),
+    ], received_at: today } });
+  });
+  await page.goto(base + '/?from=SVO&month=2030-02&weekend=0&budget=10000');
+  await started;
+  const quick = page.locator('#results [data-chip="near"]');
+  try { await quick.click(); } finally { release(); }
+  await page.locator('#budgetHint [data-ticket="fast"]').waitFor();
+  await quick.click();
+  await page.locator('#budgetHint [data-ticket="slow"]').waitFor();
+  assert.equal(broadCount, 1);
+});
+
+for (const mobile of [false, true]) {
+  test('Домой к утру понедельника учитывает дату прилёта и только одни выходные, ' + (mobile ? 'телефон' : 'компьютер'), async t => {
+    const fri = '2030-03-29T18:00:00+03:00';
+    const sun = '2030-03-31T15:00:00+03:00';
+    const ticket = (id, depart, back, minutes = 60) => ({
+      ...offer(id, 'Казань', 'KZN', 15, 10000), departure_at: depart, return_at: back, duration_back: minutes,
+    });
+    const sample = [
+      ticket('fri-at-six', fri, sun),
+      ticket('fri-too-early', '2030-03-29T17:59:00+03:00', sun),
+      ticket('sat-before-nine', '2030-03-30T08:00:00+03:00', '2030-04-01T07:59:00+03:00'),
+      ticket('mon-at-nine', fri, '2030-04-01T08:00:00+03:00'),
+      ticket('next-sunday', fri, '2030-04-07T10:00:00+03:00'),
+      ticket('next-monday', fri, '2030-04-08T06:00:00+03:00'),
+      ticket('unknown-arrival', fri, sun, null),
+      ticket('month-boundary', '2030-03-30T10:00:00+03:00', '2030-04-01T04:00:00Z'),
+    ];
+    const page = await setup(t, mobile, sample);
+    const name = 'Домой к утру понедельника';
+    assert.equal(await page.getByRole('button', { name, exact: true }).isVisible(), true);
+    await page.goto(base + '/?from=SVO&month=2030-03&weekend=0&length=all&group=0&filter=noLeave');
+    const chip = page.locator('#results').getByRole('button', { name, exact: true });
+    await chip.waitFor();
+    assert.equal(await chip.getAttribute('aria-pressed'), 'true');
+    assert.match(await page.locator('#weekendHint').innerText(), /пятницу с 18:00.*понедельник до 09:00/);
+    assert.equal(await page.locator('#weekendHint').isVisible(), true);
+    assert.deepEqual((await visibleIds(page)).sort(), ['fri-at-six', 'month-boundary', 'sat-before-nine']);
+    await chip.click();
+    assert.equal(await page.locator('#weekendHint').isVisible(), false);
+    assert.equal((await visibleIds(page)).length, sample.length);
+  });
+}
+
+for (const mobile of [false, true]) {
+  test('Список в один город сохраняет каждый билет и различает клик и клавиатурный фокус, ' + (mobile ? 'телефон' : 'компьютер'), async t => {
+    const flights = Array.from({ length: 49 }, (_, i) => offer('case-' + i, 'Казань', 'KZN', 15, 5000 + i));
+    const page = await setup(t, mobile, flights);
+    await page.goto(base + '/?from=SVO&fc=MOW&to=KZN&tc=KZN&month=2030-02&weekend=0#ab=B');
+    const results = page.locator('#results');
+    await results.locator('.city-flight').first().waitFor();
+    const seen = [];
+    for (let n = 1; n <= 3; n++) {
+      if (n > 1) await results.getByRole('button', { name: 'Следующая страница' }).click();
+      assert.equal(await results.locator('.city-flights-heading .photo').count(), 1);
+      assert.equal(await results.locator('.city-flight .photo').count(), 0);
+      seen.push(...await visibleIds(page));
+    }
+    assert.deepEqual(seen, flights.map(o => o.id));
+    await results.locator('[data-fav="case-48"]').click();
+    assert.equal(await results.locator('[data-fav="case-48"]').getAttribute('aria-pressed'), 'true');
+    await results.locator('[data-offer="case-48"]').click();
+    await page.locator('#detail[open]').waitFor();
+    await page.locator('#detail [data-close], #detail button[aria-label="Закрыть"], #detailClose').first().click();
+    const sort = results.locator('#sort');
+    if (mobile) await sort.tap(); else await sort.click();
+    await sort.selectOption('priceDescending');
+    assert.equal(await sort.evaluate(el => getComputedStyle(el).outlineStyle), 'none');
+    assert.equal((await visibleIds(page))[0], 'case-48');
+    if (!mobile) {
+      await page.keyboard.press('Tab');
+      assert.equal(await page.evaluate(() => document.activeElement.id), 'length');
+      assert.equal(await results.locator('#length').evaluate(el => getComputedStyle(el).outlineStyle), 'solid');
+    }
+  });
+}

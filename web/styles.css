@@ -373,25 +373,32 @@ img { display: block; max-width: 100%; }
 .has-hero .ai-note { background: rgba(255, 255, 255, .18); }
 .photo-credit-line { margin-top: var(--s-2); font-size: var(--fs-micro); color: var(--ink-2); }
 
-/* --- Загрузка: самолёт летит сквозь облака --- */
-.flyby { display: grid; gap: var(--s-3); justify-items: center; padding: var(--s-2) 0 var(--s-4); }
-.flyby-scene { position: relative; width: 100%; max-width: 560px; height: 150px; overflow: hidden; border-radius: var(--r-pass);
-  background: linear-gradient(180deg, #cfe2fa 0, #e9f2fd 70%, #f6f9fe 100%); box-shadow: var(--sh-pass); }
-.flyby-clouds { position: absolute; left: 0; display: flex; width: 200%; color: var(--cloud); animation: flyby-clouds var(--t) linear infinite; }
-.flyby-clouds svg { flex: none; width: 50%; height: auto; }
-.flyby-clouds--far { top: 14px; opacity: .65; --t: 14s; }
-.flyby-clouds--near { top: 44px; opacity: .95; --t: 6s; z-index: 2; filter: drop-shadow(0 4px 6px rgba(15, 27, 61, .08)); }
-@keyframes flyby-clouds { to { transform: translateX(-50%); } }
-.flyby-plane { position: absolute; left: 50%; top: 46px; z-index: 1; width: 132px; margin-left: -66px; animation: flyby-bob 2.6s ease-in-out infinite alternate; }
-.flyby-plane svg { display: block; width: 100%; height: auto; overflow: visible; }
-@keyframes flyby-bob { from { transform: translateY(-5px) rotate(-1.5deg); } to { transform: translateY(5px) rotate(1deg); } }
-.flyby-trail { position: absolute; right: 100%; top: 21px; width: 220px; height: 3px; border-radius: 3px;
-  background: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0) 0 10px, rgba(255, 255, 255, .95) 10px 30px); background-size: 60px 3px;
-  -webkit-mask: linear-gradient(90deg, transparent, #000 70%); mask: linear-gradient(90deg, transparent, #000 70%); animation: flyby-trail .6s linear infinite; }
-.flyby-trail + .flyby-trail { top: 27px; width: 180px; opacity: .7; }
-@keyframes flyby-trail { to { background-position: -60px 0; } }
-.flyby-text { font-weight: 600; color: var(--ink-2); }
-@media (prefers-reduced-motion: reduce) { .flyby-clouds--near { transform: translateX(-20%); } }
+/* Состояние ожидания занимает ту же ширину, что и список билетов. */
+.showcase-loading { display: grid; gap: var(--s-3); }
+@media (max-width: 520px) {
+  .results:has(> .loading-track) .results-head h2 { flex-basis: 100%; }
+}
+.loading-track {
+  height: 2px;
+  margin-bottom: clamp(48px, 8vh, 96px);
+  overflow: hidden;
+  border-radius: 2px;
+  background: var(--line);
+}
+.loading-track::before {
+  content: "";
+  display: block;
+  width: 24%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(35, 70, 216, .34), transparent);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .loading-track::before { animation: loading-pass 3.6s ease-in-out .35s infinite backwards; }
+}
+@keyframes loading-pass {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(420%); }
+}
 
 /* --- Страницы выдачи вместо бесконечного списка --- */
 .pager { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--s-1); padding-top: var(--s-3); }
@@ -408,6 +415,9 @@ img { display: block; max-width: 100%; }
 .results > * { min-width: 0; }
 .results-head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3); }
 .results-head h2 { margin-right: auto; }
+.results-head :is(select, button) { -webkit-tap-highlight-color: transparent; }
+.results-head :is(select, button):focus-visible { outline-offset: -3px; }
+.results[data-heading-pointer] .results-head :is(select, button):focus { outline: none; }
 .source { font-size: var(--fs-cap); color: var(--ink-2); }
 .search-warning { padding: var(--s-2) var(--s-3); border-left: 3px solid var(--cobalt); background: var(--card); font-size: var(--fs-small); }
 .chips { display: flex; gap: var(--s-2); overflow-x: auto; margin: 0 calc(-1 * var(--gutter)); padding: var(--s-0) var(--gutter); scrollbar-width: none; }
@@ -428,6 +438,9 @@ img { display: block; max-width: 100%; }
 @media (min-width: 900px) { .results-head .sort-menus { order: 0; flex-basis: auto; } }
 .grid { display: grid; gap: var(--s-5) var(--s-4); grid-template-columns: repeat(auto-fill, minmax(min(100%, 248px), 1fr)); padding-top: var(--s-2); }
 .status-actions { display: flex; flex-wrap: wrap; gap: var(--s-2); justify-content: center; }
+.status:has(> .budget-hint:not(:empty)) > :is(.icon, h3, p) { display: none; }
+.budget-hint:not(:empty) { display: grid; gap: var(--s-3); justify-items: center; }
+.budget-hint:empty { display: none; }
 
 /* Марка: фото в рамке с зубчиками — рамка рисуется маской, файлы фото не меняются. */
 .stamp { padding: 3px; background: var(--card); border-radius: var(--r-frame); box-shadow: var(--sh-frame); }
@@ -1039,4 +1052,34 @@ body:has(.rating-sheet[open]) { overflow: hidden; }
   .sheet:not(#picker), .method-menu, .rating-sheet {
     inset-block: 0 auto; margin-block: 8px; max-height: calc(env(viewport-segment-height 0 0) - 16px);
   }
+}
+
+.stay-page { display: grid; gap: var(--s-5); max-width: 65rem; margin: 0 auto; }
+.stay-page fieldset { display: grid; gap: 2px; border: 0; padding: 0; margin: 0 0 var(--s-3); }
+.stay-page legend, .stay-hotels caption { font-weight: 650; text-align: start; margin-bottom: var(--s-2); }
+.stay-page fieldset label { display: flex; gap: var(--s-2); align-items: center; min-height: 44px; }
+.stay-page input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--cobalt); }
+.stay-page .btn-primary { width: fit-content; }
+.stay-hotels { display: grid; gap: var(--s-4); grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); }
+.stay-hotels table { width: 100%; border-collapse: collapse; margin-top: var(--s-3); }
+.stay-hotels th, .stay-hotels td { border-top: 1px solid var(--line); padding-block: var(--s-2); text-align: start; }
+.stay-hotels th { font-weight: 400; padding-right: var(--s-2); }
+.stay-hotels td { white-space: nowrap; text-align: end; }
+
+.city-flights-heading { display: flex; align-items: center; gap: var(--s-4); margin: var(--s-2) 0 var(--s-4); }
+.city-flights-heading .photo { width: clamp(64px, 10vw, 112px); aspect-ratio: 3 / 2; flex: none; border-radius: var(--r-field); overflow: hidden; }
+.city-flights-heading .photo img { width: 100%; height: 100%; object-fit: cover; }
+.city-flights-heading h3 { margin-bottom: var(--s-1); font: var(--city-title); letter-spacing: 0; }
+.city-flights-list { list-style: none; padding: 0; margin: 0; border-radius: var(--r-pass); border: 1px solid var(--line); background: var(--card); }
+.city-flight { display: flex; gap: var(--s-2); align-items: center; padding: var(--s-2) var(--s-3); }
+.city-flight + .city-flight { border-top: 1px solid var(--line); }
+.city-flight-open { flex: 1; min-width: 0; min-height: var(--tap); display: grid; grid-template-columns: 1.35fr 1fr auto; align-items: center; gap: var(--s-3); text-align: start; }
+.city-flight-open small { display: block; font-size: var(--fs-cap); color: var(--ink-2); }
+.city-flight .fav { position: static; flex: none; }
+@media (max-width: 620px) {
+  .city-flight { padding-inline: var(--s-2); gap: 2px; }
+  .city-flight-open { grid-template-columns: minmax(0, 1fr) auto; gap: var(--s-1) var(--s-2); }
+  .city-flight-airline { grid-column: 1; font-size: var(--fs-cap); }
+  .city-flight-airline small { display: inline; margin-left: var(--s-1); }
+  .city-flight-open .offer-price { grid-column: 2; grid-row: 1 / 3; font-size: var(--fs-small); }
 }

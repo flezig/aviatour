@@ -1,0 +1,29 @@
+.itinerary { display: grid; gap: var(--s-3); overflow-wrap: anywhere; }
+.itinerary header p, .itinerary h3, .itinerary p { margin: 0; }
+.it-places { margin: 0; padding: 0; border: 0; display: flex; flex-wrap: wrap; gap: var(--s-1) var(--s-2); }
+.it-places legend { font-weight: 600; padding-block: var(--s-2); }
+.it-places label { display: flex; align-items: center; gap: var(--s-2); min-height: var(--tap); padding: var(--s-1) var(--s-3); border: 1px solid var(--line); border-radius: var(--r-chip); cursor: pointer; }
+.it-places label:has(:checked) { background: var(--cobalt-soft); border-color: var(--cobalt); }
+.it-places input { accent-color: var(--cobalt); }
+.it-panel { border-top: 1px solid var(--line); }
+.it-panel summary { cursor: pointer; padding-block: var(--s-3); font-weight: 600; min-height: var(--tap); }
+.it-form, .it-days, .it-day, .it-form > label { display: grid; gap: var(--s-3); }
+.it-form { padding-bottom: var(--s-2); }
+.it-form > label { gap: 4px; color: var(--ink-2); font-size: var(--fs-cap); }
+.it-form :is(input,select) { min-width: 0; max-width: 100%; width: 100%; min-height: var(--tap); padding: var(--s-2); background: var(--card); border: 1px solid var(--line-strong); border-radius: var(--r-chip); color: var(--ink); font: inherit; }
+.it-form input, .it-form select { font-size: 16px; }
+.it-form > button, .it-stay { justify-self: start; }
+.it-feedback:empty, .it-form [role=alert]:empty { display: none; }
+.it-form [role=alert] { color: var(--high); }
+.it-note, .it-lunch { background: var(--fill); padding: var(--s-2) var(--s-3); border-radius: var(--r-chip); }
+.it-day ol { list-style: none; margin: 0; padding: 0; }
+.it-row { display: grid; grid-template-columns: minmax(6.8em,auto) 1fr; gap: var(--s-3); padding: var(--s-2) 0; border-bottom: 1px solid var(--line); }
+.it-time { font-variant-numeric: tabular-nums; }
+.it-row :is(div, small) { min-width: 0; }
+.it-row small { display: block; color: var(--ink-2); }
+.it-textbutton { min-height: var(--tap); background: transparent; border: 0; padding: 0 var(--s-1); font: inherit; color: var(--cobalt); cursor: pointer; }
+.it-panel [hidden] { display: none; }
+@media (max-width: 500px) {
+  .it-row { grid-template-columns: 1fr; gap: 2px; }
+  .it-places { display: grid; }
+}
