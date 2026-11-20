@@ -415,6 +415,9 @@ img { display: block; max-width: 100%; }
 .results > * { min-width: 0; }
 .results-head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3); }
 .results-head h2 { margin-right: auto; }
+.results-head :is(select, button) { -webkit-tap-highlight-color: transparent; }
+.results-head :is(select, button):focus-visible { outline-offset: -3px; }
+.results[data-heading-pointer] .results-head :is(select, button):focus { outline: none; }
 .source { font-size: var(--fs-cap); color: var(--ink-2); }
 .search-warning { padding: var(--s-2) var(--s-3); border-left: 3px solid var(--cobalt); background: var(--card); font-size: var(--fs-small); }
 .chips { display: flex; gap: var(--s-2); overflow-x: auto; margin: 0 calc(-1 * var(--gutter)); padding: var(--s-0) var(--gutter); scrollbar-width: none; }
