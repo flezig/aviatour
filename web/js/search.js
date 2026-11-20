@@ -428,15 +428,10 @@ function pager(pages) {
   const button = (n, label = n, extra = '') => `<button type="button" data-page="${n}" ${n === state.page && label === n ? 'aria-current="page"' : ''} ${extra}>${label}</button>`;
   return `<nav class="pager" aria-label="Страницы выдачи">${button(state.page - 1, '‹', `aria-label="Предыдущая страница" ${state.page === 1 ? 'disabled' : ''}`)}${shown.map((n, i) => (i && n - shown[i - 1] > 1 ? '<span class="gap">…</span>' : '') + button(n)).join('')}${button(state.page + 1, '›', `aria-label="Следующая страница" ${state.page === pages ? 'disabled' : ''}`)}</nav>`;
 }
-<<<<<<< HEAD
-function statusPanel(symbol, title, message, extra = '') {
-  return `<div class="status">${icon(symbol)}<h3>${esc(title)}</h3><p>${esc(message)}</p>${extra}</div>`;
-=======
 const loadingTrack = '<div class="loading-track" aria-hidden="true"></div>';
 
-function statusPanel(symbol, title, message) {
-  return `<div class="status">${icon(symbol)}<h3>${esc(title)}</h3><p>${esc(message)}</p></div>`;
->>>>>>> origin/pr55
+function statusPanel(symbol, title, message, extra = '') {
+  return `<div class="status">${icon(symbol)}<h3>${esc(title)}</h3><p>${esc(message)}</p>${extra}</div>`;
 }
 const action = (name, title, primary = true) => `<button type="button" class="${primary ? 'btn-primary' : 'btn-inline'}" data-action="${name}">${esc(title)}</button>`;
 
