@@ -2,12 +2,13 @@
 import argparse
 from concurrent.futures import ThreadPoolExecutor
 import fcntl
+import hashlib
 import json
 from pathlib import Path
 import re
 
 from meter import write_json
-from worker_model import invoke
+from worker_model import REPO, invoke
 
 
 ROLES = {
@@ -40,6 +41,13 @@ def read_card(path):
         raise ValueError('Для роли можно выбрать sol или astra')
     if models:
         card['models'] = models
+    sources = data.get('source_hashes', {})
+    if not isinstance(sources, dict) or any(not name or Path(name).is_absolute() or '..' in Path(name).parts
+                                           or not isinstance(digest, str) or not re.fullmatch('[a-f0-9]{64}', digest)
+                                           for name, digest in sources.items()):
+        raise ValueError('Для каждого файла нужен относительный путь и SHA-256')
+    if sources:
+        card['source_hashes'] = sources
     if len(render_card(card)) > 2400:
         raise ValueError('В карточке больше 2400 знаков')
     return card
@@ -48,6 +56,18 @@ def read_card(path):
 def render_card(card):
     return '\n'.join([card['question'], 'Варианты:',
                       *(f'{k} — {v}' for k, v in card['options'].items()), 'Наблюдения:', *card['facts']])
+
+
+def verify_sources(card, repo):
+    root = repo.resolve()
+    for name, expected in card.get('source_hashes', {}).items():
+        path = (root / name).resolve()
+        if not path.is_relative_to(root) or not path.is_file():
+            raise ValueError('Недоступен источник карточки: ' + name)
+        with path.open('rb') as stream:
+            digest = hashlib.file_digest(stream, 'sha256').hexdigest()
+        if digest != expected:
+            raise ValueError('Источник изменился, обновите факты карточки: ' + name)
 
 
 def role_prompt(role, card):
@@ -86,6 +106,7 @@ def discuss(folder, worker):
     result = {'kind': 'discussion', 'state': 'failed', 'choices': {}, 'agents': {}, 'coordinator_tokens': 0}
     try:
         card = read_card(folder / 'card.json')
+        verify_sources(card, REPO)
 
         def ask(role):
             prompt = role_prompt(role, card)

@@ -1,4 +1,5 @@
 import importlib.util
+import hashlib
 import io
 import json
 from contextlib import redirect_stdout
@@ -80,6 +81,18 @@ class DiscussionTests(unittest.TestCase):
         self.assertEqual(called, ['designer'])
         self.assertEqual(result['state'], 'failed')
         self.assertEqual(result['agents']['designer']['total'], 150)
+
+    def test_changed_source_stops_before_any_worker(self):
+        source = self.folder / 'routes.py'
+        source.write_text('new')
+        card = read_card(self.folder / 'card.json')
+        card['source_hashes'] = {'routes.py': hashlib.sha256(b'old').hexdigest()}
+        write_json(self.folder / 'card.json', card)
+        with patch('discussion.REPO', self.folder):
+            result = run(self.folder, lambda *args: self.fail('Вызов модели с устаревшими фактами'))
+        self.assertEqual(result['state'], 'failed')
+        self.assertIn('Источник изменился', result['error'])
+        self.assertEqual(result['agents'], {})
 
     def test_reject_oversize_card_and_unknown_vote(self):
         card = json.loads((self.folder / 'card.json').read_text())
