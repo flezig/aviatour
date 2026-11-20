@@ -337,3 +337,36 @@ test('Смена фильтра во время проверки доплаты 
   await page.locator('#budgetHint [data-ticket="slow"]').waitFor();
   assert.equal(broadCount, 1);
 });
+
+for (const mobile of [false, true]) {
+  test('Домой к утру понедельника учитывает дату прилёта и только одни выходные, ' + (mobile ? 'телефон' : 'компьютер'), async t => {
+    const fri = '2030-03-29T18:00:00+03:00';
+    const sun = '2030-03-31T15:00:00+03:00';
+    const ticket = (id, depart, back, minutes = 60) => ({
+      ...offer(id, 'Казань', 'KZN', 15, 10000), departure_at: depart, return_at: back, duration_back: minutes,
+    });
+    const sample = [
+      ticket('fri-at-six', fri, sun),
+      ticket('fri-too-early', '2030-03-29T17:59:00+03:00', sun),
+      ticket('sat-before-nine', '2030-03-30T08:00:00+03:00', '2030-04-01T07:59:00+03:00'),
+      ticket('mon-at-nine', fri, '2030-04-01T08:00:00+03:00'),
+      ticket('next-sunday', fri, '2030-04-07T10:00:00+03:00'),
+      ticket('next-monday', fri, '2030-04-08T06:00:00+03:00'),
+      ticket('unknown-arrival', fri, sun, null),
+      ticket('month-boundary', '2030-03-30T10:00:00+03:00', '2030-04-01T04:00:00Z'),
+    ];
+    const page = await setup(t, mobile, sample);
+    const name = 'Домой к утру понедельника';
+    assert.equal(await page.getByRole('button', { name, exact: true }).isVisible(), true);
+    await page.goto(base + '/?from=SVO&month=2030-03&weekend=0&length=all&group=0&filter=noLeave');
+    const chip = page.locator('#results').getByRole('button', { name, exact: true });
+    await chip.waitFor();
+    assert.equal(await chip.getAttribute('aria-pressed'), 'true');
+    assert.match(await page.locator('#weekendHint').innerText(), /пятницу с 18:00.*понедельник до 09:00/);
+    assert.equal(await page.locator('#weekendHint').isVisible(), true);
+    assert.deepEqual((await visibleIds(page)).sort(), ['fri-at-six', 'month-boundary', 'sat-before-nine']);
+    await chip.click();
+    assert.equal(await page.locator('#weekendHint').isVisible(), false);
+    assert.equal((await visibleIds(page)).length, sample.length);
+  });
+}
