@@ -4,7 +4,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from destination_check import COUNTRIES, MONTHS, ORIGINS, evaluate, matrix
+from destination_check import COUNTRIES, MONTHS, ORIGINS, evaluate, matrix, model_review, review_usage
 from meter import RolloutMeter
 
 
@@ -35,6 +35,20 @@ class HarnessTests(unittest.TestCase):
         result = evaluate(rows, 'asia', 'uae')
         self.assertEqual(result['cells'], 10)
         self.assertFalse(result['accepted'])
+
+    def test_failed_retry_counts_previous_spend_and_missing_telemetry(self):
+        with tempfile.TemporaryDirectory() as directory:
+            folder = Path(directory)
+            row = dict(requests=1, uncached=10, cached_input_tokens=2, input_tokens=12,
+                       output_tokens=3, total=15)
+            (folder / 'interface.usage.json').write_text(json.dumps(row))
+            with patch('destination_check.invoke', side_effect=RuntimeError('interrupted')):
+                with self.assertRaisesRegex(RuntimeError, 'interrupted'):
+                    model_review(folder, 'interface', 'sol', 'test')
+            usage = review_usage(folder, 'interface', 'sol')
+            self.assertEqual((usage['attempts'], usage['measured_attempts'], usage['total']), (2, 1, 15))
+            with self.assertRaisesRegex(RuntimeError, 'исчерпаны'):
+                model_review(folder, 'interface', 'sol', 'test')
 
     def test_resume_keeps_completed_queries(self):
         with tempfile.TemporaryDirectory() as folder:
