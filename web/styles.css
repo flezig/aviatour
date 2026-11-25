@@ -368,7 +368,7 @@ img { display: block; max-width: 100%; }
     linear-gradient(90deg, transparent 20%, var(--photo-shade) 46%,
       var(--photo-shade) max(690px, calc(50% + 140px)), transparent max(950px, calc(50% + 420px))); }
 }
-.has-hero .top .brand, .has-hero .intro h1, .has-hero .intro .origin { color: var(--on-photo); }
+.has-hero .top .brand, .has-hero .intro h1 { color: var(--on-photo); }
 .has-hero .top .nav a { color: var(--on-photo); }
 .has-hero .top .nav a:hover, .has-hero .top .nav a[aria-current="page"] { color: var(--on-photo); background: rgba(15, 27, 61, .42); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .28); }
 .has-hero .top .brand-mark { background: var(--card); color: var(--cobalt); }

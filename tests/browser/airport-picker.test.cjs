@@ -66,10 +66,10 @@ for (const [name, engine] of Object.entries({ chromium, webkit })) {
     assert.deepEqual(await submit(), ['DME', null]);
   });
 
-  test(`${name}: заголовок, свёрнутая и раскрытая формы привязывают панель к нажатому полю`, async t => {
+  test(`${name}: панель аэропортов привязана к нажатому полю формы`, async t => {
     const { page } = await setup(t, engine);
     const picker = page.locator('#picker');
-    for (const selector of ['#originTitle', destination, origin]) {
+    for (const selector of [destination, origin]) {
       const trigger = page.locator(selector);
       await trigger.click();
       await checkAnchor(page, selector);

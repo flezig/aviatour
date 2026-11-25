@@ -3,12 +3,9 @@ import { adMark } from './lib/ui.js';
 import { partnerLink } from './lib/links.js';
 
 const tabs = [...document.querySelectorAll('.service-tabs [role=tab]')];
-const heading = document.querySelector('.intro h1');
-const lead = document.querySelector('.intro-lead');
-const alternateHeading = document.createElement("h1");
-alternateHeading.hidden = true;
-heading.after(alternateHeading);
-const originalLead = lead.textContent;
+const intro = document.querySelector('.intro');
+const heading = intro.querySelector('h1');
+const lead = intro.querySelector('.intro-lead');
 const labels = {
   stays: ['Где остановиться', 'Выберите город, даты проживания и количество гостей.'],
   cars: ['Аренда авто', 'Тестируем раздел и решаем, подключать ли поиск авто.'],
@@ -34,9 +31,8 @@ function choose(tab) {
     document.getElementById(button.getAttribute('aria-controls')).hidden = !on;
   }
   document.body.classList.toggle('other-service', !flight);
-  heading.hidden = !flight; alternateHeading.hidden = flight;
-  if (!flight) alternateHeading.textContent = labels[selected][0];
-  lead.textContent = flight ? originalLead : labels[selected][1];
+  intro.hidden = flight;
+  if (!flight) [heading.textContent, lead.textContent] = labels[selected];
   requestAnimationFrame(sizeHero);
 }
 for (const [i, tab] of tabs.entries()) {
