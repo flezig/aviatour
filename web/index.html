@@ -23,7 +23,7 @@
   <link rel="preload" href="/fonts/geologica-cyrillic-800-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/golos-text-cyrillic-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/styles.css">
-  <link rel="stylesheet" href="/favorites.css">
+  <link rel="stylesheet" href="/favorites.css"><link rel="stylesheet" href="/origami.css">
   <link rel="modulepreload" href="/js/lib/ui.js">
   <link rel="modulepreload" href="/js/lib/format.js">
   <link rel="modulepreload" href="/js/lib/trip.js">
@@ -86,13 +86,7 @@
   </div>
   <header class="top wrap">
     <a class="brand" href="/"><span class="brand-mark"><svg class="icon" aria-hidden="true"><use href="#ui-plane"></use></svg></span>Aviator</a>
-    <nav class="nav" aria-label="Разделы сайта">
-      <a href="/" aria-current="page">Билеты</a>
-      <a href="/city/">Города</a>
-      <a href="/#fav">Избранное</a>
-      <a href="/trip.html">Мои поездки</a>
-      <a href="/how-we-count.html">Как мы считаем</a>
-    </nav>
+    <nav class="service-nav" aria-label="Разделы поиска"><div class="service-tabs" role="tablist" aria-label="Что ищем"><button id="tab-flights" role="tab" aria-selected="true" aria-controls="flight-service" tabindex="0" type="button" data-service="flights"><img src="/tab-flights.png" width="24" height="24" alt=""><span>Авиабилеты</span></button><button id="tab-stays" role="tab" aria-selected="false" aria-controls="panel-stays" tabindex="-1" type="button" data-service="stays"><img src="/tab-stays.png" width="24" height="24" alt=""><span>Жильё</span></button><button id="tab-cars" role="tab" aria-selected="false" aria-controls="panel-cars" tabindex="-1" type="button" data-service="cars"><img src="/tab-cars.png" width="24" height="24" alt=""><span>Авто</span></button><button id="tab-tours" role="tab" aria-selected="false" aria-controls="panel-tours" tabindex="-1" type="button" data-service="tours"><img src="/tab-tours.png" width="24" height="24" alt=""><span>Туры</span></button></div></nav>
   </header>
 
   <main class="wrap">
@@ -106,7 +100,7 @@
       <p class="ai" aria-disabled="true" hidden><svg class="icon" aria-hidden="true"><use href="#ui-pen"></use></svg><span>Опишите поездку словами</span><span class="ai-note">пока недоступно</span></p>
     </section>
 
-    <form class="search search--collapsed" id="search" novalidate aria-label="Поиск поездок">
+<section role="tabpanel" id="flight-service" aria-labelledby="tab-flights"><form class="search search--collapsed" id="search" novalidate aria-label="Поиск поездок">
       <button type="button" class="search-summary" id="searchSummary" aria-controls="searchFields" aria-expanded="false">
         <b class="code" id="summaryCode"></b>
         <span class="pick-text"><span class="pick-value" id="summaryRoute"></span><span class="caption" id="summaryDetails"></span><span class="caption" id="summaryPassengers">1 взрослый</span></span>
@@ -174,13 +168,13 @@
       <button class="btn-primary search-go" type="submit" id="searchButton"><svg class="icon" aria-hidden="true"><use href="#ui-search"></use></svg><span id="searchAction">Показать направления</span></button>
     </form>
 
-    <div class="showcase" id="showcase" hidden></div>
+</section><section class="service-panel" role="tabpanel" id="panel-stays" aria-labelledby="tab-stays" hidden><form class="service-form"><label><span>Город или курорт</span><select name="place"><option>Стамбул</option><option>Анталья</option><option>Дубай</option><option>Сочи</option></select></label><label><span>Заезд</span><input type="date" name="start" required></label><label><span>Выезд</span><input type="date" name="end" required></label><label><span>Гости</span><select><option>1 гость</option><option>2 гостя</option><option>3 гостя</option><option>4 гостя</option></select></label><button type="submit" class="btn-primary">Найти жильё</button></form><p class="service-result" role="status" hidden></p></section><section class="service-panel" role="tabpanel" id="panel-cars" aria-labelledby="tab-cars" hidden><form class="service-form"><label><span>Место получения</span><select name="place"><option>Стамбул</option><option>Анталья</option><option>Дубай</option><option>Сочи</option></select></label><label><span>Получение</span><input type="date" name="start" required></label><label><span>Возврат</span><input type="date" name="end" required></label><label><span>Класс авто</span><select><option>Любой класс</option><option>Компакт</option><option>Семейный</option><option>Внедорожник</option></select></label><button type="submit" class="btn-primary">Найти авто</button></form><p class="service-result" role="status" hidden></p></section><section class="service-panel" role="tabpanel" id="panel-tours" aria-labelledby="tab-tours" hidden><form class="service-form"><label><span>Куда</span><select name="place"><option>Стамбул</option><option>Анталья</option><option>Дубай</option><option>Сочи</option></select></label><label><span>Начало поездки</span><input type="date" name="start" required></label><label><span>Окончание</span><input type="date" name="end" required></label><label><span>Туристы</span><select><option>1 турист</option><option>2 туриста</option><option>3 туриста</option><option>4 туриста</option></select></label><button type="submit" class="btn-primary">Найти тур</button></form><p class="service-result" role="status" hidden></p></section><div class="showcase" id="showcase" hidden></div>
     <p class="sr-only" role="status" id="resultsStatus"></p>
     <section class="results" id="results" aria-label="Варианты" hidden></section>
   </main>
 
   <footer class="wrap footer">
-    <nav aria-label="Информация">
+    <nav aria-label="Информация"><a href="/#fav">Избранное</a>
       <a href="/city/">Города</a>
       <a href="/season/">Рейтинги и погода по месяцам</a>
       <a href="/kuda/">Куда улететь</a>
@@ -258,11 +252,17 @@
       <h2 id="detailTitle">Поездка</h2>
       <span class="sheet-actions"><button class="sheet-done" type="button" id="share">Поделиться</button><button class="sheet-done" type="button" data-close>Готово</button></span>
     </div>
-    <nav class="nav detail-nav" aria-label="Разделы сайта"></nav>
+    <nav class="nav detail-nav" aria-label="Разделы сайта">
+      <a href="/" aria-current="page">Билеты</a>
+      <a href="/city/">Города</a>
+      <a href="/#fav">Избранное</a>
+      <a href="/trip.html">Мои поездки</a>
+      <a href="/how-we-count.html">Как мы считаем</a>
+    </nav>
     <div class="sheet-body" id="detailBody"></div>
   </dialog>
 
   <script src="/config.js" defer></script>
   <script type="module" src="/js/search.js"></script>
-</body>
+<script type="module" src="/js/origami.js"></script></body>
 </html>

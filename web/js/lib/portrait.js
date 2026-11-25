@@ -23,7 +23,12 @@ export async function loadPortraits() {
   } catch { /* City names remain readable offline. */ }
 }
 
+export const longPortraitName = name => name.length > 14 || name.includes("(");
+
 export function portrait(code, name, { action = '', eager = false, named = false } = {}) {
   const pending = photos ? '' : ` data-pending="${eager ? 'eager' : 'lazy'}"`;
-  return `<span class="portrait" data-city-code="${esc(code)}"${pending}>${photos?.has(code) ? image(code, eager) : ''}<span class="portrait-name"${named ? '' : ' aria-hidden="true"'}>${esc(name)}</span>${action}</span>`;
+  const long = longPortraitName(name);
+  const [, main, qualifier] = /^(.*?)(?: (\([^()]+\)))?$/u.exec(name);
+  const label = esc(main) + (qualifier ? ' <span class="city-qualifier">' + esc(qualifier) + '</span>' : '');
+  return `<span class="portrait${long ? ' portrait--long' : ''}" data-city-code="${esc(code)}"${pending}>${photos?.has(code) ? image(code, eager) : ''}<span class="portrait-name"${named ? '' : ' aria-hidden="true"'}>${label}</span>${action}</span>`;
 }

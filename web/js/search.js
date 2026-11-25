@@ -6,7 +6,7 @@ import { cityRating } from './lib/city-rating.js';
 import { oneAdult, groupSize, passengerLabel, ticketAction, setPassengerParams, passengersFromParams } from './lib/passengers.js';
 import { passengerPicker } from './lib/passenger-picker.js';
 import { partnerLink, ticketLink } from './lib/links.js';
-import { portrait, loadPortraits } from './lib/portrait.js';
+import { portrait, loadPortraits, longPortraitName } from './lib/portrait.js';
 import { goal } from './lib/measure.js';
 import { currentOrigin, saveOrigin } from './lib/origin.js';
 import { priceLevel, usualKey, hotLine, leaveLine, levelNote, priceChange } from './lib/levels.js';
@@ -355,7 +355,8 @@ function compareTable(offers, distinguishFlights = false) {
     return `${price}<small class="compare-price-note">${esc(note)}</small>`;
   };
   const heading = (offer) => {
-    const city = portrait(offer.city_code, offer.city, { named: true });
+    const long = longPortraitName(offer.city);
+    const city = portrait(offer.city_code, offer.city, { named: !long }) + (long ? '<span class="compare-city-name">' + esc(offer.city) + '</span>' : '');
     if (!distinguishFlights) return city;
     const dep = facts(offer).dep, zone = offer.origin_timezone;
     const flight = [`${fmtDay(dep, zone)}, ${fmtTime(dep, zone)}`, `${offer.origin_airport} → ${offer.destination_airport}`, offer.flight_number].filter(Boolean);
@@ -1291,8 +1292,6 @@ function onReturn() {
 }
 document.addEventListener('visibilitychange', onReturn);
 window.addEventListener('focus', onReturn);
-const detailNav = $('detail').querySelector('.detail-nav');
-for (const link of document.querySelector('.top .nav').children) detailNav.append(link.cloneNode(true));
 $('share').addEventListener('click', shareTrip);
 const openPassengers = passengerPicker(passengers => {
   state.query.passengers = passengers;
@@ -1514,7 +1513,7 @@ async function restore() {
 }
 // Фото в шапке — до низа свёрнутой формы (+ немного воздуха): тёмные заголовки ниже не попадают на фото.
 function fitHero() {
-  if (state.view === 'fav' || !$('search').classList.contains('search--collapsed')) return;
+  if (document.body.classList.contains('other-service') || state.view === 'fav' || !$('search').classList.contains('search--collapsed')) return;
   document.documentElement.style.setProperty('--hero-h', `${Math.round($('search').getBoundingClientRect().bottom + scrollY + 28)}px`);
 }
 const heroLayout = new ResizeObserver(fitHero);
