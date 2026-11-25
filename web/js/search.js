@@ -861,10 +861,7 @@ function renderForm() {
   const q = state.query, zone = originZone(), list = months(zone), today = zoned(new Date(), zone).key;
   if (!q.exact && !list.includes(q.month)) q.month = list[0];
   $('originLabel').textContent = state.labels.origin;
-  const city = q.originCity ?? state.byIata.get(q.origin)?.city_code;
-  const from = state.fromNames.get(city);
   const originName = state.byIata.get(q.origin)?.city ?? state.labels.origin.split(', ')[0];
-  $('originTitle').innerHTML = `${from ? `из&nbsp;${esc(from)}` : `из&nbsp;города ${esc(originName)}`}${icon('chevron-down')}`;
   $('destinationLabel').textContent = state.labels.destination ?? DESTINATION_SCOPES[q.region].label;
   $('searchAction').textContent = q.destination ? 'Найти билеты' : 'Показать направления';
   document.querySelector(`input[name="dateMode"][value="${q.exact ? 'exact' : 'month'}"]`).checked = true;
@@ -1194,9 +1191,8 @@ function showFavorites(focusTitle = true) {
 
 // --- события ---
 $('originPick').addEventListener('click', event => openPicker('origin', event.currentTarget));
-$('originTitle').addEventListener('click', event => openPicker('origin', event.currentTarget));
 $('destinationPick').addEventListener('click', event => openPicker('destination', event.currentTarget));
-for (const trigger of document.querySelectorAll('#originTitle, #originPick, #destinationPick, [data-field="origin"], [data-field="destination"]')) {
+for (const trigger of document.querySelectorAll('#originPick, #destinationPick, [data-field="origin"], [data-field="destination"]')) {
   const preload = () => loadAirports().catch(() => {});
   trigger.addEventListener('pointerenter', preload, { once:true });
   trigger.addEventListener('focus', preload, { once:true });
