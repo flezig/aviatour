@@ -748,7 +748,7 @@ function showcaseRow(row, weekends) {
   }).join('')
     + (offers.length > 6 ? `<button type="button" class="tile-more" data-row-all="${esc(row.key)}"><b>+${offers.length - 6}</b><span>Показать все</span>${icon('arrow-right')}</button>` : '');
   const periods = weekends.map(period => {
-    const date = period.hint.split(',')[0];
+    const date = period.hint?.split(',')[0] || period.title;
     return `<button type="button" data-weekend="${esc(period.key)}" aria-pressed="${period.key === row.key}">${esc(date)}</button>`;
   }).join('');
   const controls = periods ? `<div class="weekend-periods" role="group" aria-label="Даты выходных">${periods}</div>` : '';

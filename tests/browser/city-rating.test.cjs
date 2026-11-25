@@ -34,7 +34,12 @@ for (const mobile of [false, true]) {
       if (new URL(req.url()).pathname === '/api/v1/city-rating/KZN') details.push(req.url());
     });
     await page.goto(base);
-    const card = page.locator('.tile--pass .city-rating').first();
+    const feedBadge = page.locator('.tile--pass .city-rating').first();
+    if (mobile) {
+      await page.locator('[data-open="kzn-test"]').first().tap();
+      assert.equal(await feedBadge.isVisible(), false);
+    }
+    const card = mobile ? page.locator('#detail .city-rating') : feedBadge;
     const panel = page.locator('#city-rating-popover:popover-open');
     await card.waitFor();
     assert.equal(await card.getAttribute('data-rating-month'), '12');
@@ -51,7 +56,7 @@ for (const mobile of [false, true]) {
       assert.match(await panel.innerText(), /Росстат/);
       assert.match(await card.innerText(), /7,0/);
     }
-    assert.equal(await page.locator('#detail').isVisible(), false);
+    assert.equal(await page.locator('#detail').isVisible(), mobile);
     const box = await panel.boundingBox();
     assert.ok(box.x >= 0 && box.x + box.width <= page.viewportSize().width + 1);
     if (mobile) {
@@ -63,7 +68,7 @@ for (const mobile of [false, true]) {
       await page.keyboard.press('Escape');
     }
     await panel.waitFor({ state: 'hidden' });
-    await page.locator('[data-open="kzn-test"]').first().click();
+    if (!mobile) await page.locator('[data-open="kzn-test"]').first().click();
     const detailBadge = page.locator('#detail .city-rating');
     if (mobile) await detailBadge.tap(); else await detailBadge.hover();
     await panel.locator('tbody').waitFor();
