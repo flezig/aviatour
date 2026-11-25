@@ -32,6 +32,7 @@ function choose(tab) {
   }
   document.body.classList.toggle('other-service', !flight);
   intro.hidden = flight;
+  lead.hidden = selected === 'stays' && document.getElementById('stayCities') !== null;
   if (!flight) [heading.textContent, lead.textContent] = labels[selected];
   requestAnimationFrame(sizeHero);
 }
