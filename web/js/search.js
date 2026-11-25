@@ -4,6 +4,7 @@ import { DEFAULT_ZONE, localZone, zoned, fmtDate, fmtDay, fmtTime, fmtMoney, fmt
 import { snapshot, tripPath, savedTrips, firstPrompt, saveTrip, tripDates } from './lib/trip.js';
 import { cityRating } from './lib/city-rating.js';
 import { partnerLink } from './lib/links.js';
+import { portrait, loadPortraits } from './lib/portrait.js';
 import { goal } from './lib/measure.js';
 import { currentOrigin, saveOrigin } from './lib/origin.js';
 import { priceLevel, usualKey, hotLine, leaveLine, levelNote, priceChange } from './lib/levels.js';
@@ -68,7 +69,7 @@ const state = {
   // Новичок спрашивает «куда», поэтому по умолчанию один лучший вариант на город; «Все» показывает каждую дату и рейс.
   filters: { cheap: false, direct: false, noLeave: false, comfy: false, near: false, russia: false, unique: true }, length: null, sort: 'price', page: 1, allRows: false,
   home: null, homeStatus: 'idle', recent: readRecent(), recentPrices: {}, recentOffers: new Map(), collection: null,
-  airports: null, cities: null, byIata: new Map(), fromNames: new Map([['MOW', 'Москвы']]), cityPages: new Map(), photos: new Set(), guides: {}, hotels: {}, view: 'results', favs: readFavs(), pickerTarget: 'origin', shown: new Map(), detail: null, backFrom: null, nudged: new Set(),
+  airports: null, cities: null, byIata: new Map(), fromNames: new Map([['MOW', 'Москвы']]), cityPages: new Map(), guides: {}, hotels: {}, view: 'results', favs: readFavs(), pickerTarget: 'origin', shown: new Map(), detail: null, backFrom: null, nudged: new Set(),
 };
 const searchShortcuts = $('searchShortcuts') ?? document.createElement('div');
 searchShortcuts.id = 'searchShortcuts';
@@ -248,14 +249,6 @@ function similar(offer) {
     .sort((a, b) => a.price_minor - b.price_minor)
     .filter((other) => !seen.has(other.city_code) && seen.add(other.city_code)).slice(0, 3);
 }
-function photoImage(code, wide) {
-  const thumb = `<img src="/photos/s/${esc(code)}.webp" alt="" loading="${wide ? 'eager' : 'lazy'}" decoding="async">`;
-  return wide ? thumb + `<img src="/photos/${esc(code)}.jpg" alt="" decoding="async">` : thumb;
-}
-function photo(code, extra = '', wide = false) {
-  const pending = !state.photos.has(code);
-  return `<div class="photo"${pending ? ` data-photo="${esc(code)}" data-wide="${wide}"` : ''}>${pending ? icon('plane') : photoImage(code, wide)}${extra}</div>`;
-}
 // Билеты: только HTTPS-поиск Aviasales и только через /go (links.js).
 const handoff = (offer) => partnerLink(offer.search_url, { kind: 'tickets', city: offer.city_code, page: 'trip', block: 'tickets', variant: testVariant });
 // Цена часа — до рубля: копейки здесь только шумят.
@@ -274,7 +267,7 @@ function offerRating(offer) {
 function offerCard(offer) {
   const x = facts(offer), hint = longer(offer), guide = state.guides[offer.city_code];
   return `<article class="offer">
-    <div class="stamp">${photo(offer.city_code, favButton(offer))}</div>
+    ${portrait(offer.city_code, offer.city, { action: favButton(offer) })}
     <div class="offer-body">
       <div class="offer-head">
         <h3 class="offer-city"><button type="button" class="offer-open" data-offer="${esc(offer.id)}">${esc(offer.city)}</button></h3>
@@ -359,10 +352,11 @@ function compareTable(offers, distinguishFlights = false) {
     return `${price}<small class="compare-price-note">${esc(note)}</small>`;
   };
   const heading = (offer) => {
-    if (!distinguishFlights) return esc(offer.city);
+    const city = portrait(offer.city_code, offer.city, { named: true });
+    if (!distinguishFlights) return city;
     const dep = facts(offer).dep, zone = offer.origin_timezone;
     const flight = [`${fmtDay(dep, zone)}, ${fmtTime(dep, zone)}`, `${offer.origin_airport} → ${offer.destination_airport}`, offer.flight_number].filter(Boolean);
-    return `${esc(offer.city)}<small>${esc(flight.join(', '))}</small>`;
+    return `${city}<small>${esc(flight.join(', '))}</small>`;
   };
   const row = (title, cell) => `<tr><th scope="row">${title}</th>${offers.map((offer) => `<td>${cell(offer, facts(offer))}</td>`).join('')}</tr>`;
   const changes = offer => {
@@ -400,7 +394,7 @@ function renderFavorites() {
   section.hidden = false;
   section.innerHTML = state.favoriteDetails
     ? favoriteComparison(chosen, offers.length > 2, compareTable(chosen, true), removedFavorite?.offer)
-    : favoriteList(offers, chosen, removedFavorite?.offer, facts, photo);
+    : favoriteList(offers, chosen, removedFavorite?.offer, facts);
   document.title = $('favoriteTitle').textContent + ' — Aviator';
   if ($('favoritePicker').open && offers.length < 3) $('favoritePicker').close();
 }
@@ -550,9 +544,8 @@ function openDetail(offer) {
   state.detail = offer; state.alike = new Map(alike.map((other) => [other.id, other]));
   $('detailTitle').textContent = offer.city;
   $('detailBody').innerHTML = `<div class="detail">
-    <div class="stamp stamp--wide">${photo(offer.city_code, favButton(offer), true)}</div>
-    <div class="detail-head"><h2>${esc(offer.city)}</h2><p class="caption">${esc(offer.country ?? '')}</p></div>
-    ${offerRating(offer)}
+    <header class="detail-hero">${portrait(offer.city_code, offer.city, { action: favButton(offer), eager: true })}
+      <div class="detail-head"><h2>${esc(offer.city)}</h2><p class="caption">${esc(offer.country ?? '')}</p>${offerRating(offer)}</div></header>
     ${state.cityPages.has(offer.city_code) ? `<a class="btn-inline city-link" href="/city/${esc(state.cityPages.get(offer.city_code))}">Когда лететь дешевле и где жить${icon('arrow-right')}</a>` : ''}
     ${past ? '<p class="caption">Даты прошли. Выполните новый поиск.</p>' : ''}
     <article class="pass">
@@ -679,6 +672,7 @@ function passTile(offer, row) {
   const x = facts(offer), level = levelOf(offer);
   return `<article class="tile tile--pass"><div class="pass">
     <div class="pass-main">
+      ${portrait(offer.city_code, offer.city)}
       <div class="codes"><span>${esc(offer.origin_city_code ?? offer.origin_airport)}</span><span class="flight">${icon('plane')}</span><span>${esc(offer.city_code)}</span></div>
       <div class="cities"><span>${esc(offer.origin_city)}</span><span>${esc(offer.city)}</span></div>
       <div class="legs"><span><small>Туда</small><b>${esc(fmtDay(x.dep, offer.origin_timezone, true))}</b></span><span><small>Обратно</small><b>${esc(fmtDay(x.ret, offer.destination_timezone, true))}</b></span><span><small>На месте</small><b>${esc(stayLabel(offer))}</b></span></div>
@@ -694,9 +688,9 @@ function passTile(offer, row) {
 function stampTile(offer, row, note = '') {
   const x = facts(offer);
   return `<article class="tile">
-    <div class="stamp">${photo(offer.city_code, favButton(offer))}</div>
+    ${portrait(offer.city_code, offer.city, { action: favButton(offer) })}
     <div class="tile-body">
-      <h3 class="tile-city">${esc(offer.city)}</h3>
+      <h3 class="tile-city sr-only">${esc(offer.city)}</h3>
       <b class="tile-price">${esc(fmtMoney(offer.price_minor))}</b>
       <p class="tile-dates">${esc(fmtRange(x.dep, x.ret, offer.origin_timezone, offer.destination_timezone))}</p>
       ${note ? `<p class="tile-note">${note}</p>` : ''}
@@ -1249,7 +1243,7 @@ function showWaiting(offer) {
   $('detailBody').innerHTML = `<div class="detail waiting" id="waiting">
     <header class="plan-hero"><div><p class="label">Пока смотрите билет</p><h2>${esc(plan.city)}</h2>
     <p>${esc(plan.from)} → ${esc(plan.city)}, ${esc(tripDates(plan).label)}</p></div>
-    ${state.photos.has(plan.cityCode) ? `<div class="plan-photo"><img src="/photos/s/${esc(plan.cityCode)}.webp" alt=""></div>` : ''}</header>
+    ${portrait(plan.cityCode, plan.city)}</header>
     <div id="returnPrompt"></div><div id="waitingOptions" class="plan-options"></div>
     <a class="btn-inline" href="${esc(tripPath(plan))}">Открыть план поездки ${icon('arrow-right')}</a>
     <button type="button" class="btn-inline" data-ticket-details>Вернуться к билету</button></div>`;
@@ -1498,14 +1492,7 @@ document.fonts?.ready.then(fitHero);
   mountSky();
   renderForm();
   fitHero();
-  // Photos and offers may arrive in either order. Hydrate placeholders in place to preserve scroll and focus.
-  fetch('/photos/manifest.json', { cache: 'no-cache' }).then(response => response.ok ? response.json() : []).then(codes => {
-    state.photos = new Set(codes);
-    for (const slot of document.querySelectorAll('[data-photo]')) {
-      if (state.photos.has(slot.dataset.photo)) slot.firstElementChild.outerHTML = photoImage(slot.dataset.photo, slot.dataset.wide === 'true');
-      delete slot.dataset.photo;
-    }
-  }).catch(() => {});
+  loadPortraits();
   fetch('/data/hotel-locations.json').then((response) => response.ok ? response.json() : {}).then((hotels) => { state.hotels = hotels; }).catch(() => {});
   fetch('/data/origins.json').then((response) => response.ok ? response.json() : null).then((data) => { for (const origin of data?.cities ?? []) state.fromNames.set(origin.code, origin.from); renderForm(); }).catch(() => {});
   fetch('/data/cities.json').then((response) => response.ok ? response.json() : null).then((data) => { state.cityPages = new Map((data?.cities ?? []).map((city) => [city.code, city.slug])); }).catch(() => {});

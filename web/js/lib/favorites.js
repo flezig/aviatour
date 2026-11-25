@@ -1,4 +1,5 @@
 // На всех экранах билет опознаётся по сохранённому id, даже если города и даты совпадают.
+import { portrait } from './portrait.js';
 import { esc, icon } from './ui.js';
 import { fmtDay, fmtRange, fmtTime, fmtMoney, plural } from './format.js';
 
@@ -43,13 +44,13 @@ const detailsButton = (offer, label) => `<button type="button" class="favorite-l
 function removalNotice(removed) {
   return removed ? `<div class="favorite-undo"><span>Убрали билет — ${esc(removed.city)}, ${esc(dateTime(removed))}</span><button type="button" class="favorite-link" id="undoFavorite">Вернуть</button></div>` : '';
 }
-export function favoriteList(offers, chosen, removed, facts, photo) {
+export function favoriteList(offers, chosen, removed, facts) {
   const undo = removalNotice(removed);
   const header = `<header class="favorite-heading"><div><h1 id="favoriteTitle" tabindex="-1">Избранное</h1>${offers.length ? '<p>' + ticketCount(offers.length) + '</p>' : ''}</div>${offers.length ? '<a class="favorite-link" href="/">Найти ещё билеты →</a>' : ''}</header>`;
   if (!offers.length) return header + undo + `<section class="favorite-panel favorite-empty"><h2>Пока нет сохранённых билетов</h2><p>Нажмите сердечко рядом с билетом. Здесь можно вернуться к нему и сравнить с другим рейсом.</p><a href="/" class="btn-primary">Найти билеты</a></section>`;
   const list = offers.map(offer => {
     const when = dates(offer) + ', вылет в ' + fmtTime(facts(offer).dep, offer.origin_timezone);
-    return `<li class="favorite-ticket">${photo(offer.city_code)}
+    return `<li class="favorite-ticket">${portrait(offer.city_code, offer.city)}
       <div class="favorite-info"><h3>${detailsButton(offer, offer.city)}</h3><p>${esc(when)}</p><p class="caption">${esc([offer.origin_city, route(offer)].filter(Boolean).join(', '))}</p></div>
       <div class="favorite-fare"><b>${esc(fmtMoney(offer.price_minor))}</b><span class="caption">Сохранённая цена</span></div>
       <button type="button" class="fav fav--inline" data-fav="${esc(offer.id)}" aria-pressed="true" aria-label="Убрать из избранного — ${esc(offer.city)}, ${esc(dateTime(offer))}">${icon('heart')}</button></li>`;

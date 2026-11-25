@@ -30,6 +30,16 @@ def esc(value):
     return html.escape('' if value is None else str(value), quote=True)
 
 
+def portrait(code, name, has_photo, *, named=False, eager=False):
+    """Destination photo with a readable title even when no image is available."""
+    thumb = f'/photos/s/{esc(code)}.webp'
+    image = (f'<img src="{thumb}" srcset="{thumb} 1x, /photos/{esc(code)}.jpg 2x" alt="" '
+             f'loading="{"eager" if eager else "lazy"}" decoding="async">') if has_photo else ''
+    hidden = '' if named else ' aria-hidden="true"'
+    return (f'<span class="portrait" data-city-code="{esc(code)}">{image}'
+            f'<span class="portrait-name"{hidden}>{esc(name)}</span></span>')
+
+
 @dataclass
 class Catalog:
     cities: list
@@ -379,7 +389,7 @@ def page(catalog, city, origin, parts, route=False):
     {visible}
     <nav class="season-tabs" aria-label="Разделы города"><a href="{esc(url)}" aria-current="page">О городе</a><a id="citySeason" href="/season/{esc(city['code'])}?from={esc(origin['iata'])}{'&amp;fc='+esc(origin['code']) if origin['all'] else ''}">Сезонный рейтинг</a></nav>
     <section class="city-hero">
-      <div class="stamp stamp--hero"><div class="photo"><img src="/photos/{esc(city['code'])}.jpg" alt="{esc(name)}" width="720" height="480" fetchpriority="high"></div></div>
+      {portrait(city['code'], name, photo, eager=True)}
       <div class="city-head">
         <p class="city-code"><b>{esc(city['code'])}</b>, {esc(city['country'])}{population(city)}</p>
         <h1>{heading}</h1>
@@ -480,18 +490,17 @@ def directory_url(query='', region='all', guide=False, page=1):
     return '/city/' + ('?' + urlencode(params) if params else '')
 
 
-def directory_row(city, show_places):
+def directory_row(city, show_places, photos):
     url = f'/city/{city.slug}' if city.slug else f'/season/{city.code}'
-    photo = (f'<img src="/photos/s/{esc(city.code)}.webp" width="76" height="55" alt="" loading="lazy" decoding="async">'
-             if city.slug else '')
+    photo = portrait(city.code, city.name, city.code in photos, named=True)
     qualifier = 'погода по месяцам' if not city.slug else 'путеводитель' if city.guide else ''
     places = f'<span class="directory-places">{esc(", ".join(city.places))}</span>' if show_places and city.places else ''
     return f'''<li><a class="directory-city" data-city="{esc(city.code)}" href="{esc(url)}">{photo}
-    <span><strong>{esc(city.name)}</strong><small>{esc(city.country)}{', ' + qualifier if qualifier else ''}</small>{places}</span>
-    <span class="directory-arrow" aria-hidden="true">→</span></a></li>'''
+    <span class="directory-meta"><small>{esc(city.country)}{', ' + qualifier if qualifier else ''}</small>{places}</span>
+    </a></li>'''
 
 
-def index_page(catalog, q='', region='all', guide=False, page=1):
+def index_page(catalog, q='', region='all', guide=False, page=1, *, photos):
     query = directory_term(q)
     cities, seasonal = catalog.directory
     matches = directory_matches(cities, query, region, guide)
@@ -503,7 +512,7 @@ def index_page(catalog, q='', region='all', guide=False, page=1):
     pages = max(1, math.ceil(len(matches) / DIRECTORY_PAGE_SIZE))
     page = min(page, pages)
     start = (page - 1) * DIRECTORY_PAGE_SIZE
-    rows = ''.join(directory_row(c, guide) for c in matches[start:start + DIRECTORY_PAGE_SIZE])
+    rows = ''.join(directory_row(c, guide, photos) for c in matches[start:start + DIRECTORY_PAGE_SIZE])
     title = ('Города с данными по месяцам' if season_only else 'Результаты поиска' if query else
              'Города с путеводителем' if guide else {'all': 'Все города', 'ru': 'Города России', 'abroad': 'Города за рубежом'}[region])
     region_controls = ''.join(
@@ -524,8 +533,9 @@ def index_page(catalog, q='', region='all', guide=False, page=1):
                  f'<a data-clear href="{esc(reset)}">{"Снять фильтры" if filtered else "Сбросить поиск"}</a></div>')
 
     cover = catalog.by_code.get('IST')
-    figure = (f'<figure class="directory-cover"><img src="/photos/{esc(cover["code"])}.jpg" width="720" height="480" alt="">'
-              f'<a href="/city/{esc(cover["slug"])}">{esc(cover["name"])}, {esc(cover["country"])}</a></figure>') if cover else ''
+    figure = (f'<a class="directory-cover" href="/city/{esc(cover["slug"])}">'
+              f'{portrait(cover["code"], cover["name"], cover["code"] in photos, named=True, eager=True)}'
+              f'<span class="sr-only">, {esc(cover["country"])}</span></a>') if cover else ''
     ld, _ = breadcrumbs([('Aviator', '/'), ('Города', '/city/')])
     body = f'''
   <main id="main" class="directory">
