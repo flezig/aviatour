@@ -59,8 +59,8 @@ test('iPhone и один экран Duo: страницы, навигация, �
     assert.equal(await page.locator('#originSheet').isVisible(), false);
 
     await visit(page, '/');
-    const visibleLinks = await page.locator('.top .nav a').evaluateAll(links =>
-      links.every(el => el.getBoundingClientRect().left >= 0 && el.getBoundingClientRect().right <= innerWidth));
+    const visibleLinks = await page.locator('.service-tabs [role=tab]').evaluateAll(links =>
+      links.length === 4 && links.every(el => el.getBoundingClientRect().left >= 0 && el.getBoundingClientRect().right <= innerWidth));
     assert.ok(visibleLinks, 'Пункты шапки должны быть доступны без горизонтальной прокрутки');
     await page.locator('.hero-photo img').evaluate(img => img.decode());
     const images = await page.evaluate(() => performance.getEntriesByType('resource')

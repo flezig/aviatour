@@ -36,7 +36,8 @@ def portrait(code, name, has_photo, *, named=False, eager=False):
     image = (f'<img src="{thumb}" srcset="{thumb} 1x, /photos/{esc(code)}.jpg 2x" alt="" '
              f'loading="{"eager" if eager else "lazy"}" decoding="async">') if has_photo else ''
     hidden = '' if named else ' aria-hidden="true"'
-    return (f'<span class="portrait" data-city-code="{esc(code)}">{image}'
+    photo_class = 'portrait portrait--long' if len(name) > 14 or '(' in name else 'portrait'
+    return (f'<span class="{photo_class}" data-city-code="{esc(code)}">{image}'
             f'<span class="portrait-name"{hidden}>{esc(name)}</span></span>')
 
 

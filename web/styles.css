@@ -1118,3 +1118,19 @@ body:has(.rating-sheet[open]) { overflow: hidden; }
 @media (horizontal-viewport-segments: 2) {
   .search .field-group:has(#passengerPick) { grid-column: auto; grid-row: auto; }
 }
+
+/* Полные названия в обычных горизонтальных строках на нижнем крае фотографии. */
+.portrait--long::after {
+  background: linear-gradient(0deg, rgba(5,18,34,.9) 0%, rgba(5,18,34,.76) 20%, transparent 62%);
+}
+.portrait--long .portrait-name {
+  writing-mode: horizontal-tb; transform: none; left: 8%; right: 8%; bottom: 8%;
+  max-inline-size: none; font-size: clamp(12px,10cqw,22px); line-height:1.12;
+  overflow-wrap: break-word;
+}
+.city-qualifier { display: block; margin-top: 3px; font-size: .79em; font-weight: 600; }
+.tile--pass .portrait--long .portrait-name, .compare .portrait--long .portrait-name { display:none; }
+.compare-city-name { display:block; margin-top:4px; font-size:14px; line-height:1.2; overflow-wrap:anywhere; }
+@container (max-width: 104px) {
+  :is(.offer,.favorite-ticket,.plan-list-item) .portrait--long .portrait-name { display:none; }
+}
