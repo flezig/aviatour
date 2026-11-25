@@ -17,8 +17,8 @@ header.top { display: flex; flex-direction: column; align-items: flex-start; jus
 .service-tabs #tab-cars { background:#444d57; border-color:#87929c; }
 .service-tabs #tab-cars:hover { background:#525c66; }
 .service-tabs #tab-cars[aria-selected="true"] { background:#59636e; border-color:white; }
-.car-tab-label { display:grid; gap:2px; text-align:left; }
-.car-tab-label small { font-size:10px; font-weight:500; color:#f0f2f5; white-space:nowrap; }
+.service-tab-label { display:grid; gap:2px; text-align:left; }
+.service-tab-label small { font-size:10px; font-weight:500; color:#f0f2f5; white-space:nowrap; }
 .service-tabs button:focus-visible { outline:2px solid #fff; outline-offset:-3px; }
 .service-tabs img { width:22px; height:22px; object-fit:contain; }
 body.other-service :is(#results,#showcase), .service-panel[hidden], #flight-service[hidden] { display:none; }
@@ -29,9 +29,9 @@ body.other-service :is(#results,#showcase), .service-panel[hidden], #flight-serv
   .service-tabs img { width:18px; height:18px; }
 }
 @media(max-width:365px) {
-  .service-tabs { gap:3px; }
+  .service-tabs { gap:3px; flex-wrap:wrap; }
   .service-tabs button { padding:0 7px; gap:3px; font-size:12px; }
-  .service-tabs img { width:16px; height:16px; }
+  .service-tabs img { display:none; }
 }
 .service-form { display: grid; grid-template-columns: 1.4fr repeat(3,minmax(0,1fr)) auto; gap: 0; align-items:center;
   padding: 8px; border-radius: var(--r-pass); background: var(--card); box-shadow: var(--sh-pass); }

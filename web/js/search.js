@@ -9,8 +9,8 @@ import { passengerPicker } from './lib/passenger-picker.js';
 import { partnerLink, ticketLink } from './lib/links.js';
 import { portrait, loadPortraits, longPortraitName } from './lib/portrait.js';
 import { goal } from './lib/measure.js';
-import { currentOrigin, saveOrigin } from './lib/origin.js';
-import { priceLevel, usualKey, hotLine, leaveLine, levelNote, priceChange } from './lib/levels.js';
+import { currentOrigin, saveOrigin, storedOrigin } from './lib/origin.js';
+import { priceLevel, usualKey, leaveLine, levelNote, priceChange } from './lib/levels.js';
 import { mountSky } from './lib/sky.js';
 import { sticker, rowSticker } from './lib/stickers.js';
 import { favoriteList, favoriteComparison, favoriteOptions, hoursMinutes } from './lib/favorites.js';
@@ -69,7 +69,7 @@ const state = {
   labels: { origin: 'Москва, все аэропорты', destination: null },
   performed: null, performedLabels: null, performedSummary: null, performedLabel: '', status: 'idle', error: '', result: null,
   // Новичок спрашивает «куда», поэтому по умолчанию один лучший вариант на город; «Все» показывает каждую дату и рейс.
-  filters: { cheap: false, direct: false, noLeave: false, comfy: false, near: false, russia: false, unique: true }, length: null, sort: 'price', page: 1, allRows: false, weekendKey: null,
+  filters: { cheap: false, direct: false, noLeave: false, comfy: false, near: false, russia: false, unique: true }, length: null, sort: 'price', holidaySort: 'leave', page: 1, allRows: false, weekendKey: null,
   home: null, homeStatus: 'idle', recent: readRecent(), recentPrices: {}, recentOffers: new Map(), collection: null,
   airports: null, cities: null, byIata: new Map(), fromNames: new Map([['MOW', 'Москвы']]), cityPages: new Map(), guides: {}, hotels: {}, view: 'results', favs: readFavs(), pickerTarget: 'origin', shown: new Map(), detail: null, backFrom: null, nudged: new Set(),
 };
@@ -171,9 +171,19 @@ function accepts(offer) {
   }
   return true;
 }
-function sortKey(offer) {
+function holidayLeave(offer) {
+  const days = state.home?.notes?.[offer.id]?.leave;
+  return Number.isInteger(days) && days >= 0 ? days : Infinity;
+}
+function holidayLabel(offer) {
+  const days = holidayLeave(offer);
+  if (days === Infinity) return 'Дни отпуска неизвестны';
+  return days ? `${daysLabel(days)} отпуска` : 'Без отпуска';
+}
+function sortKey(offer, sort) {
   const x = facts(offer);
-  switch (state.sort) {
+  switch (sort) {
+    case 'leave': return holidayLeave(offer);
     case 'priceDescending': return -offer.price_minor;
     case 'departure': return x.dep.getTime();
     case 'duration': return x.flight;
@@ -191,15 +201,17 @@ function resetResultFilters() {
   state.filters.unique = Boolean(keepGrouping);
   state.length = null;
 }
-function visibleOffers(list, groupByCity) {
+function compareOffers(a, b, sort) {
+  const av = sortKey(a, sort), bv = sortKey(b, sort);
+  if (av !== bv) return av < bv ? -1 : 1;
+  if (a.price_minor !== b.price_minor) return a.price_minor - b.price_minor;
+  if (a.city_code !== b.city_code) return a.city_code < b.city_code ? -1 : 1;
+  return a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
+}
+function visibleOffers(list, groupByCity, sort) {
   const seen = new Set();
-  return list.filter(accepts).sort((a, b) => {
-    const av = sortKey(a), bv = sortKey(b);
-    if (av !== bv) return av < bv ? -1 : 1;
-    if (a.price_minor !== b.price_minor) return a.price_minor - b.price_minor;
-    if (a.city_code !== b.city_code) return a.city_code < b.city_code ? -1 : 1;
-    return a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
-  }).filter((offer) => !groupByCity || (!seen.has(offer.city_code) && seen.add(offer.city_code)));
+  return list.filter(accepts).sort((a, b) => compareOffers(a, b, sort))
+    .filter((offer) => !groupByCity || (!seen.has(offer.city_code) && seen.add(offer.city_code)));
 }
 const airlineLabel = (offer) => offer.airline_name || offer.airline || 'Авиакомпания не указана';
 // Locally bundled Aviasales marks. Keep the carrier name for all other airlines.
@@ -270,7 +282,7 @@ function offerRating(offer) {
   const all = query.originCity === offer.origin_city_code ? query.originCity : null;
   return cityRating(offer.city_code, date, offer.origin_airport, offer.city, all);
 }
-function offerCard(offer) {
+function offerCard(offer, holiday = false) {
   const x = facts(offer), hint = longer(offer), guide = state.guides[offer.city_code];
   return `<article class="offer">
     ${portrait(offer.city_code, offer.city, { action: favButton(offer) })}
@@ -280,6 +292,7 @@ function offerCard(offer) {
         <span class="offer-price">${esc(fmtMoney(offer.price_minor))}${groupSize(currentPassengers()) > 1 ? '<small>за 1 взрослого</small>' : ''}</span>
       </div>
       <p class="offer-dates">${esc(fmtRange(x.dep, x.ret, offer.origin_timezone, offer.destination_timezone))}, ${esc(stayLabel(offer))}</p>
+      ${holiday ? `<p class="offer-meta">${esc(holidayLabel(offer))}</p>` : ''}
       <p class="offer-meta">${x.direct ? 'прямые' : 'с пересадками'}, ${carrier(offer)}</p>
       ${levelTag(offer)}
       ${offerRating(offer)}
@@ -455,7 +468,10 @@ function renderResults() {
     body = statusPanel('offline', 'Нет связи', 'Не удалось связаться с сервером. Проверьте подключение.') + `<div class="status-actions">${action('retry', 'Повторить поиск')}</div>`;
     announce('Нет связи с сервером');
   } else {
-    const offers = visibleOffers(collection ? rowOffers(collection) : state.result.offers, !q.destination && state.filters.unique);
+    const holiday = collection?.key === 'holidays';
+    const sort = holiday ? state.holidaySort : state.sort;
+    const sorts = holiday ? { leave: 'Меньше дней отпуска', ...SORTS } : SORTS;
+    const offers = visibleOffers(collection ? rowOffers(collection) : state.result.offers, !q.destination && state.filters.unique, sort);
     const filters = Object.entries(CHIPS).filter(([name]) =>
       (name !== 'unique' || !q.destination) && (name !== 'russia' || q.region === 'any'));
     const selected = name => name === 'direct' && !collection ? q.direct : state.filters[name];
@@ -468,13 +484,13 @@ function renderResults() {
     const chips = `<button type="button" class="chip" data-chip="all" aria-pressed="${!active}">Все</button>` + filters
       .map(([name, title]) => `<button type="button" class="chip" data-chip="${name}" aria-pressed="${Boolean(selected(name))}">${title}</button>`).join('');
     const menu = (id, label, options, value) => `<select class="menu menu--plain" id="${id}" aria-label="${label}">${Object.entries(options).map(([name, title]) => `<option value="${name}" ${value === name ? 'selected' : ''}>${title}</option>`).join('')}</select>`;
-    tools = `<div class="sort-menus">${menu('sort', 'Сортировка', SORTS, state.sort)}${menu('length', 'Длительность поездки', LENGTHS, effectiveLength())}</div>`;
+    tools = `<div class="sort-menus">${menu('sort', 'Сортировка', sorts, sort)}${menu('length', 'Длительность поездки', LENGTHS, effectiveLength())}</div>`;
     body = collection ? `<p class="source">${esc(collection.hint)}. ${esc(cachedPriceLabel(state.home.received_at))} за перелёт туда и обратно для одного взрослого. <a href="/how-we-count.html#home">Как мы считаем</a></p>`
       : `<p class="source"><span class="summary">${esc(state.performedLabel)}. </span>${esc(cachedPriceLabel(state.result.received_at))} за перелёт туда и обратно для одного взрослого. <a href="/how-we-count.html">Как мы считаем</a></p>`;
     body += `
       <div class="chips" role="group" aria-label="Быстрые фильтры">${chips}</div>
-      ${state.sort === 'flightRating' ? '<p class="caption">Оценка перелёта — цена и дорога, 0–100. Варианты без оценки идут в конце.</p>' : ''}
-      ${state.sort === 'stay' || state.sort === 'value' ? '<p class="caption">Время на месте — от расчётного прилёта до обратного вылета, включая ночи.</p>' : ''}
+      ${sort === 'flightRating' ? '<p class="caption">Оценка перелёта — цена и дорога, 0–100. Варианты без оценки идут в конце.</p>' : ''}
+      ${sort === 'stay' || sort === 'value' ? '<p class="caption">Время на месте — от расчётного прилёта до обратного вылета, включая ночи.</p>' : ''}
       ${!collection && state.result.incomplete ? (state.result.warnings?.length ? state.result.warnings : ['Удалось проверить только часть вариантов.']).map(text => `<p class="caption">${esc(text)}</p>`).join('') : ''}`;
     if (!offers.length) {
       if (collection || (hiding && state.result.offers.length)) {
@@ -494,7 +510,7 @@ function renderResults() {
     } else {
       const pages = Math.ceil(offers.length / PAGE);
       state.page = Math.min(Math.max(1, state.page), pages);
-      body += `<div class="grid">${offers.slice((state.page - 1) * PAGE, state.page * PAGE).map(offerCard).join('')}</div>${pager(pages)}`;
+      body += `<div class="grid">${offers.slice((state.page - 1) * PAGE, state.page * PAGE).map(offer => offerCard(offer, holiday)).join('')}</div>${pager(pages)}`;
     }
   }
   const back = homeVariant === 'B' ? `<button type="button" class="chip" data-action="showcase">${icon('arrow-left')}Подборки</button>` : '';
@@ -547,6 +563,8 @@ function openDetail(offer) {
   const x = facts(offer), past = x.dep <= Date.now(), link = past ? null : handoff(offer), hint = past ? null : longer(offer), hotel = lodging(offer, 'hotel');
   const alike = past ? [] : similar(offer), nearby = past ? null : shifted(offer), level = past ? null : levelOf(offer);
   const holiday = state.home?.notes?.[offer.id];
+  const holidayDetails = holiday && Number.isFinite(holidayLeave(offer)) && Number.isInteger(holiday.trip)
+    ? leaveLine(holiday.leave, holiday.trip) : holidayLabel(offer);
   if (!past) rememberTrip(offer);
   state.detail = offer; state.alike = new Map(alike.map((other) => [other.id, other]));
   $('detailTitle').textContent = offer.city;
@@ -564,7 +582,7 @@ function openDetail(offer) {
           <span><small>Обратно</small><b>${esc(fmtDay(x.ret, offer.destination_timezone, true))}</b><b>${esc(fmtTime(x.ret, offer.destination_timezone))}</b></span>
           <span><small>На месте</small><b>${esc(stayLabel(offer))}</b></span>
         </div>
-        ${holiday ? `<p class="caption trip-leave">${esc(leaveLine(holiday.leave, holiday.trip))}</p>` : ''}
+        ${holiday || (state.view === 'collection' && state.collection === 'holidays') ? `<p class="caption trip-leave">${esc(holidayDetails)}</p>` : ''}
       </div>
       <div class="pass-stub">
         <p class="pass-price">${esc(fmtMoney(offer.price_minor))}</p>
@@ -644,7 +662,6 @@ const homeOffer = (id) => state.home?.offers.get(id);
 const feedOffer = (key, id) => key === 'recent' ? state.recentOffers.get(id) : homeOffer(id);
 const homeRow = (key) => state.home?.rows.find((row) => row.key === key) ?? null;
 const rowOffers = (row) => row.items.map(homeOffer).filter((offer) => offer && facts(offer).dep > Date.now());
-const daysFromToday = (offer) => Math.round((Date.parse(facts(offer).out.key) - Date.parse(zoned(new Date(), offer.origin_timezone).key)) / 86400000);
 
 // Уровень цены — только если для города, месяца и длины поездки сервер посчитал обычную цену (поиск маршрута на месяц).
 function levelOf(offer) {
@@ -676,7 +693,7 @@ const openButton = (offer, row) => `<button type="button" class="tile-open" data
 
 // Ближайшие вылеты показываем как посадочные талоны с датами и сравнением цены.
 function passTile(offer, row) {
-  const x = facts(offer), level = levelOf(offer);
+  const x = facts(offer);
   return `<article class="tile tile--pass"><div class="pass">
     <div class="pass-main">
       ${portrait(offer.city_code, offer.city)}
@@ -686,7 +703,7 @@ function passTile(offer, row) {
     </div>
     <div class="pass-stub">
       <div class="tile-price-row"><p class="pass-price">${esc(fmtMoney(offer.price_minor))}</p>${levelTag(offer)}${favButton(offer).replace('class="fav"', 'class="fav fav--inline"')}</div>
-      ${level && level.diff < 0 ? `<p class="caption pass-extra">${esc(hotLine(daysFromToday(offer), level.diff, level.month))}</p>` : ''}
+      <p class="caption pass-fare">Туда и обратно за одного взрослого</p>
       <div class="pass-extra">${offerRating(offer)}</div>
       <p class="caption">${x.direct ? 'прямые' : 'с пересадками'}, ${carrier(offer)}</p>
     </div></div>${openButton(offer, row)}</article>`;
@@ -735,15 +752,11 @@ function recentRow() {
 }
 function showcaseRow(row, weekends) {
   const offers = rowOffers(row);
-  if (row.key === 'holidays') {
-    const leave = offer => state.home.notes?.[offer.id]?.leave ?? Infinity;
-    offers.sort((a, b) => leave(a) - leave(b) || a.price_minor - b.price_minor);
-  }
+  if (row.key === 'holidays') offers.sort((a, b) => compareOffers(a, b, 'leave'));
   // В ленте — до шести карточек, дальше полупрозрачная карточка «Ещё N»: лента не тянется бесконечно.
   const tiles = offers.slice(0, 6).map((offer) => {
     if (row.kind === 'pass') return passTile(offer, row.key);
-    const holiday = row.key === 'holidays' && state.home.notes?.[offer.id];
-    const note = holiday ? (holiday.leave ? `${daysLabel(holiday.leave)} отпуска` : 'Без отпуска') : '';
+    const note = row.key === 'holidays' ? holidayLabel(offer) : '';
     return stampTile(offer, row.key, esc(note));
   }).join('')
     + (offers.length > 6 ? `<button type="button" class="tile-more" data-row-all="${esc(row.key)}"><b>+${offers.length - 6}</b><span>Показать все</span>${icon('arrow-right')}</button>` : '');
@@ -770,10 +783,10 @@ function directionList(catalog = false) {
     const params = new URLSearchParams({ from: origin.iata, to: offer.destination_airport, tc: offer.city_code, month: facts(offer).out.key.slice(0, 7), weekend: '0' });
     if (origin.all) params.set('fc', origin.code);
     setPassengerParams(params, state.query.passengers);
-    return `<a class="direction-link" href="/?${esc(params.toString())}">${portrait(offer.city_code, offer.city)}<b>${esc(offer.city)}</b><span>от ${esc(fmtMoney(offer.price_minor))}</span></a>`;
+    return `<a class="direction-link" data-city="${esc(offer.city_code)}" href="/?${esc(params.toString())}">${portrait(offer.city_code, offer.city)}<b>${esc(offer.city)}</b><span>от ${esc(fmtMoney(offer.price_minor))}</span></a>`;
   }).join('');
   if (catalog) return links;
-  const toggle = sorted.length > 4 ? `<button type="button" class="btn-inline directions-toggle" aria-haspopup="dialog" aria-controls="directionCatalog">Все направления (${sorted.length})</button>` : '';
+  const toggle = sorted.length > 4 && $('directionCatalog') ? `<button type="button" class="btn-inline directions-toggle" aria-haspopup="dialog" aria-controls="directionCatalog">Все направления (${sorted.length})</button>` : '';
   return `<section class="home-directions${sorted.length <= 6 ? ' compact-list' : ''}" aria-labelledby="direction-heading"><h2 id="direction-heading">Направления из ${esc(origin.from || 'города ' + origin.name)}</h2>
     <div id="direction-links" class="direction-links" data-expanded="false">${links}</div>${toggle}</section>`;
 }
@@ -866,6 +879,11 @@ function setView(view) {
   searchShortcuts.hidden = view !== 'showcase';
   if (view === 'showcase') $('results').hidden = true;
 }
+function setHomeOrigin(origin) {
+  Object.assign(state.query, { origin: origin.iata, originCity: origin.all ? origin.code : null });
+  state.labels.origin = `${origin.name}, ${origin.all ? 'все аэропорты' : origin.iata}`;
+  if (origin.from) state.fromNames.set(origin.code, origin.from);
+}
 function showShowcase() {
   setView('showcase');
   collapseForm(true);
@@ -876,6 +894,7 @@ function showShowcase() {
 function showCollection(key, push = true) {
   if (!homeRow(key)) return;
   Object.assign(state, { collection: key, page: 1 });
+  if (push && key === 'holidays') state.holidaySort = 'leave';
   if (push) history.pushState({ row: key }, '', `${location.pathname}#row=${key}`);
   setView('collection');
   renderResults();
@@ -1366,15 +1385,80 @@ $('searchLine').addEventListener('click', (event) => {
     });
   }
 });
-$('catalogSearch').addEventListener('input', event => {
+function filterCatalog() {
   const normalize = text => text.toLocaleLowerCase('ru').replaceAll('ё', 'е').trim();
-  const query = normalize(event.target.value);
+  const query = normalize($('catalogSearch').value);
   let matches = 0;
   for (const link of $('catalogLinks').children) {
     link.hidden = !normalize(link.querySelector('b').textContent).includes(query);
     if (!link.hidden) matches++;
   }
   $('catalogEmpty').hidden = matches > 0;
+}
+const catalog = $('directionCatalog');
+const catalogBody = catalog?.querySelector('.sheet-body');
+function openCatalog(saved) {
+  const trigger = $('showcase').querySelector('.directions-toggle');
+  if (!catalog || !trigger) return;
+  $('catalogTitle').textContent = $('direction-heading').textContent;
+  $('catalogSearch').value = saved?.query ?? '';
+  $('catalogLinks').innerHTML = directionList(true);
+  filterCatalog();
+  trigger.focus({ preventScroll: true });
+  if (!catalog.open) catalog.showModal();
+  const target = saved && [...$('catalogLinks').children].find(link => !link.hidden && link.dataset.city === saved.city);
+  (target || $('catalogSearch')).focus({ preventScroll: true });
+  catalogBody.scrollTop = saved?.listTop ?? 0;
+  if (saved) window.scrollTo({ top: saved.pageTop, behavior: 'instant' });
+}
+$('catalogSearch')?.addEventListener('input', filterCatalog);
+$('catalogLinks')?.addEventListener('click', event => {
+  const link = event.target.closest('.direction-link');
+  if (!link || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey || event.defaultPrevented) return;
+  const { iata, code, all } = state.home.origin;
+  history.replaceState({ ...history.state, catalog: {
+    iata, code, all, query: $('catalogSearch').value, city: link.dataset.city,
+    listTop: catalogBody.scrollTop, pageTop: scrollY, allRows: state.allRows, weekendKey: state.weekendKey
+  } }, '');
+});
+function clearCatalogHistory() {
+  if (!history.state?.catalog) return;
+  const rest = { ...history.state };
+  delete rest.catalog;
+  history.replaceState(rest, '');
+}
+catalog?.addEventListener('close', () => {
+  if (catalog.open) return;
+  clearCatalogHistory();
+  $('showcase').querySelector('.directions-toggle')?.focus({ preventScroll: true });
+});
+function restoreCatalog() {
+  const saved = history.state?.catalog;
+  if (!saved || state.view !== 'showcase' || !state.home) return;
+  const { iata, code, all } = state.home.origin;
+  if (saved.iata !== iata || saved.code !== code || saved.all !== all) {
+    clearCatalogHistory();
+    return;
+  }
+  if (saved.allRows !== state.allRows || saved.weekendKey !== state.weekendKey) {
+    state.allRows = saved.allRows;
+    state.weekendKey = saved.weekendKey;
+    renderShowcase();
+  }
+  openCatalog(saved);
+}
+window.addEventListener('pageshow', event => {
+  if (!event.persisted || state.view !== 'showcase' || !history.state?.catalog) return;
+  const origin = storedOrigin();
+  if (origin && (state.query.origin !== origin.iata || state.query.originCity !== (origin.all ? origin.code : null))) {
+    clearCatalogHistory();
+    if (catalog?.open) catalog.close();
+    setHomeOrigin(origin);
+    renderForm();
+    showShowcase();
+    return;
+  }
+  restoreCatalog();
 });
 $('showcase').addEventListener('click', (event) => {
   const period = event.target.closest('[data-weekend]');
@@ -1390,12 +1474,7 @@ $('showcase').addEventListener('click', (event) => {
   }
   const directions = event.target.closest('.directions-toggle');
   if (directions) {
-    $('catalogTitle').textContent = $('direction-heading').textContent;
-    $('catalogSearch').value = '';
-    $('catalogLinks').innerHTML = directionList(true);
-    $('catalogEmpty').hidden = true;
-    $('directionCatalog').showModal();
-    $('catalogSearch').focus();
+    openCatalog();
     return;
   }
   const compare = event.target.closest('[data-compare-row]');
@@ -1565,7 +1644,8 @@ $('results').addEventListener('change', (event) => {
     updateFilterAddress();
     goal('select_idea', { idea: `length-${value}` });
   } else if (id === 'sort') {
-    state.sort = value;
+    if (state.view === 'collection' && state.collection === 'holidays') state.holidaySort = value;
+    else state.sort = value;
   } else return;
   state.page = 1;
   renderResults();
@@ -1629,11 +1709,7 @@ document.fonts?.ready.then(fitHero);
   // Без параметров поиска в адресе — город вылета посетителя: его выбор или ближайший город по местоположению.
   if (!restored) {
     const origin = await currentOrigin();
-    if (origin) {
-      Object.assign(state.query, { origin: origin.iata, originCity: origin.all ? origin.code : null });
-      state.labels.origin = `${origin.name}, ${origin.all ? 'все аэропорты' : origin.iata}`;
-      if (origin.from) state.fromNames.set(origin.code, origin.from);
-    }
+    if (origin) setHomeOrigin(origin);
   }
   renderForm();
   fitHero();
@@ -1647,5 +1723,9 @@ document.fonts?.ready.then(fitHero);
   if (restored) search({ scroll: false }).then(() => { if (linked && state.status === 'done') openLinked(linked); });
   // Эксперимент home: A — прежняя главная (форма и сразу список), B — витрина с подборками.
   else if (homeVariant === 'A') search({ scroll: false, auto: true });
-  else { showShowcase(); if (wantRow) loadHomeThen(() => showCollection(wantRow, false)); }
+  else {
+    showShowcase();
+    if (wantRow) loadHomeThen(() => showCollection(wantRow, false));
+    else if (history.state?.catalog) loadHomeThen(restoreCatalog);
+  }
 })();
