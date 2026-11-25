@@ -313,8 +313,11 @@ test('Сортировка после клавиатурного выбора с
   const page = await setup(t, false);
   await submit(page);
   const sort = page.getByRole('combobox', { name: 'Сортировка' });
-  await sort.press('ArrowDown');
+  await sort.click();
   await sort.selectOption('departure');
+  assert.equal(await sort.evaluate(el => getComputedStyle(el).outlineStyle), 'none');
+  await sort.press('ArrowDown');
+  await sort.selectOption('price');
   await page.locator('#sort:focus-visible').waitFor();
   const outline = await sort.evaluate(el => {
     const style = getComputedStyle(el);
