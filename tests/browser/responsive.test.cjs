@@ -66,7 +66,7 @@ test('iPhone и один экран Duo: страницы, навигация, �
     const images = await page.evaluate(() => performance.getEntriesByType('resource')
       .filter(entry => new URL(entry.name).pathname.startsWith('/photos/hero-')).map(entry => entry.name));
     assert.equal(images.length, 1);
-    if (width === 390) assert.match(images[0], /hero-mobile-1320\.avif$/);
+    if (width === 390) assert.match(images[0], /hero-madeira-mobile-1320\.avif$/);
     await page.close();
   }
 });
