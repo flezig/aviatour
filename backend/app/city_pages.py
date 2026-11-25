@@ -17,6 +17,7 @@ from zoneinfo import ZoneInfo
 
 SITE = 'https://aviatour.vercel.app'
 DATA = Path(__file__).resolve().parents[2] / 'web' / 'data'
+PORTRAIT_INDEX = json.loads((DATA / 'portrait-index.json').read_text())
 MONTHS_AHEAD = 6
 MIN_NIGHTS, MAX_NIGHTS = 1, 7  # поездки до недели — как в подборках главной
 MONTH_NAMES = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь']
@@ -35,10 +36,16 @@ def portrait(code, name, has_photo, *, named=False, eager=False):
     thumb = f'/photos/s/{esc(code)}.webp'
     image = (f'<img src="{thumb}" srcset="{thumb} 1x, /photos/{esc(code)}.jpg 2x" alt="" '
              f'loading="{"eager" if eager else "lazy"}" decoding="async">') if has_photo else ''
+    country = PORTRAIT_INDEX.get(code) if has_photo else None
+    badge = ''
+    if country:
+        cc, label = country
+        badge = (f'<span class="portrait-country"><img src="/flags/{esc(cc.lower())}.svg" alt="" loading="lazy">'
+                 f'<span>{esc(label)}</span></span>')
     hidden = '' if named else ' aria-hidden="true"'
     photo_class = 'portrait portrait--long' if len(name) > 14 or '(' in name else 'portrait'
     return (f'<span class="{photo_class}" data-city-code="{esc(code)}">{image}'
-            f'<span class="portrait-name"{hidden}>{esc(name)}</span></span>')
+            f'<span class="portrait-name"{hidden}>{esc(name)}</span>{badge}</span>')
 
 
 @dataclass
