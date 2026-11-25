@@ -1,3 +1,4 @@
+import { openCalendar, shortDay } from './lib/flight-calendar.js';
 // Поиск поездок (главная). Правила повторяют приложение iOS (Aviator/Utilities/SearchRules.swift); источник истины — сервер.
 import { $, esc, icon, adMark } from './lib/ui.js';
 import { DEFAULT_ZONE, localZone, zoned, fmtDate, fmtDay, fmtTime, fmtMoney, fmtRange, monthLabel, months, defaultMonth, addDays, duration, daysLabel, nightsLabel, countLabel } from './lib/format.js';
@@ -81,7 +82,10 @@ searchShortcuts.setAttribute('aria-label', 'Быстрый поиск по ус�
 searchShortcuts.hidden = true;
 searchShortcuts.innerHTML = QUICK_FILTERS.map(name =>
   `<button type="button" class="chip" data-quick="${name}">${CHIPS[name]}</button>`).join('');
-$('search').after(searchShortcuts);
+const flightTools = document.createElement('div');
+flightTools.className = 'flight-tools';
+$('search').after(flightTools);
+flightTools.append(document.querySelector('.flight-budget'), searchShortcuts);
 let request = null;
 // «Продолжить планирование»: последние открытые поездки — только в этом браузере, до восьми.
 function readRecent() {
@@ -897,9 +901,12 @@ function renderForm() {
   $('summaryDetails').textContent = line.dates + (q.budget === null ? '' : ', до ' + budgetText + (family ? ' на взрослого' : ''));
   $('summaryPassengers').textContent = passengerText;
   $('lineCode').textContent = q.originCity ?? q.origin;
-  $('lineOrigin').textContent = originName;
+  $('lineOrigin').textContent = q.originCity ? originName : state.labels.origin;
   $('lineTo').textContent = line.route;
-  $('lineWhen').textContent = line.dates;
+  $('whenCaption').textContent = q.exact ? 'Туда' : 'Когда';
+  $('lineWhen').textContent = q.exact ? shortDay(q.departure) : monthLabel(q.month) + ' целиком';
+  $('returnValue').textContent = q.exact ? shortDay(q.returning) : '';
+  $('returnValue').parentElement.hidden = !q.exact;
   $('lineBudget').textContent = q.budget === null ? budgetText : `до ${budgetText}`;
 }
 function setExact(enabled) {
@@ -1309,8 +1316,18 @@ $('searchLine').addEventListener('click', (event) => {
   if (!field) return;
   if (field === 'passengers') { openPassengers(event.target.closest('[data-field]'), state.query.passengers); return; }
   if (field === 'origin' || field === 'destination') { openPicker(field, event.target.closest('[data-field]')); return; }
-  collapseForm(false);
-  ({ when: state.query.exact ? $('departureDate') : $('month'), budget: $('budget') })[field]?.focus();
+  if (field === 'when' || field === 'returning') {
+    const trigger = event.target.closest('[data-field]');
+    openCalendar(trigger, state.query, months(originZone()), zoned(new Date(), originZone()).key, draft => {
+      Object.assign(state.query, draft);
+      renderForm();
+    }, async (month, signal) => {
+      const params = toParams({ ...state.query, month, exact: false, weekend: false });
+      const response = await fetch('/api/v1/search/web?' + params, { signal });
+      if (!response.ok) throw new Error('calendar fares');
+      return response.json();
+    });
+  }
 });
 $('showcase').addEventListener('click', (event) => {
   const compare = event.target.closest('[data-compare-row]');
@@ -1513,7 +1530,7 @@ async function restore() {
 }
 // Фото в шапке — до низа свёрнутой формы (+ немного воздуха): тёмные заголовки ниже не попадают на фото.
 function fitHero() {
-  if (document.body.classList.contains('other-service') || state.view === 'fav' || !$('search').classList.contains('search--collapsed')) return;
+  if (document.body.classList.contains('other-service') || state.view === 'fav') return;
   document.documentElement.style.setProperty('--hero-h', `${Math.round($('search').getBoundingClientRect().bottom + scrollY + 28)}px`);
 }
 const heroLayout = new ResizeObserver(fitHero);

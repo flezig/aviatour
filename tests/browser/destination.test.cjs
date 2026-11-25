@@ -66,8 +66,7 @@ test('на телефоне страна и город Тунис различи
   } }));
   await page.goto(base);
   async function openDestination() {
-    if (!await page.locator('#destinationPick').isVisible()) await page.locator('#searchSummary').click();
-    await page.locator('#destinationPick').click();
+    await page.locator('[data-field="destination"]').click();
   }
   await openDestination();
   const menu = page.locator('#picker');
