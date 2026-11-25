@@ -1,3 +1,7 @@
+import { addDays } from './lib/format.js';
+import { adMark } from './lib/ui.js';
+import { partnerLink } from './lib/links.js';
+
 const tabs = [...document.querySelectorAll('.service-tabs [role=tab]')];
 const heading = document.querySelector('.intro h1');
 const lead = document.querySelector('.intro-lead');
@@ -49,14 +53,41 @@ function futureDay(days) {
 }
 for (const form of document.querySelectorAll('.service-form')) {
   const start = form.elements.start, end = form.elements.end;
-  start.min = futureDay(0); start.value = futureDay(14); end.min = start.value; end.value = futureDay(21);
+  const isHotel = form.id === 'hotelSearch';
+  const firstCheckout = () => isHotel && start.value ? addDays(start.value, 1) : start.value;
+  start.min = futureDay(0); start.value = futureDay(14); end.min = firstCheckout(); end.value = futureDay(21);
   const status = form.nextElementSibling;
+  if (isHotel) status.insertAdjacentHTML('afterend', adMark('aviasales'));
   form.addEventListener('input', () => {
-    status.hidden = true; end.min = start.value;
-    if (start.value && end.value < start.value) end.value = start.value;
+    status.hidden = true; end.min = firstCheckout();
+    if (start.value && end.value && end.value < end.min) end.value = end.min;
   });
-  form.addEventListener('submit', event => {
+  form.addEventListener('submit', async event => {
     event.preventDefault();
+    if (isHotel) {
+      const city = form.elements.place.value;
+      const query = new URLSearchParams({
+        location_type: 'city', checkin: start.value, checkout: end.value, adults: form.elements.adults.value
+      });
+      const submit = form.querySelector('[type="submit"]');
+      submit.disabled = true;
+      try {
+        const response = await fetch('/data/hotel-locations.json');
+        if (!response.ok) throw new Error('locations');
+        const locationId = (await response.json())[city];
+        if (!Number.isInteger(locationId)) throw new Error('city');
+        query.set('location_id', locationId);
+        const href = partnerLink('https://www.aviasales.ru/hotels/search?' + query, { kind: 'hotels', city, page: 'home', block: 'stay' });
+        if (!href) throw new Error('url');
+        location.assign(href);
+      } catch {
+        status.textContent = 'Не удалось открыть поиск жилья. Попробуйте ещё раз.';
+        status.hidden = false;
+      } finally {
+        submit.disabled = false;
+      }
+      return;
+    }
     status.textContent = 'Это предпросмотр вкладки. Поиск предложений пока не подключён.';
     status.hidden = false;
   });
