@@ -1,6 +1,7 @@
 // Текстовые страницы: Метрика с согласием, блок «Кто мы», источники фото, оператор на странице конфиденциальности.
 import './lib/city-rating.js';
 import './lib/measure.js';
+import { mountSky } from './lib/sky.js';
 import { esc } from './lib/ui.js';
 import { fmtDay, fmtTime, localZone } from './lib/format.js';
 
@@ -45,6 +46,7 @@ if (credits) {
   }).catch(() => { credits.innerHTML = '<p>Не удалось загрузить список источников. Обновите страницу.</p>'; });
 }
 
+mountSky();
 
 // Страницы с готовым HTML с сервера пишут время цен по Москве; показываем по часам посетителя.
 for (const time of document.querySelectorAll('time[data-local]')) {

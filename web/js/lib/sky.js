@@ -1,7 +1,4 @@
-// Небо за страницей: верх окрашен по времени суток посетителя (утро, день, вечер, ночь) и меняется сам,
-// пока страница открыта; медленно плывут облака, раз в минуту пролетает самолёт. Слой за содержимым,
-// нажатия не перехватывает. При «уменьшить движение» облака стоят, самолёта нет (styles.css).
-import { CLOUD, PLANE_TOP } from './art.js';
+import { CLOUD } from './art.js';
 
 const PERIODS = [[22, 'night'], [17, 'evening'], [10, 'day'], [5, 'morning']];
 export const skyPeriod = (hour) => PERIODS.find(([from]) => hour >= from)?.[1] ?? 'night';
@@ -22,10 +19,6 @@ export function mountSky() {
     for (const [name, value] of [['--w', `${width}px`], ['--o', opacity], ['--t', `${time}s`], ['--d', `${delay}s`], ['--x', `${x}vw`]]) item.style.setProperty(name, value);
     sky.append(item);
   }
-  const plane = document.createElement('div');
-  plane.className = 'sky-plane';
-  plane.innerHTML = PLANE_TOP;
-  sky.append(plane);
   document.body.prepend(sky);
   const update = () => { document.documentElement.dataset.sky = skyPeriod(new Date().getHours()); };
   update();

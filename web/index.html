@@ -31,6 +31,9 @@
   <link rel="modulepreload" href="/js/lib/measure.js">
   <link rel="modulepreload" href="/js/lib/origin.js">
   <link rel="modulepreload" href="/js/lib/levels.js">
+  <link rel="modulepreload" href="/js/lib/sky.js">
+  <link rel="modulepreload" href="/js/lib/art.js">
+  <link rel="modulepreload" href="/js/lib/stickers.js">
 <link rel="stylesheet" href="/flight-calendar.css"></head>
 <body class="has-hero">
 <!-- icons:start -->
@@ -65,6 +68,22 @@
 </svg>
 <!-- icons:end -->
   <a class="skip" href="#search">К поиску</a>
+  <div class="hero-photo" aria-hidden="true">
+    <picture>
+      <source media="(max-width: 699px), (horizontal-viewport-segments: 2)" type="image/avif" sizes="(horizontal-viewport-segments: 2) 50vw, 100vw"
+              srcset="/photos/hero-madeira-mobile-coast-480.avif 480w, /photos/hero-madeira-mobile-coast-900.avif 900w,
+                      /photos/hero-madeira-mobile-coast-1320.avif 1320w, /photos/hero-madeira-mobile-coast-2100.avif 2100w">
+      <source media="(max-width: 699px), (horizontal-viewport-segments: 2)" type="image/webp" sizes="(horizontal-viewport-segments: 2) 50vw, 100vw"
+              srcset="/photos/hero-madeira-mobile-coast-900.webp 900w, /photos/hero-madeira-mobile-coast-1320.webp 1320w">
+      <source type="image/avif" sizes="(min-width: 900px) 73vw, 100vw"
+              srcset="/photos/hero-madeira-wide-768.avif 768w, /photos/hero-madeira-wide-1024.avif 1024w,
+                      /photos/hero-madeira-wide-1600.avif 1600w, /photos/hero-madeira-wide-2304.avif 2304w,
+                      /photos/hero-madeira-wide-3072.avif 3072w, /photos/hero-madeira-wide-4200.avif 4200w">
+      <source type="image/webp" sizes="(min-width: 900px) 73vw, 100vw"
+              srcset="/photos/hero-madeira-wide-1600.webp 1600w, /photos/hero-madeira-wide-3072.webp 3072w">
+      <img src="/photos/hero-madeira-1920.jpg" alt="" fetchpriority="high" decoding="async">
+    </picture>
+  </div>
   <header class="top wrap">
     <a class="brand" href="/"><span class="brand-mark"><svg class="icon" aria-hidden="true"><use href="#ui-plane"></use></svg></span><span>Aviator</span><span class="brand-beta">Бета</span></a>
     <nav class="service-nav" aria-label="Разделы поиска"><div class="service-tabs" role="tablist" aria-label="Что ищем"><button id="tab-flights" role="tab" aria-selected="true" aria-controls="flight-service" tabindex="0" type="button" data-service="flights"><img src="/tab-flights.svg" width="24" height="24" alt=""><span>Авиабилеты</span></button><button id="tab-stays" role="tab" aria-selected="false" aria-controls="panel-stays" tabindex="-1" type="button" data-service="stays"><img src="/tab-stays.svg" width="24" height="24" alt=""><span>Жильё</span></button><button id="tab-cars" role="tab" aria-selected="false" aria-controls="panel-cars" tabindex="-1" type="button" data-service="cars"><img src="/tab-cars.svg" width="24" height="24" alt=""><span class="car-tab-label">Авто<small>В бете</small></span></button><button id="tab-tours" role="tab" aria-selected="false" aria-controls="panel-tours" tabindex="-1" type="button" data-service="tours"><img src="/tab-tours.svg" width="24" height="24" alt=""><span>Туры</span></button></div></nav>
@@ -201,6 +220,7 @@
       <a href="/credits.html">Авторы фото</a>
     </nav>
     <p class="caption">За покупки по ссылкам на Aviasales мы получаем комиссию.</p>
+    <p class="caption hero-credit">Фото в шапке: Мыс Сан-Лоренсу, Мадейра — <a href="https://commons.wikimedia.org/wiki/File:Ponta_de_S%C3%A3o_Louren%C3%A7o,_Madeira,_Portugal,_2019-05-28,_DD_01-09_PAN.jpg" target="_blank" rel="noopener">Diego Delso</a>, <a href="https://delso.photo/" target="_blank" rel="noopener">delso.photo</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>, уменьшено и кадрировано.</p>
   </footer>
 
   <dialog id="passengerPicker" aria-labelledby="passengerTitle">
