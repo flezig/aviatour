@@ -1,4 +1,5 @@
 import { $, esc, icon } from './lib/ui.js';
+import { portrait, loadPortraits } from './lib/portrait.js';
 import { goal } from './lib/measure.js';
 import { daysLabel, fmtDate, fmtDay, fmtMoney, nightsLabel, zoned, addDays, localZone } from './lib/format.js';
 import { budget, countdown, decodeTrip, savedTrips, saveTrip, tripDates, tripPath } from './lib/trip.js';
@@ -20,7 +21,7 @@ function planRating(p) {
 function listPlans(invalid) {
   const trips = savedTrips();
   main.innerHTML = `<h1>Мои поездки</h1>${invalid ? '<p role="status">Ссылка на поездку повреждена. Попросите отправить её ещё раз.</p>' : ''}
-    ${trips.length ? trips.map(p => `<article class="card"><a class="plan-list-item" href="${esc(tripPath(p))}"><span><b>${esc(p.city)}</b>
+    ${trips.length ? trips.map(p => `<article class="card"><a class="plan-list-item" href="${esc(tripPath(p))}">${portrait(p.cityCode, p.city)}<span><b>${esc(p.city)}</b>
     <small>${esc(p.from)}, ${esc(tripDates(p).label)}</small></span>${icon('arrow-right')}</a>${planRating(p)}</article>`).join('') : '<p>Сохраните поездку после перехода за билетом. Здесь будут её даты и план.</p><a class="btn-inline" href="/">Найти поездку</a>'}`;
 }
 
@@ -37,11 +38,6 @@ function showBudget() {
 function showCity() {
   const g = catalogue.guides[plan.cityCode];
   $('activities').innerHTML = localActivities(plan, catalogue, 'plan', reportVariant());
-  const city = catalogue.cities.get(plan.cityCode);
-  if (city?.photo) {
-    $('planPhoto').innerHTML = `<img src="/photos/s/${esc(plan.cityCode)}.webp" alt="">`;
-    $('planPhoto').hidden = false;
-  }
   if (g?.places?.length) $('places').innerHTML = `<h2>Что посмотреть</h2><ul>${g.places.map(s => `<li>${esc(s)}</li>`).join('')}</ul><p class="caption">Заметки редакции, ${esc(fmtDate(new Date(g.editorial_updated + 'T00:00:00Z'), 'UTC'))}</p>`;
   $('places').hidden = !g?.places?.length;
 }
@@ -75,7 +71,7 @@ function render() {
   const dates = tripDates(plan), route = airportRoutes[plan.toCode];
   document.title = plan.city + ' — Моя поездка — Aviator';
   main.innerHTML = `<a class="plan-back" href="/trip.html">← Мои поездки</a>
-    <header class="plan-hero"><div><p class="label">Моя поездка</p><h1>${esc(plan.city)}</h1>${planRating(plan)}<p id="countdown">${esc(countdown(plan))}</p></div><div class="plan-photo" id="planPhoto" hidden></div></header>
+    <header class="plan-hero"><div><p class="label">Моя поездка</p><h1>${esc(plan.city)}</h1>${planRating(plan)}<p id="countdown">${esc(countdown(plan))}</p></div>${portrait(plan.cityCode, plan.city)}</header>
     <section class="card"><h2>Маршрут</h2><dl class="plan-route"><div><dt>Туда: ${esc(plan.from)} (${plan.fromCode})</dt><dd>${dateTime(plan.out, plan.fromZone)}</dd></div>
     <div><dt>Обратно: ${esc(plan.city)} (${plan.toCode})</dt><dd>${dateTime(plan.back, plan.zone)}</dd></div></dl><p class="caption">Местное время аэропортов</p>
     ${plan.flight ? `<a class="plan-flight" href="https://www.flightradar24.com/data/flights/${plan.flight.toLowerCase()}" rel="noopener" target="_blank">Рейс ${esc(plan.flight)} на Flightradar24 ↗</a><small class="caption">Сверьте дату и маршрут на странице рейса.</small>` : ''}</section>
@@ -128,4 +124,5 @@ window.addEventListener('pageshow', () => { if (!location.hash) render(); });
 function tick() { if (plan && $('countdown')) $('countdown').textContent = countdown(plan); }
 document.addEventListener('visibilitychange', tick);
 setInterval(tick, 60000);
+loadPortraits();
 render();

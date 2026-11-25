@@ -7,7 +7,7 @@ from pathlib import Path
 from urllib.parse import urlencode
 
 from .catalog import AIRPORTS, BY_IATA
-from .city_pages import FOOT, HEAD, MONTH_NAMES, SITE, breadcrumbs, esc, group, slug
+from .city_pages import FOOT, HEAD, MONTH_NAMES, SITE, breadcrumbs, esc, group, portrait, slug
 
 HERE = Path(__file__).parent
 NORMALS = json.loads((HERE / "season_normals.json").read_text())
@@ -168,10 +168,9 @@ def directory(catalog, month, query, today, photos, full=False, page=1, checked=
     for code in codes[(page - 1) * page_size:page * page_size]:
         city = CITIES[code]
         url = esc(link(code, month, year=year))
-        photo = (f'<img src="/photos/s/{esc(code)}.webp" alt="" width="320" height="155" loading="lazy">'
-                 if code in photos else "")
-        items.append(f'<article class="rating-tile"><a class="rating-tile-city" href="{url}">{photo}'
-                     f'<h2>{esc(city["city"])}</h2></a><p>{esc(city["country"])}, {esc(code)}</p>'
+        photo = portrait(code, city["city"], code in photos, named=True)
+        items.append(f'<article class="rating-tile"><h2><a class="rating-tile-city" href="{url}">{photo}</a></h2>'
+                     f'<p>{esc(city["country"])}, {esc(code)}</p>'
                      f'{badge(code, month, year=year, today=today, checked_report=checked.get(code))}</article>')
     params = {"month": month}
     if query:
@@ -315,11 +314,7 @@ def city_page(catalog, code, month, requested_mode, origin, rating, year, today,
     safety = f'''<article><h2>Безопасность</h2><p id="seasonSafety">Перед поездкой проверьте действующие предупреждения по направлению.</p><small><a href="{esc(safe_url)}">{safe_label}</a></small></article>'''
     price_text = "Проверяем цены Aviasales…"
     fare = f'<article><h2>Билеты туда и обратно</h2><strong id="seasonPrice" aria-live="polite"></strong><p id="seasonFareNote">{price_text}</p><small id="seasonFareLink"></small></article>'
-    hero = (
-        f'<img src="/photos/s/{code}.webp" width="260" height="168" alt="">'
-        if official and official.get("photo")
-        else ""
-    )
+    hero = portrait(code, title, photo, eager=True)
     body = f'''{tabs}<header class="season-heading"><div><p>{esc(city["country"])}, {code}</p><h1>{esc(title)}</h1>{badge(code, month, origin, rating["year"], checked_report=rating)}</div>{hero}</header>
 <section class="season-panel" id="season" data-code="{code}" data-month="{month}" data-domestic="{int(cc == "RU")}" data-mode="{mode}" data-walk="{esc(json.dumps([walk_score(t, p) for t, p in zip(normal["temperature"], normal["precipitation"])] if normal else []))}" data-counts="{esc(json.dumps(counts or []))}" data-fcdo="{int(bool(advice.get("fcdo")) and cc != "RU")}" data-origin="{esc(origin["iata"])}" data-all="{esc(origin["code"] if origin["all"] else "")}">
 {choice}<div class="season-summary"><div><p>{esc(mode_name)}, {MONTH_NAMES[idx].lower()}</p><h2 id="seasonVerdict" aria-live="polite">{"Проверяем цены и сведения по направлению…" if trip else esc(note)}</h2></div><strong id="seasonValue">{value}</strong></div>

@@ -275,9 +275,6 @@ img { display: block; max-width: 100%; }
 .strip--pass .tile-more { align-self: stretch; }
 .intro-lead { margin-top: var(--s-2); max-width: 46em; font-size: var(--fs-small); }
 .has-hero .intro-lead { color: var(--on-photo); text-shadow: 0 1px 8px rgba(15, 27, 61, .4); }
-.tile .stamp, .offer .stamp { transform: rotate(-1.2deg); transition: transform var(--t-fast) var(--ease); }
-.tile:nth-child(2n) .stamp, .offer:nth-child(2n) .stamp { transform: rotate(1deg); }
-.tile:hover .stamp, .offer:hover .stamp { transform: rotate(0) translateY(-2px); }
 .tile-body { display: grid; align-content: start; gap: var(--s-1); padding-inline: 2px; }
 .tile-city, .offer-city { font: var(--city-title); letter-spacing: 0; overflow-wrap: anywhere; }
 .tile-price-row { display: flex; flex-wrap: wrap; align-items: center; column-gap: var(--s-2); }
@@ -290,6 +287,13 @@ img { display: block; max-width: 100%; }
 .tile--pass .pass { position: relative; z-index: 2; height: 100%; pointer-events: none; }
 .tile--pass .level, .tile--pass .level-note { pointer-events: auto; }
 .tile--pass .pass { grid-template-rows: auto 1fr; }
+.tile--pass .pass-main { display: grid; grid-template-columns: clamp(70px, 17vw, 92px) minmax(0,1fr); gap: 2px 12px; align-content: start; align-items: center; }
+.tile--pass .pass-main .portrait { grid-row: 1 / 3; }
+.tile--pass .codes { align-self: end; font-size: 20px; }
+.tile--pass .cities { align-self: start; }
+.tile--pass .legs { grid-column: 1 / -1; margin-top: var(--s-2); }
+/* Дата может занять две строки после загрузки шрифта. Рейтинг под ней остаётся на месте. */
+.tile--pass .legs b { min-block-size: 2lh; }
 .tile--pass .pass-stub { align-content: start; gap: 2px; }
 .tile--pass .tile-price-row { display: grid; grid-template-columns: max-content minmax(0,1fr) var(--tap); gap: 0 4px; }
 .tile--pass .pass-price { white-space: nowrap; }
@@ -426,18 +430,53 @@ img { display: block; max-width: 100%; }
 .sort-menus::-webkit-scrollbar { display: none; }
 .sort-menus .menu { flex: none; width: auto; padding-right: 32px; }
 @media (min-width: 900px) { .results-head .sort-menus { order: 0; flex-basis: auto; } }
-.grid { display: grid; gap: var(--s-5) var(--s-4); grid-template-columns: repeat(auto-fill, minmax(min(100%, 248px), 1fr)); padding-top: var(--s-2); }
+.grid { display: grid; gap: var(--s-5) var(--s-4); grid-template-columns: repeat(auto-fill, minmax(min(100%, 176px), 1fr)); padding-top: var(--s-2); }
 .status-actions { display: flex; flex-wrap: wrap; gap: var(--s-2); justify-content: center; }
 
-/* Марка: фото в рамке с зубчиками — рамка рисуется маской, файлы фото не меняются. */
-.stamp { padding: 3px; background: var(--card); border-radius: var(--r-frame); box-shadow: var(--sh-frame); }
-.photo { position: relative; aspect-ratio: 3 / 2; overflow: hidden; border-radius: var(--r-photo); background: var(--cobalt-soft); display: grid; place-items: center; color: var(--cobalt); }
-.photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.photo > .icon { width: 36px; height: 36px; opacity: .5; }
+/* Общая фотокарточка города. Подпись переносится на соседнюю вертикальную строку. */
+.portrait {
+  position: relative;
+  isolation: isolate;
+  display: block;
+  width: 100%;
+  min-width: 0;
+  aspect-ratio: 3 / 4;
+  align-self: start;
+  overflow: hidden;
+  border-radius: 20% / 15%;
+  container-type: inline-size;
+  background: linear-gradient(145deg, #718ba0, #344662 58%, #26364e);
+}
+.portrait img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: var(--photo-focus, center); }
+.portrait[data-city-code="IST"] { --photo-focus: 46% center; }
+.portrait[data-city-code="AYT"] { --photo-focus: 55% center; }
+.portrait[data-city-code="DLM"] { --photo-focus: 62% center; }
+.portrait::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(90deg, rgba(9,17,34,.68), transparent 64%), linear-gradient(0deg, rgba(9,17,34,.36), transparent 55%);
+}
+.portrait-name {
+  position: absolute;
+  z-index: 1;
+  bottom: 8%;
+  left: 8%;
+  max-inline-size: 84%;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  overflow-wrap: anywhere;
+  white-space: normal;
+  color: white;
+  font: 800 clamp(12px, 14cqw, 32px)/1.04 var(--f-head);
+  letter-spacing: -.035em;
+  text-shadow: 0 1px 4px #0008;
+}
 .fav { position: absolute; top: var(--s-2); right: var(--s-2); z-index: 2; width: var(--tap); height: var(--tap); display: grid; place-items: center; border-radius: var(--r-field); background: var(--card-veil); color: var(--ink); }
 .fav[aria-pressed="true"] { color: var(--heart); }
-/* Фото с рамкой — свой слой (фильтр тени): кладём его над кнопкой карточки, нажатия пропускаем к ней — кроме сердечка. */
-.offer .stamp, .tile .stamp { position: relative; z-index: 2; pointer-events: none; }
+/* Нажатие на фото открывает билет, на сердечко — меняет избранное. */
+.offer > .portrait, .tile > .portrait { z-index: 2; pointer-events: none; }
 .offer .fav, .tile .fav { pointer-events: auto; }
 .fav--inline { position: relative; top: auto; right: auto; margin-left: auto; background: none; }
 .tile--pass .fav { pointer-events: auto; }
@@ -452,7 +491,7 @@ img { display: block; max-width: 100%; }
 
 .offer { position: relative; display: grid; gap: var(--s-3); align-content: start; }
 .offer-body { display: grid; gap: var(--s-0); }
-.offer-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-3); }
+.offer-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px var(--s-2); }
 .offer-city { min-width: 0; }
 .offer-open { font: inherit; text-align: left; }
 .offer-open::after { content: ''; position: absolute; inset: 0; z-index: 1; }
@@ -460,6 +499,11 @@ img { display: block; max-width: 100%; }
 .offer-dates { font-weight: 600; font-size: var(--fs-small); }
 .offer-meta, .offer-about { font-size: var(--fs-cap); color: var(--ink-2); }
 .offer-hint { justify-self: start; margin-top: var(--s-1); padding: var(--s-0) var(--s-2); border-radius: var(--r-tag); background: var(--low-soft); color: var(--low); font-size: var(--fs-cap); font-weight: 600; }
+@media (max-width: 599px) {
+  .grid { grid-template-columns: 1fr; }
+  .offer { grid-template-columns: clamp(86px, 26vw, 132px) minmax(0,1fr); align-items: center; }
+  .offer .fav { top: 4px; right: 4px; }
+}
 .skeleton .photo, .skeleton i { background: var(--fill); }
 .skeleton i { display: block; height: 14px; border-radius: var(--r-tag); }
 .skeleton i:nth-child(2) { width: 70%; } .skeleton i:nth-child(3) { width: 45%; }
@@ -485,6 +529,7 @@ img { display: block; max-width: 100%; }
 .compare { overflow-x: auto; background: var(--card); border-radius: var(--r-pass); box-shadow: var(--sh-pass); }
 .compare table { border-collapse: collapse; width: 100%; font-size: var(--fs-small); }
 .compare th, .compare td { padding: var(--s-3); text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
+.compare thead .portrait { width: min(100%, 98px); }
 .compare thead th { font-family: var(--f-head); font-weight: 800; }
 .compare tbody th { color: var(--ink-2); font-weight: 400; white-space: nowrap; }
 .compare b { font: 700 var(--fs-small) var(--f-mono); }
@@ -587,7 +632,8 @@ img { display: block; max-width: 100%; }
 /* --- Карточка поездки --- */
 .detail { display: grid; gap: var(--s-4); padding: var(--s-4) var(--s-4) 0; }
 .detail > * { min-width: 0; }
-.stamp--wide .photo { aspect-ratio: 21 / 9; }
+.detail-hero { display: grid; grid-template-columns: clamp(96px, 29%, 152px) minmax(0, 1fr); align-items: center; gap: var(--s-4); }
+.detail-hero h2 { overflow-wrap: anywhere; }
 .detail-head { display: grid; gap: var(--s-0); }
 .detail-head h2 { font-size: var(--fs-title); }
 .card { background: var(--card); border-radius: var(--r-pass); box-shadow: var(--sh-pass); padding: var(--s-4); display: grid; gap: var(--s-2); }
@@ -664,8 +710,25 @@ img { display: block; max-width: 100%; }
 .crumbs a { display: inline-flex; align-items: center; min-height: var(--tap); color: var(--ink-2); }
 .city { display: grid; gap: var(--s-4); }
 .city > * { min-width: 0; }
-.city-hero { display: grid; gap: var(--s-4); }
-.stamp--hero .photo { aspect-ratio: 16 / 9; }
+.city-hero { display: grid; gap: var(--s-4); align-items: start; }
+.city-hero > .portrait { width: min(100%, 230px); }
+@media (max-width: 599px) {
+  .city-hero {
+    grid-template-columns: clamp(88px, 28vw, 142px) minmax(0, 1fr);
+    grid-template-areas: "photo code" "photo title" "photo badge" "fares fares";
+    gap: var(--s-2) var(--s-3);
+    align-items: center;
+  }
+  .city-hero .city-head { display: contents; }
+  .city-hero > .portrait { grid-area: photo; align-self: center; }
+  .city-head .city-code { grid-area: code; }
+  .city-head h1 { grid-area: title; }
+  .city-head .city-rating { grid-area: badge; }
+  .city-head .fares { grid-area: fares; }
+}
+@media (min-width: 600px) {
+  .city-hero { grid-template-columns: minmax(140px, 230px) minmax(0, 1fr); align-items: center; }
+}
 .city-head { display: grid; gap: var(--s-3); align-content: start; }
 .city-head h1 { overflow-wrap: anywhere; }
 .city-code { font-size: var(--fs-cap); color: var(--ink-2); }
@@ -710,7 +773,7 @@ a.month:hover .month-bar rect { fill: var(--cobalt); }
 @media (min-width: 900px) {
   .city { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; column-gap: var(--s-5); }
   .city > .crumbs, .city > .city-hero, .city > .photo-credit { grid-column: 1 / -1; }
-  .city-hero { grid-template-columns: minmax(0, .85fr) minmax(0, 1fr); gap: var(--s-6); align-items: start; }
+  .city-hero { gap: var(--s-6); }
   .photo-credit { margin-top: calc(-1 * var(--s-3)); }
 }
 
@@ -724,9 +787,6 @@ a.month:hover .month-bar rect { fill: var(--cobalt); }
 .scenario-item { display: grid; gap: 0; background: var(--card); border-radius: var(--r-pass); box-shadow: var(--sh-pass); overflow: hidden; }
 .scenario-open { display: grid; grid-template-columns: 76px minmax(0, 1fr) auto; align-items: center; gap: var(--s-3); padding: var(--s-3); color: var(--ink); text-decoration: none; }
 .scenario-open:hover .scenario-price { color: var(--cobalt); }
-.scenario-open .stamp { padding: 3px; border-radius: 10px; display: block; }
-.scenario-open .photo { border-radius: 7px; }
-.scenario-open .photo { display: block; aspect-ratio: 1; }
 .scenario-text { display: grid; gap: var(--s-0); font-size: var(--fs-small); }
 .scenario-text b { font-family: var(--f-head); font-weight: 800; font-size: var(--fs-body); overflow-wrap: anywhere; }
 .scenario-price { font: 700 var(--fs-small) var(--f-mono); letter-spacing: -.03em; white-space: nowrap; transition: color var(--t-fast) var(--ease); }
@@ -747,7 +807,7 @@ a.month:hover .month-bar rect { fill: var(--cobalt); }
 .plan-back { width: fit-content; padding: 8px 0; color: var(--ink-2); }
 .plan-hero { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); overflow-wrap: anywhere; }
 .plan-hero h1 { margin: var(--s-1) 0; }
-.plan-photo img { display: block; width: clamp(88px, 20vw, 160px); aspect-ratio: 4 / 3; border-radius: var(--r-pass); object-fit: cover; }
+.plan-hero > .portrait, .season-heading > .portrait { flex: none; width: clamp(88px, 21vw, 148px); align-self: center; }
 .plan-actions { display: flex; flex-wrap: wrap; gap: var(--s-2); }
 #planStatus:empty, .plan-options:empty, #returnPrompt:empty { display: none; }
 .plan-route, .plan-inputs, .plan-options, .weather-days { display: grid; gap: var(--s-3); }
@@ -759,7 +819,7 @@ a.month:hover .month-bar rect { fill: var(--cobalt); }
 .plan-inputs input { width: 100%; border: 1px solid var(--line); border-radius: var(--r-chip); min-height: var(--tap); padding: 0 var(--s-3); font: inherit; color: var(--ink); }
 .plan-option { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 4px 12px; padding: var(--s-3) var(--s-4); border-radius: var(--r-pass); background: var(--card); box-shadow: var(--sh-pass); }
 .plan-option .ad-mark { grid-column: 1 / -1; }
-.plan-list-item { display: flex; align-items: center; justify-content: space-between; color: var(--ink); text-decoration: none; }
+.plan-list-item { display: grid; grid-template-columns: 68px minmax(0, 1fr) auto; gap: var(--s-3); align-items: center; color: var(--ink); text-decoration: none; }
 .plan-list-item small { display: block; color: var(--ink-2); }
 .plan-prompt { display: flex; flex-wrap: wrap; gap: var(--s-2); align-items: center; }
 .plan-prompt h3 { flex-basis: 100%; }
@@ -803,16 +863,14 @@ body:has(.rating-directory) .top { background: white; box-shadow: 0 0 0 100vmax 
 .rating-only { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; min-height: 36px; cursor: pointer; }
 .rating-only input { margin: 0; width: 17px; height: 17px; accent-color: var(--cobalt); }
 .rating-filters-live button[type="submit"] { display: none; }
-.rating-tiles { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); align-items: stretch; gap: 14px; }
-.rating-tile { min-width: 0; padding-bottom: 10px; border: 1px solid var(--line); border-radius: 13px; overflow: hidden; background: var(--card); }
-.rating-tile:has([aria-expanded="true"]) { border-color: #98abe8; }
+.rating-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 142px),1fr)); align-items: stretch; gap: 14px; }
+.rating-tile { min-width: 0; padding-bottom: 10px; }
+.rating-tile:has([aria-expanded="true"]) .portrait { outline: 2px solid var(--cobalt); outline-offset: 2px; }
 .rating-tile-city { display: block; color: inherit; text-decoration: none; }
-.rating-tile-city:hover h2 { text-decoration: underline; }
-.rating-tile-city:focus-visible { outline-offset: -3px; }
-.rating-tile img { width: 100%; height: clamp(108px,10.5vw,146px); object-fit: cover; }
-.rating-tile h2 { padding: 12px 13px 2px; font-size: clamp(17px,1.65vw,22px); line-height: 1.2; letter-spacing: -.035em; overflow-wrap: anywhere; }
-.rating-tile > p { padding-inline: 13px; color: var(--ink-2); font-size: 12px; }
-.rating-tile .city-rating { margin: 8px 13px 0; max-width: calc(100% - 26px); flex-wrap: wrap; row-gap: 2px; }
+.rating-tile-city:hover .portrait-name { text-decoration: underline; }
+.rating-tile-city:focus-visible { outline-offset: 2px; border-radius: 20% / 15%; }
+.rating-tile > p { margin: 8px 4px 0; color: var(--ink-2); font-size: 12px; }
+.rating-tile .city-rating { margin: 4px 0 0; max-width: 100%; flex-wrap: wrap; row-gap: 2px; }
 .rating-pages { display: flex; align-items: center; gap: 15px; padding-top: 13px; }
 .rating-empty p { margin: 8px 0; }
 .rating-pages a, .rating-compare-link, .rating-empty a { display: inline-flex; align-items: center; min-height: 44px; }
@@ -872,21 +930,17 @@ body:has(.rating-sheet[open]) { overflow: hidden; }
 @media(max-width:820px) {
   .rating-directory { display: block; }
   .rating-slot { display: none; }
-  .rating-tile img { height: clamp(98px,24vw,168px); }
   .rating-sheet .city-rating-popover { margin: 0; width: 100%; max-width: none; max-height: 91dvh;
     border-radius: 18px 18px 0 0; padding-bottom: env(safe-area-inset-bottom); }
   .rating-topline { padding-top: 5px; }
 }
 @media(max-width:470px) {
-  .rating-tiles { gap: 10px; }
+  .rating-tiles { grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; }
   .rating-filters { gap: 4px 8px; }
   .rating-query { flex-basis: 165px; }
   .rating-filters select { max-width: 130px; }
   .rating-only { min-height: 40px; }
   .rating-tile { padding-bottom: 8px; }
-  .rating-tile h2 { font-size: 16px; padding: 10px 8px 2px; }
-  .rating-tile > p { padding-inline: 8px; }
-  .rating-tile .city-rating { margin: 6px 8px 0; max-width: calc(100% - 16px); }
   .city-rating { gap: 3px 6px; min-height: 44px; padding-inline: 6px; }
   .city-rating-label { font-size: 12px; }
   .city-rating-value { font-size: 11px; }
@@ -900,7 +954,7 @@ body:has(.rating-sheet[open]) { overflow: hidden; }
 .season-heading { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin: 22px 0; }
 .season-heading h1 { font: 800 clamp(36px,6vw,76px)/1.04 var(--f-head); overflow-wrap: anywhere; }
 .season-heading p, .season-summary p { color: var(--ink-2); margin: 0 0 5px; }
-.season-heading img { width: clamp(88px,18vw,194px); height: clamp(72px,10vw,110px); object-fit: cover; border-radius: 12px; }
+
 .season-panel, .season-facts article, .season-method, .season-find { padding: clamp(16px,3vw,32px); background: var(--card); border-radius: var(--r-card,16px); }
 .season-mode a { font-size: var(--fs-small); background: var(--fill); }
 .season-summary { display:flex; align-items:center; justify-content:space-between; gap:16px; margin:21px 0; }
@@ -958,7 +1012,6 @@ body:has(.rating-sheet[open]) { overflow: hidden; }
 }
 @media (min-width: 1400px) {
   .rating-directory { grid-template-columns: minmax(0, 1fr) minmax(360px, 30%); }
-  .rating-tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
 @media (pointer: coarse) {

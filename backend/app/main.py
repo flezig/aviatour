@@ -523,7 +523,7 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
     @app.get('/city/', response_class=HTMLResponse)
     async def city_index(q: str = Query('', max_length=100), region: str = Query('all', pattern='^(all|ru|abroad)$'),
                          guide: bool = False, page: int = Query(1, ge=1, le=10000)):
-        return HTMLResponse(city_pages.index_page(catalog, q, region, guide, page), headers={'Cache-Control': page_cache})
+        return HTMLResponse(city_pages.index_page(catalog, q, region, guide, page, photos=photos), headers={'Cache-Control': page_cache})
 
     @app.get('/city/{name}', response_class=HTMLResponse)
     async def city_page(name: str):
