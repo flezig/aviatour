@@ -33,6 +33,17 @@ def inline_home_icons():
     page.write_text(before + start + '\n' + svg.rstrip() + '\n' + end + after)
 
 
+def write_portrait_index(cities):
+    airports = json.loads((ROOT / 'backend/app/airports.json').read_text())
+    countries = {row['city_code']: (row['country_code'], row['country']) for row in airports}
+    index = {}
+    for city in cities:
+        country = countries.get(city)
+        flag = ROOT / 'web/flags' / (country[0].lower() + '.svg') if country else None
+        index[city] = country if flag and flag.is_file() and country[0] != 'RU' else None
+    (ROOT / 'web/data/portrait-index.json').write_text(json.dumps(index, ensure_ascii=False, indent=2) + '\n')
+
+
 def main():
     inline_home_icons()
     OUT.mkdir(parents=True, exist_ok=True)
@@ -45,6 +56,7 @@ def main():
     # Web-only city photos (scripts/download_web_photos.py) stay next to the app's and share the manifest and credits page.
     cities = sorted(path.stem for path in OUT.glob('*.jpg') if len(path.stem) == 3 and path.stem.isupper())
     (OUT / 'manifest.json').write_text(json.dumps(cities) + '\n')
+    write_portrait_index(cities)
     web_credits = OUT / 'credits-web.md'
     credits = (ROOT / 'Aviator/Resources/credits.md').read_text().replace('**GYD**', '**BAK**')
     (OUT / 'credits.md').write_text(credits + ('\n' + web_credits.read_text() if web_credits.exists() else ''))
