@@ -69,7 +69,7 @@ const state = {
   labels: { origin: 'Москва, все аэропорты', destination: null },
   performed: null, performedLabels: null, performedSummary: null, performedLabel: '', status: 'idle', error: '', result: null,
   // Новичок спрашивает «куда», поэтому по умолчанию один лучший вариант на город; «Все» показывает каждую дату и рейс.
-  filters: { cheap: false, direct: false, noLeave: false, comfy: false, near: false, russia: false, unique: true }, length: null, sort: 'price', page: 1, allRows: false,
+  filters: { cheap: false, direct: false, noLeave: false, comfy: false, near: false, russia: false, unique: true }, length: null, sort: 'price', page: 1, allRows: false, weekendKey: null,
   home: null, homeStatus: 'idle', recent: readRecent(), recentPrices: {}, recentOffers: new Map(), collection: null,
   airports: null, cities: null, byIata: new Map(), fromNames: new Map([['MOW', 'Москвы']]), cityPages: new Map(), guides: {}, hotels: {}, view: 'results', favs: readFavs(), pickerTarget: 'origin', shown: new Map(), detail: null, backFrom: null, nudged: new Set(),
 };
@@ -686,8 +686,8 @@ function passTile(offer, row) {
     </div>
     <div class="pass-stub">
       <div class="tile-price-row"><p class="pass-price">${esc(fmtMoney(offer.price_minor))}</p>${levelTag(offer)}${favButton(offer).replace('class="fav"', 'class="fav fav--inline"')}</div>
-      ${level && level.diff < 0 ? `<p class="caption">${esc(hotLine(daysFromToday(offer), level.diff, level.month))}</p>` : ''}
-      ${offerRating(offer)}
+      ${level && level.diff < 0 ? `<p class="caption pass-extra">${esc(hotLine(daysFromToday(offer), level.diff, level.month))}</p>` : ''}
+      <div class="pass-extra">${offerRating(offer)}</div>
       <p class="caption">${x.direct ? 'прямые' : 'с пересадками'}, ${carrier(offer)}</p>
     </div></div>${openButton(offer, row)}</article>`;
 }
@@ -703,11 +703,11 @@ function stampTile(offer, row, note = '') {
       ${note ? `<p class="tile-note">${note}</p>` : ''}
     </div>${openButton(offer, row)}</article>`;
 }
-function rowSection(key, title, hint, tiles, action, pass = false, mark = 'weekend') {
+function rowSection(key, title, hint, tiles, action, pass = false, mark = 'weekend', controls = '') {
   const label = pairLabel(key);
   return `<section class="row" data-feed="${esc(key)}" aria-labelledby="row-${key}">
     <div class="row-head"><span class="row-mark">${sticker(mark)}</span><h2 id="row-${key}">${esc(title)}</h2>${hint ? `<p class="row-hint">${esc(hint)}</p>` : ''}${action}</div>
-    <div class="strip${pass ? ' strip--pass' : ''}">${tiles}</div>
+    ${controls}<div class="strip${pass ? ' strip--pass' : ''}">${tiles}</div>
     <div class="compare-prompt"${label ? '' : ' hidden'}>
       <span class="compare-count">${icon('heart')}Выбрано 2 поездки</span>
       <button type="button" class="btn-primary" data-compare-row="${esc(key)}" aria-haspopup="dialog" aria-controls="pairComparison"><span>${esc(label)}</span>${icon('arrow-right')}</button>
@@ -733,6 +733,50 @@ function recentRow() {
   }).join('');
   return rowSection('recent', 'Продолжить планирование', '', tiles, '', false, 'recent');
 }
+function showcaseRow(row, weekends) {
+  const offers = rowOffers(row);
+  if (row.key === 'holidays') {
+    const leave = offer => state.home.notes?.[offer.id]?.leave ?? Infinity;
+    offers.sort((a, b) => leave(a) - leave(b) || a.price_minor - b.price_minor);
+  }
+  // В ленте — до шести карточек, дальше полупрозрачная карточка «Ещё N»: лента не тянется бесконечно.
+  const tiles = offers.slice(0, 6).map((offer) => {
+    if (row.kind === 'pass') return passTile(offer, row.key);
+    const holiday = row.key === 'holidays' && state.home.notes?.[offer.id];
+    const note = holiday ? (holiday.leave ? `${daysLabel(holiday.leave)} отпуска` : 'Без отпуска') : '';
+    return stampTile(offer, row.key, esc(note));
+  }).join('')
+    + (offers.length > 6 ? `<button type="button" class="tile-more" data-row-all="${esc(row.key)}"><b>+${offers.length - 6}</b><span>Показать все</span>${icon('arrow-right')}</button>` : '');
+  const periods = weekends.map(period => {
+    const date = period.hint?.split(',')[0] || period.title;
+    return `<button type="button" data-weekend="${esc(period.key)}" aria-pressed="${period.key === row.key}">${esc(date)}</button>`;
+  }).join('');
+  const controls = periods ? `<div class="weekend-periods" role="group" aria-label="Даты выходных">${periods}</div>` : '';
+  const action = `<button type="button" class="row-all" data-row-all="${esc(row.key)}">Все${icon('arrow-right')}</button>`;
+  return rowSection(row.key, periods ? 'На выходные' : row.title, periods ? 'Без отпуска' : row.hint, tiles, action, row.kind === 'pass', rowSticker(row), controls);
+}
+
+function directionList(catalog = false) {
+  const { origin, offers } = state.home;
+  const cheapest = new Map();
+  for (const offer of offers.values()) {
+    if (facts(offer).dep <= Date.now()) continue;
+    const previous = cheapest.get(offer.city_code);
+    if (!previous || offer.price_minor < previous.price_minor) cheapest.set(offer.city_code, offer);
+  }
+  if (!cheapest.size) return '';
+  const sorted = Array.from(cheapest.values()).sort((a, b) => a.price_minor - b.price_minor);
+  const links = (catalog ? sorted : sorted.slice(0, 6)).map(offer => {
+    const params = new URLSearchParams({ from: origin.iata, to: offer.destination_airport, tc: offer.city_code, month: facts(offer).out.key.slice(0, 7), weekend: '0' });
+    if (origin.all) params.set('fc', origin.code);
+    setPassengerParams(params, state.query.passengers);
+    return `<a class="direction-link" href="/?${esc(params.toString())}">${portrait(offer.city_code, offer.city)}<b>${esc(offer.city)}</b><span>от ${esc(fmtMoney(offer.price_minor))}</span></a>`;
+  }).join('');
+  if (catalog) return links;
+  const toggle = sorted.length > 4 ? `<button type="button" class="btn-inline directions-toggle" aria-haspopup="dialog" aria-controls="directionCatalog">Все направления (${sorted.length})</button>` : '';
+  return `<section class="home-directions${sorted.length <= 6 ? ' compact-list' : ''}" aria-labelledby="direction-heading"><h2 id="direction-heading">Направления из ${esc(origin.from || 'города ' + origin.name)}</h2>
+    <div id="direction-links" class="direction-links" data-expanded="false">${links}</div>${toggle}</section>`;
+}
 function renderShowcase() {
   const section = $('showcase');
   if (state.homeStatus === 'loading') {
@@ -745,22 +789,16 @@ function renderShowcase() {
       + `<div class="status-actions">${action('retryHome', 'Загрузить подборки')}</div>`;
     return;
   }
-  const visible = state.allRows ? state.home.rows : state.home.rows.slice(0, 5), hidden = state.home.rows.length - visible.length;
-  const rows = visible.map((row) => {
-    const offers = rowOffers(row);
-    if (offers.length < 3) return '';
-    // В ленте — до шести карточек, дальше полупрозрачная карточка «Ещё N»: лента не тянется бесконечно.
-    const tiles = offers.slice(0, 6).map((offer) => {
-      if (row.kind === 'pass') return passTile(offer, row.key);
-      const holiday = row.key === 'holidays' && state.home.notes?.[offer.id];
-      const note = holiday ? (holiday.leave ? `${daysLabel(holiday.leave)} отпуска` : 'Без отпуска') : '';
-      return stampTile(offer, row.key, esc(note));
-    }).join('')
-      + (offers.length > 6 ? `<button type="button" class="tile-more" data-row-all="${esc(row.key)}"><b>+${offers.length - 6}</b><span>Показать все</span>${icon('arrow-right')}</button>` : '');
-    return rowSection(row.key, row.title, row.hint, tiles, `<button type="button" class="row-all" data-row-all="${esc(row.key)}">Все${icon('arrow-right')}</button>`, row.kind === 'pass', rowSticker(row));
-  }).join('');
+  const available = state.home.rows.filter(row => rowOffers(row).length >= 3);
+  const weekends = available.filter(row => row.key.startsWith('weekend'));
+  const weekend = weekends.find(row => row.key === state.weekendKey) ?? weekends[0];
+  const first = [available.find(row => row.key === 'hot'), weekend, available.find(row => row.key.startsWith('budget'))].filter(Boolean);
+  const ordered = [...first, ...available.filter(row => !first.includes(row) && !weekends.includes(row))];
+  const visible = state.allRows ? ordered : ordered.slice(0, 4);
+  const hidden = ordered.length - visible.length;
+  const rows = visible.map(row => showcaseRow(row, row === weekend ? weekends : [])).join('');
   section.innerHTML = recentRow() + (rows ? rows + (hidden > 0 ? `<button type="button" class="btn-inline more-rows" data-more-rows>Ещё подборки (${hidden})</button>` : '') : statusPanel('send', 'Подборок пока нет', 'Для этого города вылета не нашлось поездок на ближайшие недели. Попробуйте поиск в форме выше.'))
-    + `<p class="source">${esc(cachedPriceLabel(state.home.received_at))} за перелёт туда и обратно для одного взрослого. <a href="/how-we-count.html#home">Как мы считаем подборки</a></p>`;
+    + directionList() + `<p class="source">${esc(cachedPriceLabel(state.home.received_at))} за перелёт туда и обратно для одного взрослого. <a href="/how-we-count.html#home">Как мы считаем подборки</a></p>`;
   $('resultsStatus').textContent = 'Подборки загружены';
 }
 const homeWaiters = [];
@@ -771,7 +809,11 @@ async function loadHome() {
   if (q.originCity) params.set('fc', q.originCity);
   const key = params.toString();
   if (state.homeStatus === 'loading' && homeRequest?.key === key) return;
-  if (homeRequest?.key !== key) rowPicks.clear();
+  if (homeRequest?.key !== key) {
+    rowPicks.clear();
+    state.weekendKey = null;
+    state.allRows = false;
+  }
   homeRequest?.controller.abort();
   const controller = new AbortController();
   homeRequest = { key, controller };
@@ -1324,7 +1366,38 @@ $('searchLine').addEventListener('click', (event) => {
     });
   }
 });
+$('catalogSearch').addEventListener('input', event => {
+  const normalize = text => text.toLocaleLowerCase('ru').replaceAll('ё', 'е').trim();
+  const query = normalize(event.target.value);
+  let matches = 0;
+  for (const link of $('catalogLinks').children) {
+    link.hidden = !normalize(link.querySelector('b').textContent).includes(query);
+    if (!link.hidden) matches++;
+  }
+  $('catalogEmpty').hidden = matches > 0;
+});
 $('showcase').addEventListener('click', (event) => {
+  const period = event.target.closest('[data-weekend]');
+  if (period) {
+    state.weekendKey = period.dataset.weekend;
+    const weekends = state.home.rows.filter(row => row.key.startsWith('weekend') && rowOffers(row).length >= 3);
+    const selected = weekends.find(row => row.key === state.weekendKey);
+    if (selected) {
+      period.closest('.row').outerHTML = showcaseRow(selected, weekends);
+      $('showcase').querySelector('[data-weekend][aria-pressed="true"]').focus({ preventScroll: true });
+    }
+    return;
+  }
+  const directions = event.target.closest('.directions-toggle');
+  if (directions) {
+    $('catalogTitle').textContent = $('direction-heading').textContent;
+    $('catalogSearch').value = '';
+    $('catalogLinks').innerHTML = directionList(true);
+    $('catalogEmpty').hidden = true;
+    $('directionCatalog').showModal();
+    $('catalogSearch').focus();
+    return;
+  }
   const compare = event.target.closest('[data-compare-row]');
   if (compare) {
     compare.focus({ preventScroll: true });

@@ -1158,3 +1158,32 @@ body:has(.rating-sheet[open]) { overflow: hidden; }
   .portrait:not(.portrait--long) .portrait-country { left: auto; }
   .portrait:not(.portrait--long):has(.portrait-country) .portrait-name { bottom: 8%; max-inline-size: 84%; }
 }
+
+.weekend-periods { display: flex; flex-wrap: wrap; gap: 6px; }
+.weekend-periods button { min-height: 44px; padding: 0 16px; border-radius: 9px; background: var(--card); color: var(--ink); font-weight: 600; }
+.weekend-periods button[aria-pressed="true"] { background: var(--ink); color: white; }
+.home-directions { display: grid; gap: 12px; }
+.direction-links { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); column-gap: 28px; }
+.direction-link { display: grid; grid-template-columns: 44px 1fr auto; gap: 10px; align-items: center; min-height: 66px; color: var(--ink); border-bottom: 1px solid var(--line); text-decoration: none; }
+.direction-link:hover b { text-decoration: underline; }
+.direction-link b { overflow-wrap: anywhere; }
+.direction-link > span:last-child { font-size: var(--fs-cap); color: var(--ink-2); white-space: nowrap; }
+.direction-link .portrait { align-self: center; width: 44px; height: 44px; border-radius: 8px; }
+.direction-link .portrait-name, .direction-link .portrait-country, .direction-link .portrait::after { display: none; }
+.directions-toggle { justify-self: start; }
+@media (min-width: 600px) { .compact-list .directions-toggle { display: none; } }
+@media (min-width: 600px) and (max-width: 999px) { .direction-links { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+@media (max-width: 599px) {
+  .direction-links { grid-template-columns: 1fr; }
+  .direction-links[data-expanded="false"] > :nth-child(n+5) { display: none; }
+}
+
+#catalogSearch { display: block; width: 100%; min-height: 44px; margin: 6px 0 12px; padding: 0 12px; border: 1px solid var(--line-strong); border-radius: 8px; font: inherit; }
+#catalogLinks .direction-link[hidden] { display: none; }
+@media (max-width: 599px) {
+  .tile--pass .codes, .tile--pass .pass-extra { display: none; }
+  .tile--pass .pass-main .portrait { grid-row: 1; width: 56px; height: 56px; border-radius: 10px; }
+  .tile--pass .pass-main { grid-template-columns: 56px minmax(0, 1fr); }
+  .tile--pass .cities { display: block; align-self: center; margin: 0; font-size: 16px; }
+  .tile--pass .cities span + span::before { content: ' → '; }
+}
