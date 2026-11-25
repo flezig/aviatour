@@ -904,7 +904,7 @@ function renderForm() {
   $('lineOrigin').textContent = q.originCity ? originName : state.labels.origin;
   $('lineTo').textContent = line.route;
   $('whenCaption').textContent = q.exact ? 'Туда' : 'Когда';
-  $('lineWhen').textContent = q.exact ? shortDay(q.departure) : monthLabel(q.month) + ' целиком';
+  $('lineWhen').textContent = q.exact ? shortDay(q.departure) : monthLabel(q.month);
   $('returnValue').textContent = q.exact ? shortDay(q.returning) : '';
   $('returnValue').parentElement.hidden = !q.exact;
   $('lineBudget').textContent = q.budget === null ? budgetText : `до ${budgetText}`;
