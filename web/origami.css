@@ -2,6 +2,14 @@
 header.top { display: flex; flex-direction: column; align-items: flex-start; justify-content: center;
   gap: 10px; padding-block: max(20px,var(--inset-top)) 15px; min-height: 0; }
 .top .brand { min-height: 36px; }
+.brand-beta {
+  flex: none;
+  padding: 4px 7px;
+  border-radius: var(--r-chip);
+  background: var(--card);
+  color: var(--ink);
+  font: 600 11px/1.2 var(--f-text);
+}
 .service-nav { max-width: 100%; }
 .service-tabs { display: flex; align-items: center; gap: 8px; }
 .service-tabs button { display:inline-flex; align-items:center; justify-content:center; gap:8px;
