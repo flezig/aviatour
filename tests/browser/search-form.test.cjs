@@ -308,3 +308,19 @@ for (const mobile of [false, true]) {
     assert.deepEqual([params.get('dep'), params.get('ret')], ['2030-02-12', '2030-02-16']);
   });
 }
+
+test('Сортировка после клавиатурного выбора сохраняет фокус внутри списка', async t => {
+  const page = await setup(t, false);
+  await submit(page);
+  const sort = page.getByRole('combobox', { name: 'Сортировка' });
+  await sort.press('ArrowDown');
+  await sort.selectOption('departure');
+  await page.locator('#sort:focus-visible').waitFor();
+  const outline = await sort.evaluate(el => {
+    const style = getComputedStyle(el);
+    return [style.outlineStyle, style.outlineColor, style.outlineOffset];
+  });
+  assert.deepEqual(outline, ['solid', 'rgb(48, 52, 59)', '-3px']);
+  await sort.press('Tab');
+  await page.locator('#length:focus-visible').waitFor();
+});

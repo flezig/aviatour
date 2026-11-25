@@ -16,7 +16,8 @@ body { background: var(--card); }
 .directory-regions input { position: absolute; width: 1px; height: 1px; clip-path: inset(50%); }
 .directory-regions span { display: grid; place-items: center; min-height: 36px; padding: 6px 12px; border-radius: 5px; font-size: 14px; }
 .directory-regions input:checked + span { color: var(--card); background: var(--ink); }
-.directory-regions input:focus-visible + span { outline: 3px solid var(--cobalt); outline-offset: 2px; }
+.directory-regions input:focus-visible + span { outline: 2px solid var(--focus-ring); outline-offset: -3px; }
+.directory-regions input:checked:focus-visible + span { outline-color: var(--card); }
 .directory-regions label:hover input:not(:checked) + span { background: var(--fill); }
 .directory-guide, .directory-compare { display: inline-flex; align-items: center; min-height: 44px; font-size: 14px; }
 .directory-guide { gap: 8px; cursor: pointer; }
