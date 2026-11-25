@@ -60,7 +60,7 @@ for (const mobile of [false, true]) {
     const box = await panel.boundingBox();
     assert.ok(box.x >= 0 && box.x + box.width <= page.viewportSize().width + 1);
     if (mobile) {
-      await card.tap();
+      await panel.getByRole('button', { name: 'Закрыть рейтинг' }).tap();
     } else {
       await page.keyboard.press('Escape');
       await card.focus();
