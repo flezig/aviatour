@@ -1158,3 +1158,22 @@ body:has(.rating-sheet[open]) { overflow: hidden; }
   .portrait:not(.portrait--long) .portrait-country { left: auto; }
   .portrait:not(.portrait--long):has(.portrait-country) .portrait-name { bottom: 8%; max-inline-size: 84%; }
 }
+
+.weekend-periods { display: flex; flex-wrap: wrap; gap: 6px; }
+.weekend-periods button { min-height: 44px; padding: 0 16px; border-radius: 9px; background: var(--card); color: var(--ink); font-weight: 600; }
+.weekend-periods button[aria-pressed="true"] { background: var(--ink); color: white; }
+.home-directions { display: grid; gap: 12px; }
+.direction-links { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); column-gap: 28px; }
+.direction-link { display: grid; grid-template-columns: 44px 1fr auto; gap: 10px; align-items: center; min-height: 66px; color: var(--ink); border-bottom: 1px solid var(--line); text-decoration: none; }
+.direction-link:hover b { text-decoration: underline; }
+.direction-link b { overflow-wrap: anywhere; }
+.direction-link > span:last-child { font-size: var(--fs-cap); color: var(--ink-2); white-space: nowrap; }
+.direction-link .portrait { align-self: center; width: 44px; height: 44px; border-radius: 8px; }
+.direction-link .portrait-name, .direction-link .portrait-country, .direction-link .portrait::after { display: none; }
+.directions-toggle { justify-self: start; }
+@media (min-width: 600px) { .compact-list .directions-toggle { display: none; } }
+@media (min-width: 600px) and (max-width: 999px) { .direction-links { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+@media (max-width: 599px) {
+  .direction-links { grid-template-columns: 1fr; }
+  .direction-links[data-expanded="false"] > :nth-child(n+5) { display: none; }
+}
