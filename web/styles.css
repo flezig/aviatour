@@ -22,7 +22,7 @@
 :root {
   color-scheme: light;
   /* Цвет */
-  --paper: #eef3f9;          /* фон страницы: холодный светлый, под небо */
+  --paper: #f5f4f0;          /* тёплый светлый фон страницы */
   --card: #ffffff;           /* талон, карточка, поле */
   --ink: #0f1b3d;            /* основной текст, тёмные кнопки */
   --focus-ring: #30343b;      /* клавиатурный фокус на светлом фоне */
@@ -41,8 +41,6 @@
   --card-veil: rgba(255, 255, 255, .92); /* подложка кнопки поверх фото */
   --on-photo: #fff;          /* текст поверх фото шапки */
   --photo-shade: rgba(15, 27, 61, .60); /* затемнение фото под текстом */
-  /* Небо за страницей: верх меняется по времени суток (web/js/lib/sky.js), низ — --paper */
-  --sky-top: #d6e6fa; --cloud: #ffffff;
   /* Шрифт */
   --f-head: 'Geologica', system-ui, sans-serif;
   --f-text: 'Golos Text', system-ui, sans-serif;
@@ -278,7 +276,6 @@ img { display: block; max-width: 100%; }
 .tile-more .icon { width: 22px; height: 22px; }
 .strip--pass .tile-more { align-self: stretch; }
 .intro-lead { margin-top: var(--s-2); max-width: 46em; font-size: var(--fs-small); }
-.has-hero .intro-lead { color: var(--on-photo); text-shadow: 0 1px 8px rgba(15, 27, 61, .4); }
 .tile-body { display: grid; align-content: start; gap: var(--s-1); padding-inline: 2px; }
 .tile-city, .offer-city { font: var(--city-title); letter-spacing: 0; overflow-wrap: anywhere; }
 .tile-price-row { display: flex; flex-wrap: wrap; align-items: center; column-gap: var(--s-2); }
@@ -337,70 +334,10 @@ img { display: block; max-width: 100%; }
 .detail-price-level summary { width: fit-content; min-height: var(--tap); padding-block: 12px; color: var(--ink); cursor: pointer; }
 .detail-price-level p { max-width: 55ch; }
 
-/* --- Небо за страницей: цвет верха меняется по времени суток, медленно плывут облака, иногда пролетает самолёт.
-   Слой за содержимым, нажатия не перехватывает; при «уменьшить движение» — неподвижное небо. --- */
-.sky { position: fixed; inset: 0; z-index: -2; overflow: hidden; pointer-events: none;
-  background: linear-gradient(180deg, var(--sky-top) 0, var(--paper) 62vh); transition: background 2s var(--ease); }
-:root[data-sky="morning"] { --sky-top: #f9e6d6; }
-:root[data-sky="day"] { --sky-top: #d6e6fa; }
-:root[data-sky="evening"] { --sky-top: #f6dccb; }
-:root[data-sky="night"] { --sky-top: #d3dcee; }
-.sky-cloud { position: absolute; left: 0; width: var(--w, 180px); color: var(--cloud); opacity: var(--o, .75);
-  animation: sky-drift var(--t, 220s) linear infinite; animation-delay: var(--d, 0s); will-change: transform; }
-.sky-cloud svg { display: block; width: 100%; height: auto; }
-@keyframes sky-drift { from { transform: translateX(105vw); } to { transform: translateX(calc(-1 * var(--w, 180px) - 5vw)); } }
-.sky-plane { position: absolute; left: 0; top: 16vh; width: 34px; color: var(--cobalt); opacity: 0; animation: sky-fly 64s linear infinite; animation-delay: 8s; }
-.sky-plane svg { display: block; width: 100%; height: auto; }
-.sky-plane::before { content: ''; position: absolute; right: 88%; top: 52%; width: 160px; height: 2px; border-radius: 2px; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .9)); }
-@keyframes sky-fly {
-  0% { transform: translate(-12vw, 8vh) rotate(-6deg); opacity: 0; }
-  2% { opacity: .55; }
-  30% { transform: translate(112vw, -5vh) rotate(-6deg); opacity: .55; }
-  31%, 100% { transform: translate(112vw, -5vh) rotate(-6deg); opacity: 0; }
-}
-
-/* --- Фото в шапке главной: полоса за заголовком и формой, снизу растворяется в небе --- */
-.hero-photo { position: absolute; inset: 0 0 auto; z-index: -1; height: var(--hero-h, 300px); overflow: hidden; pointer-events: none; background: #253f4e; }
-.hero-photo picture { position: absolute; inset: 0; }
-.hero-photo img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 37%; }
-.hero-photo::after { content: ''; position: absolute; inset: 0;
-  background: linear-gradient(0deg, var(--paper), transparent 18%),
-    linear-gradient(180deg, var(--photo-shade) 68%, transparent 95%); }
-@media (min-width: 900px) {
-  .hero-photo picture { left: 27%; mask-image: linear-gradient(90deg, transparent, #000 29%); }
-  .hero-photo::after {
-    background: linear-gradient(0deg, var(--paper), color-mix(in srgb, var(--paper) 45%, transparent) 9%, transparent 23%),
-      linear-gradient(90deg, transparent 24%, rgba(15, 27, 61, .24) 42%, transparent 76%);
-  }
-}
-.has-hero .top .brand, .has-hero .intro h1 { color: var(--on-photo); }
-.has-hero .top .nav a { color: var(--on-photo); }
-.has-hero .top .nav a:hover, .has-hero .top .nav a[aria-current="page"] { color: var(--on-photo); background: rgba(15, 27, 61, .42); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .28); }
-.has-hero .top .brand-mark { background: var(--card); color: var(--cobalt); }
-.has-hero .intro h1 { text-shadow: 0 1px 12px rgba(15, 27, 61, .35); }
-.has-hero .ai { border-color: rgba(255, 255, 255, .55); background: rgba(15, 27, 61, .28); color: var(--on-photo); }
-.has-hero .ai-note { background: rgba(255, 255, 255, .18); }
 .photo-credit-line { margin-top: var(--s-2); font-size: var(--fs-micro); color: var(--ink-2); }
 
 /* --- Загрузка: самолёт летит сквозь облака --- */
-.flyby { display: grid; gap: var(--s-3); justify-items: center; padding: var(--s-2) 0 var(--s-4); }
-.flyby-scene { position: relative; width: 100%; max-width: 560px; height: 150px; overflow: hidden; border-radius: var(--r-pass);
-  background: linear-gradient(180deg, #cfe2fa 0, #e9f2fd 70%, #f6f9fe 100%); box-shadow: var(--sh-pass); }
-.flyby-clouds { position: absolute; left: 0; display: flex; width: 200%; color: var(--cloud); animation: flyby-clouds var(--t) linear infinite; }
-.flyby-clouds svg { flex: none; width: 50%; height: auto; }
-.flyby-clouds--far { top: 14px; opacity: .65; --t: 14s; }
-.flyby-clouds--near { top: 44px; opacity: .95; --t: 6s; z-index: 2; filter: drop-shadow(0 4px 6px rgba(15, 27, 61, .08)); }
-@keyframes flyby-clouds { to { transform: translateX(-50%); } }
-.flyby-plane { position: absolute; left: 50%; top: 46px; z-index: 1; width: 132px; margin-left: -66px; animation: flyby-bob 2.6s ease-in-out infinite alternate; }
-.flyby-plane svg { display: block; width: 100%; height: auto; overflow: visible; }
-@keyframes flyby-bob { from { transform: translateY(-5px) rotate(-1.5deg); } to { transform: translateY(5px) rotate(1deg); } }
-.flyby-trail { position: absolute; right: 100%; top: 21px; width: 220px; height: 3px; border-radius: 3px;
-  background: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0) 0 10px, rgba(255, 255, 255, .95) 10px 30px); background-size: 60px 3px;
-  -webkit-mask: linear-gradient(90deg, transparent, #000 70%); mask: linear-gradient(90deg, transparent, #000 70%); animation: flyby-trail .6s linear infinite; }
-.flyby-trail + .flyby-trail { top: 27px; width: 180px; opacity: .7; }
-@keyframes flyby-trail { to { background-position: -60px 0; } }
-.flyby-text { font-weight: 600; color: var(--ink-2); }
-@media (prefers-reduced-motion: reduce) { .flyby-clouds--near { transform: translateX(-20%); } }
+
 
 /* --- Страницы выдачи вместо бесконечного списка --- */
 .pager { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--s-1); padding-top: var(--s-3); }
@@ -488,7 +425,6 @@ img { display: block; max-width: 100%; }
 .offer .fav, .tile .fav { pointer-events: auto; }
 .fav--inline { position: relative; top: auto; right: auto; margin-left: auto; background: none; }
 .tile--pass .fav { pointer-events: auto; }
-@media (prefers-reduced-motion: reduce) { .sky-cloud { transform: translateX(var(--x)); } .sky-plane { display: none; } }
 .fav.pop .icon { animation: fav-pop 460ms cubic-bezier(.2, 1.6, .4, 1); }
 .fav.pop::before { content: ''; position: absolute; left: 50%; top: 50%; width: 6px; height: 6px; margin: -3px 0 0 -3px; border-radius: 50%; pointer-events: none;
   box-shadow: 0 -17px var(--heart), 15px -8px var(--cobalt), 15px 8px var(--heart), 0 17px var(--cobalt), -15px 8px var(--heart), -15px -8px var(--cobalt);
@@ -1062,9 +998,6 @@ body:has(.rating-sheet[open]) { overflow: hidden; }
   .top .nav a { font-size: var(--fs-cap); padding-inline: 8px; }
   .footer > nav { grid-row: 1 / span 3; }
   .footer > p { grid-column: 2; }
-  .hero-photo { width: var(--pane-left); }
-  .hero-photo picture { inset: 0; mask-image: none; }
-  .hero-photo::after { background: linear-gradient(0deg, var(--paper), transparent 18%), linear-gradient(180deg, var(--photo-shade) 68%, transparent); }
   .has-hero .top .nav a, .has-hero .top .nav a:hover, .has-hero .top .nav a[aria-current] { color: var(--ink); }
   .has-hero .top .nav a:hover, .has-hero .top .nav a[aria-current] { background: var(--fill); }
   body.has-hero main { grid-template-rows: auto auto 1fr; }

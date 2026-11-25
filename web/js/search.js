@@ -11,9 +11,6 @@ import { portrait, loadPortraits, longPortraitName } from './lib/portrait.js';
 import { goal } from './lib/measure.js';
 import { currentOrigin, saveOrigin } from './lib/origin.js';
 import { priceLevel, usualKey, hotLine, leaveLine, levelNote, priceChange } from './lib/levels.js';
-import { mountSky } from './lib/sky.js';
-import { flightLoader } from './lib/art.js';
-import { sticker, rowSticker } from './lib/stickers.js';
 import { favoriteList, favoriteComparison, favoriteOptions, hoursMinutes } from './lib/favorites.js';
 import { DESTINATION_SCOPES } from './lib/destination-scopes.js';
 
@@ -447,7 +444,7 @@ function renderResults() {
   const announce = (text) => { $('resultsStatus').textContent = text; };
   if (status === 'loading') {
     // Заготовки карточек: страница держит форму, пока грузятся цены.
-    body = flightLoader('Ищем варианты поездки…');
+    body = '<p class="caption" role="status">Ищем варианты поездки…</p>';
     announce('Ищем варианты поездки');
   } else if (status === 'error') {
     body = statusPanel('alert', 'Поиск не завершён', state.error) + `<div class="status-actions">${action('retry', 'Попробовать ещё раз')}</div>`;
@@ -704,10 +701,10 @@ function stampTile(offer, row, note = '') {
       ${note ? `<p class="tile-note">${note}</p>` : ''}
     </div>${openButton(offer, row)}</article>`;
 }
-function rowSection(key, title, hint, tiles, action, pass = false, mark = 'weekend') {
+function rowSection(key, title, hint, tiles, action, pass = false) {
   const label = pairLabel(key);
   return `<section class="row" data-feed="${esc(key)}" aria-labelledby="row-${key}">
-    <div class="row-head"><span class="row-mark">${sticker(mark)}</span><h2 id="row-${key}">${esc(title)}</h2>${hint ? `<p class="row-hint">${esc(hint)}</p>` : ''}${action}</div>
+    <div class="row-head"><h2 id="row-${key}">${esc(title)}</h2>${hint ? `<p class="row-hint">${esc(hint)}</p>` : ''}${action}</div>
     <div class="strip${pass ? ' strip--pass' : ''}">${tiles}</div>
     <div class="compare-prompt"${label ? '' : ' hidden'}>
       <span class="compare-count">${icon('heart')}Выбрано 2 поездки</span>
@@ -732,12 +729,12 @@ function recentRow() {
     state.recentOffers.set(offer.id, offer);
     return stampTile(offer, 'recent', recentPriceNote(item, now));
   }).join('');
-  return rowSection('recent', 'Продолжить планирование', '', tiles, '', false, 'recent');
+  return rowSection('recent', 'Продолжить планирование', '', tiles, '');
 }
 function renderShowcase() {
   const section = $('showcase');
   if (state.homeStatus === 'loading') {
-    section.innerHTML = flightLoader('Подбираем билеты из вашего города…') + recentRow();
+    section.innerHTML = '<p class="caption" role="status">Подбираем билеты из вашего города…</p>' + recentRow();
     $('resultsStatus').textContent = 'Подбираем билеты';
     return;
   }
@@ -758,7 +755,7 @@ function renderShowcase() {
       return stampTile(offer, row.key, esc(note));
     }).join('')
       + (offers.length > 6 ? `<button type="button" class="tile-more" data-row-all="${esc(row.key)}"><b>+${offers.length - 6}</b><span>Показать все</span>${icon('arrow-right')}</button>` : '');
-    return rowSection(row.key, row.title, row.hint, tiles, `<button type="button" class="row-all" data-row-all="${esc(row.key)}">Все${icon('arrow-right')}</button>`, row.kind === 'pass', rowSticker(row));
+    return rowSection(row.key, row.title, row.hint, tiles, `<button type="button" class="row-all" data-row-all="${esc(row.key)}">Все${icon('arrow-right')}</button>`, row.kind === 'pass');
   }).join('');
   section.innerHTML = recentRow() + (rows ? rows + (hidden > 0 ? `<button type="button" class="btn-inline more-rows" data-more-rows>Ещё подборки (${hidden})</button>` : '') : statusPanel('send', 'Подборок пока нет', 'Для этого города вылета не нашлось поездок на ближайшие недели. Попробуйте поиск в форме выше.'))
     + `<p class="source">${esc(cachedPriceLabel(state.home.received_at))} за перелёт туда и обратно для одного взрослого. <a href="/how-we-count.html#home">Как мы считаем подборки</a></p>`;
@@ -818,7 +815,7 @@ function setView(view) {
   document.querySelector('.skip').textContent = view === 'fav' ? 'К избранному' : 'К поиску';
   if (view !== 'fav') {
     document.title = homeTitle;
-    if (fromFavorites) { removedFavorite = null; fitHero(); }
+    if (fromFavorites) removedFavorite = null;
   }
   markNav(view);
   $('showcase').hidden = view !== 'showcase';
@@ -1529,20 +1526,8 @@ async function restore() {
   else { if (months(originZone()).includes(params.get('month'))) q.month = params.get('month'); q.weekend = params.get('weekend') !== '0'; }
   return true;
 }
-// Фото в шапке — до низа свёрнутой формы (+ немного воздуха): тёмные заголовки ниже не попадают на фото.
-function fitHero() {
-  if (document.body.classList.contains('other-service') || state.view === 'fav') return;
-  document.documentElement.style.setProperty('--hero-h', `${Math.round($('search').getBoundingClientRect().bottom + scrollY + 28)}px`);
-}
-const heroLayout = new ResizeObserver(fitHero);
-for (const element of [document.querySelector('.top'), document.querySelector('.intro'), $('search')]) {
-  heroLayout.observe(element);
-}
-document.fonts?.ready.then(fitHero);
 (async () => {
-  mountSky();
   renderForm();
-  fitHero();
   loadPortraits();
   fetch('/data/hotel-locations.json').then((response) => response.ok ? response.json() : {}).then((hotels) => { state.hotels = hotels; }).catch(() => {});
   fetch('/data/origins.json').then((response) => response.ok ? response.json() : null).then((data) => { for (const origin of data?.cities ?? []) state.fromNames.set(origin.code, origin.from); renderForm(); }).catch(() => {});
@@ -1564,7 +1549,6 @@ document.fonts?.ready.then(fitHero);
     }
   }
   renderForm();
-  fitHero();
   if (favoritesHash()) return;
   if (restored && $('picker').open) { renderScopeCoverage(); renderPicker(); }
   // Прочитать до поиска: поиск переписывает адрес и убирает хеш.
