@@ -241,6 +241,13 @@
     </div>
   </dialog>
 
+  <dialog class="sheet" id="directionCatalog" aria-labelledby="catalogTitle">
+    <div class="sheet-bar"><h2 id="catalogTitle">Направления</h2><button type="button" class="sheet-done" data-close>Закрыть</button></div>
+    <div class="sheet-body"><label for="catalogSearch">Найти город</label>
+      <input id="catalogSearch" type="search" autocomplete="off">
+      <div id="catalogLinks"></div><p id="catalogEmpty" role="status" hidden>Город не найден</p>
+    </div>
+  </dialog>
   <dialog class="sheet" id="picker" aria-labelledby="pickerTitle">
     <div class="picker-toolbar">
       <h2 id="pickerTitle" tabindex="-1">Откуда</h2>
