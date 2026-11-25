@@ -34,7 +34,7 @@
   <link rel="modulepreload" href="/js/lib/sky.js">
   <link rel="modulepreload" href="/js/lib/art.js">
   <link rel="modulepreload" href="/js/lib/stickers.js">
-<link rel="stylesheet" href="/flight-calendar.css"></head>
+<link rel="stylesheet" href="/flight-calendar.css"><link rel="stylesheet" href="/stay-calendar.css"></head>
 <body class="has-hero">
 <!-- icons:start -->
 <svg class="symbol-bank" id="home-icons" width="0" height="0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
@@ -171,36 +171,27 @@
 
 </section>
     <section class="service-panel" role="tabpanel" id="panel-stays" aria-labelledby="tab-stays" hidden>
-      <form class="service-form" id="hotelSearch">
-        <label><span>Город или курорт</span>
-          <select name="place" required>
-              <option value="AYT">Анталья</option>
-              <option value="VVO">Владивосток</option>
-              <option value="DXB">Дубай</option>
-              <option value="SVX">Екатеринбург</option>
-              <option value="EVN">Ереван</option>
-              <option value="KZN">Казань</option>
-              <option value="KGD">Калининград</option>
-              <option value="MCX">Махачкала</option>
-              <option value="MRV">Минеральные Воды</option>
-              <option value="MSQ">Минск</option>
-              <option value="MOW">Москва</option>
-              <option value="OVB">Новосибирск</option>
-              <option value="LED">Санкт-Петербург</option>
-              <option value="AER">Сочи</option>
-              <option value="IST" selected>Стамбул</option>
-              <option value="TBS">Тбилиси</option>
-          </select>
-        </label>
-        <label><span>Заезд</span><input type="date" name="start" required></label>
-        <label><span>Выезд</span><input type="date" name="end" required></label>
-        <label><span>Взрослые</span><select name="adults">
-          <option value="1">1 взрослый</option><option value="2">2 взрослых</option>
-          <option value="3">3 взрослых</option><option value="4">4 взрослых</option>
-        </select></label>
-        <button type="submit" class="btn-primary">Найти на Авиасейлс</button>
+      <form class="stay-search" id="hotelSearch">
+        <button class="stay-field stay-place" type="button" aria-haspopup="dialog" aria-controls="stayCities"><span>Город или курорт</span><b id="stayPlace">Куда едете?</b></button>
+        <button class="stay-field stay-date" type="button" data-stay-date="checkin" aria-haspopup="dialog" aria-controls="stayCalendar"><span>Заезд</span><b id="stayCheckin">Выберите дату</b></button>
+        <button class="stay-field stay-date" type="button" data-stay-date="checkout" aria-haspopup="dialog" aria-controls="stayCalendar"><span>Выезд</span><b id="stayCheckout">Выберите дату</b></button>
+        <label class="stay-field stay-guests"><span>Гости</span><select name="adults"></select></label>
+        <button type="submit" class="btn-primary stay-submit">Найти жильё на Авиасейлс</button>
       </form>
-      <p class="service-result" role="status" hidden></p>
+      <div class="stay-meta">
+        <p class="caption" id="stayNights" aria-live="polite" hidden></p>
+        <p class="caption" id="stayFamily" hidden></p>
+        <p class="caption" id="stayStatus" role="status" hidden></p>
+      </div>
+      <dialog class="sheet" id="stayCities" aria-labelledby="stayCitiesTitle">
+        <div class="sheet-bar"><h2 id="stayCitiesTitle">Город или курорт</h2><button class="sheet-done" type="button" data-close>Закрыть</button></div>
+        <div class="sheet-body">
+          <label for="stayCityQuery" class="sr-only">Найти город</label>
+          <input id="stayCityQuery" type="search" placeholder="Найти город" autocomplete="off" autofocus>
+          <div id="stayCityList"></div>
+          <p id="stayCityStatus" role="status"></p>
+        </div>
+      </dialog>
     </section>
     <section class="service-panel" role="tabpanel" id="panel-cars" aria-labelledby="tab-cars" hidden><form class="service-form"><label><span>Место получения</span><select name="place"><option>Стамбул</option><option>Анталья</option><option>Дубай</option><option>Сочи</option></select></label><label><span>Получение</span><input type="date" name="start" required></label><label><span>Возврат</span><input type="date" name="end" required></label><label><span>Класс авто</span><select><option>Любой класс</option><option>Компакт</option><option>Семейный</option><option>Внедорожник</option></select></label><button type="submit" class="btn-primary">Найти авто</button></form><p class="service-result" role="status" hidden></p></section><section class="service-panel" role="tabpanel" id="panel-tours" aria-labelledby="tab-tours" hidden><button type="button" class="btn-primary" id="toursToFlights">Найти авиабилеты</button></section><div class="showcase" id="showcase" hidden></div>
     <p class="sr-only" role="status" id="resultsStatus"></p>
@@ -305,7 +296,7 @@
 
   <script src="/config.js" defer></script>
   <script type="module" src="/js/search.js"></script>
-<script type="module" src="/js/origami.js"></script><dialog id="flightCalendar" aria-label="Даты поездки"><div class="cal-inner"><div class="cal-head">
+<script type="module" src="/js/origami.js"></script><script type="module" src="/js/stays.js"></script><dialog id="flightCalendar" aria-label="Даты поездки"><div class="cal-inner"><div class="cal-head">
 <div class="cal-modes"><button type="button" data-mode="exact">Точные даты</button><button type="button" data-mode="month">Весь месяц</button></div><button type="button" class="cal-x" data-close aria-label="Закрыть">×</button></div>
 <button type="button" id="calChangeStart" hidden>Изменить вылет</button><p id="calLegend" aria-live="polite"></p><div id="calBody"></div><button type="button" id="calCheaper" hidden></button><div class="cal-foot"><strong id="calStatus" aria-live="polite"></strong><button type="button" id="calApply" class="btn-primary">Готово</button></div></div></dialog></body>
 </html>

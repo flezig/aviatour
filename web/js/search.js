@@ -242,7 +242,7 @@ function lodging(offer, block) {
   const url = `https://www.aviasales.ru/hotels/search?location_id=${location}&location_type=city&checkin=${checkin}&checkout=${checkout}&adults=${currentPassengers().adults}`;
   const link = partnerLink(url, { kind: 'hotels', city: offer.city_code, page: 'trip', block, variant: testVariant });
   const day = (key) => new Date(key + 'T00:00:00Z');
-  return link && { link, block, nights, dates: fmtRange(day(checkin), day(checkout), 'UTC', 'UTC') };
+  return link && { link, block, checkin, checkout, nights, dates: fmtRange(day(checkin), day(checkout), 'UTC', 'UTC') };
 }
 // «Дешевле в соседние дни»: тот же город и длина поездки, вылет на 1–3 дня раньше или позже,
 // дешевле минимум на 5 % и 300 ₽, пересадок не больше. Из уже найденных вариантов.
@@ -551,11 +551,15 @@ function guideBlock(code) {
   </section>`;
 }
 function hotelBlock(offer, hotel) {
+  const guests = currentPassengers();
+  const params = new URLSearchParams({
+    service: 'stays', 'stay-city': offer.city_code, checkin: hotel.checkin, checkout: hotel.checkout
+  });
+  setPassengerParams(params, guests);
   return `<section class="card lodging">
     <h3>${icon('bed')}Где жить</h3>
-    <p>${esc(offer.city)}, ${esc(hotel.dates)}, ${esc(nightsLabel(hotel.nights))}. ${currentPassengers().ages.length ? 'Укажите возраст детей при поиске жилья.' : passengerLabel(currentPassengers())} </p>
-    <a class="btn-inline" href="${esc(hotel.link)}" target="_blank" rel="noopener" data-partner="aviasales" data-block="${hotel.block}">Отели на эти даты на Aviasales ${icon('arrow-right')}</a>
-    ${adMark('aviasales')}
+    <p>${esc(offer.city)}, ${esc(hotel.dates)}, ${esc(nightsLabel(hotel.nights))}. ${esc(passengerLabel(guests))}.</p>
+    <a class="btn-inline" href="/?${esc(params.toString())}">Найти жильё на эти даты ${icon('arrow-right')}</a>
   </section>`;
 }
 function openDetail(offer) {
@@ -591,6 +595,7 @@ function openDetail(offer) {
           <p>${esc(levelNote({ ...level, usualText: fmtMoney(level.usual) }))} <a href="/how-we-count.html#level">Как мы считаем</a></p></details>` : ''}
       </div>
     </article>
+    ${hotel ? hotelBlock(offer, hotel) : ''}
     ${hint ? `<section class="idea">
       <h3>Дольше — дешевле</h3>
       <p>Если вернуться ${esc(fmtDay(facts(hint.trip).ret, offer.destination_timezone, true))}, билеты будут на <b>${esc(fmtMoney(hint.saving))} дешевле</b>, а на месте — на ${esc(daysLabel(hint.days))} больше.</p>
@@ -610,7 +615,6 @@ function openDetail(offer) {
       <p><b>≈ ${Math.floor(x.stay)} ч</b>, ≈ ${esc(hourCost(x))} за час поездки</p>
       <p class="caption">От расчётного прилёта до обратного вылета, включая ночи.</p>
     </section>` : ''}
-    ${hotel ? hotelBlock(offer, hotel) : ''}
     ${alike.length ? `<section class="card alike">
       <h3>За эти же деньги</h3>
       ${alike.map((other) => `<button type="button" class="alike-row" data-similar="${esc(other.id)}">
