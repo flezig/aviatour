@@ -504,7 +504,6 @@ img { display: block; max-width: 100%; }
 @media (max-width: 599px) {
   .grid { grid-template-columns: 1fr; }
   .offer { grid-template-columns: clamp(86px, 26vw, 132px) minmax(0,1fr); align-items: center; }
-  .offer .fav { top: 4px; right: 4px; }
 }
 .skeleton .photo, .skeleton i { background: var(--fill); }
 .skeleton i { display: block; height: 14px; border-radius: var(--r-tag); }
