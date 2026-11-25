@@ -1481,6 +1481,11 @@ $('results').addEventListener('click', (event) => {
     openDetail(state.shown.get(open.dataset.offer));
   }
 });
+// Нативный select может показывать видимый фокус и после клика или касания.
+$('results').addEventListener('pointerdown', event => {
+  $('results').toggleAttribute('data-heading-pointer', Boolean(event.target.closest('.results-head :is(select, button)')));
+});
+document.addEventListener('keydown', () => $('results').removeAttribute('data-heading-pointer'), true);
 $('results').addEventListener('change', (event) => {
   const { id, value } = event.target;
   if (id === 'length') {
