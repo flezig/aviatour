@@ -59,12 +59,6 @@ async function setup(t, mobile, sample = offers) {
   return page;
 }
 
-async function openFields(page) {
-  if (await page.locator('#budget').isVisible()) return;
-  if (await page.locator('#searchSummary').isVisible()) await page.locator('#searchSummary').click();
-  else await page.locator('[data-field="when"]').click();
-}
-
 async function searchParams(page, action) {
   const [response] = await Promise.all([
     page.waitForResponse(r => new URL(r.url()).pathname === '/api/v1/search/web'),
@@ -90,8 +84,7 @@ for (const mobile of [false, true]) {
   test('Семейный поиск сохраняет возраст и отправляет на проверку цены за троих, ' + screen, async t => {
     const sample = { ...offers[4], id: 'c'.repeat(32), search_url: 'https://www.aviasales.com/search/SVO1602KZN18021?t=adult-only' };
     const page = await setup(t, mobile, [sample]);
-    await openFields(page);
-    const pick = page.locator('#passengerPick'), dialog = page.locator('#passengerPicker');
+    const pick = page.locator('[data-field="passengers"]'), dialog = page.locator('#passengerPicker');
     await pick.click();
     const bounds = await dialog.boundingBox();
     if (mobile) assert.ok(Math.abs(bounds.y + bounds.height - 844) < 2);
@@ -108,8 +101,6 @@ for (const mobile of [false, true]) {
     await page.locator('#adultPlus').click();
     await page.locator('#applyPassengers').click();
     assert.match(await pick.innerText(), /2 взрослых, 1 ребёнок \(7 лет\)/);
-    await page.getByRole('radio', { name: 'Точные даты' }).check();
-    await page.getByRole('radio', { name: 'Месяц', exact: true }).check();
     await submit(page);
     assert.equal(new URL(page.url()).searchParams.get('ages'), '7');
     await searchParams(page, () => page.reload());
@@ -134,13 +125,11 @@ for (const mobile of [false, true]) {
 
   test('Поиск везде, в городе и в аэропорту показывает нужные даты, ' + screen, async t => {
     const page = await setup(t, mobile);
-    await openFields(page);
     await submit(page);
     assert.deepEqual(await visibleIds(page), ['kzn-16', 'saw-14']);
     assert.equal(await page.locator('[data-chip="unique"]').getAttribute('aria-pressed'), 'true');
 
-    await openFields(page);
-    await page.locator('#destinationPick').click();
+    await page.locator('[data-field="destination"]').click();
     await page.locator('#pickerInput').fill('Стамбул');
     await page.locator('#picker [data-city="IST"]').click();
     const city = await submit(page);
@@ -148,8 +137,7 @@ for (const mobile of [false, true]) {
     assert.deepEqual(await visibleIds(page), ['saw-14', 'ist-12', 'saw-17', 'saw-19-nights']);
     assert.equal(await page.locator('[data-chip="unique"]').count(), 0);
 
-    await openFields(page);
-    await page.locator('#destinationPick').click();
+    await page.locator('[data-field="destination"]').click();
     await page.locator('#pickerInput').fill('SAW');
     await page.locator('#picker [data-iata="SAW"]:not([data-city])').click();
     const airport = await submit(page);
@@ -222,42 +210,37 @@ for (const mobile of [false, true]) {
 
   test('Месяц и точные даты сохраняются независимо при переключении и отправке, ' + screen, async t => {
     const page = await setup(t, mobile);
-    await openFields(page);
-    const month = page.locator('#month');
-    const exact = page.getByRole('radio', { name: 'Точные даты' });
-    const monthly = page.getByRole('radio', { name: 'Месяц', exact: true });
-    const departure = page.locator('#departureDate'), returning = page.locator('#returnDate');
-    await month.selectOption('2030-04');
-    await exact.check();
-    assert.match(await departure.inputValue(), /^2030-04-/);
-    await departure.fill('2030-05-12');
-    await returning.fill('2030-05-17');
-    await monthly.check();
-    assert.equal(await month.inputValue(), '2030-04');
-    await month.selectOption('2030-03');
-    const monthText = await month.locator('option:checked').innerText();
-    const selectedMonth = await submit(page);
-    assert.equal(selectedMonth.get('month'), '2030-03');
-    assert.equal(selectedMonth.has('dep') || selectedMonth.has('ret'), false);
-    const summary = page.locator(mobile ? '#summaryDetails' : '#lineWhen');
-    assert.equal(await summary.innerText(), monthText);
-
-    await openFields(page);
-    await exact.check();
-    assert.equal(await departure.inputValue(), '2030-05-12');
-    assert.equal(await returning.inputValue(), '2030-05-17');
+    const when = page.locator('[data-field="when"]');
+    const monthMode = page.locator('[data-mode="month"]');
+    const done = page.locator('#calApply');
+    await when.click();
+    await page.locator('[data-day="2030-02-12"]').click();
+    await page.locator('[data-day="2030-02-17"]').click();
+    await done.click();
     const dates = await submit(page);
-    assert.equal(dates.get('dep'), '2030-05-12');
-    assert.equal(dates.get('ret'), '2030-05-17');
+    assert.equal(dates.get('dep'), '2030-02-12');
+    assert.equal(dates.get('ret'), '2030-02-17');
     assert.equal(dates.has('month'), false);
-    await openFields(page);
-    await monthly.check();
-    assert.equal(await month.inputValue(), '2030-03');
+    await when.click();
+    await monthMode.click();
+    await page.locator('[data-month="2030-04"]').click();
+    await done.click();
+    const month = await submit(page);
+    assert.equal(month.get('month'), '2030-04');
+    assert.equal(month.has('dep') || month.has('ret'), false);
+    await when.click();
+    await done.click();
+    const restored = await submit(page);
+    assert.equal(restored.get('dep'), dates.get('dep'));
+    assert.equal(restored.get('ret'), dates.get('ret'));
+    await when.click();
+    await monthMode.click();
+    assert.equal(await page.locator('[data-month="2030-04"]').getAttribute('aria-pressed'), 'true');
   });
 
   test('Бюджет без лимита, первый шаг, возврат клавишей Home и старая ссылка, ' + screen, async t => {
     const page = await setup(t, mobile);
-    await openFields(page);
+    await page.locator('.flight-budget summary').click();
     const slider = page.getByRole('slider', { name: 'Бюджет на билеты' });
     const amount = page.locator('#budgetValue');
     assert.equal(await slider.inputValue(), await slider.getAttribute('min'));
@@ -265,7 +248,6 @@ for (const mobile of [false, true]) {
     assert.equal(await amount.innerText(), 'Без лимита');
     assert.equal((await submit(page)).has('budget'), false);
 
-    await openFields(page);
     await slider.press('ArrowRight');
     assert.equal(await slider.inputValue(), '5000');
     assert.match(await amount.innerText(), /5\s000\s₽/);
@@ -274,11 +256,45 @@ for (const mobile of [false, true]) {
     const oldLink = '/?from=SVO&fc=MOW&month=2030-02&weekend=0&budget=25000';
     const restored = await searchParams(page, () => page.goto(base + oldLink));
     assert.equal(restored.get('budget'), '25000');
-    await openFields(page);
+    await page.locator('.flight-budget summary').click();
     assert.equal(await slider.inputValue(), '25000');
     assert.match(await amount.innerText(), /25\s000\s₽/);
     await slider.press('Home');
     assert.equal(await amount.innerText(), 'Без лимита');
     assert.equal((await submit(page)).has('budget'), false);
+  });
+}
+
+for (const mobile of [false, true]) {
+  test('Календарь сравнивает возвраты для выбранного вылета, mobile=' + mobile, async t => {
+    const fare = (back, price, dep = '2030-02-11T23:00:00Z') => ({
+      ...offers[0], source: 'LIVE', currency: 'RUB', departure_at: dep,
+      return_at: back + 'T10:00:00+03:00', price_minor: price * 100,
+    });
+    const page = await setup(t, mobile, [
+      fare('2030-02-15', 15400), fare('2030-02-15', 16000), fare('2030-02-16', 12800),
+      fare('2030-02-16', 8000, '2030-02-13T10:00:00Z'),
+    ]);
+    await page.locator('[data-field="destination"]').click();
+    await page.locator('#pickerInput').fill('Стамбул');
+    await page.locator('#picker [data-city="IST"]').click();
+    await page.locator('[data-field="when"]').click();
+    const day = number => page.locator('[data-day="2030-02-' + number + '"]');
+    await day(12).click();
+    const amount = day(15).locator('small');
+    await amount.waitFor();
+    assert.equal(await amount.innerText(), '15,4');
+    assert.equal(await day(14).locator('small').count(), 0);
+    const dateBounds = await day(15).locator('span').boundingBox();
+    const priceBounds = await amount.boundingBox();
+    assert.ok(dateBounds.y + dateBounds.height <= priceBounds.y + 0.1);
+    await day(15).click();
+    const better = page.locator('#calCheaper');
+    assert.match(await better.innerText(), /2\s600\s₽ дешевле/);
+    await better.click();
+    assert.match(await page.locator('#calStatus').innerText(), /12\s800\s₽/);
+    await page.locator('#calApply').click();
+    const params = await submit(page);
+    assert.deepEqual([params.get('dep'), params.get('ret')], ['2030-02-12', '2030-02-16']);
   });
 }

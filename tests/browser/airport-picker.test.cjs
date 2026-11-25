@@ -82,19 +82,13 @@ for (const [name, engine] of Object.entries({ chromium, webkit })) {
       await picker.waitFor({ state: 'hidden' });
       await page.waitForFunction(selector => document.activeElement === document.querySelector(selector), selector);
     }
-    await page.locator('[data-field="budget"]').click();
-    for (const selector of ['#destinationPick', '#originPick']) {
-      await page.locator(selector).click();
-      await checkAnchor(page, selector);
-      await picker.getByRole('button', { name: 'Закрыть' }).click();
-    }
+
   });
 }
 
 test('WebKit на телефоне: лист, раскрытие других городов, выбор по коду и возврат фокуса', async t => {
   const { page } = await setup(t, webkit, true);
-  await page.locator('#searchSummary').click();
-  const trigger = page.locator('#originPick');
+  const trigger = page.locator(origin);
   await trigger.click();
   const panel = page.locator('#picker');
   const rect = await panel.boundingBox();
@@ -110,7 +104,7 @@ test('WebKit на телефоне: лист, раскрытие других г
   assert.equal(await panel.locator('[data-iata="DME"]').count(), 1);
   await panel.locator('[data-iata="DME"]').click();
   assert.match(await trigger.innerText(), /Москва, DME/);
-  await page.waitForFunction(() => document.activeElement === document.getElementById('originPick'));
+  await page.waitForFunction(() => document.activeElement === document.querySelector('[data-field="origin"]'));
 });
 
 test('на двух экранах список целиком остаётся в панели с полем ввода', async t => {
@@ -120,8 +114,7 @@ test('на двух экранах список целиком остаётся 
     width: 1114, height: 720, deviceScaleFactor: 1, mobile: false,
     displayFeature: { orientation: 'vertical', offset: 540, maskLength: 34 },
   });
-  await page.locator('#searchSummary').click();
-  const trigger = page.locator('#destinationPick');
+  const trigger = page.locator(destination);
   await trigger.click();
   const panel = await page.locator('#picker').boundingBox();
   const field = await trigger.boundingBox();

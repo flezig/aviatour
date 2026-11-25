@@ -34,7 +34,7 @@
   <link rel="modulepreload" href="/js/lib/sky.js">
   <link rel="modulepreload" href="/js/lib/art.js">
   <link rel="modulepreload" href="/js/lib/stickers.js">
-</head>
+<link rel="stylesheet" href="/flight-calendar.css"></head>
 <body class="has-hero">
 <!-- icons:start -->
 <svg class="symbol-bank" id="home-icons" width="0" height="0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
@@ -109,9 +109,10 @@
       <div class="search-line" id="searchLine">
         <button type="button" class="line-field" data-field="origin" aria-haspopup="dialog" aria-controls="picker"><span class="label">Откуда</span><span class="line-value"><b class="code" id="lineCode">MOW</b> <span id="lineOrigin">Москва</span></span></button>
         <button type="button" class="line-field" data-field="destination" aria-haspopup="dialog" aria-controls="picker"><span class="label">Куда</span><span class="line-value" id="lineTo">Куда угодно</span></button>
-        <button type="button" class="line-field" data-field="when"><span class="label">Когда</span><span class="line-value" id="lineWhen"></span></button>
+        <button type="button" class="line-field flight-when" data-field="when" aria-haspopup="dialog" aria-controls="flightCalendar"><span class="label" id="whenCaption">Когда</span><span class="line-value" id="lineWhen"></span></button>
+        <button type="button" class="line-field" data-field="returning" aria-haspopup="dialog" aria-controls="flightCalendar" hidden><span class="label">Обратно</span><span class="line-value" id="returnValue"></span></button>
         <button type="button" class="line-field" data-field="passengers" aria-haspopup="dialog" aria-controls="passengerPicker"><span class="label">Пассажиры</span><span class="line-value" id="linePassengers">1 взрослый</span></button>
-        <button type="button" class="line-field" data-field="budget"><span class="label">Бюджет на билеты</span><span class="line-value" id="lineBudget">Без лимита</span></button>
+
       </div>
       <div class="search-fields" id="searchFields">
         <div class="field-group">
@@ -155,7 +156,10 @@
           </button>
         </div>
 
-        <div class="field-group">
+
+      </div>
+      <button class="btn-primary search-go" type="submit" id="searchButton"><svg class="icon" aria-hidden="true"><use href="#ui-search"></use></svg><span id="searchAction">Показать направления</span></button>
+    </form><details class="flight-budget"><summary><span>Бюджет на билеты</span> <strong id="lineBudget">Без лимита</strong></summary>        <div class="field-group">
           <div class="budget">
             <label class="label" for="budget">Бюджет на билеты</label>
             <output class="budget-value" id="budgetValue" for="budget">Без лимита</output>
@@ -163,10 +167,7 @@
           </div>
           <p class="caption" id="budgetUnit" hidden>Лимит на билет одного взрослого туда и обратно.</p>
           <label class="search-check"><input type="checkbox" id="directOnly"><span>Только прямые рейсы</span></label>
-        </div>
-      </div>
-      <button class="btn-primary search-go" type="submit" id="searchButton"><svg class="icon" aria-hidden="true"><use href="#ui-search"></use></svg><span id="searchAction">Показать направления</span></button>
-    </form>
+        </div></details>
 
 </section>
     <section class="service-panel" role="tabpanel" id="panel-stays" aria-labelledby="tab-stays" hidden>
@@ -297,5 +298,7 @@
 
   <script src="/config.js" defer></script>
   <script type="module" src="/js/search.js"></script>
-<script type="module" src="/js/origami.js"></script></body>
+<script type="module" src="/js/origami.js"></script><dialog id="flightCalendar" aria-label="Даты поездки"><div class="cal-inner"><div class="cal-head">
+<div class="cal-modes"><button type="button" data-mode="exact">Точные даты</button><button type="button" data-mode="month">Весь месяц</button></div><button type="button" class="cal-x" data-close aria-label="Закрыть">×</button></div>
+<button type="button" id="calChangeStart" hidden>Изменить вылет</button><p id="calLegend" aria-live="polite"></p><div id="calBody"></div><button type="button" id="calCheaper" hidden></button><div class="cal-foot"><strong id="calStatus" aria-live="polite"></strong><button type="button" id="calApply" class="btn-primary">Готово</button></div></div></dialog></body>
 </html>
