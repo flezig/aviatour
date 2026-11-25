@@ -157,3 +157,20 @@ test('Поиск работает с сохранённой версией ст�
   await page.locator('#results').getByRole('heading', { name: 'Пока без вариантов' }).waitFor();
   assert.deepEqual(errors, []);
 });
+
+test('Размороженная главная сверяет город до повторного открытия каталога', async t => {
+  const page = await openPage(t, chromium, 1280);
+  await page.locator('.directions-toggle').click();
+  await page.locator('#catalogLinks [data-city="KRR"]').click();
+  await page.waitForURL(url => url.searchParams.get('to') === 'KRR');
+  await page.goBack();
+  await page.locator('#directionCatalog[open]').waitFor();
+  // Автоматизация Chromium обычно отключает BFCache. Имитируем его событие на сохранившемся документе.
+  await page.evaluate(origin => {
+    localStorage.setItem('aviator.origin', JSON.stringify({ ...origin, manual: true }));
+    dispatchEvent(new PageTransitionEvent('pageshow', { persisted: true }));
+  }, kazan);
+  await page.getByRole('heading', { name: 'Направления из Казани' }).waitFor();
+  assert.equal(await page.locator('#directionCatalog').isVisible(), false);
+  assert.equal(await page.evaluate(() => history.state?.catalog), undefined);
+});
