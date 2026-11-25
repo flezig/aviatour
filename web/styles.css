@@ -253,9 +253,7 @@ img { display: block; max-width: 100%; }
 .row-mark { grid-column: 1; grid-row: 1 / span 2; display: grid; place-items: center; width: 48px; height: 48px; }
 .row-head h2 { grid-column: 2; grid-row: 1; overflow-wrap: anywhere; }
 .row-hint { grid-column: 2 / -1; font-size: var(--fs-cap); color: var(--ink-2); }
-.sticker { width: 46px; height: 46px; transform: rotate(-7deg); filter: drop-shadow(0 1.5px 1.5px rgba(15, 27, 61, .22)); }
-.row:nth-child(2n) .sticker { transform: rotate(6deg); }
-.sticker--cut { filter: drop-shadow(0 1.5px 2px rgba(15, 27, 61, .28)); }
+.sticker { width: 36px; height: 36px; flex-shrink: 0; }
 .row-all { grid-column: 3; grid-row: 1; display: inline-flex; align-items: center; gap: var(--s-1); min-height: var(--tap); padding: 0 var(--s-2); border-radius: var(--r-chip); color: var(--cobalt); font-size: var(--fs-small); font-weight: 600; white-space: nowrap; }
 .row-all:hover { background: var(--fill); }
 .row-all .icon { width: 18px; height: 18px; }
