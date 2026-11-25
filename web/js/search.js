@@ -3,7 +3,9 @@ import { $, esc, icon, adMark } from './lib/ui.js';
 import { DEFAULT_ZONE, localZone, zoned, fmtDate, fmtDay, fmtTime, fmtMoney, fmtRange, monthLabel, months, defaultMonth, addDays, duration, daysLabel, nightsLabel, countLabel } from './lib/format.js';
 import { snapshot, tripPath, savedTrips, firstPrompt, saveTrip, tripDates } from './lib/trip.js';
 import { cityRating } from './lib/city-rating.js';
-import { partnerLink } from './lib/links.js';
+import { oneAdult, groupSize, passengerLabel, ticketAction, setPassengerParams, passengersFromParams } from './lib/passengers.js';
+import { passengerPicker } from './lib/passenger-picker.js';
+import { partnerLink, ticketLink } from './lib/links.js';
 import { portrait, loadPortraits } from './lib/portrait.js';
 import { goal } from './lib/measure.js';
 import { currentOrigin, saveOrigin } from './lib/origin.js';
@@ -63,7 +65,7 @@ if (config.experiments?.afterTicket) goal('trip_variant', { variant: afterTicket
 
 // --- состояние ---
 const state = {
-  query: { origin: 'SVO', originCity: 'MOW', destination: null, destinationCity: null, region: 'any', exact: false, month: defaultMonth(DEFAULT_ZONE), departure: null, returning: null, weekend: false, budget: null, direct: false },
+  query: { passengers: oneAdult(), origin: 'SVO', originCity: 'MOW', destination: null, destinationCity: null, region: 'any', exact: false, month: defaultMonth(DEFAULT_ZONE), departure: null, returning: null, weekend: false, budget: null, direct: false },
   labels: { origin: 'Москва, все аэропорты', destination: null },
   performed: null, performedLabels: null, performedSummary: null, performedLabel: '', status: 'idle', error: '', result: null,
   // Новичок спрашивает «куда», поэтому по умолчанию один лучший вариант на город; «Все» показывает каждую дату и рейс.
@@ -222,7 +224,7 @@ function lodging(offer, block) {
   const checkin = zoned(x.arr ?? x.dep, zone).key, checkout = zoned(x.ret, zone).key;
   const nights = Math.round((Date.parse(checkout) - Date.parse(checkin)) / 86400000);
   if (nights < 1) return null;
-  const url = `https://www.aviasales.ru/hotels/search?location_id=${location}&location_type=city&checkin=${checkin}&checkout=${checkout}&adults=1`;
+  const url = `https://www.aviasales.ru/hotels/search?location_id=${location}&location_type=city&checkin=${checkin}&checkout=${checkout}&adults=${currentPassengers().adults}`;
   const link = partnerLink(url, { kind: 'hotels', city: offer.city_code, page: 'trip', block, variant: testVariant });
   const day = (key) => new Date(key + 'T00:00:00Z');
   return link && { link, block, nights, dates: fmtRange(day(checkin), day(checkout), 'UTC', 'UTC') };
@@ -250,7 +252,8 @@ function similar(offer) {
     .filter((other) => !seen.has(other.city_code) && seen.add(other.city_code)).slice(0, 3);
 }
 // Билеты: только HTTPS-поиск Aviasales и только через /go (links.js).
-const handoff = (offer) => partnerLink(offer.search_url, { kind: 'tickets', city: offer.city_code, page: 'trip', block: 'tickets', variant: testVariant });
+const currentPassengers = () => (state.view === 'results' && state.performed ? state.performed : state.query).passengers;
+const handoff = (offer) => ticketLink(offer, currentPassengers(), { city: offer.city_code, page: 'trip', block: 'tickets', variant: testVariant });
 // Цена часа — до рубля: копейки здесь только шумят.
 const hourCost = (x) => fmtMoney(Math.round(x.cost / 100) * 100);
 const receivedLabel = (iso) => { const date = new Date(iso); return `${fmtDay(date, localZone)}, ${fmtTime(date, localZone)}`; };
@@ -271,7 +274,7 @@ function offerCard(offer) {
     <div class="offer-body">
       <div class="offer-head">
         <h3 class="offer-city"><button type="button" class="offer-open" data-offer="${esc(offer.id)}">${esc(offer.city)}</button></h3>
-        <span class="offer-price">${esc(fmtMoney(offer.price_minor))}</span>
+        <span class="offer-price">${esc(fmtMoney(offer.price_minor))}${groupSize(currentPassengers()) > 1 ? '<small>за 1 взрослого</small>' : ''}</span>
       </div>
       <p class="offer-dates">${esc(fmtRange(x.dep, x.ret, offer.origin_timezone, offer.destination_timezone))}, ${esc(stayLabel(offer))}</p>
       <p class="offer-meta">${x.direct ? 'прямые' : 'с пересадками'}, ${carrier(offer)}</p>
@@ -462,8 +465,8 @@ function renderResults() {
       .map(([name, title]) => `<button type="button" class="chip" data-chip="${name}" aria-pressed="${Boolean(selected(name))}">${title}</button>`).join('');
     const menu = (id, label, options, value) => `<select class="menu menu--plain" id="${id}" aria-label="${label}">${Object.entries(options).map(([name, title]) => `<option value="${name}" ${value === name ? 'selected' : ''}>${title}</option>`).join('')}</select>`;
     tools = `<div class="sort-menus">${menu('sort', 'Сортировка', SORTS, state.sort)}${menu('length', 'Длительность поездки', LENGTHS, effectiveLength())}</div>`;
-    body = collection ? `<p class="source">${esc(collection.hint)}. ${esc(cachedPriceLabel(state.home.received_at))} для поездки туда и обратно на одного. <a href="/how-we-count.html#home">Как мы считаем</a></p>`
-      : `<p class="source"><span class="summary">${esc(state.performedLabel)}. </span>${esc(cachedPriceLabel(state.result.received_at))} для поездки туда и обратно на одного. <a href="/how-we-count.html">Как мы считаем</a></p>`;
+    body = collection ? `<p class="source">${esc(collection.hint)}. ${esc(cachedPriceLabel(state.home.received_at))} за перелёт туда и обратно для одного взрослого. <a href="/how-we-count.html#home">Как мы считаем</a></p>`
+      : `<p class="source"><span class="summary">${esc(state.performedLabel)}. </span>${esc(cachedPriceLabel(state.result.received_at))} за перелёт туда и обратно для одного взрослого. <a href="/how-we-count.html">Как мы считаем</a></p>`;
     body += `
       <div class="chips" role="group" aria-label="Быстрые фильтры">${chips}</div>
       ${state.sort === 'flightRating' ? '<p class="caption">Оценка перелёта — цена и дорога, 0–100. Варианты без оценки идут в конце.</p>' : ''}
@@ -530,7 +533,7 @@ function guideBlock(code) {
 function hotelBlock(offer, hotel) {
   return `<section class="card lodging">
     <h3>${icon('bed')}Где жить</h3>
-    <p>${esc(offer.city)}, ${esc(hotel.dates)}, ${esc(nightsLabel(hotel.nights))}, один взрослый</p>
+    <p>${esc(offer.city)}, ${esc(hotel.dates)}, ${esc(nightsLabel(hotel.nights))}. ${currentPassengers().ages.length ? 'Укажите возраст детей при поиске жилья.' : passengerLabel(currentPassengers())} </p>
     <a class="btn-inline" href="${esc(hotel.link)}" target="_blank" rel="noopener" data-partner="aviasales" data-block="${hotel.block}">Отели на эти даты на Aviasales ${icon('arrow-right')}</a>
     ${adMark('aviasales')}
   </section>`;
@@ -561,7 +564,7 @@ function openDetail(offer) {
       </div>
       <div class="pass-stub">
         <p class="pass-price">${esc(fmtMoney(offer.price_minor))}</p>
-        <p class="caption">Билеты туда и обратно на одного. ${esc(cachedPriceLabel(offer.received_at))}. <a href="/how-we-count.html">Как мы считаем</a></p>
+        <p class="caption">Билеты туда и обратно за одного взрослого. ${groupSize(currentPassengers()) > 1 ? 'Цену на всех пассажиров покажет Aviasales. ' : ''}${esc(cachedPriceLabel(offer.received_at))}. <a href="/how-we-count.html">Как мы считаем</a></p>
         ${level ? `<details class="detail-price-level"><summary>${esc(levelLabel(level))}</summary>
           <p>${esc(levelNote({ ...level, usualText: fmtMoney(level.usual) }))} <a href="/how-we-count.html#level">Как мы считаем</a></p></details>` : ''}
       </div>
@@ -596,7 +599,7 @@ function openDetail(offer) {
     <p class="trust">${icon('shield')}<span>Aviasales откроется в новой вкладке. Покупка и оплата — там; мы не просим данные карты и паспорта. <a href="/how-we-earn.html">Как мы зарабатываем</a></span></p>
     <div class="detail-cta">
       ${!link && !past ? '<p class="caption">Не удалось сформировать безопасную ссылку.</p>' : ''}
-      ${link ? `${adMark('aviasales')}<a class="btn-primary" href="${esc(link)}" target="_blank" rel="noopener" data-partner="aviasales" data-block="tickets">Проверить цену на Aviasales ${icon('arrow-right')}</a>` : `<span class="btn-primary" aria-disabled="true">Проверить цену на Aviasales</span>`}
+      ${link ? `${adMark('aviasales')}<a class="btn-primary" href="${esc(link)}" target="_blank" rel="noopener" data-partner="aviasales" data-block="tickets">${ticketAction(currentPassengers())} ${icon('arrow-right')}</a>` : `<span class="btn-primary" aria-disabled="true">${ticketAction(currentPassengers())}</span>`}
     </div>
   </div>`;
   $('detailBody').scrollTop = 0;
@@ -604,6 +607,7 @@ function openDetail(offer) {
   // У поездки свой адрес: «Назад» закрывает карточку, а ссылкой можно поделиться.
   // Поездка из подборки знает свой поиск (q с сервера): по этой ссылке её найдёт и откроет любой браузер.
   const params = new URLSearchParams(offer.q ?? toParams(state.performed ?? state.query));
+  setPassengerParams(params, currentPassengers());
   params.set('city', offer.city_code);
   params.set('trip', offer.id);
   const href = '/?' + params;
@@ -614,8 +618,7 @@ function openDetail(offer) {
 async function shareTrip() {
   const offer = state.detail;
   if (!offer) return;
-  const saved = savedTrips().find(p => p.id === offer.id);
-  const url = new URL(tripPath(saved ?? snapshot(offer)), location.href).href, title = `${offer.city} за ${fmtMoney(offer.price_minor)} туда-обратно`;
+  const url = new URL(tripPath(planFor(offer)), location.href).href, title = `${offer.city}, ${fmtMoney(offer.price_minor)} за одного взрослого туда и обратно`;
   goal('share', { city: offer.city_code });
   if (navigator.share) {
     try { await navigator.share({ title, text: title, url }); return; } catch (error) { if (error.name === 'AbortError') return; }
@@ -753,7 +756,7 @@ function renderShowcase() {
     return rowSection(row.key, row.title, row.hint, tiles, `<button type="button" class="row-all" data-row-all="${esc(row.key)}">Все${icon('arrow-right')}</button>`, row.kind === 'pass', rowSticker(row));
   }).join('');
   section.innerHTML = recentRow() + (rows ? rows + (hidden > 0 ? `<button type="button" class="btn-inline more-rows" data-more-rows>Ещё подборки (${hidden})</button>` : '') : statusPanel('send', 'Подборок пока нет', 'Для этого города вылета не нашлось поездок на ближайшие недели. Попробуйте поиск в форме выше.'))
-    + `<p class="source">${esc(cachedPriceLabel(state.home.received_at))} для поездки туда и обратно на одного. <a href="/how-we-count.html#home">Как мы считаем подборки</a></p>`;
+    + `<p class="source">${esc(cachedPriceLabel(state.home.received_at))} за перелёт туда и обратно для одного взрослого. <a href="/how-we-count.html#home">Как мы считаем подборки</a></p>`;
   $('resultsStatus').textContent = 'Подборки загружены';
 }
 const homeWaiters = [];
@@ -870,6 +873,12 @@ function renderForm() {
     $('departureDate').min = today; $('departureDate').max = addDays(last, -1); $('departureDate').value = q.departure;
     $('returnDate').min = addDays(q.departure, 1); $('returnDate').max = addDays(q.departure, 60); $('returnDate').value = q.returning;
   }
+  const passengerText = passengerLabel(q.passengers);
+  $('passengerValue').textContent = $('linePassengers').textContent = passengerText;
+  $('linePassengers').parentElement.title = passengerText;
+  const family = groupSize(q.passengers) > 1;
+  $('budgetUnit').hidden = !family;
+  $('lineBudget').previousElementSibling.textContent = family ? 'Бюджет на взрослого' : 'Бюджет на билеты';
   const slider = $('budget');
   slider.value = q.budget ?? slider.min;
   slider.style.setProperty('--fill-to', `${100 * (slider.value - slider.min) / (slider.max - slider.min)}%`);
@@ -884,7 +893,8 @@ function renderForm() {
   const line = summary(q);
   $('summaryCode').textContent = line.code;
   $('summaryRoute').textContent = line.route;
-  $('summaryDetails').textContent = line.details;
+  $('summaryDetails').textContent = line.dates + (q.budget === null ? '' : ', до ' + budgetText + (family ? ' на взрослого' : ''));
+  $('summaryPassengers').textContent = passengerText;
   $('lineCode').textContent = q.originCity ?? q.origin;
   $('lineOrigin').textContent = originName;
   $('lineTo').textContent = line.route;
@@ -910,11 +920,14 @@ function setDeparture(key) {
   const lower = addDays(key, 1), upper = addDays(key, 60);
   q.returning = !q.returning || q.returning < lower ? lower : q.returning > upper ? upper : q.returning;
 }
-function summary(q) {
+function summary(q, labels = state.labels) {
   const day = (key) => fmtDay(new Date(key + 'T00:00:00Z'), 'UTC');
   const dates = q.exact ? `${day(q.departure)} – ${day(q.returning)}` : monthLabel(q.month);
   // Свёрнутая форма: код города вылета, куда и когда — как на талоне.
-  return { code: q.originCity ?? q.origin, route: state.labels.destination ?? DESTINATION_SCOPES[q.region].label, dates, details: q.budget === null ? dates : `${dates}, до ${fmtMoney(q.budget * 100)}` };
+  const details = [dates];
+  if (groupSize(q.passengers) > 1) details.push(passengerLabel(q.passengers));
+  if (q.budget !== null) details.push('до ' + fmtMoney(q.budget * 100) + (groupSize(q.passengers) > 1 ? ' на взрослого' : ''));
+  return { code: q.originCity ?? q.origin, route: labels.destination ?? DESTINATION_SCOPES[q.region].label, dates, details: details.join(', ') };
 }
 // Телефон: когда пошёл поиск, форма сворачивается в строку, чтобы первые карточки были на первом экране.
 // Класс меняет раскладку только уже 900 px; на широком экране форма видна целиком.
@@ -939,6 +952,7 @@ function toParams(q) {
 }
 function searchAddress(q) {
   const params = toParams(q);
+  setPassengerParams(params, q.passengers);
   for (const name of Object.keys(CHIPS)) {
     if (name !== 'unique' && name !== 'direct' && state.filters[name]) params.append('filter', name);
   }
@@ -1234,7 +1248,9 @@ $('budget').addEventListener('input', (event) => { state.query.budget = event.ta
 $('directOnly').addEventListener('change', (event) => { state.query.direct = event.target.checked; });
 $('search').addEventListener('submit', (event) => { event.preventDefault(); search(); });
 function planFor(offer) {
-  return savedTrips().find(p => p.id === offer.id) ?? snapshot(offer);
+  const saved = savedTrips().find(p => p.id === offer.id);
+  const passengers = currentPassengers();
+  return { ...(saved ?? snapshot(offer)), passengers, people: groupSize(passengers) };
 }
 function showWaiting(offer) {
   if (!$('detail').open || state.detail !== offer || $('waiting')) return;
@@ -1278,9 +1294,21 @@ window.addEventListener('focus', onReturn);
 const detailNav = $('detail').querySelector('.detail-nav');
 for (const link of document.querySelector('.top .nav').children) detailNav.append(link.cloneNode(true));
 $('share').addEventListener('click', shareTrip);
+const openPassengers = passengerPicker(passengers => {
+  state.query.passengers = passengers;
+  renderForm();
+  if (state.view !== 'results' || !state.performed) return;
+  state.performed = { ...state.performed, passengers };
+  state.performedSummary = summary(state.performed, state.performedLabels);
+  state.performedLabel = state.performedLabels.origin + ' → ' + state.performedSummary.route + ', ' + state.performedSummary.details;
+  updateFilterAddress();
+  renderResults();
+});
+$('passengerPick').addEventListener('click', event => openPassengers(event.currentTarget, state.query.passengers));
 $('searchLine').addEventListener('click', (event) => {
   const field = event.target.closest('[data-field]')?.dataset.field;
   if (!field) return;
+  if (field === 'passengers') { openPassengers(event.target.closest('[data-field]'), state.query.passengers); return; }
   if (field === 'origin' || field === 'destination') { openPicker(field, event.target.closest('[data-field]')); return; }
   collapseForm(false);
   ({ when: state.query.exact ? $('departureDate') : $('month'), budget: $('budget') })[field]?.focus();
@@ -1316,7 +1344,12 @@ function leaveTrip() { if (!leaving && history.state?.trip) { leaving = true; hi
 window.addEventListener('popstate', () => {
   leaving = false;
   if (history.state?.compareRow || $('pairComparison').open) syncComparison();
-  if (!history.state?.trip && $('detail').open) $('detail').close();
+  const tripId = history.state?.trip;
+  if (tripId && !$('detail').open) {
+    const offer = state.detail?.id === tripId ? state.detail : state.shown.get(tripId) ?? homeOffer(tripId) ?? state.favs.get(tripId);
+    if (offer) openDetail(offer);
+  }
+  if (!tripId && $('detail').open) $('detail').close();
   if (!history.state?.trip) syncView();
 });
 $('pairComparison').addEventListener('close', () => {
@@ -1467,6 +1500,7 @@ async function restore() {
   }
   state.filters.unique = params.get('group') !== '0';
   if (Object.hasOwn(LENGTHS, params.get('length'))) state.length = params.get('length');
+  q.passengers = passengersFromParams(params);
   q.origin = code('from'); q.originCity = code('fc');
   state.labels.origin = airportLabel(q.origin, q.originCity);
   if (Object.hasOwn(DESTINATION_SCOPES, params.get('region'))) q.region = params.get('region');

@@ -1,4 +1,5 @@
 // The fragment carries only the itinerary and the traveller's budget. All outbound links come from our catalogue.
+import { groupSize, validPassengers } from './passengers.js';
 import { zoned, daysLabel, fmtRange } from './format.js';
 
 const savedKey = 'aviator.plans.v1';
@@ -29,7 +30,8 @@ function valid(p) {
     && Date.parse(p.out) <= Date.parse(p.arrive) && Date.parse(p.arrive) <= Date.parse(p.back)
     && (p.flight == null || (typeof p.flight === 'string' && flightPattern.test(p.flight)))
     && [p.fromZone, p.zone].every(zone) && Number.isSafeInteger(p.fare) && p.fare > 0 && p.fare <= 1e11
-    && Number.isInteger(p.people) && p.people >= 1 && p.people <= 4
+    && Number.isInteger(p.people) && p.people >= 1 && p.people <= 9
+    && (p.passengers === undefined ? p.people <= 4 : validPassengers(p.passengers) && groupSize(p.passengers) === p.people)
     && [p.stay, p.food].every(n => n === null || amount(n));
 }
 const flightPattern = /^[A-Z0-9]{2}\d{1,4}[A-Z]?$/;
@@ -89,8 +91,8 @@ export function countdown(p, now = new Date()) {
   return days ? 'До вылета ' + daysLabel(days) : 'Вылет сегодня';
 }
 export function budget(p) {
-  const tickets = p.fare * p.people;
+  const tickets = p.people === 1 ? p.fare : null;
   const { nights } = tripDates(p);
-  const complete = (!nights || p.stay !== null) && p.food !== null;
-  return { tickets, complete, total: tickets + 100 * (nights * (p.stay ?? 0) + (nights + 1) * p.people * (p.food ?? 0)) };
+  const complete = tickets !== null && (!nights || p.stay !== null) && p.food !== null;
+  return { tickets, complete, total: (tickets ?? 0) + 100 * (nights * (p.stay ?? 0) + (nights + 1) * p.people * (p.food ?? 0)) };
 }

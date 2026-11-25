@@ -73,7 +73,7 @@ async function searchParams(page, action) {
   await page.locator('#results .chips').waitFor();
   const params = new URL(response.url()).searchParams;
   const address = new URL(page.url()).searchParams;
-  for (const localFilter of ['filter', 'group', 'length']) {
+  for (const localFilter of ['filter', 'group', 'length', 'adults', 'ages']) {
     assert.equal(params.has(localFilter), false);
     address.delete(localFilter);
   }
@@ -86,6 +86,51 @@ const visibleIds = page => page.locator('#results [data-offer]').evaluateAll(nod
 
 for (const mobile of [false, true]) {
   const screen = mobile ? 'телефон' : 'компьютер';
+
+  test('Семейный поиск сохраняет возраст и отправляет на проверку цены за троих, ' + screen, async t => {
+    const sample = { ...offers[4], id: 'c'.repeat(32), search_url: 'https://www.aviasales.com/search/SVO1602KZN18021?t=adult-only' };
+    const page = await setup(t, mobile, [sample]);
+    await openFields(page);
+    const pick = page.locator('#passengerPick'), dialog = page.locator('#passengerPicker');
+    await pick.click();
+    const bounds = await dialog.boundingBox();
+    if (mobile) assert.ok(Math.abs(bounds.y + bounds.height - 844) < 2);
+    else assert.ok(bounds.width < 400);
+    assert.equal(await page.locator('#adultMinus').isDisabled(), true);
+    await page.locator('#addChild').click();
+    assert.equal(await page.locator('#applyPassengers').isDisabled(), true);
+    await page.locator('#childAge0').selectOption('0');
+    assert.equal(await page.locator('#infantNote').isVisible(), true);
+    await page.locator('#addChild').click();
+    assert.equal(await page.locator('#childAge1 option[value="1"]').isDisabled(), true);
+    await dialog.getByRole('button', { name: 'Убрать ребёнка 2' }).click();
+    await page.locator('#childAge0').selectOption('7');
+    await page.locator('#adultPlus').click();
+    await page.locator('#applyPassengers').click();
+    assert.match(await pick.innerText(), /2 взрослых, 1 ребёнок \(7 лет\)/);
+    await page.getByRole('radio', { name: 'Точные даты' }).check();
+    await page.getByRole('radio', { name: 'Месяц', exact: true }).check();
+    await submit(page);
+    assert.equal(new URL(page.url()).searchParams.get('ages'), '7');
+    await searchParams(page, () => page.reload());
+    await page.locator('#results [data-offer]').click();
+    const action = page.getByRole('link', { name: 'Проверить цену на троих' });
+    const dest = async button => new URL(await button.getAttribute('href'), base).searchParams.get('u');
+    assert.equal(await dest(action), 'https://www.aviasales.com/search/SVO1602KZN180221');
+    assert.match(await page.locator('.pass-stub').innerText(), /за одного взрослого/);
+    assert.equal(new URL(page.url()).searchParams.get('ages'), '7');
+    await page.evaluate(() => Object.defineProperty(navigator, 'share', { configurable: true, value: async data => { window.sharedTrip = data.url; } }));
+    await page.locator('#share').click();
+    const shared = await page.evaluate(() => window.sharedTrip);
+    await page.goBack();
+    assert.equal(new URL(page.url()).searchParams.get('adults'), '2');
+    await page.goForward();
+    assert.equal(await dest(action), 'https://www.aviasales.com/search/SVO1602KZN180221');
+    await page.goto(shared);
+    assert.match(await page.locator('#plan').innerText(), /2 взрослых, 1 ребёнок \(7 лет\)/);
+    assert.equal(await dest(page.locator('#planTicketLink')), 'https://www.aviasales.com/search/SVO1602KZN180221');
+    assert.match(await page.locator('#planTotal').innerText(), /Билеты на всех уточните/);
+  });
 
   test('Поиск везде, в городе и в аэропорту показывает нужные даты, ' + screen, async t => {
     const page = await setup(t, mobile);
