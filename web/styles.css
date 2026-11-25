@@ -474,6 +474,8 @@ img { display: block; max-width: 100%; }
   text-shadow: 0 1px 4px #0008;
 }
 .fav { position: absolute; top: var(--s-2); right: var(--s-2); z-index: 2; width: var(--tap); height: var(--tap); display: grid; place-items: center; border-radius: var(--r-field); background: var(--card-veil); color: var(--ink); }
+/* Отступ зависит от радиуса фотографии: вся кнопка остаётся внутри дуги. */
+.portrait > .fav { top: 6%; right: 8%; }
 .fav[aria-pressed="true"] { color: var(--heart); }
 /* Нажатие на фото открывает билет, на сердечко — меняет избранное. */
 .offer > .portrait, .tile > .portrait { z-index: 2; pointer-events: none; }
