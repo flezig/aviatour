@@ -10,7 +10,6 @@ body { background: var(--card); }
 .directory-search input { width: 100%; min-height: 50px; background: var(--card); border: 1px solid #8795a9; border-radius: 8px; padding: 0 12px 0 45px; }
 .directory-search button { min-height: 50px; border-radius: 8px; }
 .directory-cover { display: block; border-radius: 20% / 15%; }
-.directory-cover:hover .portrait-name { text-decoration: underline; }
 .directory-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 20px; margin: 24px 0 28px; }
 .directory-regions { display: inline-flex; padding: 3px; gap: 2px; border: 1px solid var(--line); border-radius: 8px; }
 .directory-regions label { position: relative; cursor: pointer; }
@@ -35,7 +34,6 @@ body { background: var(--card); }
 }
 .directory-list li { min-width: 0; }
 .directory-city { display: block; color: var(--ink); text-decoration: none; }
-.directory-city:hover .portrait-name { text-decoration: underline; text-underline-offset: 3px; }
 .directory-meta { display: block; padding: 8px 5px 0; }
 .directory-city small, .directory-places { display: block; font-size: 13px; }
 .directory-city small { color: var(--ink-2); }

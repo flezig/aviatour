@@ -20,6 +20,8 @@ export function localActivities(p, data, page, variant = '') {
   const today = zoned(new Date(), p.zone).key;
   if (end < today) return '';
   const from = start < today ? today : start;
+  const adults = p.passengers?.adults ?? p.people;
+  const stayLabel = (from === start ? label : 'На оставшиеся ночи') + (p.passengers?.ages.length ? '. Укажите возраст детей при поиске жилья.' : '');
   const options = [];
   function add(address, kind, brand, block, title, description) {
     const link = partnerLink(address, { kind, city: p.cityCode, page, block, variant });
@@ -28,12 +30,12 @@ export function localActivities(p, data, page, variant = '') {
   }
   const city = data.cities.get(p.cityCode), location = data.hotels[p.cityCode];
   if (nights > 0 && from < end && location) {
-    const params = new URLSearchParams({ location_id: location, location_type:'city', checkin:from, checkout:end, adults:p.people });
-    add('https://www.aviasales.ru/hotels/search?' + params, 'hotels', 'aviasales', 'stay', 'Где остановиться', from === start ? label : 'На оставшиеся ночи');
+    const params = new URLSearchParams({ location_id: location, location_type:'city', checkin:from, checkout:end, adults });
+    add('https://www.aviasales.ru/hotels/search?' + params, 'hotels', 'aviasales', 'stay', 'Где остановиться', stayLabel);
   } else if (nights > 0 && from < end && city?.ostrovok) {
     const dotted = value => value.split('-').reverse().join('.');
-    const params = new URLSearchParams({ dates: dotted(from) + '-' + dotted(end), guests: p.people });
-    add(city.ostrovok + '?' + params, 'ostrovok', 'ostrovok', 'stay', 'Где остановиться', from === start ? label : 'На оставшиеся ночи');
+    const params = new URLSearchParams({ dates: dotted(from) + '-' + dotted(end), guests: adults });
+    add(adults > 4 ? city.ostrovok : city.ostrovok + '?' + params, 'ostrovok', 'ostrovok', 'stay', 'Где остановиться', stayLabel);
   }
   if (data.tours[p.cityCode]) {
     const params = new URLSearchParams({ start_date:from, end_date:end });

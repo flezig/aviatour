@@ -267,16 +267,19 @@ def link_app(handler,**settings):
     options=dict(token='secret',marker='12345',trs='678')|settings
     return create_app(Settings(**options),httpx.MockTransport(transport),now=lambda:NOW),calls
 
-def test_go_redirects_through_generated_partner_link_once():
+FAMILY_SEARCH_URL = 'https://www.aviasales.com/search/SVO0210LED0410211'
+
+@pytest.mark.parametrize('destination', [SEARCH_URL, FAMILY_SEARCH_URL])
+def test_go_redirects_through_generated_partner_link_once(destination):
     def handler(request):
         body=json.loads(request.content)
         assert str(request.url)=='https://api.travelpayouts.com/links/v1/create' and request.headers['X-Access-Token']=='secret'
-        assert body=={'trs':678,'marker':12345,'shorten':False,'links':[{'url':SEARCH_URL}]}
-        return httpx.Response(200,json={'result':{'links':[{'url':SEARCH_URL,'code':'success','partner_url':'https://tp.media/r?marker=12345&trs=678&u=x'}]}})
+        assert body=={'trs':678,'marker':12345,'shorten':False,'links':[{'url':destination}]}
+        return httpx.Response(200,json={'result':{'links':[{'url':destination,'code':'success','partner_url':'https://tp.media/r?marker=12345&trs=678&u=x'}]}})
     app,calls=link_app(handler)
     with TestClient(app,follow_redirects=False) as client:
         for _ in range(2):
-            response=client.get('/go',params={'u':SEARCH_URL})
+            response=client.get('/go',params={'u':destination})
             assert response.status_code==302 and response.headers['location']=='https://tp.media/r?marker=12345&trs=678&u=x'
             assert response.headers['cache-control']=='no-store'
     assert len(calls)==1
@@ -311,6 +314,7 @@ def test_go_without_partner_settings_never_calls_converter(settings):
     app,calls=link_app(lambda request:httpx.Response(500),**settings)
     with TestClient(app,follow_redirects=False) as client:
         assert client.get('/go',params={'u':SEARCH_URL}).headers['location']==SEARCH_URL
+        assert client.get('/go',params={'u':FAMILY_SEARCH_URL}).headers['location']==FAMILY_SEARCH_URL
         assert client.get('/go',params={'u':'/search/SVO0210LED04101'}).headers['location']=='https://www.aviasales.com/search/SVO0210LED04101'
     assert calls==[]
 

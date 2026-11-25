@@ -109,13 +109,14 @@
     <form class="search search--collapsed" id="search" novalidate aria-label="Поиск поездок">
       <button type="button" class="search-summary" id="searchSummary" aria-controls="searchFields" aria-expanded="false">
         <b class="code" id="summaryCode"></b>
-        <span class="pick-text"><span class="pick-value" id="summaryRoute"></span><span class="caption" id="summaryDetails"></span></span>
+        <span class="pick-text"><span class="pick-value" id="summaryRoute"></span><span class="caption" id="summaryDetails"></span><span class="caption" id="summaryPassengers">1 взрослый</span></span>
         <span class="search-summary-edit">Изменить</span>
       </button>
       <div class="search-line" id="searchLine">
         <button type="button" class="line-field" data-field="origin" aria-haspopup="dialog" aria-controls="picker"><span class="label">Откуда</span><span class="line-value"><b class="code" id="lineCode">MOW</b> <span id="lineOrigin">Москва</span></span></button>
         <button type="button" class="line-field" data-field="destination" aria-haspopup="dialog" aria-controls="picker"><span class="label">Куда</span><span class="line-value" id="lineTo">Куда угодно</span></button>
         <button type="button" class="line-field" data-field="when"><span class="label">Когда</span><span class="line-value" id="lineWhen"></span></button>
+        <button type="button" class="line-field" data-field="passengers" aria-haspopup="dialog" aria-controls="passengerPicker"><span class="label">Пассажиры</span><span class="line-value" id="linePassengers">1 взрослый</span></button>
         <button type="button" class="line-field" data-field="budget"><span class="label">Бюджет на билеты</span><span class="line-value" id="lineBudget">Без лимита</span></button>
       </div>
       <div class="search-fields" id="searchFields">
@@ -154,11 +155,19 @@
         </div>
 
         <div class="field-group">
+          <button type="button" class="pick" id="passengerPick" aria-haspopup="dialog" aria-controls="passengerPicker">
+            <span class="pick-text"><span class="label">Пассажиры</span><span class="pick-value" id="passengerValue">1 взрослый</span></span>
+            <svg class="icon" aria-hidden="true"><use href="#ui-chevron-down"></use></svg>
+          </button>
+        </div>
+
+        <div class="field-group">
           <div class="budget">
             <label class="label" for="budget">Бюджет на билеты</label>
             <output class="budget-value" id="budgetValue" for="budget">Без лимита</output>
             <input type="range" class="slider" id="budget" min="4000" max="500000" step="1000" value="4000" aria-valuetext="Без лимита">
           </div>
+          <p class="caption" id="budgetUnit" hidden>Лимит на билет одного взрослого туда и обратно.</p>
           <label class="search-check"><input type="checkbox" id="directOnly"><span>Только прямые рейсы</span></label>
         </div>
       </div>
@@ -185,6 +194,24 @@
     <p class="caption">За покупки по ссылкам на Aviasales мы получаем комиссию.</p>
     <p class="caption hero-credit">Фото в шапке: Атрани, побережье Амальфи — <a href="https://commons.wikimedia.org/wiki/File:Atrani_(Costiera_Amalfitana,_23-8-2011).jpg" target="_blank" rel="noopener">Paolo Costa Baldi</a>, <a href="https://creativecommons.org/licenses/by/3.0" target="_blank" rel="noopener">CC BY 3.0</a>, уменьшено и кадрировано.</p>
   </footer>
+
+  <dialog id="passengerPicker" aria-labelledby="passengerTitle">
+    <div class="passenger-panel">
+      <h2 id="passengerTitle">Пассажиры</h2>
+      <div class="passenger-row"><div><b>Взрослые</b><p class="caption">От 12 лет</p></div>
+        <div class="passenger-counter">
+          <button type="button" id="adultMinus" aria-label="Убрать взрослого">−</button>
+          <output id="adultCount" aria-live="polite">1</output>
+          <button type="button" id="adultPlus" aria-label="Добавить взрослого">+</button>
+        </div>
+      </div>
+      <div id="childRows"></div>
+      <button class="btn-inline" type="button" id="addChild">Добавить ребёнка</button>
+      <p class="caption" id="passengerNote">Укажите возраст каждого ребёнка на дату обратного перелёта.</p>
+      <p class="caption" id="infantNote" hidden>Дети до 2 лет летят без отдельного места. Один взрослый может взять одного младенца.</p>
+      <button class="btn-primary" type="button" id="applyPassengers">Готово</button>
+    </div>
+  </dialog>
 
   <dialog class="sheet" id="picker" aria-labelledby="pickerTitle">
     <div class="picker-toolbar">
