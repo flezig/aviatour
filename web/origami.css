@@ -50,32 +50,3 @@ body.other-service .footer { margin-top: 5rem; }
   .service-form label { padding:0; border:0; }
   .service-form button { grid-column:1/-1; }
 }
-
-header.top {flex-direction:row;align-items:center;justify-content:flex-start;gap:40px;padding-block:24px 22px}
-.top .brand {font-size:22px;letter-spacing:-.6px}
-.top .brand {color:#182129}
-.top .brand-mark {color:white;background:#2037a4;border-radius:9px}
-.brand-beta {background:#e6e5df;color:#4b504e;letter-spacing:0}
-.service-tabs {gap:16px}
-.service-tabs button,.service-tabs #tab-cars {position:relative;background:transparent;border:0;color:#535858;border-radius:0;padding:0 4px;min-height:42px}
-.service-tabs img {filter:brightness(0);opacity:.64;width:19px;height:19px}
-.service-tabs button[aria-selected=true] {background:transparent;color:#151d25}
-.service-tabs button[aria-selected=true]::after {content:'';position:absolute;left:4px;right:4px;bottom:0;height:2px;background:currentColor}
-.service-tabs .car-tab-label small {color:inherit}
-#search {border-radius:13px;box-shadow:0 2px 6px #171c2210,0 0 0 1px #171c2213}
-#search .search-go {background:#2848cc}
-#showcase .row-head {grid-template-columns:minmax(0,auto) 1fr auto}
-#showcase .row-head h2 {grid-column:1}
-#showcase .row-head .row-hint {grid-column:2}
-.flight-tools .chip:not([aria-pressed="true"]),.flight-budget summary {background:transparent}
-@media(max-width:699px){
-header.top {flex-direction:column;align-items:flex-start;padding-block:15px 13px;gap:9px}
-.service-tabs {gap:14px}
-.service-tabs button,.service-tabs #tab-cars {padding:0 2px;gap:5px}
-#showcase .row-head {grid-template-columns:minmax(0,1fr) auto}
-#showcase .row-head .row-hint {grid-column:1/-1;grid-row:2}
-}
-#showcase .row-all {grid-column:-2}
-.service-tabs button:focus-visible {outline-color:var(--ink)}
-.service-tabs button:hover,.service-tabs #tab-cars:hover,.service-tabs #tab-cars[aria-selected="true"] {color:var(--ink);background:#e7e7e1}
-@media(max-width:365px){.service-tabs {gap:6px}}

@@ -11,8 +11,17 @@ const labels = {
   cars: ['Аренда авто', 'Тестируем раздел и решаем, подключать ли поиск авто.'],
   tours: ['Куда поехать в тур', 'Выберите направление, даты поездки и количество туристов.']
 };
+let selected = 'flights';
+function sizeHero() {
+  if (selected === 'flights') {
+    if (!document.querySelector('.search--collapsed')) return;
+  }
+  const active = tabs.find(t => t.getAttribute('aria-selected') === 'true');
+  const panel = document.getElementById(active.getAttribute('aria-controls'));
+  if (panel.offsetHeight) document.documentElement.style.setProperty('--hero-h', (panel.getBoundingClientRect().bottom + scrollY + 28) + 'px');
+}
 function choose(tab) {
-  const selected = tab.dataset.service;
+  selected = tab.dataset.service;
   if (location.hash.startsWith('#fav') && !document.body.classList.contains('has-hero')) { location.assign('/?service=' + selected); return; }
   const flight = selected === 'flights';
   for (const button of tabs) {
@@ -24,6 +33,7 @@ function choose(tab) {
   document.body.classList.toggle('other-service', !flight);
   intro.hidden = flight;
   if (!flight) [heading.textContent, lead.textContent] = labels[selected];
+  requestAnimationFrame(sizeHero);
 }
 for (const [i, tab] of tabs.entries()) {
   tab.addEventListener('click', () => choose(tab));
@@ -78,6 +88,9 @@ for (const form of document.querySelectorAll('.service-form')) {
     status.hidden = false;
   });
 }
+window.addEventListener('resize', sizeHero);
+const observer = new ResizeObserver(() => { if (selected !== 'flights') sizeHero(); });
+document.querySelectorAll('.service-panel').forEach(panel => observer.observe(panel));
 const requested = new URLSearchParams(location.search).get('service');
 const initial = tabs.find(tab => tab.dataset.service === requested);
 if (initial) choose(initial);

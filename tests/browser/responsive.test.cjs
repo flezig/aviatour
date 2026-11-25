@@ -62,8 +62,12 @@ test('iPhone и один экран Duo: страницы, навигация, �
     const visibleLinks = await page.locator('.service-tabs [role=tab]').evaluateAll(links =>
       links.length === 4 && links.every(el => el.getBoundingClientRect().left >= 0 && el.getBoundingClientRect().right <= innerWidth));
     assert.ok(visibleLinks, 'Пункты шапки должны быть доступны без горизонтальной прокрутки');
-    assert.equal(await page.locator('.sky, .hero-photo, .row-mark').count(), 0);
-    assert.equal(await page.locator('body').evaluate(el => getComputedStyle(el).backgroundColor), 'rgb(245, 244, 240)');
+    await page.locator('.hero-photo img').evaluate(img => img.decode());
+    assert.equal(await page.locator('.sky-plane, .flyby-plane').count(), 0);
+    const images = await page.evaluate(() => performance.getEntriesByType('resource')
+      .filter(entry => new URL(entry.name).pathname.startsWith('/photos/hero-')).map(entry => entry.name));
+    assert.equal(images.length, 1);
+    if (width === 390) assert.match(images[0], /hero-madeira-mobile-coast-1320\.avif$/);
     await page.close();
   }
 });
