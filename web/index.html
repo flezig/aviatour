@@ -86,7 +86,7 @@
   </div>
   <header class="top wrap">
     <a class="brand" href="/"><span class="brand-mark"><svg class="icon" aria-hidden="true"><use href="#ui-plane"></use></svg></span>Aviator</a>
-    <nav class="service-nav" aria-label="Разделы поиска"><div class="service-tabs" role="tablist" aria-label="Что ищем"><button id="tab-flights" role="tab" aria-selected="true" aria-controls="flight-service" tabindex="0" type="button" data-service="flights"><img src="/tab-flights.png" width="24" height="24" alt=""><span>Авиабилеты</span></button><button id="tab-stays" role="tab" aria-selected="false" aria-controls="panel-stays" tabindex="-1" type="button" data-service="stays"><img src="/tab-stays.png" width="24" height="24" alt=""><span>Жильё</span></button><button id="tab-cars" role="tab" aria-selected="false" aria-controls="panel-cars" tabindex="-1" type="button" data-service="cars"><img src="/tab-cars.png" width="24" height="24" alt=""><span>Авто</span></button><button id="tab-tours" role="tab" aria-selected="false" aria-controls="panel-tours" tabindex="-1" type="button" data-service="tours"><img src="/tab-tours.png" width="24" height="24" alt=""><span>Туры</span></button></div></nav>
+    <nav class="service-nav" aria-label="Разделы поиска"><div class="service-tabs" role="tablist" aria-label="Что ищем"><button id="tab-flights" role="tab" aria-selected="true" aria-controls="flight-service" tabindex="0" type="button" data-service="flights"><img src="/tab-flights.svg" width="24" height="24" alt=""><span>Авиабилеты</span></button><button id="tab-stays" role="tab" aria-selected="false" aria-controls="panel-stays" tabindex="-1" type="button" data-service="stays"><img src="/tab-stays.svg" width="24" height="24" alt=""><span>Жильё</span></button><button id="tab-cars" role="tab" aria-selected="false" aria-controls="panel-cars" tabindex="-1" type="button" data-service="cars"><img src="/tab-cars.svg" width="24" height="24" alt=""><span class="car-tab-label">Авто<small>В бете</small></span></button><button id="tab-tours" role="tab" aria-selected="false" aria-controls="panel-tours" tabindex="-1" type="button" data-service="tours"><img src="/tab-tours.svg" width="24" height="24" alt=""><span>Туры</span></button></div></nav>
   </header>
 
   <main class="wrap">
@@ -168,7 +168,40 @@
       <button class="btn-primary search-go" type="submit" id="searchButton"><svg class="icon" aria-hidden="true"><use href="#ui-search"></use></svg><span id="searchAction">Показать направления</span></button>
     </form>
 
-</section><section class="service-panel" role="tabpanel" id="panel-stays" aria-labelledby="tab-stays" hidden><form class="service-form"><label><span>Город или курорт</span><select name="place"><option>Стамбул</option><option>Анталья</option><option>Дубай</option><option>Сочи</option></select></label><label><span>Заезд</span><input type="date" name="start" required></label><label><span>Выезд</span><input type="date" name="end" required></label><label><span>Гости</span><select><option>1 гость</option><option>2 гостя</option><option>3 гостя</option><option>4 гостя</option></select></label><button type="submit" class="btn-primary">Найти жильё</button></form><p class="service-result" role="status" hidden></p></section><section class="service-panel" role="tabpanel" id="panel-cars" aria-labelledby="tab-cars" hidden><form class="service-form"><label><span>Место получения</span><select name="place"><option>Стамбул</option><option>Анталья</option><option>Дубай</option><option>Сочи</option></select></label><label><span>Получение</span><input type="date" name="start" required></label><label><span>Возврат</span><input type="date" name="end" required></label><label><span>Класс авто</span><select><option>Любой класс</option><option>Компакт</option><option>Семейный</option><option>Внедорожник</option></select></label><button type="submit" class="btn-primary">Найти авто</button></form><p class="service-result" role="status" hidden></p></section><section class="service-panel" role="tabpanel" id="panel-tours" aria-labelledby="tab-tours" hidden><form class="service-form"><label><span>Куда</span><select name="place"><option>Стамбул</option><option>Анталья</option><option>Дубай</option><option>Сочи</option></select></label><label><span>Начало поездки</span><input type="date" name="start" required></label><label><span>Окончание</span><input type="date" name="end" required></label><label><span>Туристы</span><select><option>1 турист</option><option>2 туриста</option><option>3 туриста</option><option>4 туриста</option></select></label><button type="submit" class="btn-primary">Найти тур</button></form><p class="service-result" role="status" hidden></p></section><div class="showcase" id="showcase" hidden></div>
+</section>
+    <section class="service-panel" role="tabpanel" id="panel-stays" aria-labelledby="tab-stays" hidden>
+      <form class="service-form" id="hotelSearch">
+        <label><span>Город или курорт</span>
+          <select name="place" required>
+              <option value="AYT">Анталья</option>
+              <option value="VVO">Владивосток</option>
+              <option value="DXB">Дубай</option>
+              <option value="SVX">Екатеринбург</option>
+              <option value="EVN">Ереван</option>
+              <option value="KZN">Казань</option>
+              <option value="KGD">Калининград</option>
+              <option value="MCX">Махачкала</option>
+              <option value="MRV">Минеральные Воды</option>
+              <option value="MSQ">Минск</option>
+              <option value="MOW">Москва</option>
+              <option value="OVB">Новосибирск</option>
+              <option value="LED">Санкт-Петербург</option>
+              <option value="AER">Сочи</option>
+              <option value="IST" selected>Стамбул</option>
+              <option value="TBS">Тбилиси</option>
+          </select>
+        </label>
+        <label><span>Заезд</span><input type="date" name="start" required></label>
+        <label><span>Выезд</span><input type="date" name="end" required></label>
+        <label><span>Взрослые</span><select name="adults">
+          <option value="1">1 взрослый</option><option value="2">2 взрослых</option>
+          <option value="3">3 взрослых</option><option value="4">4 взрослых</option>
+        </select></label>
+        <button type="submit" class="btn-primary">Найти на Авиасейлс</button>
+      </form>
+      <p class="service-result" role="status" hidden></p>
+    </section>
+    <section class="service-panel" role="tabpanel" id="panel-cars" aria-labelledby="tab-cars" hidden><form class="service-form"><label><span>Место получения</span><select name="place"><option>Стамбул</option><option>Анталья</option><option>Дубай</option><option>Сочи</option></select></label><label><span>Получение</span><input type="date" name="start" required></label><label><span>Возврат</span><input type="date" name="end" required></label><label><span>Класс авто</span><select><option>Любой класс</option><option>Компакт</option><option>Семейный</option><option>Внедорожник</option></select></label><button type="submit" class="btn-primary">Найти авто</button></form><p class="service-result" role="status" hidden></p></section><section class="service-panel" role="tabpanel" id="panel-tours" aria-labelledby="tab-tours" hidden><form class="service-form"><label><span>Куда</span><select name="place"><option>Стамбул</option><option>Анталья</option><option>Дубай</option><option>Сочи</option></select></label><label><span>Начало поездки</span><input type="date" name="start" required></label><label><span>Окончание</span><input type="date" name="end" required></label><label><span>Туристы</span><select><option>1 турист</option><option>2 туриста</option><option>3 туриста</option><option>4 туриста</option></select></label><button type="submit" class="btn-primary">Найти тур</button></form><p class="service-result" role="status" hidden></p></section><div class="showcase" id="showcase" hidden></div>
     <p class="sr-only" role="status" id="resultsStatus"></p>
     <section class="results" id="results" aria-label="Варианты" hidden></section>
   </main>

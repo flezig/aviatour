@@ -9,6 +9,11 @@ header.top { display: flex; flex-direction: column; align-items: flex-start; jus
   color:#fff; border-radius:999px; font:600 15px/1 var(--f-text); cursor:pointer; }
 .service-tabs button:hover { background:#20405d; border-color:#c3d3df; }
 .service-tabs button[aria-selected="true"] { background:#155add; border-color:#3681ff; }
+.service-tabs #tab-cars { background:#444d57; border-color:#87929c; }
+.service-tabs #tab-cars:hover { background:#525c66; }
+.service-tabs #tab-cars[aria-selected="true"] { background:#59636e; border-color:white; }
+.car-tab-label { display:grid; gap:2px; text-align:left; }
+.car-tab-label small { font-size:10px; font-weight:500; color:#f0f2f5; white-space:nowrap; }
 .service-tabs button:focus-visible { outline:2px solid #fff; outline-offset:3px; }
 .service-tabs img { width:22px; height:22px; object-fit:contain; }
 body.other-service :is(#results,#showcase), .service-panel[hidden], #flight-service[hidden] { display:none; }
