@@ -272,6 +272,8 @@ for (const mobile of [false, true]) {
       return_at: back + 'T10:00:00+03:00', price_minor: price * 100,
     });
     const page = await setup(t, mobile, [
+      fare('2030-02-12', 1000), fare('2030-04-14', 2000),
+      fare('2030-03-04', 7000, '2030-03-01T10:00:00Z'),
       fare('2030-02-15', 15400), fare('2030-02-15', 16000), fare('2030-02-16', 12800),
       fare('2030-02-16', 8000, '2030-02-13T10:00:00Z'),
     ]);
@@ -280,7 +282,15 @@ for (const mobile of [false, true]) {
     await page.locator('#picker [data-city="IST"]').click();
     await page.locator('[data-field="when"]').click();
     const day = number => page.locator('[data-day="2030-02-' + number + '"]');
+    await day(12).locator('small').waitFor();
+    assert.equal(await day(12).locator('small').innerText(), '12,8');
+    assert.match(await day(12).getAttribute('aria-label'), /возврат 16 фев/);
+    assert.equal(await day(13).locator('small').innerText(), '8');
+    if (mobile) await page.locator('[data-shift="1"]').click();
+    await page.locator('[data-day="2030-03-01"].lowest small').waitFor();
+    if (mobile) await page.locator('[data-shift="-1"]').click();
     await day(12).click();
+    assert.match(await page.locator('#calStatus').innerText(), /при возврате 16 фев/);
     const amount = day(15).locator('small');
     await amount.waitFor();
     assert.equal(await amount.innerText(), '15,4');
