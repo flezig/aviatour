@@ -141,7 +141,7 @@ def test_home_endpoint_builds_rows_hides_short_ones_and_checks_hot_with_route_se
         body = response.json()
         assert response.status_code == 200 and 's-maxage' in response.headers['Cache-Control']
         keys = {r['key']: r for r in body['rows']}
-        assert keys['weekend1']['items'] and keys['weekend1']['title'] == 'На эти выходные' and keys['weekend1']['hint'] == '20–22 ноября, без отпуска'
+        assert keys['weekend1']['items'] and keys['weekend1']['title'] == 'На эти выходные' and keys['weekend1']['hint'] == '20–22 ноября'
         assert 'budget20000' not in keys  # меньше трёх вариантов — подборки нет
         assert all(len(r['items']) >= 3 for r in body['rows'])
         kazan = body['offers'][keys['weekend1']['items'][0]]

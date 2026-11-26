@@ -252,6 +252,11 @@ for (const mobile of [false, true]) {
   test('Месяц и точные даты сохраняются независимо при переключении и отправке, ' + screen, async t => {
     const page = await setup(t, mobile);
     const when = page.locator('[data-field="when"]');
+    const calendarIcon = when.locator('svg');
+    assert.equal(await calendarIcon.count(), 1);
+    assert.equal(await calendarIcon.getAttribute('aria-hidden'), 'true');
+    assert.ok(await when.evaluate(el =>
+      el.querySelector('svg').getBoundingClientRect().right < el.querySelector('.line-value').getBoundingClientRect().left));
     const monthMode = page.locator('[data-mode="month"]');
     const done = page.locator('#calApply');
     await when.click();

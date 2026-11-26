@@ -281,7 +281,7 @@ def create_app(settings=None, transport=None, now=lambda: datetime.now(timezone.
         rows, notes = [], {}
         for number, friday in enumerate(fridays):
             title = ('На эти выходные' if today.weekday() < 5 else 'На ближайшие выходные') if number == 0 else 'На следующие выходные'
-            rows.append(dict(key=f'weekend{number + 1}', title=title, hint=f'{showcase.date_span(friday, friday + timedelta(days=2))}, без отпуска',
+            rows.append(dict(key=f'weekend{number + 1}', title=title, hint=f'{showcase.date_span(friday, friday + timedelta(days=2))}',
                              items=showcase.one_per_city(showcase.weekend_trips(offers, friday, calendar))))
         if window:
             trips = showcase.window_trips(offers, window, calendar)

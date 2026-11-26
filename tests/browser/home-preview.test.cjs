@@ -28,7 +28,7 @@ function home(origin) {
     rows: [
       { key: 'hot', title: 'Ближайшие вылеты', kind: 'pass', items },
       { key: 'weekend-1', title: 'Первые выходные', hint: '10–12 марта', items },
-      { key: 'weekend-2', title: 'Вторые выходные', hint: '17–19 марта', items },
+      { key: 'weekend-2', title: 'Вторые выходные', hint: '17–19 марта, без отпуска', items },
       { key: 'budget10000', title: 'До 10 000 ₽', hint: 'От 5 000 до 10 000 ₽ туда и обратно', items },
       { key: 'holidays', title: 'Каникулы', hint: 'Праздничные дни', items },
     ],
@@ -115,6 +115,9 @@ test('Карточки показывают логотипы, а подборк�
   await second.click();
   assert.equal(await second.getAttribute('aria-pressed'), 'true');
   assert.equal(await weekends.getByText('Без отпуска', { exact: true }).count(), 0);
+  assert.equal(await page.locator('[data-quick="noLeave"]').innerText(), 'На выходные');
+  await weekends.locator('.row-all').click();
+  assert.doesNotMatch(await page.locator('#results .source').innerText(), /без отпуска/iu);
 });
 
 test('Бюджетная подборка без подписи с диапазоном и с ценой под городом', async t => {
@@ -160,7 +163,7 @@ test('Каникулы учитывают отпуск до цены тольк�
   const order = ['KUF', 'AER', 'PEE', 'UFA', 'OVB'];
   assert.deepEqual(await row.locator('[data-open]').evaluateAll(nodes => nodes.map(el => el.dataset.open)), order);
   assert.deepEqual(await row.locator('.tile-note').allTextContents(),
-    ['Без отпуска', '1 день отпуска', '1 день отпуска', 'Дни отпуска неизвестны', 'Дни отпуска неизвестны']);
+    ['1 день отпуска', '1 день отпуска', 'Дни отпуска неизвестны', 'Дни отпуска неизвестны']);
   await row.locator('.row-all').click();
   const results = page.locator('#results');
   const ids = () => results.locator('[data-offer]').evaluateAll(nodes => nodes.map(el => el.dataset.offer));
