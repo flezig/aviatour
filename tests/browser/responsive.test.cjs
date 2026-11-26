@@ -34,6 +34,35 @@ async function rect(page, selector) {
   return box;
 }
 
+test('Поиск городов обновляет карточки на месте по городу, стране и коду аэропорта', async t => {
+  for (const [engine, width] of [[chromium, 1280], [webkit, 320]]) {
+    const browser = await engine.launch();
+    t.after(() => browser.close());
+    const page = await openPage(browser, { width, height: 720 }, width === 320);
+    await visit(page, '/city/');
+    const query = page.getByRole('searchbox');
+    const results = page.locator('#cityResults');
+    assert.equal(await page.getByRole('button', { name: 'Найти', exact: true }).count(), 0);
+    await page.evaluate(() => { window.catalogPage = true; });
+    for (const [value, code] of [['Казань', 'KZN'], ['ОАЭ', 'DXB'], ['SVO', 'MOW']]) {
+      await query.fill(value);
+      await page.waitForURL(url => url.searchParams.get('q') === value);
+      await results.locator('[data-city="' + code + '"]').waitFor();
+      assert.equal(await page.evaluate(() => window.catalogPage), true);
+    }
+    await query.press('Enter');
+    await page.waitForFunction(() => document.activeElement?.dataset.city === 'MOW');
+
+    const fallback = await browser.newPage({ javaScriptEnabled: false });
+    await fallback.goto(base + '/city/');
+    const fallbackQuery = fallback.getByRole('searchbox');
+    await fallbackQuery.fill('Казань');
+    await fallbackQuery.press('Enter');
+    await fallback.waitForURL(url => url.searchParams.get('q') === 'Казань');
+    await fallback.locator('#cityResults [data-city="KZN"]').waitFor();
+  }
+});
+
 test('iPhone и один экран Duo: страницы, навигация, ввод без увеличения и доступный диалог', async t => {
   const safari = await webkit.launch(), chrome = await chromium.launch();
   t.after(() => Promise.all([safari.close(), chrome.close()]));

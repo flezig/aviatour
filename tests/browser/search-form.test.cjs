@@ -194,8 +194,7 @@ for (const mobile of [false, true]) {
     });
     await searchParams(page, () => shortcut.press('Enter'));
     assert.deepEqual(await page.evaluate(() => [scrollY, window.quickSearchScrollCalls]), [position, 0]);
-    assert.deepEqual(await page.locator('#results .source').allTextContents(),
-      ['Цены ориентировочные. Проверьте актуальную цену на Aviasales']);
+    assert.equal(await page.locator('#results').getByText('Цены ориентировочные', { exact: false }).count(), 0);
     assert.equal(await shortcut.evaluate(el => el === document.activeElement), true);
     assert.equal(await chip('near').getAttribute('aria-pressed'), 'true');
     assert.deepEqual(filters(), ['near']);
