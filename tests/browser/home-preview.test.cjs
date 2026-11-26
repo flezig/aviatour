@@ -187,11 +187,18 @@ test('Талон на ПК показывает маршрут, даты и це
   assert.match(await tile.innerText(), /2 ночи/u);
   assert.match(await tile.locator('.pass-price').innerText(), /^от /);
   assert.doesNotMatch(await tile.innerText(), /дешевле обычного/u);
-  await tile.locator('[data-fav]').click();
-  assert.equal(await tile.locator('[data-fav]').getAttribute('aria-pressed'), 'true');
+  assert.equal(await tile.locator('[data-fav]').count(), 0);
   assert.equal(await tile.locator('.city-rating:visible').count(), 0);
   await tile.locator('[data-open]').press('Enter');
-  await page.locator('#detail[open]').waitFor();
+  const detail = page.locator('#detail[open]');
+  await detail.waitFor();
+  assert.equal(await detail.locator('nav').count(), 0);
+  const url = page.url();
+  await detail.getByText('О цене и времени', { exact: true }).press('Enter');
+  assert.equal(await detail.locator('.fare-explanation').getAttribute('open'), '');
+  assert.equal(page.url(), url);
+  await detail.locator('[data-fav]').click();
+  assert.equal(await detail.locator('[data-fav]').getAttribute('aria-pressed'), 'true');
 });
 
 test('Туры открывают Travelata по выбранным городу и стране на 320 пикселях', async t => {
