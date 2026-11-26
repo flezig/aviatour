@@ -888,7 +888,7 @@ body:has(.rating-directory) .top { background: white; box-shadow: 0 0 0 100vmax 
 .rating-document a, .city-rating-report a { text-underline-offset: 3px; }
 .city-rating-report { scroll-margin-block-start: 12px; }
 .city-rating-report .rating-lead { margin-top: 18px; }
-.city-rating-report dl { display: grid; gap: 12px; margin: 16px 0; }
+.city-rating-report dl { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; margin: 16px 0; }
 .city-rating-report dl > div { padding-top: 12px; border-top: 1px solid var(--line); }
 .city-rating-report dt { font-weight: 600; }
 .city-rating-report dd { margin: 3px 0 0; }

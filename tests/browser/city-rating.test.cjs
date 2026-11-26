@@ -142,3 +142,26 @@ for (const mobile of [false, true]) {
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
   });
 }
+
+test('широкая таблица маршрутов прокручивается внутри рейтинга на телефоне', async t => {
+  const browser = await webkit.launch();
+  t.after(() => browser.close());
+  const page = await browser.newPage({ isMobile: true, hasTouch: true, viewport: { width: 375, height: 812 } });
+  const url = new URL('/season/KGD?month=12&year=2026', base);
+  await page.goto(url.href);
+  const evidence = page.locator('#city-rating .rating-evidence');
+  await evidence.locator('summary').first().tap();
+
+  // The layout also applies after the current route observations expire.
+  await evidence.locator('dl').evaluate(list => {
+    const row = list.appendChild(document.createElement('div'));
+    row.innerHTML = `<dt>Передвижение</dt><dd><details class="rating-comparison">
+      <summary>Время пешком</summary><div class="rating-comparison-scroll"><table><tbody><tr>
+      <th>Кафедральный собор</th><td>Из гостиницы на Октябрьской улице</td><td>Из гостиницы на Московском проспекте</td>
+      </tr></tbody></table></div></details></dd>`;
+  });
+  await evidence.getByText('Время пешком', { exact: true }).tap();
+  const scroller = evidence.locator('details[open] .rating-comparison-scroll').last();
+  assert.equal(await scroller.evaluate(el => el.scrollWidth > el.clientWidth), true);
+  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
+});
