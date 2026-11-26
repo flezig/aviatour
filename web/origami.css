@@ -4,10 +4,7 @@ header.top { display: flex; flex-direction: column; align-items: flex-start; jus
 .top .brand { min-height: 36px; }
 .brand-beta {
   flex: none;
-  padding: 4px 7px;
-  border-radius: var(--r-chip);
-  background: var(--card);
-  color: var(--ink);
+  color: var(--on-photo);
   font: 600 11px/1.2 var(--f-text);
 }
 .service-nav { max-width: 100%; }
@@ -20,8 +17,8 @@ header.top { display: flex; flex-direction: column; align-items: flex-start; jus
 .service-tabs #tab-cars { background:#444d57; border-color:#87929c; }
 .service-tabs #tab-cars:hover { background:#525c66; }
 .service-tabs #tab-cars[aria-selected="true"] { background:#59636e; border-color:white; }
-.car-tab-label { display:grid; gap:2px; text-align:left; }
-.car-tab-label small { font-size:10px; font-weight:500; color:#f0f2f5; white-space:nowrap; }
+.service-tab-label { display:grid; gap:2px; text-align:left; }
+.service-tab-label small { font-size:10px; font-weight:500; color:#f0f2f5; white-space:nowrap; }
 .service-tabs button:focus-visible { outline:2px solid #fff; outline-offset:-3px; }
 .service-tabs img { width:22px; height:22px; object-fit:contain; }
 body.other-service :is(#results,#showcase), .service-panel[hidden], #flight-service[hidden] { display:none; }
@@ -32,9 +29,9 @@ body.other-service :is(#results,#showcase), .service-panel[hidden], #flight-serv
   .service-tabs img { width:18px; height:18px; }
 }
 @media(max-width:365px) {
-  .service-tabs { gap:3px; }
+  .service-tabs { gap:3px; flex-wrap:wrap; }
   .service-tabs button { padding:0 7px; gap:3px; font-size:12px; }
-  .service-tabs img { width:16px; height:16px; }
+  .service-tabs img { display:none; }
 }
 .service-form { display: grid; grid-template-columns: 1.4fr repeat(3,minmax(0,1fr)) auto; gap: 0; align-items:center;
   padding: 8px; border-radius: var(--r-pass); background: var(--card); box-shadow: var(--sh-pass); }
@@ -49,4 +46,44 @@ body.other-service .footer { margin-top: 5rem; }
   .service-form { grid-template-columns:1fr 1fr; gap:12px; padding:16px; }
   .service-form label { padding:0; border:0; }
   .service-form button { grid-column:1/-1; }
+}
+
+.stay-search {
+  display: grid;
+  grid-template-columns: minmax(180px, 1.6fr) repeat(3, minmax(112px, 1fr)) auto;
+  align-items: stretch;
+  padding: 8px;
+  border-radius: var(--r-pass);
+  background: var(--card);
+  box-shadow: var(--sh-pass);
+}
+.stay-field {
+  display: grid;
+  align-content: center;
+  gap: 3px;
+  min-width: 0;
+  min-height: 52px;
+  padding: 6px 12px;
+  border-inline-end: 1px solid var(--line);
+  color: var(--ink);
+  text-align: start;
+}
+.stay-field span { font-size: var(--fs-cap); color: var(--ink-2); font-weight: 600; }
+.stay-field b { overflow-wrap: anywhere; }
+.stay-field select { max-width: 100%; padding: 0; border: 0; background: var(--card); color: var(--ink); font: 600 16px var(--f-text); }
+button.stay-field:hover { background: var(--fill); }
+.stay-guests { border: 0; }
+.stay-meta { padding: 8px 12px; margin-top: 8px; width: fit-content; max-width: 100%; background: var(--card); border-radius: 8px; }
+.stay-meta > p { margin: 0; }
+.stay-meta > p + p:not([hidden]) { margin-top: 2px; }
+#stayStatus { color: var(--ink); }
+#stayCities .sheet-body { padding: 12px 16px max(12px, env(safe-area-inset-bottom)); }
+#stayCityQuery { width: 100%; min-height: 44px; margin-bottom: 8px; padding: 0 12px; border: 1px solid var(--line-strong); border-radius: 8px; font: inherit; }
+#stayCityList .airport-option { min-height: 44px; }
+@media (max-width: 899px) {
+  .stay-search { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .stay-place, .stay-guests, .stay-submit { grid-column: 1 / -1; }
+  .stay-place, .stay-date + .stay-date { border-inline-end: 0; }
+  .stay-field { border-bottom: 1px solid var(--line); }
+  .stay-submit { margin-top: 8px; }
 }

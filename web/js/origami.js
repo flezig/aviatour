@@ -9,7 +9,7 @@ const lead = intro.querySelector('.intro-lead');
 const labels = {
   stays: ['Где остановиться', 'Выберите город, даты проживания и количество гостей.'],
   cars: ['Аренда авто', 'Тестируем раздел и решаем, подключать ли поиск авто.'],
-  tours: ['Куда поехать в тур', 'Выберите направление, даты поездки и количество туристов.']
+  tours: ['Туры в разработке', 'Пока можно найти билеты туда и обратно для самостоятельной поездки.']
 };
 let selected = 'flights';
 function sizeHero() {
@@ -32,6 +32,7 @@ function choose(tab) {
   }
   document.body.classList.toggle('other-service', !flight);
   intro.hidden = flight;
+  lead.hidden = selected === 'stays' && document.getElementById('stayCities') !== null;
   if (!flight) [heading.textContent, lead.textContent] = labels[selected];
   requestAnimationFrame(sizeHero);
 }
@@ -43,6 +44,11 @@ for (const [i, tab] of tabs.entries()) {
     e.preventDefault(); tabs[n].focus(); choose(tabs[n]);
   });
 }
+document.getElementById('toursToFlights')?.addEventListener('click', () => {
+  const flights = document.getElementById('tab-flights');
+  choose(flights);
+  flights.focus();
+});
 function futureDay(days) {
   const d = new Date(); d.setDate(d.getDate()+days);
   return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');

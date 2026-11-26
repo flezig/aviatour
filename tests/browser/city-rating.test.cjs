@@ -23,18 +23,24 @@ for (const mobile of [false, true]) {
     const browser = await (mobile ? webkit : chromium).launch();
     t.after(() => browser.close());
     const context = await browser.newContext(mobile
-      ? { isMobile: true, hasTouch: true, viewport: { width: 375, height: 812 } }
+      ? { isMobile: true, hasTouch: true, reducedMotion: 'reduce', viewport: { width: 375, height: 812 } }
       : { viewport: { width: 1280, height: 850 } });
     await context.route('**/api/v1/origin', route => route.fulfill({ json: origin }));
     await context.route('**/api/v1/home?*', route => route.fulfill({ json: home }));
     const page = await context.newPage();
-    page.setDefaultTimeout(7000);
+    await page.clock.setFixedTime(new Date('2026-11-25T12:00:00Z'));
     const details = [];
     page.on('request', req => {
       if (new URL(req.url()).pathname === '/api/v1/city-rating/KZN') details.push(req.url());
     });
     await page.goto(base);
-    const card = page.locator('.tile--pass .city-rating').first();
+    const feedBadge = page.locator('.tile--pass .city-rating').first();
+    if (mobile) {
+      await page.locator('[data-open="kzn-test"]').first().tap();
+      await page.locator('#detail:modal').waitFor();
+      assert.equal(await feedBadge.isVisible(), false);
+    }
+    const card = mobile ? page.locator('#detail .city-rating') : feedBadge;
     const panel = page.locator('#city-rating-popover:popover-open');
     await card.waitFor();
     assert.equal(await card.getAttribute('data-rating-month'), '12');
@@ -51,11 +57,11 @@ for (const mobile of [false, true]) {
       assert.match(await panel.innerText(), /Росстат/);
       assert.match(await card.innerText(), /7,0/);
     }
-    assert.equal(await page.locator('#detail').isVisible(), false);
+    assert.equal(await page.locator('#detail').isVisible(), mobile);
     const box = await panel.boundingBox();
     assert.ok(box.x >= 0 && box.x + box.width <= page.viewportSize().width + 1);
     if (mobile) {
-      await card.tap();
+      await panel.getByRole('button', { name: 'Закрыть рейтинг' }).tap();
     } else {
       await page.keyboard.press('Escape');
       await card.focus();
@@ -63,7 +69,7 @@ for (const mobile of [false, true]) {
       await page.keyboard.press('Escape');
     }
     await panel.waitFor({ state: 'hidden' });
-    await page.locator('[data-open="kzn-test"]').first().click();
+    if (!mobile) await page.locator('[data-open="kzn-test"]').first().click();
     const detailBadge = page.locator('#detail .city-rating');
     if (mobile) await detailBadge.tap(); else await detailBadge.hover();
     await panel.locator('tbody').waitFor();

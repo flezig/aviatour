@@ -15,15 +15,26 @@ for (const [engine, width] of [[chromium, 1280], [webkit, 375]]) {
       await Promise.all(images.map(image => image.decode()));
       return images.every(image => image.currentSrc.endsWith('.svg'));
     }));
-    await form.locator('[name=place]').selectOption('DXB');
+    await form.locator('.stay-place').click();
+    await page.getByRole('searchbox', { name: 'Найти город' }).fill('дуб');
+    await page.getByRole('button', { name: 'Дубай', exact: true }).click();
     await form.locator('[name=adults]').selectOption('3');
-    const date = new Date().getFullYear() + 1 + '-05-05';
-    await form.locator('[name=start]').fill(date);
-    const checkout = date.slice(0, -2) + '06';
-    assert.equal(await form.locator('[name=end]').getAttribute('min'), checkout);
-    await form.locator('[name=end]').fill(checkout);
+    await form.locator('[data-stay-date=checkin]').click();
+    const calendar = page.locator('#stayCalendar');
+    const checkinButton = calendar.locator('[data-day]:not([disabled])').first();
+    const date = await checkinButton.getAttribute('data-day');
+    await checkinButton.click();
+    const checkoutButton = calendar.locator('[data-day]:not([disabled])').first();
+    const checkout = await checkoutButton.getAttribute('data-day');
+    assert.ok(checkout > date);
+    await checkoutButton.click();
+    await calendar.locator('[data-apply]').click();
+    await page.locator('#tab-flights').click();
+    await page.locator('#tab-stays').click();
+    assert.equal(await form.locator('#stayPlace').innerText(), 'Дубай');
+    assert.equal(await form.locator('[name=adults]').inputValue(), '3');
     await page.route('**/go?*', route => route.fulfill({ body: 'OK' }));
-    await form.getByRole('button').click();
+    await form.getByRole('button', { name: 'Найти жильё на Авиасейлс' }).click();
     await page.waitForURL('**/go?*');
     const redirect = new URL(page.url()).searchParams;
     assert.equal(redirect.get('s'), 'dxb-home-stay');
@@ -34,3 +45,34 @@ for (const [engine, width] of [[chromium, 1280], [webkit, 375]]) {
     });
   });
 }
+
+test('Из билета в жильё передаются местная дата прилёта и состав семьи', async t => {
+  const browser = await chromium.launch();
+  t.after(() => browser.close());
+  const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+  const year = new Date().getFullYear() + 1;
+  const base = process.env.AVIATOR_TEST_URL ?? 'http://localhost:8000';
+  const offer = {
+    id: '0123456789abcdef0123456789abcdef', city: 'Казань', city_code: 'KZN', destination_airport: 'KZN',
+    origin_airport: 'SVO', origin_city_code: 'MOW', origin_city: 'Москва', country: 'Россия', country_code: 'RU',
+    origin_timezone: 'Europe/Moscow', destination_timezone: 'Europe/Moscow',
+    departure_at: `${year}-12-04T23:30:00+03:00`, return_at: `${year}-12-07T19:00:00+03:00`,
+    duration_to: 120, duration_back: 100, transfers: 0, return_transfers: 0,
+    price_minor: 700000, airline: 'SU', flight_number: '100', received_at: new Date().toISOString()
+  };
+  await page.route('**/api/v1/search/web?*', route => route.fulfill({ json: { offers: [offer], received_at: offer.received_at } }));
+  await page.goto(base + '/?from=SVO&fc=MOW&to=KZN&tc=KZN&adults=2&ages=6');
+  await page.locator('.offer-open').click();
+  await page.getByRole('link', { name: /Найти жильё на эти даты/ }).click();
+  await page.waitForURL('**/?service=stays');
+  const form = page.locator('#hotelSearch');
+  await page.getByText('Казань', { exact: true }).first().waitFor();
+  assert.equal(await form.locator('#stayPlace').innerText(), 'Казань');
+  assert.match(await form.locator('#stayCheckin').innerText(), /5 декабря/);
+  assert.match(await page.locator('#stayNights').innerText(), /2 ночи/);
+  assert.match(await page.locator('#stayFamily').innerText(), /2 взрослых, 1 ребёнок.*6 лет.*добавьте на Авиасейлс/);
+  assert.equal(await form.locator('[name=adults]').inputValue(), '2');
+  await page.goBack();
+  await page.locator('#detail[open]').waitFor();
+  assert.equal(await page.locator('#detailTitle').innerText(), 'Казань');
+});
