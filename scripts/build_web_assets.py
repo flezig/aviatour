@@ -5,6 +5,7 @@
 из гидов по городам берутся только поля, которые показывает сайт.
 """
 import json
+import re
 import subprocess
 from pathlib import Path
 
@@ -44,11 +45,34 @@ def write_portrait_index(cities):
     (ROOT / 'web/data/portrait-index.json').write_text(json.dumps(index, ensure_ascii=False, indent=2) + '\n')
 
 
+def web_photo_credits():
+    path = OUT / 'credits-web.md'
+    web_credits = path.read_text() if path.exists() else ''
+    overrides = set(re.findall(r'^- \*\*([A-Z]{3})\*\*:', web_credits, re.M))
+    shared = (ROOT / 'Aviator/Resources/credits.md').read_text().replace('**GYD**', '**BAK**')
+    # A credit can include multiple paragraphs, e.g. separate authors of a sculpture and its photo.
+    blocks = re.split(r'(?=^- |^## )', shared, flags=re.M)
+    kept = []
+    for block in blocks:
+        city = re.match(r'- \*\*([A-Z]{3})\*\*:', block)
+        if city is None or city[1] not in overrides:
+            kept.append(block)
+    credits = ''.join(kept)
+    if 'MRV' in overrides:
+        credits = credits.replace(' MRV иллюстрирует регион Кавказских Минеральных Вод.', '')
+    return overrides, credits.rstrip() + '\n\n' + web_credits
+
+
 def main():
     inline_home_icons()
     OUT.mkdir(parents=True, exist_ok=True)
+    overrides, credits = web_photo_credits()
     for source in sorted(ASSETS.glob('*.imageset/photo.*')):
         name = CITY_CODES.get(source.parent.stem, source.parent.stem)
+        if name in overrides:
+            if not (OUT / f'{name}.jpg').is_file():
+                raise FileNotFoundError(f'Восстановите фото: python scripts/download_web_photos.py {name}')
+            continue
         # The hero fills the first screen; city photos are card-sized. Never upscale a smaller source.
         limit = min(1600 if name == 'hero' else 720, longest_side(source))
         subprocess.run(['sips', '-s', 'format', 'jpeg', '-s', 'formatOptions', '62', '-Z', str(limit), str(source), '--out', str(OUT / f'{name}.jpg')],
@@ -57,9 +81,7 @@ def main():
     cities = sorted(path.stem for path in OUT.glob('*.jpg') if len(path.stem) == 3 and path.stem.isupper())
     (OUT / 'manifest.json').write_text(json.dumps(cities) + '\n')
     write_portrait_index(cities)
-    web_credits = OUT / 'credits-web.md'
-    credits = (ROOT / 'Aviator/Resources/credits.md').read_text().replace('**GYD**', '**BAK**')
-    (OUT / 'credits.md').write_text(credits + ('\n' + web_credits.read_text() if web_credits.exists() else ''))
+    (OUT / 'credits.md').write_text(credits)
     # Link preview for messengers: the hero cropped to the 1200x630 card format.
     preview = ROOT / 'web/og.jpg'
     subprocess.run(['sips', '-s', 'format', 'jpeg', '-s', 'formatOptions', '70', '--resampleWidth', '1200', str(ASSETS / 'hero.imageset/photo.jpg'), '--out', str(preview)], check=True, capture_output=True)

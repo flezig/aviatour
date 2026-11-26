@@ -451,7 +451,12 @@ img { display: block; max-width: 100%; }
 .portrait > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: var(--photo-focus, center); }
 .portrait[data-city-code="IST"] { --photo-focus: 46% center; }
 .portrait[data-city-code="AYT"] { --photo-focus: 55% center; }
-.portrait[data-city-code="DLM"] { --photo-focus: 62% center; }
+/* Keep the landmark in view when a landscape photo fills the narrow city card. */
+.portrait[data-city-code="KRO"], .portrait[data-city-code="NBC"] { --photo-focus: 78% center; }
+.portrait[data-city-code="KWI"] { --photo-focus: 96% center; }
+.portrait[data-city-code="SYD"], .portrait[data-city-code="ZRH"] { --photo-focus: 21% center; }
+.portrait[data-city-code="SFO"] { --photo-focus: 28% center; }
+.portrait[data-city-code="PKV"] { --photo-focus: 78% center; }
 .portrait::after {
   content: '';
   position: absolute;
