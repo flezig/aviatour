@@ -198,20 +198,45 @@
     <section class="results" id="results" aria-label="Варианты" hidden></section>
   </main>
 
-  <footer class="wrap footer">
-    <nav aria-label="Информация"><a href="/#fav">Избранное</a>
-      <a href="/city/">Города</a>
-      <a href="/season/">Рейтинги и погода по месяцам</a>
-      <a href="/kuda/">Куда улететь</a>
-      <a href="/trip.html">Мои поездки</a>
-      <a href="/how-we-count.html">Как мы считаем</a>
-      <a href="/how-we-earn.html">Как мы зарабатываем</a>
-      <a href="/about.html">О проекте</a>
-      <a href="/privacy.html" data-metrika hidden>Конфиденциальность</a>
-      <a href="/credits.html">Авторы фото</a>
-    </nav>
-    <p class="caption">За покупки по ссылкам на Aviasales мы получаем комиссию.</p>
-    <p class="caption hero-credit">Фото в шапке: Мыс Сан-Лоренсу, Мадейра — <a href="https://commons.wikimedia.org/wiki/File:Ponta_de_S%C3%A3o_Louren%C3%A7o,_Madeira,_Portugal,_2019-05-28,_DD_01-09_PAN.jpg" target="_blank" rel="noopener">Diego Delso</a>, <a href="https://delso.photo/" target="_blank" rel="noopener">delso.photo</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>, уменьшено и кадрировано.</p>
+  <footer class="wrap footer footer--accordion">
+    <div class="footer-surface">
+      <h2 id="footerTitle">Об Aviator и поездках</h2>
+      <nav aria-labelledby="footerTitle">
+        <div class="footer-column">
+          <a class="footer-link" href="/#fav">Избранное<svg class="icon" aria-hidden="true"><use href="#ui-arrow-right"></use></svg></a>
+          <a class="footer-link" href="/trip.html">Мои поездки<svg class="icon" aria-hidden="true"><use href="#ui-arrow-right"></use></svg></a>
+          <a class="footer-link" href="/kuda/">Куда улететь<svg class="icon" aria-hidden="true"><use href="#ui-arrow-right"></use></svg></a>
+          <a class="footer-link" href="/city/">Все города<svg class="icon" aria-hidden="true"><use href="#ui-arrow-right"></use></svg></a>
+          <a class="footer-link" href="/season/">Рейтинги и погода<svg class="icon" aria-hidden="true"><use href="#ui-arrow-right"></use></svg></a>
+        </div>
+        <div class="footer-column">
+          <details>
+            <summary>Как мы считаем<svg class="icon" aria-hidden="true"><use href="#ui-chevron-down"></use></svg></summary>
+            <div class="footer-answer">
+              <p>Цена билета указана за одного взрослого туда и обратно. Для сравнения берём найденные цены по тому же маршруту, месяцу и длительности поездки. Перед покупкой цену и наличие мест можно проверить на Авиасейлс.</p>
+              <a href="/how-we-count.html">Подробнее о расчёте</a>
+            </div>
+          </details>
+          <details>
+            <summary>Как мы зарабатываем<svg class="icon" aria-hidden="true"><use href="#ui-chevron-down"></use></svg></summary>
+            <div class="footer-answer">
+              <p>За покупки по партнёрским ссылкам Aviator может получить комиссию. Билет вы оплачиваете у продавца, которого выбрали на Авиасейлс.</p>
+              <a href="/how-we-earn.html">О партнёрских ссылках</a>
+            </div>
+          </details>
+          <details>
+            <summary>О проекте<svg class="icon" aria-hidden="true"><use href="#ui-chevron-down"></use></svg></summary>
+            <div class="footer-answer">
+              <p>Aviator помогает выбрать город и даты поездки, сравнить стоимость перелётов и сохранить понравившиеся варианты.</p>
+              <a href="/about.html">Подробнее о проекте</a>
+            </div>
+          </details>
+          <a class="footer-link" href="/credits.html">Авторы фото<svg class="icon" aria-hidden="true"><use href="#ui-arrow-right"></use></svg></a>
+          <a class="footer-link" href="/privacy.html" data-metrika hidden>Конфиденциальность</a>
+        </div>
+      </nav>
+      <p class="caption hero-credit">Фото в шапке: Мыс Сан-Лоренсу, Мадейра — <a href="https://commons.wikimedia.org/wiki/File:Ponta_de_S%C3%A3o_Louren%C3%A7o,_Madeira,_Portugal,_2019-05-28,_DD_01-09_PAN.jpg" target="_blank" rel="noopener">Diego Delso</a>, <a href="https://delso.photo/" target="_blank" rel="noopener">delso.photo</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>, уменьшено и кадрировано.</p>
+    </div>
   </footer>
 
   <dialog id="passengerPicker" aria-labelledby="passengerTitle">
