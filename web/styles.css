@@ -1197,3 +1197,54 @@ body:has(.rating-sheet[open]) { overflow: hidden; }
   .tile--pass .cities { display: block; align-self: center; margin: 0; font-size: 16px; }
   .tile--pass .cities span + span::before { content: ' → '; }
 }
+
+
+/* Нижние разделы главной */
+.footer.footer--accordion {
+  display: block;
+  padding-top: 0;
+  border-top: 0;
+}
+.footer-surface {
+  padding: clamp(18px, 3vw, 36px);
+  border: 1px solid var(--line);
+  border-radius: var(--r-sheet);
+  background: var(--card);
+}
+.footer--accordion h2 { margin-bottom: 10px; }
+.footer--accordion nav { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0 28px; }
+.footer-column { min-width: 0; }
+.footer-column details { border-bottom: 1px solid var(--line); }
+.footer-column summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 48px;
+  padding-block: 10px;
+  color: var(--ink);
+  font-weight: 600;
+  list-style: none;
+  cursor: pointer;
+}
+.footer-column summary::-webkit-details-marker { display: none; }
+.footer-column summary .icon { flex: none; width: 18px; height: 18px; }
+.footer-column summary:hover, .footer-column details[open] > summary { color: var(--cobalt-hover); }
+.footer-column details[open] > summary .icon { transform: rotate(180deg); }
+.footer-answer { padding: 0 22px 13px 0; color: var(--ink-2); font-size: var(--fs-small); overflow-wrap: anywhere; }
+.footer--accordion .footer-answer > a { display: inline-flex; margin-inline-end: 14px; color: var(--cobalt); text-underline-offset: 3px; }
+.footer-answer .hero-credit { margin-top: 6px; }
+.footer-answer .hero-credit a { display: inline; min-height: 0; font-size: inherit; text-underline-offset: 2px; }
+@media (min-width: 700px) { .footer--accordion nav { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (horizontal-viewport-segments: 2) {
+  .footer-surface { max-width: calc(var(--pane-left) - 2 * var(--gutter)); }
+  .footer--accordion nav { grid-template-columns: minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .footer-column summary .icon { transition: transform 160ms ease; }
+  .footer-column details[open] > .footer-answer { animation: footer-answer-in 160ms ease-out; }
+}
+@keyframes footer-answer-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
