@@ -95,6 +95,7 @@ button.stay-field:hover { background: var(--fill); }
   box-shadow: var(--sh-pass);
   font-weight: 600;
 }
+#stayAllCities { grid-column: 1 / -1; min-height: 44px; border-radius: 8px; color: var(--ink); background: var(--card); font-weight: 600; }
 .stay-quick-city:hover { background: var(--fill); }
 .stay-quick-city img {
   width: 100%;

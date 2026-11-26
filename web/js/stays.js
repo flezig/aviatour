@@ -111,6 +111,7 @@ function setupStays() {
   }).join('');
   guests.addEventListener('change', () => { stay.adults = Number(guests.value); changed(); });
   place.addEventListener('click', openCities);
+  $('stayAllCities').addEventListener('click', openCities);
   query.addEventListener('input', showCities);
   query.addEventListener('keydown', event => {
     if (event.key !== 'Enter' || event.isComposing) return;
