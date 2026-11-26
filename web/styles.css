@@ -399,6 +399,9 @@ img { display: block; max-width: 100%; }
 @media (min-width: 900px) { .results-head .sort-menus { order: 0; flex-basis: auto; } }
 .grid { display: grid; gap: var(--s-5) var(--s-4); grid-template-columns: repeat(auto-fill, minmax(min(100%, 176px), 1fr)); padding-top: var(--s-2); }
 .status-actions { display: flex; flex-wrap: wrap; gap: var(--s-2); justify-content: center; }
+.status:has(> .budget-hint:not(:empty)) > :is(.icon, h3, p) { display: none; }
+.budget-hint:not(:empty) { display: grid; gap: var(--s-3); justify-items: center; }
+.budget-hint:empty { display: none; }
 
 /* Общая фотокарточка города. Подпись переносится на соседнюю вертикальную строку. */
 .portrait {
