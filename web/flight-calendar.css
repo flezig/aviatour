@@ -27,6 +27,10 @@
 .cal-prev,.cal-next {position:absolute;top:0}.cal-prev {left:0}.cal-next {right:0}
 .week,.days {display:grid;grid-template-columns:repeat(7,minmax(0,1fr));text-align:center}
 .week {font:500 11px/23px var(--f-text);color:#607084}
+.cal-grid .week > :is(:nth-child(6), :nth-child(7)),
+.cal-grid .days > button:is(:nth-child(7n + 6), :nth-child(7n)):not(:disabled, .edge) > span {
+  color: #a33759;
+}
 .days button {height:31px;font-size:14px;font-weight:500}
 #flightCalendar button:disabled {color:#a1aab5;cursor:default}
 .days .between {background:#e4ebff}.days .edge,#flightCalendar .days .edge:disabled {border-radius:8px;background:var(--cobalt);color:white}

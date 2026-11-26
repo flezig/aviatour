@@ -3,6 +3,7 @@ import { addDays, monthLabel, fmtMoney, zoned } from './format.js';
 const byId = id => document.getElementById(id);
 const utc = key => new Date(key + 'T00:00:00Z');
 const dayFormat = new Intl.DateTimeFormat('ru-RU', { day:'numeric', month:'short', timeZone:'UTC' });
+const accessibleDayFormat = new Intl.DateTimeFormat('ru-RU', { dateStyle: 'full', timeZone: 'UTC' });
 export const shortDay = key => dayFormat.format(utc(key)).replace(/\.$/, '');
 function nextMonth(month, offset) {
   const date = utc(month + '-01');
@@ -71,7 +72,7 @@ export function openCalendar(trigger, query, months, today, apply, loadFares) {
       const amount = price ? '<small>' + compact.format(price / 100000) + '</small>' : '';
       const back = returns.get(key);
       const quote = price ? (back ? 'от ' : '') + fmtMoney(price) + (back ? ', возврат ' + shortDay(back) : '') : '';
-      days += '<button type="button" data-day="'+key+'" class="'+cls+(price && price === minimum ? ' lowest' : '')+'" aria-label="'+shortDay(key)+(quote ? ', '+quote : '')+'" '+(quote ? 'title="'+quote+'" ' : '')+(key<lo||key>hi?'disabled':'')+'><span>'+i+'</span>'+amount+'</button>';
+      days += '<button type="button" data-day="'+key+'" class="'+cls+(price && price === minimum ? ' lowest' : '')+'" aria-label="'+accessibleDayFormat.format(utc(key))+(quote ? ', '+quote : '')+'" '+(quote ? 'title="'+quote+'" ' : '')+(key<lo||key>hi?'disabled':'')+'><span>'+i+'</span>'+amount+'</button>';
     }
     return '<section><h3>'+monthLabel(m)+'</h3><div class="week">'+['Пн','Вт','Ср','Чт','Пт','Сб','Вс'].map(d=>'<span>'+d+'</span>').join('')+'</div><div class="days">'+days+'</div></section>';
   }
