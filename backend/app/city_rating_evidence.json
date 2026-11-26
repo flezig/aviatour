@@ -1035,5 +1035,27 @@
         ]
       }
     }
+  },
+  "TLL": {
+    "fare": {
+      "amount": 2,
+      "currency": "EUR",
+      "year": 2026,
+      "checked": "2026-11-26",
+      "source": "Таллин, городской транспорт",
+      "url": "https://tallinn.pilet.ee/en/faq",
+      "note": "Обычный взрослый билет действует один час. Возможна оплата по QR или с транспортной карты."
+    }
+  },
+  "DXB": {
+    "fare": {
+      "amount": 3,
+      "currency": "AED",
+      "year": 2026,
+      "checked": "2026-11-26",
+      "source": "Управление дорог и транспорта Дубая (RTA)",
+      "url": "https://rta.ae/wps/portal/rta/ae/public-transport/Nol-Fares?lang=en",
+      "note": "По карте nol Silver внутри одной зоны. Поездки через несколько зон и покупка карты стоят отдельно."
+    }
   }
 }

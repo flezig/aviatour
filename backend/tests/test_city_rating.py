@@ -190,3 +190,33 @@ def test_published_observations_match_catalogue_dates_and_source_links():
         istanbul = rating.report("IST", month, 2026, TODAY)
         assert (istanbul["available"], istanbul["score"]) == (3, None)
         assert [c["key"] for c in istanbul["components"] if c["score"] is None] == ["cost"]
+
+
+@pytest.mark.parametrize(("code", "available", "score"), [
+    ("AER", 4, 7.8),
+    ("KGD", 4, 7.6),
+    ("PKV", 4, 7.8),
+    ("PAR", 3, None),
+    ("TLL", 3, None),
+])
+def test_verified_december_expansion_matches_public_rating(code, available, score):
+    checked = date(2026, 11, 26)
+    with TestClient(create_app(now=lambda: datetime(2026, 11, 26, 12, tzinfo=UTC))) as client:
+        index = client.get("/api/v1/city-rating-index?year=2026").json()
+        data = client.get(f"/api/v1/city-rating/{code}?month=12&year=2026").json()
+        page = client.get(f"/season/{code}?month=12&year=2026").text
+    assert (data["available"], data["score"]) == (available, score)
+    assert index[code][11] == str(available)
+    activities, cost, _, mobility = data["components"]
+    assert activities["score"] == 10 and len(activities["sources"]) == 10
+    assert mobility["score"] == 10 and "20 из 20" in mobility["fact"]
+    assert rating.ROUTES[code]["url"] in {link["url"] for link in mobility["sources"]}
+    assert "Посмотреть время пешком по маршрутам" in page
+    if score is None:
+        assert cost["score"] is None and cost["sources"]
+        assert rating.badge(code, 12, year=2026, today=checked) == ""
+    else:
+        formatted = str(score).replace(".", ",")
+        assert f"{formatted}<small>/10</small>" in page
+        assert f"{formatted}<small>/10</small>" in rating.badge(code, 12, year=2026, today=checked)
+    assert rating.report(code, 12, 2027, date(2027, 11, 26))["available"] == 1
