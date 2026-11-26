@@ -4984,16 +4984,21 @@
         11,
         12
       ],
-      "checked": "2026-11-18",
+      "checked": "2026-11-26",
       "valid_from": "2026-11-29",
-      "valid_until": "2026-12-06",
-      "note": "В афише — «Кот в сапогах». Даты показов: 29 ноября, 6 декабря.",
+      "valid_until": "2026-12-27",
+      "note": "29 ноября и 6 декабря — «Кот в сапогах». 19, 20, 26 и 27 декабря — «Ёжик и Ёлка».",
       "weekend_dates": [
         "2026-11-29",
-        "2026-12-06"
+        "2026-12-06",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
       ],
       "schedule_urls": [
-        "https://quicktickets.ru/kursk-teatr-kukol/e52"
+        "https://quicktickets.ru/kursk-teatr-kukol/e52",
+        "https://quicktickets.ru/kursk-teatr-kukol/e84"
       ]
     },
     {
@@ -5005,7 +5010,7 @@
         11,
         12
       ],
-      "checked": "2026-11-18",
+      "checked": "2026-11-26",
       "valid_from": "2026-11-21",
       "valid_until": "2026-12-26",
       "note": "21 ноября — «Все мыши любят сыр», 26 декабря — «Контрабас».",
@@ -5014,9 +5019,87 @@
         "2026-12-26"
       ],
       "schedule_urls": [
-        "https://quicktickets.ru/kursk-teatr-pushkina/e117",
-        "https://quicktickets.ru/kursk-teatr-pushkina/e81"
+        "https://quicktickets.ru/kursk-teatr-pushkina/e81",
+        "https://quicktickets.ru/kursk-teatr-pushkina/e117"
       ]
+    },
+    {
+      "name": "Знаменский собор",
+      "category": "history",
+      "source": "Знаменский мужской монастырь",
+      "url": "https://kursk-znamen-1.cerkov.ru/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Внешний осмотр собора со стороны Красной площади."
+    },
+    {
+      "name": "Сергиево-Казанский кафедральный собор",
+      "category": "history",
+      "source": "Реестр памятников архитектуры Русской православной церкви",
+      "url": "https://edh.psk-mp.ru/public/objects/object11602.html",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Внешний осмотр собора на улице Горького."
+    },
+    {
+      "name": "Первомайский парк",
+      "category": "nature",
+      "source": "Культурно-туристический портал Курской области",
+      "url": "https://welcomekursk.ru/overviews/104/kuda-skhodit-odnoi",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Открытые прогулочные аллеи у Красной площади."
+    },
+    {
+      "name": "Парк «Боева дача»",
+      "category": "nature",
+      "source": "Культурно-туристический портал Курской области",
+      "url": "https://welcomekursk.ru/overviews/104/kuda-skhodit-odnoi",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Прогулки по природному парку в долине Тускари."
+    },
+    {
+      "name": "Ресторан «Белая акация»",
+      "category": "food",
+      "source": "Культурно-туристический портал Курской области",
+      "url": "https://welcomekursk.ru/restaurants/789/restoran-belaya-akaciya",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Суджанские вареники и другие блюда местной кухни. По выходным с 12:00 до 23:00."
+    },
+    {
+      "name": "Ресторан «Диканька»",
+      "category": "food",
+      "source": "Ресторан «Диканька»",
+      "url": "https://xn--80aakqkbu4j.xn--p1ai/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Борщ с пампушками и вареники. Заведение включено в гастрономический справочник Курской области."
     }
   ],
   "USK": [

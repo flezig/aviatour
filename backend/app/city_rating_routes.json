@@ -4677,5 +4677,136 @@
     "router_info_url": "https://routing.openstreetmap.de/about.html",
     "attribution_url": "https://www.openstreetmap.org/copyright",
     "map_feedback_url": "https://www.openstreetmap.org/fixthemap"
+  },
+  "URS": {
+    "starts": [
+      {
+        "name": "Гостиница «Центральная», подход",
+        "lat": 51.7317166,
+        "lon": 36.1924253,
+        "url": "https://www.openstreetmap.org/node/1596388947",
+        "area": "улица Ленина"
+      },
+      {
+        "name": "Бизнес-отель «Престиж», подход",
+        "lat": 51.7294376,
+        "lon": 36.1868234,
+        "url": "https://www.openstreetmap.org/node/1620516001",
+        "area": "Ендовищенская улица"
+      }
+    ],
+    "places": [
+      {
+        "name": "Знаменский собор, наружный подход",
+        "lat": 51.7277198,
+        "lon": 36.1923756,
+        "url": "https://www.openstreetmap.org/node/428264498"
+      },
+      {
+        "name": "Сергиево-Казанский собор, подход к воротам",
+        "lat": 51.7355441,
+        "lon": 36.1963225,
+        "url": "https://www.openstreetmap.org/node/1677283509"
+      },
+      {
+        "name": "Первомайский парк, прогулочная аллея",
+        "lat": 51.7292327,
+        "lon": 36.1944438,
+        "url": "https://www.openstreetmap.org/node/14330436798"
+      },
+      {
+        "name": "Красная площадь, тротуар",
+        "lat": 51.7307378,
+        "lon": 36.1930537,
+        "url": "https://www.openstreetmap.org/node/3136509263"
+      },
+      {
+        "name": "Театр кукол, наружный подход",
+        "lat": 51.7292346,
+        "lon": 36.1902186,
+        "url": "https://www.openstreetmap.org/node/1123799289"
+      }
+    ],
+    "walk_seconds": [
+      [
+        418.3,
+        524.5,
+        329.4,
+        139.5,
+        343.3
+      ],
+      [
+        519.8,
+        1088.9,
+        563.8,
+        539.7,
+        293.7
+      ]
+    ],
+    "walk_metres": [
+      [
+        522.6,
+        655.8,
+        409.1,
+        171.8,
+        429.1
+      ],
+      [
+        649.6,
+        1358.3,
+        704.8,
+        674.4,
+        367.1
+      ]
+    ],
+    "walk_minutes": [
+      [
+        6.97,
+        8.74,
+        5.49,
+        2.33,
+        5.72
+      ],
+      [
+        8.66,
+        18.15,
+        9.4,
+        9.0,
+        4.89
+      ]
+    ],
+    "source": "Пешеходные маршруты FOSSGIS OSRM, © OpenStreetMap contributors",
+    "url": "https://routing.openstreetmap.de/routed-foot/table/v1/foot/36.1924253,51.7317166;36.1868234,51.7294376;36.1923756,51.7277198;36.1963225,51.7355441;36.1944438,51.7292327;36.1930537,51.7307378;36.1902186,51.7292346?sources=0;1&destinations=2;3;4;5;6&annotations=duration,distance&generate_hints=false",
+    "checked": "2026-11-26",
+    "valid_until": "2027-02-24",
+    "review_interval_days": 90,
+    "selection": "Два отеля в разных частях центрального района и пять ориентиров. Замер между пешеходными подходами.",
+    "selection_urls": [
+      "https://centralnayakursk.ru/",
+      "https://welcomekursk.ru/hotels/56/biznes-otel-prestizh"
+    ],
+    "saturday_local_times": [
+      "10:00",
+      "15:00"
+    ],
+    "time_zone": "Europe/Moscow",
+    "scope": "В оба субботних часа используется одна пешеходная сеть. Маршрут заканчивается у места на улице. Время осмотра, погода и временные перекрытия не учитываются.",
+    "city_validation": {
+      "city": "Курск",
+      "city_code": "URS",
+      "points_in_city": 7
+    },
+    "snap_metres": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "router_info_url": "https://routing.openstreetmap.de/about.html",
+    "attribution_url": "https://www.openstreetmap.org/copyright",
+    "map_feedback_url": "https://www.openstreetmap.org/fixthemap"
   }
 }
