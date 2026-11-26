@@ -47,7 +47,8 @@ for (const mobile of [false, true]) {
     const withinPhoto = await photo.evaluate(el => {
       const photo = el.getBoundingClientRect();
       const badge = el.querySelector('.city-rating--photo').getBoundingClientRect();
-      return Math.abs(photo.bottom - badge.bottom) < 1 && Math.abs(photo.right - badge.right) < 1;
+      return Math.abs(photo.bottom - badge.bottom) < 1 && Math.abs(photo.right - badge.right) < 1 &&
+        getComputedStyle(el).borderBottomRightRadius === '0px';
     });
     assert.equal(withinPhoto, true);
     assert.equal(await card.getAttribute('data-rating-month'), '12');
@@ -90,8 +91,21 @@ for (const mobile of [false, true]) {
     await page.locator('[data-row-all="hot"]').click();
     const resultBadge = page.locator('#results .offer .portrait > .city-rating--photo[data-rating-city="KZN"]');
     await resultBadge.waitFor();
+    const style = () => resultBadge.evaluate(el => {
+      const value = el.querySelector('.city-rating-value').getBoundingClientRect();
+      const photo = el.parentElement.getBoundingClientRect();
+      return {
+        corner: getComputedStyle(el.parentElement).borderBottomRightRadius,
+        textDecoration: getComputedStyle(el).textDecorationLine,
+        surface: getComputedStyle(el).backgroundColor,
+        fits: value.right < photo.right && value.bottom < photo.bottom,
+      };
+    });
+    const expected = { corner: '0px', textDecoration: 'none', surface: 'rgb(245, 246, 248)', fits: true };
+    assert.deepEqual(await style(), expected);
     if (mobile) await resultBadge.tap(); else await resultBadge.hover();
     await panel.locator('tbody').waitFor();
+    assert.deepEqual(await style(), expected);
     assert.equal(await page.locator('#detail').isVisible(), false);
   });
 }

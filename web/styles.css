@@ -843,17 +843,17 @@ a.month:hover .month-bar rect { fill: var(--cobalt); }
 .city-rating-value small { display: inline; font: inherit; color: inherit; }
 .portrait > .city-rating--photo {
   position: absolute; inset: auto 0 0 auto;
-  margin: 0; min-height: 27px; gap: 4px; padding: 4px max(8px, 8cqw) 4px 8px;
+  margin: 0; min-height: 27px; gap: 4px; padding: 4px 8px;
   border: 0; border-radius: 10px 0 0;
   background: var(--paper); color: var(--ink);
 }
 .city-rating--photo::after { content: ''; position: absolute; inset: -17px 0 0; }
 .city-rating--photo:focus-visible { outline-offset: -2px; }
-.portrait > .city-rating--photo:is(:hover, [aria-expanded="true"]) { background: var(--cobalt-soft); }
+/* Цвет подложки совпадает с карточкой, а край фото проходит над оценкой. */
+:is(.offer, .tile--pass) .portrait:has(> .city-rating--photo:not([hidden])) { border-bottom-right-radius: 0; }
 .city-rating-mark { font-size: 13px; line-height: 1; color: var(--cobalt); }
 .portrait:has(> .city-rating--photo:not([hidden])) > .portrait-country { bottom: 32px; }
 .tile--pass .portrait > .city-rating--photo { min-height: 24px; padding: 4px 5px; background: var(--card); }
-.tile--pass .city-rating--photo:is(:hover, [aria-expanded="true"]) { background: var(--cobalt-soft); }
 .tile--pass .city-rating--photo::after { top: -20px; }
 .tile--pass .city-rating--photo .city-rating-value { font-size: 10px; }
 .tile--pass .city-rating-mark,
