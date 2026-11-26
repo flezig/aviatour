@@ -202,6 +202,10 @@ def test_published_observations_match_catalogue_dates_and_source_links():
     ("IKT", 4, 7.0),
     ("DXB", 3, None),
     ("BKK", 3, None),
+    ("ВЛМ", 4, 6.8),
+    ("VGD", 4, 7.4),
+    ("BEG", 3, None),
+    ("AYT", 3, None),
 ])
 def test_verified_december_expansion_matches_public_rating(code, available, score):
     checked = date(2026, 11, 26)
@@ -224,6 +228,14 @@ def test_verified_december_expansion_matches_public_rating(code, available, scor
         assert f"{formatted}<small>/10</small>" in page
         assert f"{formatted}<small>/10</small>" in rating.badge(code, 12, year=2026, today=checked)
     assert rating.report(code, 12, 2027, date(2027, 11, 26))["available"] == 1
+
+
+def test_belgrade_free_transit_is_reported_without_a_cost_score():
+    cost = rating.report("BEG", 12, 2026, date(2026, 11, 26))["components"][1]
+    assert cost["score"] is None
+    assert "0 RSD за поездку" in cost["detail"]
+    assert "20 городов" in " ".join(cost["missing"])
+    assert any("tob.rs" in item["url"] for item in cost["sources"])
 
 
 def test_phuket_city_routes_and_partial_weekend_observations():

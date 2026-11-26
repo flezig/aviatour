@@ -2719,5 +2719,526 @@
     "router_info_url": "https://routing.openstreetmap.de/about.html",
     "attribution_url": "https://www.openstreetmap.org/copyright",
     "map_feedback_url": "https://www.openstreetmap.org/fixthemap"
+  },
+  "ВЛМ": {
+    "starts": [
+      {
+        "name": "Гостиница «У Золотых Ворот», подход с Большой Московской",
+        "lat": 56.1277643,
+        "lon": 40.4008552,
+        "url": "https://www.openstreetmap.org/node/1494160878",
+        "area": "квартал Золотых ворот"
+      },
+      {
+        "name": "Гостиница «Владимирский дворик», подход к зданию",
+        "lat": 56.1323164,
+        "lon": 40.4110331,
+        "url": "https://www.openstreetmap.org/node/1888417129",
+        "area": "Подбельского и восточная часть центра"
+      }
+    ],
+    "places": [
+      {
+        "name": "Никитская церковь, уличный подход с Княгининской",
+        "lat": 56.130522,
+        "lon": 40.3979964,
+        "url": "https://www.openstreetmap.org/way/197563033"
+      },
+      {
+        "name": "Старая аптека, наружный подход с Георгиевской улицы",
+        "lat": 56.1272041,
+        "lon": 40.4024361,
+        "url": "https://www.openstreetmap.org/node/5236023127"
+      },
+      {
+        "name": "Дмитриевский собор, подход по публичной дорожке",
+        "lat": 56.1292348,
+        "lon": 40.4110018,
+        "url": "https://www.openstreetmap.org/way/129295802"
+      },
+      {
+        "name": "Георгиевская улица, пешеходная часть",
+        "lat": 56.1267353,
+        "lon": 40.4022696,
+        "url": "https://www.openstreetmap.org/way/177215499"
+      },
+      {
+        "name": "Соборная площадь, подход к памятнику 850-летию Владимира",
+        "lat": 56.1290179,
+        "lon": 40.4078393,
+        "url": "https://www.openstreetmap.org/way/177218810"
+      }
+    ],
+    "walk_seconds": [
+      [
+        403.4,
+        124.6,
+        589.8,
+        172,
+        383.6
+      ],
+      [
+        766.1,
+        763,
+        394.2,
+        810.4,
+        432.7
+      ]
+    ],
+    "walk_metres": [
+      [
+        504,
+        155.7,
+        737.3,
+        215.1,
+        479.4
+      ],
+      [
+        955,
+        953.7,
+        492.6,
+        1013.1,
+        540.9
+      ]
+    ],
+    "walk_minutes": [
+      [
+        6.72,
+        2.08,
+        9.83,
+        2.87,
+        6.39
+      ],
+      [
+        12.77,
+        12.72,
+        6.57,
+        13.51,
+        7.21
+      ]
+    ],
+    "source": "Пешеходные маршруты FOSSGIS OSRM, © OpenStreetMap contributors",
+    "url": "https://routing.openstreetmap.de/routed-foot/table/v1/foot/40.4008552,56.1277643;40.4110331,56.1323164;40.3979964,56.130522;40.4024361,56.1272041;40.4110018,56.1292348;40.4022696,56.1267353;40.4078393,56.1290179?sources=0;1&destinations=2;3;4;5;6&annotations=duration,distance&generate_hints=false",
+    "checked": "2026-11-26",
+    "valid_until": "2027-02-24",
+    "review_interval_days": 90,
+    "selection": "Два отеля в разных частях центрального района и пять ориентиров. Замер между пешеходными подходами.",
+    "selection_urls": [
+      "https://vladimir-city.ru/nko-social/nko/1093/",
+      "https://collection.vladmuseum.ru/entity/WHITP/3273"
+    ],
+    "saturday_local_times": [
+      "10:00",
+      "15:00"
+    ],
+    "time_zone": "Europe/Moscow",
+    "scope": "В оба субботних часа используется одна пешеходная сеть. Маршрут заканчивается у места на улице. Время осмотра, погода и временные перекрытия не учитываются.",
+    "city_validation": {
+      "city": "Владимир",
+      "city_code": "ВЛМ",
+      "points_in_city": 7
+    },
+    "snap_metres": [
+      5.598809882,
+      7.309289958,
+      0,
+      9.177061782,
+      7.51794022,
+      3.698524363,
+      5.685090051
+    ],
+    "router_info_url": "https://routing.openstreetmap.de/about.html",
+    "attribution_url": "https://www.openstreetmap.org/copyright",
+    "map_feedback_url": "https://www.openstreetmap.org/fixthemap"
+  },
+  "VGD": {
+    "starts": [
+      {
+        "name": "Отель «Палисадъ», подход с Торговой площади",
+        "lat": 59.223678,
+        "lon": 39.8863213,
+        "url": "https://www.openstreetmap.org/way/60405807",
+        "area": "Торговая площадь у Кремля"
+      },
+      {
+        "name": "Отель «Англитеръ», подход с улицы Лермонтова",
+        "lat": 59.2194668,
+        "lon": 39.8952733,
+        "url": "https://www.openstreetmap.org/way/110521146",
+        "area": "улица Лермонтова и площадь Возрождения"
+      }
+    ],
+    "places": [
+      {
+        "name": "Кремлёвская площадь, пешеходная зона у кремля",
+        "lat": 59.2234509,
+        "lon": 39.8839288,
+        "url": "https://www.openstreetmap.org/way/382060574"
+      },
+      {
+        "name": "Музей кружева, подход с Кремлёвской площади",
+        "lat": 59.2238778,
+        "lon": 39.8847243,
+        "url": "https://www.openstreetmap.org/node/1869804597"
+      },
+      {
+        "name": "Дом Засецких, наружный подход к деревянному дому",
+        "lat": 59.223987,
+        "lon": 39.8762939,
+        "url": "https://www.openstreetmap.org/way/96911498"
+      },
+      {
+        "name": "Кировский сквер, уличный подход к аллеям",
+        "lat": 59.2209515,
+        "lon": 39.8984857,
+        "url": "https://www.openstreetmap.org/way/52437089"
+      },
+      {
+        "name": "Красный мост, пешеходная часть",
+        "lat": 59.2237316,
+        "lon": 39.901369,
+        "url": "https://www.openstreetmap.org/way/60412468"
+      }
+    ],
+    "walk_seconds": [
+      [
+        198.8,
+        91.6,
+        628.9,
+        778,
+        929.1
+      ],
+      [
+        798.2,
+        794.6,
+        1106.7,
+        277,
+        1003.5
+      ]
+    ],
+    "walk_metres": [
+      [
+        248.5,
+        114.7,
+        785.7,
+        970,
+        1161.3
+      ],
+      [
+        995.4,
+        991.1,
+        1380.7,
+        346.4,
+        1254.5
+      ]
+    ],
+    "walk_minutes": [
+      [
+        3.31,
+        1.53,
+        10.48,
+        12.97,
+        15.49
+      ],
+      [
+        13.3,
+        13.24,
+        18.45,
+        4.62,
+        16.73
+      ]
+    ],
+    "source": "Пешеходные маршруты FOSSGIS OSRM, © OpenStreetMap contributors",
+    "url": "https://routing.openstreetmap.de/routed-foot/table/v1/foot/39.8863213,59.223678;39.8952733,59.2194668;39.8839288,59.2234509;39.8847243,59.2238778;39.8762939,59.223987;39.8984857,59.2209515;39.901369,59.2237316?sources=0;1&destinations=2;3;4;5;6&annotations=duration,distance&generate_hints=false",
+    "checked": "2026-11-26",
+    "valid_until": "2027-02-24",
+    "review_interval_days": 90,
+    "selection": "Два отеля в разных частях центрального района и пять ориентиров. Замер между пешеходными подходами.",
+    "selection_urls": [
+      "https://www.turvologda.ru/"
+    ],
+    "saturday_local_times": [
+      "10:00",
+      "15:00"
+    ],
+    "time_zone": "Europe/Moscow",
+    "scope": "В оба субботних часа используется одна пешеходная сеть. Маршрут заканчивается у места на улице. Время осмотра, погода и временные перекрытия не учитываются.",
+    "city_validation": {
+      "city": "Вологда",
+      "city_code": "VGD",
+      "points_in_city": 7
+    },
+    "snap_metres": [
+      12.49441037,
+      10.67084722,
+      1.090602145,
+      21.77918714,
+      15.7401998,
+      5.127217093,
+      11.48829752
+    ],
+    "router_info_url": "https://routing.openstreetmap.de/about.html",
+    "attribution_url": "https://www.openstreetmap.org/copyright",
+    "map_feedback_url": "https://www.openstreetmap.org/fixthemap"
+  },
+  "BEG": {
+    "starts": [
+      {
+        "name": "Mama Shelter Belgrade, подход с улицы Князя Михаила",
+        "lat": 44.8200834,
+        "lon": 20.4539534,
+        "url": "https://www.openstreetmap.org/node/5438624053",
+        "area": "Князя Михаила и Калемегдан"
+      },
+      {
+        "name": "Moxy Belgrade Skadarlija, подход к зданию",
+        "lat": 44.8163992,
+        "lon": 20.4645261,
+        "url": "https://www.openstreetmap.org/way/392739058",
+        "area": "Скадарлия"
+      }
+    ],
+    "places": [
+      {
+        "name": "Белградская крепость, внешние Стамбульские ворота",
+        "lat": 44.822397,
+        "lon": 20.4521136,
+        "url": "https://www.openstreetmap.org/way/967197275"
+      },
+      {
+        "name": "Площадь Республики, пешеходный подход",
+        "lat": 44.8162496,
+        "lon": 20.4606311,
+        "url": "https://www.openstreetmap.org/way/1370293489"
+      },
+      {
+        "name": "Этнографический музей, подход со Студенческой площади",
+        "lat": 44.8198969,
+        "lon": 20.4563376,
+        "url": "https://www.openstreetmap.org/way/38575527"
+      },
+      {
+        "name": "Национальный театр, наружный подход со стороны площади",
+        "lat": 44.8168983,
+        "lon": 20.4608345,
+        "url": "https://www.openstreetmap.org/way/39701812"
+      },
+      {
+        "name": "Парк Калемегдан, пешеходная дорожка Большого Калемегдана",
+        "lat": 44.8203897,
+        "lon": 20.4513692,
+        "url": "https://www.openstreetmap.org/way/23678992"
+      }
+    ],
+    "walk_seconds": [
+      [
+        284.7,
+        649.7,
+        231.9,
+        642.4,
+        187.8
+      ],
+      [
+        1103.7,
+        357.9,
+        718.1,
+        323.4,
+        1079.1
+      ]
+    ],
+    "walk_metres": [
+      [
+        355.7,
+        811.9,
+        289.9,
+        803.2,
+        234.7
+      ],
+      [
+        1371,
+        439.4,
+        895.2,
+        401.3,
+        1340.9
+      ]
+    ],
+    "walk_minutes": [
+      [
+        4.75,
+        10.83,
+        3.87,
+        10.71,
+        3.13
+      ],
+      [
+        18.39,
+        5.96,
+        11.97,
+        5.39,
+        17.98
+      ]
+    ],
+    "source": "Пешеходные маршруты FOSSGIS OSRM, © OpenStreetMap contributors",
+    "url": "https://routing.openstreetmap.de/routed-foot/table/v1/foot/20.4539534,44.8200834;20.4645261,44.8163992;20.4521136,44.822397;20.4606311,44.8162496;20.4563376,44.8198969;20.4608345,44.8168983;20.4513692,44.8203897?sources=0;1&destinations=2;3;4;5;6&annotations=duration,distance&generate_hints=false",
+    "checked": "2026-11-26",
+    "valid_until": "2027-02-24",
+    "review_interval_days": 90,
+    "selection": "Два отеля в разных частях центрального района и пять ориентиров. Замер между пешеходными подходами.",
+    "selection_urls": [
+      "https://www.beograd.rs/en/discover-belgrade/a80019/Sights.html"
+    ],
+    "saturday_local_times": [
+      "10:00",
+      "15:00"
+    ],
+    "time_zone": "Europe/Belgrade",
+    "scope": "В оба субботних часа используется одна пешеходная сеть. Маршрут заканчивается у места на улице. Время осмотра, погода и временные перекрытия не учитываются.",
+    "city_validation": {
+      "city": "Белград",
+      "city_code": "BEG",
+      "points_in_city": 7
+    },
+    "snap_metres": [
+      39.44350703,
+      12.02295034,
+      0.5612418974,
+      5.052259225,
+      17.6596237,
+      18.57301257,
+      0
+    ],
+    "router_info_url": "https://routing.openstreetmap.de/about.html",
+    "attribution_url": "https://www.openstreetmap.org/copyright",
+    "map_feedback_url": "https://www.openstreetmap.org/fixthemap"
+  },
+  "AYT": {
+    "starts": [
+      {
+        "name": "Puding Marina Residence, подход со стороны Калеичи",
+        "lat": 36.8839812,
+        "lon": 30.7041455,
+        "url": "https://www.openstreetmap.org/node/3623376904",
+        "area": "Калеичи у старой гавани"
+      },
+      {
+        "name": "Sky Kamer Hotel, подход к отелю",
+        "lat": 36.8867528,
+        "lon": 30.701388,
+        "url": "https://www.openstreetmap.org/node/5223207325",
+        "area": "улица Кисла и площадь Республики"
+      }
+    ],
+    "places": [
+      {
+        "name": "Ворота Адриана, наружный подход из Калеичи",
+        "lat": 36.8852779,
+        "lon": 30.708544,
+        "url": "https://www.openstreetmap.org/way/91728341"
+      },
+      {
+        "name": "Часовая башня, пешеходный подход",
+        "lat": 36.8868392,
+        "lon": 30.7058385,
+        "url": "https://www.openstreetmap.org/way/431455145"
+      },
+      {
+        "name": "Башня Хыдырлык, наружный подход",
+        "lat": 36.8812302,
+        "lon": 30.7036536,
+        "url": "https://www.openstreetmap.org/way/110321832"
+      },
+      {
+        "name": "Минарет Йивли, наружный подход к комплексу",
+        "lat": 36.8865095,
+        "lon": 30.7046683,
+        "url": "https://www.openstreetmap.org/way/1063659246"
+      },
+      {
+        "name": "Музей Калеичи, подход со стороны улицы Кочатепе",
+        "lat": 36.8840816,
+        "lon": 30.707878,
+        "url": "https://www.openstreetmap.org/node/4446644395"
+      }
+    ],
+    "walk_seconds": [
+      [
+        450.6,
+        321.4,
+        324.7,
+        301.2,
+        374.1
+      ],
+      [
+        666.2,
+        344.1,
+        810.3,
+        288.8,
+        697.5
+      ]
+    ],
+    "walk_metres": [
+      [
+        563.3,
+        401.6,
+        405.8,
+        376.6,
+        467.6
+      ],
+      [
+        832.6,
+        429.9,
+        1012.6,
+        360.5,
+        871.6
+      ]
+    ],
+    "walk_minutes": [
+      [
+        7.51,
+        5.36,
+        5.41,
+        5.02,
+        6.24
+      ],
+      [
+        11.1,
+        5.74,
+        13.5,
+        4.81,
+        11.62
+      ]
+    ],
+    "source": "Пешеходные маршруты FOSSGIS OSRM, © OpenStreetMap contributors",
+    "url": "https://routing.openstreetmap.de/routed-foot/table/v1/foot/30.7041455,36.8839812;30.701388,36.8867528;30.708544,36.8852779;30.7058385,36.8868392;30.7036536,36.8812302;30.7046683,36.8865095;30.707878,36.8840816?sources=0;1&destinations=2;3;4;5;6&annotations=duration,distance&generate_hints=false",
+    "checked": "2026-11-26",
+    "valid_until": "2027-02-24",
+    "review_interval_days": 90,
+    "selection": "Два отеля в разных частях центрального района и пять ориентиров. Замер между пешеходными подходами.",
+    "selection_urls": [
+      "https://www.antalya.bel.tr/en/kaleici"
+    ],
+    "saturday_local_times": [
+      "10:00",
+      "15:00"
+    ],
+    "time_zone": "Europe/Istanbul",
+    "scope": "В оба субботних часа используется одна пешеходная сеть. Маршрут заканчивается у места на улице. Время осмотра, погода и временные перекрытия не учитываются.",
+    "city_validation": {
+      "city": "Анталья",
+      "city_code": "AYT",
+      "points_in_city": 7
+    },
+    "snap_metres": [
+      6.480417599,
+      11.74532897,
+      1.338826715,
+      6.430901745,
+      29.33270827,
+      4.838931782,
+      0.6291051537
+    ],
+    "router_info_url": "https://routing.openstreetmap.de/about.html",
+    "attribution_url": "https://www.openstreetmap.org/copyright",
+    "map_feedback_url": "https://www.openstreetmap.org/fixthemap"
   }
 }
