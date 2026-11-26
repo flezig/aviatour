@@ -304,6 +304,7 @@ img { display: block; max-width: 100%; }
 .tile--pass .legs { grid-column: 1 / -1; margin-top: var(--s-2); }
 /* Дата может занять две строки после загрузки шрифта. Рейтинг под ней остаётся на месте. */
 .tile--pass .legs b { min-block-size: 2lh; }
+.tile--pass .pass-extra:not(:has(.city-rating:not([hidden]))) { display: none; }
 .tile--pass .pass-stub { align-content: start; gap: 2px; }
 .tile--pass .tile-price-row { display: grid; grid-template-columns: minmax(0,1fr) var(--tap); column-gap: var(--s-2); }
 .tile--pass .pass-price { white-space: nowrap; }

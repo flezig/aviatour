@@ -364,13 +364,15 @@ def badge(code, month, origin=None, year=None, today=None, checked_report=None):
         value = str(checked_report["available"])
     elif value == "4" and season.CITIES[code]["country_code"] == "RU":
         numeric = report(code, month, year, today)["score"]
-    display = f"{numeric:.1f}".replace(".", ",") + "<small>/10</small>" if numeric is not None else f"{value} из 4"
-    label = "Рейтинг города" if numeric is not None else "Данные о городе"
-    meaning = f"{numeric:.1f} из 10".replace(".", ",") if numeric is not None else f"{value} из 4 показателей"
-    aria = esc(f'{label} {season.CITIES[code]["city"]}, {meaning}')
+    if numeric is None and (value != "4" or checked_report is not None):
+        return ""
+    hidden = " hidden" if numeric is None else ""
+    display = "" if numeric is None else f"{numeric:.1f}".replace(".", ",") + "<small>/10</small>"
+    label = "Рейтинг города"
+    aria = esc(f'{label} {season.CITIES[code]["city"]}' + (f", {numeric:.1f} из 10".replace(".", ",") if numeric is not None else ""))
     year_attr = f' data-rating-year="{year}"' if year is not None else ""
     href = season.link(code, month, origin, year=year) + "#city-rating"
-    return (f'<a class="city-rating" data-rating-city="{esc(code)}" data-rating-month="{month}"{year_attr} '
+    return (f'<a{hidden} class="city-rating" data-rating-city="{esc(code)}" data-rating-month="{month}"{year_attr} '
             f'data-rating-name="{esc(season.CITIES[code]["city"])}" aria-label="{aria}" href="{esc(href)}">'
             f'<span class="city-rating-label">{label}</span><span class="city-rating-value">{display}</span></a>')
 

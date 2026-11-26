@@ -59,9 +59,9 @@ def test_rating_directory_search_filters_and_month_links():
         moscow = client.get("/season/?q=SVO&month=12&full=1").text
         assert 'data-rating-city="MOW"' in moscow and '6,5<small>/10' in moscow
         partial = client.get("/season/?q=SAW&month=12").text
-        assert 'data-rating-city="IST"' in partial and '3 из 4' in partial
+        assert "/season/IST?" in partial and 'data-rating-city="IST"' not in partial
         assert 'data-rating-city="IST"' not in client.get("/season/?q=SAW&month=12&full=1").text
-        assert 'data-rating-year="2027"' in client.get("/season/?q=KZN&month=1").text
+        assert "/season/KZN?month=1&amp;year=2027" in client.get("/season/?q=KZN&month=1").text
         assert "Город не найден" in client.get("/season/?q=KZN&month=1&full=1").text
         first = client.get("/season/?month=12").text
         following = client.get("/season/?month=12&page=2").text
