@@ -287,10 +287,22 @@ img { display: block; max-width: 100%; }
 .tile--pass .legs b { min-block-size: 2lh; }
 .tile--pass .pass-stub { align-content: start; gap: 2px; }
 .tile--pass .pass-price { white-space: nowrap; }
-.flight-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; margin-top: 4px; font-size: var(--fs-cap); color: var(--ink-2); }
+.flight-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; min-width: 0; margin-top: 4px; font-size: var(--fs-cap); color: var(--ink-2); }
 .flight-meta > :first-child { color: var(--ink); font-weight: 600; }
 .carrier { display: inline; }
 .carrier img { display: inline-block; width: 20px; height: 20px; margin: 0 4px 0 0; vertical-align: -5px; object-fit: contain; border-radius: 4px; }
+.flight-meta--direct { flex-wrap: nowrap; column-gap: var(--s-2); }
+.flight-meta--direct .carrier { display: flex; align-items: center; min-width: 0; }
+.flight-meta--direct .carrier img, .flight-meta--direct .flight-transfers { flex: none; }
+.flight-meta--direct :is(.carrier-name, .flight-transfers) { white-space: nowrap; }
+.flight-meta--direct .carrier-name { overflow: hidden; text-overflow: ellipsis; }
+/* Соседние карточки используют общие строки для фото, цены, дат, рейса и примечания. */
+@supports (grid-template-rows: subgrid) {
+  .strip--stamps { display: grid; grid-auto-flow: column; grid-auto-columns: max-content; grid-template-rows: repeat(5, auto); row-gap: 0; }
+  .strip--stamps > .tile { grid-row: span 5; grid-template-rows: subgrid; }
+  .strip--stamps .tile-body { grid-row: span 4; grid-template-rows: subgrid; }
+  .strip--stamps .flight-meta { align-self: start; }
+}
 .strip--pass { padding-block: 12px 16px; }
 @media (hover: hover) and (pointer: fine) {
   .tile--pass { transition: transform 130ms ease-out; }
@@ -457,10 +469,18 @@ img { display: block; max-width: 100%; }
 .offer-open::after { content: ''; position: absolute; inset: 0; z-index: 1; }
 .offer-price { font: 700 var(--fs-h3)/1.2 var(--f-mono); letter-spacing: -.03em; white-space: nowrap; }
 .offer-dates { font-weight: 600; font-size: var(--fs-small); }
-.offer-meta { font-size: var(--fs-cap); color: var(--ink-2); }
+.offer-meta { margin-top: var(--s-0); font-size: var(--fs-cap); color: var(--ink-2); }
 @media (max-width: 599px) {
   .grid { grid-template-columns: 1fr; }
   .offer { grid-template-columns: clamp(86px, 26vw, 132px) minmax(0,1fr); align-items: center; }
+}
+/* Высоту дат задаёт самая длинная дата в ряду. */
+@supports (grid-template-rows: subgrid) {
+  @media (min-width: 600px) {
+    .grid > .offer { grid-row: span 4; grid-template-rows: subgrid; }
+    .grid > .offer .offer-body { grid-row: span 3; grid-template-rows: subgrid; }
+    .grid > .offer .flight-meta { align-self: start; }
+  }
 }
 .skeleton .photo, .skeleton i { background: var(--fill); }
 .skeleton i { display: block; height: 14px; border-radius: var(--r-tag); }

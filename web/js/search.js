@@ -42,6 +42,7 @@ const POPULAR = ['MOW', 'LED', 'SVX', 'OVB', 'KZN', 'GOJ', 'KUF', 'UFA', 'AER', 
 // «Куда улететь из …»: родительный падеж для частых городов вылета; для остальных — «Вылет: город».
 // Подписи «из Москвы» — из web/data/origins.json; для остальных городов «из города …».
 const PAGE = 24; // карточек на странице выдачи
+const PRICE_NOTICE = '<p class="source">Цены ориентировочные. Проверьте актуальную цену на Aviasales</p>';
 const config = window.AVIATOR ?? {};
 // A/B: вариант выбирается один раз на браузер и хранится. #ab=A или #ab=B показывает вариант без записи.
 function variant(name) {
@@ -212,7 +213,7 @@ const airlineLabel = (offer) => offer.airline === 'DP' ? 'Победа' : offer.
 
 function transferLabel(offer) {
   const out = offer.transfers, back = offer.return_transfers;
-  if (out === 0 && back === 0) return 'Без пересадок';
+  if (facts(offer).direct) return 'Без пересадок';
   const stops = n => n == null ? 'нет данных' : n === 0 ? 'без пересадок' : n + ' ' + plural(n, 'пересадка', 'пересадки', 'пересадок');
   if (out == null && back == null) return 'Пересадки неизвестны';
   if (out === 0 && back > 0) return 'На обратном пути — ' + stops(back);
@@ -221,13 +222,14 @@ function transferLabel(offer) {
 }
 
 function flightMeta(offer) {
-  return `<p class="flight-meta">${carrier(offer)} <span class="flight-transfers">${esc(transferLabel(offer))}</span></p>`;
+  const directClass = facts(offer).direct ? ' flight-meta--direct' : '';
+  return `<p class="flight-meta${directClass}">${carrier(offer)} <span class="flight-transfers">${esc(transferLabel(offer))}</span></p>`;
 }
 // Locally bundled Aviasales marks. Keep the carrier name for all other airlines.
 const carrierLogos = new Set('3F 4G 5N 6R A4 AA AF AY B2 BA D2 DL DP EK EO EW EY F7 FR FV FZ G9 H9 HY I8 IO IZ J2 J9 KC KL KV LH LO LX N4 OS PC QR R3 RT S7 SK SU SZ TK U2 U6 U9 UA UT VF WZ Y7 YC'.split(' '));
 function carrier(offer) {
   const logo = carrierLogos.has(offer.airline) ? `<img width="20" height="20" loading="lazy" decoding="async" src="/airlines/${offer.airline}.png" alt="">` : '';
-  return `<span class="carrier">${logo}${esc(airlineLabel(offer))}</span>`;
+  return `<span class="carrier">${logo}<span class="carrier-name">${esc(airlineLabel(offer))}</span></span>`;
 }
 
 const stayLabel = (offer) => { const days = facts(offer).days; return days > 0 ? nightsLabel(days) : 'в тот же день'; };
@@ -280,8 +282,6 @@ const currentPassengers = () => (state.view === 'results' && state.performed ? s
 const handoff = (offer) => ticketLink(offer, currentPassengers(), { city: offer.city_code, page: 'trip', block: 'tickets', variant: testVariant });
 // Цена часа — до рубля: копейки здесь только шумят.
 const hourCost = (x) => fmtMoney(Math.round(x.cost / 100) * 100);
-const receivedLabel = (iso) => { const date = new Date(iso); return `${fmtDay(date, localZone)}, ${fmtTime(date, localZone)}`; };
-const cachedPriceLabel = iso => 'Цены из кеша Aviasales' + (iso ? `, получены ${receivedLabel(iso)}` : '');
 
 const favButton = (offer) => `<button type="button" class="fav" data-fav="${esc(offer.id)}" aria-pressed="${state.favs.has(offer.id)}" aria-label="В избранное: ${esc(offer.city)}">${icon('heart')}</button>`;
 // Карточка отвечает на три вопроса: куда, сколько, когда. Время рейсов и подробности — в карточке поездки.
@@ -300,8 +300,10 @@ function offerCard(offer, holiday = false) {
         <h3 class="offer-city"><button type="button" class="offer-open" data-offer="${esc(offer.id)}">${esc(offer.city)}</button></h3>
         <span class="offer-price">от ${esc(fmtMoney(offer.price_minor))}${groupSize(currentPassengers()) > 1 ? '<small>за 1 взрослого</small>' : ''}</span>
       </div>
-      <p class="offer-dates">${esc(fmtRange(x.dep, x.ret, offer.origin_timezone, offer.destination_timezone))}, ${esc(stayLabel(offer))}</p>
-      ${leave ? `<p class="offer-meta">${esc(leave)}</p>` : ''}
+      <div>
+        <p class="offer-dates">${esc(fmtRange(x.dep, x.ret, offer.origin_timezone, offer.destination_timezone))}, ${esc(stayLabel(offer))}</p>
+        ${leave ? `<p class="offer-meta">${esc(leave)}</p>` : ''}
+      </div>
       ${flightMeta(offer)}
     </div>
   </article>`;
@@ -516,8 +518,8 @@ function renderResults() {
       state.page = Math.min(Math.max(1, state.page), pages);
       body += `<div class="grid">${cities.slice((state.page - 1) * PAGE, state.page * PAGE).map(offer => offerCard(offer, holiday)).join('')}</div>${pager(pages)}`;
     }
-    const received = collection ? state.home.received_at : state.result.received_at;
-    body += `<p class="source">${collection?.hint ? esc(collection.hint) + '. ' : ''}${esc(cachedPriceLabel(received))}.</p>`;
+    if (collection?.hint) body += `<p class="caption">${esc(collection.hint)}.</p>`;
+    if (cities.length) body += PRICE_NOTICE;
   }
   const back = homeVariant === 'B' ? `<button type="button" class="chip" data-action="showcase">${icon('arrow-left')}Подборки</button>` : '';
   section.innerHTML = `<div class="results-head"><h2>${esc(title)}</h2>${tools}${back}<button type="button" class="chip chip--fav" data-action="favorites">${icon('heart')}Избранное <span id="favCount">${state.favs.size}</span></button></div>${body}`;
@@ -593,7 +595,7 @@ function openDetail(offer, tripRow = null) {
       </div>
       <div class="pass-stub">
         <p class="pass-price">${esc(fmtMoney(offer.price_minor))}</p>
-        <p class="caption">Билеты туда и обратно за одного взрослого. ${groupSize(currentPassengers()) > 1 ? 'Цену на всех пассажиров покажет Aviasales. ' : ''}${esc(cachedPriceLabel(offer.received_at))}.</p>
+        <p class="caption">Билеты туда и обратно за одного взрослого.${groupSize(currentPassengers()) > 1 ? ' Цену на всех пассажиров покажет Aviasales.' : ''}</p>
         <details class="fare-explanation">
           <summary>О цене и времени</summary>
           <p class="caption">Цена получена из кеша Aviasales и может измениться к покупке. Время прилёта рассчитывается по длительности перелёта и показывается в местном времени аэропорта.</p>
@@ -707,7 +709,7 @@ function rowSection(key, title, hint, tiles, action, pass = false, mark = 'weeke
   const label = pairLabel(key);
   return `<section class="row" data-feed="${esc(key)}" aria-labelledby="row-${key}">
     <div class="row-head"><span class="row-mark">${sticker(mark)}</span><h2 id="row-${key}">${esc(title)}</h2>${hint ? `<p class="row-hint">${esc(hint)}</p>` : ''}${action}</div>
-    ${controls}<div class="strip${pass ? ' strip--pass' : ''}">${tiles}</div>
+    ${controls}<div class="strip ${pass ? 'strip--pass' : 'strip--stamps'}">${tiles}</div>
     <div class="compare-prompt"${label ? '' : ' hidden'}>
       <span class="compare-count">${icon('heart')}Выбрано 2 поездки</span>
       <button type="button" class="btn-primary" data-compare-row="${esc(key)}" aria-haspopup="dialog" aria-controls="pairComparison"><span>${esc(label)}</span>${icon('arrow-right')}</button>
@@ -792,7 +794,7 @@ function renderShowcase() {
   const hidden = ordered.length - visible.length;
   const rows = visible.map(row => showcaseRow(row, row === weekend ? weekends : [])).join('');
   section.innerHTML = recentRow() + (rows ? rows + (hidden > 0 ? `<button type="button" class="btn-inline more-rows" data-more-rows>Ещё подборки (${hidden})</button>` : '') : statusPanel('send', 'Подборок пока нет', 'Для этого города вылета не нашлось поездок на ближайшие недели. Попробуйте поиск в форме выше.'))
-    + directionList() + `<p class="source">${esc(cachedPriceLabel(state.home.received_at))}.</p>`;
+    + directionList() + PRICE_NOTICE;
   $('resultsStatus').textContent = 'Подборки загружены';
 }
 const homeWaiters = [];

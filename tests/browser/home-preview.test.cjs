@@ -35,18 +35,83 @@ function home(origin) {
   };
 }
 
-async function openPage(t, engine, width, initialOrigin = moscow) {
+async function openPage(t, engine, width, initialOrigin = moscow, homeResponse = home) {
   const browser = await engine.launch();
   t.after(() => browser.close());
   const page = await browser.newPage({ viewport: { width, height: 580 } });
   await page.route('**/api/v1/origin', route => route.fulfill({ json: initialOrigin }));
   await page.route('**/api/v1/home?*', route => {
     const origin = new URL(route.request().url()).searchParams.get('from') === 'KZN' ? kazan : moscow;
-    return route.fulfill({ json: home(origin) });
+    return route.fulfill({ json: homeResponse(origin) });
   });
   await page.route('**/api/v1/search/web?*', route => route.fulfill({ json: { offers: [] } }));
   await page.goto(base);
   return page;
+}
+
+for (const [engine, width] of [[chromium, 1280], [webkit, 320]]) {
+  test('Рядом с авиакомпанией помещается подпись прямого рейса — ' + engine.name(), async t => {
+    const page = await openPage(t, engine, width, moscow, origin => {
+      const response = home(origin);
+      const year = month.slice(0, 4);
+      Object.assign(response.offers.UFA, { airline: 'DP', airline_name: 'Pobeda' });
+      Object.assign(response.offers.AER, {
+        airline: 'FV', airline_name: 'Rossiya Airlines',
+        departure_at: year + '-09-29T09:00:00+03:00', return_at: year + '-10-06T18:00:00+03:00',
+      });
+      Object.assign(response.offers.PEE, { transfers: 1, return_transfers: 2 });
+      return response;
+    });
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    const budget = page.locator('[data-feed=budget10000]');
+    await budget.getByRole('heading', { name: 'До 10 000 ₽' }).waitFor();
+    await page.evaluate(async () => { await document.fonts.ready; });
+
+    async function checkDirectFlights(section) {
+      for (const name of ['Победа', 'Rossiya Airlines', 'Тестовая авиакомпания']) {
+        const row = section.locator('.flight-meta').filter({ hasText: name });
+        assert.equal(await row.locator('.flight-transfers').textContent(), 'Без пересадок');
+        assert.ok(await row.evaluate(el => {
+          const carrier = el.querySelector('.carrier').getBoundingClientRect();
+          const label = el.querySelector('.flight-transfers');
+          const text = document.createRange();
+          text.selectNodeContents(label);
+          const transfer = label.getBoundingClientRect();
+          return Math.abs(carrier.top + carrier.height / 2 - transfer.top - transfer.height / 2) < 1
+            && carrier.right <= transfer.left
+            && text.getClientRects().length === 1
+            && text.getBoundingClientRect().right <= el.closest('article').getBoundingClientRect().right + 1;
+        }), name);
+      }
+    }
+
+    async function checkAlignedRows(cards, dates) {
+      const [short, long] = await Promise.all(['Победа', 'Rossiya Airlines'].map(name =>
+        cards.filter({ hasText: name }).evaluate((card, selector) => {
+          const dateText = document.createRange();
+          dateText.selectNodeContents(card.querySelector(selector));
+          return {
+            dateHeight: dateText.getBoundingClientRect().height,
+            rowTop: card.querySelector('.flight-meta').getBoundingClientRect().top,
+          };
+        }, dates),
+      ));
+      assert.ok(long.dateHeight > short.dateHeight, JSON.stringify({ short, long }));
+      assert.ok(Math.abs(long.rowTop - short.rowTop) < 1, JSON.stringify({ short, long }));
+    }
+
+    await checkDirectFlights(page.locator('[data-feed=hot]'));
+    await checkDirectFlights(budget);
+    await checkAlignedRows(budget.locator('.tile'), '.tile-dates');
+    await budget.locator('.row-all').click();
+    const results = page.locator('#results');
+    await checkDirectFlights(results);
+    assert.equal(await results.getByText('Туда — 1 пересадка, обратно — 2 пересадки', { exact: true }).count(), 1);
+    if (width > 600) await checkAlignedRows(results.locator('.offer'), '.offer-dates');
+    await results.locator('.offer').filter({ hasText: 'Rossiya Airlines' }).locator('.offer-open').click();
+    await page.locator('#detail .route-note').getByText('Rossiya Airlines', { exact: true }).waitFor();
+    assert.equal(await page.locator('#detail .pass-stub > .caption').innerText(), 'Билеты туда и обратно за одного взрослого.');
+  });
 }
 
 for (const [engine, width] of [[chromium, 1280], [webkit, 320]]) {
@@ -126,13 +191,15 @@ test('Бюджетная подборка без подписи с диапаз�
   await row.getByRole('heading', { name: 'До 10 000 ₽' }).waitFor();
   assert.equal(await row.locator('.row-hint').count(), 0);
   assert.match(await row.locator('.tile-price').first().innerText(), /^от /);
+  const priceNotice = 'Цены ориентировочные. Проверьте актуальную цену на Aviasales';
+  assert.deepEqual(await page.locator('#showcase .source').allTextContents(), [priceNotice]);
   const direction = page.locator('.direction-info').first();
   assert.ok(await direction.evaluate(el =>
     el.querySelector('span').getBoundingClientRect().top >= el.querySelector('b').getBoundingClientRect().bottom));
 
   await row.locator('.row-all').click();
   const results = page.locator('#results');
-  assert.doesNotMatch(await results.locator('.source').innerText(), /5.000|Как мы считаем/u);
+  assert.deepEqual(await results.locator('.source').allTextContents(), [priceNotice]);
   const card = results.locator('.offer').first();
   assert.match(await card.locator('.offer-price').innerText(), /^от /);
   assert.ok(await card.evaluate(el =>
