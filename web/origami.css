@@ -8,7 +8,9 @@ header.top { display: flex; flex-direction: column; align-items: flex-start; jus
   font: 600 11px/1.2 var(--f-text);
 }
 .header-account-row { display:flex; align-items:center; justify-content:space-between; width:100%; }
-.header-trips { display:inline-flex; align-items:center; gap:6px; padding:0 12px; min-height:44px;
+.header-account-links { display:flex; align-items:center; gap:6px; }
+.header-trips[aria-label="Избранное"] { min-width:44px; justify-content:center; }
+.header-trips { display:inline-flex; align-items:center; gap:6px; padding:0 12px; min-height:44px; white-space:nowrap;
   font:600 14px/1 var(--f-text); color:white; background:#0b253eea; border-radius:999px; text-decoration:none; }
 .service-nav { display:flex; flex-wrap:wrap; align-items:center; gap:8px; max-width:100%; }
 .header-cities { text-decoration:none; }
@@ -33,6 +35,8 @@ body.other-service :is(#results,#showcase), .service-panel[hidden], #flight-serv
   .service-tabs img, .header-cities svg { width:18px; height:18px; }
 }
 @media(max-width:365px) {
+  .header-trips[href="/trip.html"] { padding-inline:10px; font-size:13px; }
+  .header-trips[href="/trip.html"] svg { display:none; }
   .service-tabs { gap:3px; flex-wrap:wrap; }
   .service-tabs button, .header-cities { padding:0 7px; gap:3px; font-size:12px; }
   .service-tabs img, .header-cities svg { display:none; }
