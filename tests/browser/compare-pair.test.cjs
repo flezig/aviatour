@@ -75,7 +75,6 @@ for (const [engine, viewport] of [[chromium, { width: 1280, height: 800 }], [web
     assert.match(labels[1], /Псков.*10 июня/);
     await page.keyboard.press('Escape');
     await page.waitForFunction(() => !history.state?.compareRow);
-    await page.locator('.footer summary').filter({ hasText: /^Избранное$/ }).click();
     await page.locator('.footer a[href="/#fav"]').click();
     await like(page.locator('#results'), 'psk1');
     await page.goBack();
