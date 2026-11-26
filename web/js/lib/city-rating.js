@@ -15,9 +15,9 @@ export function cityRating(code, { month, year }, from, name, all) {
     query.set('from', from);
     if (airportCode.test(all)) query.set('fc', all);
   }
-  return `<a class="city-rating" data-rating-city="${esc(code)}" data-rating-month="${month}"
+  return `<a hidden class="city-rating" data-rating-city="${esc(code)}" data-rating-month="${month}"
     ${query.has('year') ? `data-rating-year="${year}"` : ''} data-rating-name="${esc(name)}"
-    href="/season/${encodeURIComponent(code)}?${esc(query)}#city-rating"><span class="city-rating-label">Рейтинг города</span><span class="city-rating-value">…</span></a>`;
+    href="/season/${encodeURIComponent(code)}?${esc(query)}#city-rating"><span class="city-rating-label">Рейтинг города</span><span class="city-rating-value"></span></a>`;
 }
 
 const requests = new Map();
@@ -45,12 +45,10 @@ const scoreValue = report => hasScore(report)
   ? `${scoreFormat.format(report.score)}<small>/10</small>` : `${esc(report.available)} из 4`;
 
 function setValue(badge, report) {
+  badge.hidden = !hasScore(report);
+  if (badge.hidden) return;
   badge.querySelector('.city-rating-value').innerHTML = scoreValue(report);
-  const meaning = hasScore(report) ? scoreFormat.format(report.score) + ' из 10'
-    : 'показателей с оценкой ' + report.available + ' из 4';
-  const label = hasScore(report) ? 'Рейтинг города' : 'Данные о городе';
-  badge.querySelector('.city-rating-label').textContent = label;
-  badge.setAttribute('aria-label', label + ' ' + badge.dataset.ratingName + ', ' + meaning);
+  badge.setAttribute('aria-label', 'Рейтинг города ' + badge.dataset.ratingName + ', ' + scoreFormat.format(report.score) + ' из 10');
 }
 
 async function enhance(badge) {
@@ -58,29 +56,21 @@ async function enhance(badge) {
     badge.setAttribute('role', 'button');
     badge.setAttribute('aria-expanded', String(active === badge));
   }
-  const value = badge.querySelector('.city-rating-value');
-  if (!value) return;
-  if (badge.closest('.rating-tile')) {
-    // For an international city with four inputs, the API also checks current travel advice.
-    if (value.textContent === '4 из 4') {
-      try { setValue(badge, await reportFor(badge)); } catch { /* Keep the server-rendered coverage. */ }
-    }
-    return;
-  }
+  if (!badge.hidden) return;
+
   const { ratingCity, ratingMonth, ratingYear } = badge.dataset;
   try {
     const index = await read('/api/v1/city-rating-index' + (ratingYear ? '?year=' + encodeURIComponent(ratingYear) : ''));
     const count = index[ratingCity]?.[Number(ratingMonth) - 1];
     if (!/^[0-4]$/.test(count)) throw new Error();
     if (!badge.isConnected) return;
-    setValue(badge, { available: Number(count) });
     if (count === '4') {
       // A complete set can still have its score withheld by the travel advisory.
       const report = await reportFor(badge);
       if (badge.isConnected) setValue(badge, report);
     }
   } catch {
-    if (value.textContent === '…') value.textContent = '—';
+    badge.hidden = true;
   }
 }
 
@@ -233,7 +223,7 @@ function scan(root) {
 export function previewFirstRating() {
   if (active && !active.isConnected) dismiss();
   if (active || narrow.matches || !('showPopover' in HTMLElement.prototype)) return;
-  const first = document.querySelector('.rating-tiles .city-rating');
+  const first = document.querySelector('.rating-tiles .city-rating:not([hidden])');
   if (first) open(first);
 }
 scan(document.documentElement);

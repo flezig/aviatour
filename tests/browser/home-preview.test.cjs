@@ -123,8 +123,7 @@ test('Талон на ПК показывает маршрут, даты и це
   assert.equal((await tile.innerText()).match(/50%/g)?.length, 1);
   await tile.locator('[data-fav]').click();
   assert.equal(await tile.locator('[data-fav]').getAttribute('aria-pressed'), 'true');
-  await tile.locator('.city-rating').focus();
-  assert.ok(await tile.locator('.city-rating').evaluate(el => el === document.activeElement));
+  assert.equal(await tile.locator('.city-rating:visible').count(), 0);
   await tile.locator('[data-open]').press('Enter');
   await page.locator('#detail[open]').waitFor();
 });

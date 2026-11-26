@@ -103,10 +103,11 @@ for (const mobile of [false, true]) {
     await panel.getByRole('button', { name: 'Закрыть рейтинг' }).click();
     assert.equal(await badge.evaluate(el => document.activeElement === el), true);
     await page.getByRole('searchbox').fill('SAW');
-    const istanbul = page.locator('.city-rating[data-rating-city="IST"]');
+    const istanbul = page.locator('.rating-tile-city[href*="/season/IST?"]');
     await istanbul.waitFor();
+    assert.equal(await page.locator('.city-rating[data-rating-city="IST"]:visible').count(), 0);
     await page.getByRole('combobox', { name: 'Месяц' }).selectOption('1');
-    await page.locator('.city-rating[data-rating-city="IST"][data-rating-month="1"]').waitFor();
+    await page.locator('.rating-tile-city[href*="/season/IST?month=1&"]').waitFor();
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
   });
 }
