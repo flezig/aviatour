@@ -1003,6 +1003,9 @@ body:has(.rating-sheet[open]) { overflow: hidden; }
 @media (max-width: 600px) {
   .top .nav { flex-wrap: wrap; overflow: visible; }
 }
+@media (max-width: 365px) {
+  .top .nav a { padding-inline: var(--s-1); }
+}
 @media (orientation: landscape) and (max-height: 500px) {
   .top { flex-wrap: wrap; gap: 0 var(--s-3); }
   .top .nav { flex: 1 1 auto; min-width: 0; }

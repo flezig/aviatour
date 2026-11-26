@@ -42,7 +42,7 @@ test('Шапка одинакова на страницах сайта, вкла
     const header = page.locator('.site-header');
     const nav = header.getByRole('navigation', { name: 'Разделы сайта' });
     const links = nav.getByRole('link');
-    const baseLinks = ['Билеты', 'Города', 'Избранное', 'Мои поездки', 'Как мы считаем'];
+    const baseLinks = ['Билеты', 'Города', 'Избранное', 'Мои поездки'];
     const services = page.getByRole('tablist', { name: 'Что ищем' });
     const geometry = () => header.evaluate(el => [el, ...el.querySelectorAll('a')].map(link => {
       const { x, y, width, height } = link.getBoundingClientRect();
@@ -51,10 +51,19 @@ test('Шапка одинакова на страницах сайта, вкла
 
     await visit(page, '/');
     assert.deepEqual(await links.allTextContents(), baseLinks);
+    const menuPositions = await links.evaluateAll(items => items.map(item => {
+      const { top, right } = item.getBoundingClientRect();
+      return [top, right];
+    }));
+    assert.equal(new Set(menuPositions.map(([top]) => top)).size, 1);
+    assert.ok(menuPositions.every(([, right]) => right <= width));
     const expectedGeometry = await geometry();
+    const method = page.locator('footer summary').filter({ hasText: /^Как мы считаем$/ });
+    await method.click();
+    assert.equal(await page.locator('footer a[href="/how-we-count.html"]').isVisible(), true);
     for (const [path, current] of [
       ['/city/', 'Города'], ['/city/kazan', 'Города'], ['/season/compare/', 'Города'],
-      ['/trip.html', 'Мои поездки'], ['/how-we-count.html', 'Как мы считаем'],
+      ['/trip.html', 'Мои поездки'], ['/how-we-count.html', null],
       ['/about.html', null], ['/#fav', 'Избранное'], ['/', 'Билеты'],
     ]) {
       await visit(page, path);
@@ -62,6 +71,9 @@ test('Шапка одинакова на страницах сайта, вкла
       assert.deepEqual(await geometry(), expectedGeometry, path);
       assert.deepEqual(await nav.locator('[aria-current]').allTextContents(), current ? [current] : [], path);
       assert.equal(await services.isVisible(), path === '/', path);
+      if (path !== '/' && path !== '/#fav') {
+        assert.equal(await page.locator('footer a[href="/how-we-count.html"]').isVisible(), true, path);
+      }
     }
 
     const expectedServices = await rect(page, '.service-tabs');
