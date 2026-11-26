@@ -213,6 +213,10 @@ def test_published_observations_match_catalogue_dates_and_source_links():
     ("REN", 4, 7.5),
     ("BCN", 3, None),
     ("VLC", 3, None),
+    ("VOG", 4, 7.6),
+    ("VOZ", 4, 7.4),
+    ("KLF", 4, 7.9),
+    ("PKC", 4, 6.4),
 ])
 def test_verified_december_expansion_matches_public_rating(code, available, score):
     checked = date(2026, 11, 26)
@@ -238,7 +242,8 @@ def test_verified_december_expansion_matches_public_rating(code, available, scor
 
 
 def test_december_expansion_still_has_activities_on_the_final_weekend():
-    for code in ("BZK", "REN", "BCN", "VLC"):
+    cities = ("BZK", "REN", "BCN", "VLC", "VOG", "VOZ", "KLF", "PKC")
+    for code in cities:
         activity = rating.report(code, 12, 2026, date(2026, 12, 26))["components"][0]
         assert activity["score"] == 10, code
 
