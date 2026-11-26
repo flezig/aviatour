@@ -86,7 +86,7 @@
   </div>
   <header class="top wrap">
     <a class="brand" href="/"><span class="brand-name">Aviator</span><span class="brand-beta">Бета</span></a>
-    <nav class="service-nav" aria-label="Разделы поиска"><div class="service-tabs" role="tablist" aria-label="Что ищем"><button id="tab-flights" role="tab" aria-selected="true" aria-controls="flight-service" tabindex="0" type="button" data-service="flights"><img src="/tab-flights.svg" width="24" height="24" alt=""><span>Авиабилеты</span></button><button id="tab-stays" role="tab" aria-selected="false" aria-controls="panel-stays" tabindex="-1" type="button" data-service="stays"><img src="/tab-stays.svg" width="24" height="24" alt=""><span>Жильё</span></button><button id="tab-cars" role="tab" aria-selected="false" aria-controls="panel-cars" tabindex="-1" type="button" data-service="cars"><img src="/tab-cars.svg" width="24" height="24" alt=""><span class="service-tab-label">Авто<small>В бете</small></span></button><button id="tab-tours" role="tab" aria-selected="false" aria-controls="panel-tours" tabindex="-1" type="button" data-service="tours"><img src="/tab-tours.svg" width="24" height="24" alt=""><span class="service-tab-label">Туры<small>В разработке</small></span></button></div></nav>
+    <nav class="service-nav" aria-label="Разделы поиска"><div class="service-tabs" role="tablist" aria-label="Что ищем"><button id="tab-flights" role="tab" aria-selected="true" aria-controls="flight-service" tabindex="0" type="button" data-service="flights"><img src="/tab-flights.svg" width="24" height="24" alt=""><span>Авиабилеты</span></button><button id="tab-stays" role="tab" aria-selected="false" aria-controls="panel-stays" tabindex="-1" type="button" data-service="stays"><img src="/tab-stays.svg" width="24" height="24" alt=""><span>Жильё</span></button><button id="tab-cars" role="tab" aria-selected="false" aria-controls="panel-cars" tabindex="-1" type="button" data-service="cars"><img src="/tab-cars.svg" width="24" height="24" alt=""><span class="service-tab-label">Авто<small>В бете</small></span></button><button id="tab-tours" role="tab" aria-selected="false" aria-controls="panel-tours" tabindex="-1" type="button" data-service="tours"><img src="/tab-tours.svg" width="24" height="24" alt=""><span>Туры</span></button></div></nav>
   </header>
 
   <main class="wrap">
@@ -183,6 +183,12 @@
         <p class="caption" id="stayFamily" hidden></p>
         <p class="caption" id="stayStatus" role="status" hidden></p>
       </div>
+      <div class="stay-quick" id="stayQuick" role="group" aria-label="Быстрый выбор города" hidden>
+        <button class="stay-quick-city" type="button" data-stay-city="KZN"><img src="/photos/s/KZN.webp" alt="" width="144" height="56" loading="lazy"><span>Казань</span></button>
+        <button class="stay-quick-city" type="button" data-stay-city="AER"><img src="/photos/s/AER.webp" alt="" width="144" height="56" loading="lazy"><span>Сочи</span></button>
+        <button class="stay-quick-city" type="button" data-stay-city="IST"><img src="/photos/s/IST.webp" alt="" width="144" height="56" loading="lazy"><span>Стамбул</span></button>
+        <button type="button" id="stayAllCities" aria-haspopup="dialog" aria-controls="stayCities">Все города и курорты</button>
+      </div>
       <dialog class="sheet" id="stayCities" aria-labelledby="stayCitiesTitle">
         <div class="sheet-bar"><h2 id="stayCitiesTitle">Город или курорт</h2><button class="sheet-done" type="button" data-close>Закрыть</button></div>
         <div class="sheet-body">
@@ -193,7 +199,19 @@
         </div>
       </dialog>
     </section>
-    <section class="service-panel" role="tabpanel" id="panel-cars" aria-labelledby="tab-cars" hidden><form class="service-form"><label><span>Место получения</span><select name="place"><option>Стамбул</option><option>Анталья</option><option>Дубай</option><option>Сочи</option></select></label><label><span>Получение</span><input type="date" name="start" required></label><label><span>Возврат</span><input type="date" name="end" required></label><label><span>Класс авто</span><select><option>Любой класс</option><option>Компакт</option><option>Семейный</option><option>Внедорожник</option></select></label><button type="submit" class="btn-primary">Найти авто</button></form><p class="service-result" role="status" hidden></p></section><section class="service-panel" role="tabpanel" id="panel-tours" aria-labelledby="tab-tours" hidden><button type="button" class="btn-primary" id="toursToFlights">Найти авиабилеты</button></section><div class="showcase" id="showcase" hidden></div>
+    <section class="service-panel" role="tabpanel" id="panel-cars" aria-labelledby="tab-cars" hidden><form class="service-form"><label><span>Место получения</span><select name="place"><option>Стамбул</option><option>Анталья</option><option>Дубай</option><option>Сочи</option></select></label><label><span>Получение</span><input type="date" name="start" required></label><label><span>Возврат</span><input type="date" name="end" required></label><label><span>Класс авто</span><select><option>Любой класс</option><option>Компакт</option><option>Семейный</option><option>Внедорожник</option></select></label><button type="submit" class="btn-primary">Найти авто</button></form><p class="service-result" role="status" hidden></p></section>
+    <section class="service-panel" role="tabpanel" id="panel-tours" aria-labelledby="tab-tours" hidden>
+      <div class="tour-search">
+        <label class="tour-origin"><span>Город вылета</span><select id="tourOrigin"><option value="" disabled>Выберите город</option><option value="MOW">Москва</option><option value="LED">Санкт-Петербург</option></select></label>
+        <div class="tour-countries" id="tourCountries" role="group" aria-label="Пакетные туры на Travelata" hidden>
+          <a class="tour-country" data-tour-path="/turkey"><b>Турция</b><span>На Travelata <span aria-hidden="true">↗</span></span></a>
+          <a class="tour-country" data-tour-path="/egypt"><b>Египет</b><span>На Travelata <span aria-hidden="true">↗</span></span></a>
+          <a class="tour-country" data-tour-path="/uae"><b>ОАЭ</b><span>На Travelata <span aria-hidden="true">↗</span></span></a>
+        </div>
+        <p class="caption tour-prompt" id="tourOriginPrompt" role="status">Для поиска выберите Москву или Санкт-Петербург.</p>
+      </div>
+    </section>
+    <div class="showcase" id="showcase" hidden></div>
     <p class="sr-only" role="status" id="resultsStatus"></p>
     <section class="results" id="results" aria-label="Варианты" hidden></section>
   </main>

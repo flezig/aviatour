@@ -886,6 +886,7 @@ function setView(view) {
 function setHomeOrigin(origin) {
   Object.assign(state.query, { origin: origin.iata, originCity: origin.all ? origin.code : null });
   state.labels.origin = `${origin.name}, ${origin.all ? 'все аэропорты' : origin.iata}`;
+  originHint = origin;
   if (origin.from) state.fromNames.set(origin.code, origin.from);
 }
 function showShowcase() {
@@ -921,10 +922,16 @@ function syncView() {
 }
 
 // --- форма ---
+let originReady = false;
+let originHint;
 function renderForm() {
   const q = state.query, zone = originZone(), list = months(zone), today = zoned(new Date(), zone).key;
   if (!q.exact && !list.includes(q.month)) q.month = list[0];
-  $('originLabel').textContent = state.labels.origin;
+  const originLabel = $('originLabel');
+  originLabel.textContent = state.labels.origin;
+  const knownCity = originHint?.iata === q.origin ? originHint.code : q.originCity;
+  const originCity = state.byIata.get(q.origin)?.city_code ?? knownCity ?? q.origin;
+  if (originReady && originLabel.dataset.city !== originCity) originLabel.dataset.city = originCity;
   const originName = state.byIata.get(q.origin)?.city ?? state.labels.origin.split(', ')[0];
   $('destinationLabel').textContent = state.labels.destination ?? DESTINATION_SCOPES[q.region].label;
   $('searchAction').textContent = q.destination ? 'Найти билеты' : 'Показать направления';
@@ -1715,6 +1722,7 @@ document.fonts?.ready.then(fitHero);
     const origin = await currentOrigin();
     if (origin) setHomeOrigin(origin);
   }
+  originReady = true;
   renderForm();
   fitHero();
   if (favoritesHash()) return;

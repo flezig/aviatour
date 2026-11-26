@@ -10,8 +10,10 @@ if (form && citiesDialog) setupStays();
 
 function setupStays() {
   const place = form.querySelector('.stay-place');
+  const checkin = form.querySelector('[data-stay-date=checkin]');
   const guests = form.elements.adults;
   const submit = form.querySelector('[type=submit]');
+  const quick = $('stayQuick');
   const query = $('stayCityQuery');
   const list = $('stayCityList');
   const storageKey = 'aviator.stay';
@@ -68,7 +70,9 @@ function setupStays() {
 
   function render() {
     const selected = catalog?.find(city => city.code === stay.city);
-    $('stayPlace').textContent = selected?.name ?? (stay.city && !catalog ? 'Загружаем город…' : 'Куда едете?');
+    const quickName = !catalog ? quick?.querySelector(`[data-stay-city="${stay.city}"]`)?.textContent.trim() : null;
+    $('stayPlace').textContent = selected?.name ?? quickName ?? (stay.city && !catalog ? 'Загружаем город…' : 'Куда едете?');
+    if (quick) quick.hidden = Boolean(selected || (stay.city && !catalog));
     $('stayCheckin').textContent = stay.checkin ? fmtDay(date(stay.checkin), 'UTC', true) : 'Выберите дату';
     $('stayCheckout').textContent = stay.checkout ? fmtDay(date(stay.checkout), 'UTC', true) : 'Выберите дату';
     guests.value = stay.adults;
@@ -107,6 +111,7 @@ function setupStays() {
   }).join('');
   guests.addEventListener('change', () => { stay.adults = Number(guests.value); changed(); });
   place.addEventListener('click', openCities);
+  $('stayAllCities').addEventListener('click', openCities);
   query.addEventListener('input', showCities);
   query.addEventListener('keydown', event => {
     if (event.key !== 'Enter' || event.isComposing) return;
@@ -127,11 +132,23 @@ function setupStays() {
       changed();
     });
   }
+  quick?.addEventListener('click', event => {
+    const choice = event.target.closest('[data-stay-city]');
+    if (!choice) return;
+    stay.city = choice.dataset.stayCity;
+    changed();
+    if (stay.checkout) submit.focus();
+    else {
+      checkin.focus({ preventScroll: true });
+      pickDates(checkin);
+    }
+    if (!catalog) loadCities().then(render).catch(() => status('Города пока не загрузились. Попробуйте открыть список городов.'));
+  });
   form.querySelectorAll('[data-stay-date]').forEach(button => button.addEventListener('click', () => pickDates(button)));
   form.addEventListener('submit', async event => {
     event.preventDefault();
     if (!stay.city) { await openCities(); return; }
-    if (!stay.checkout) { pickDates(form.querySelector('[data-stay-date=checkin]')); return; }
+    if (!stay.checkout) { pickDates(checkin); return; }
     submit.disabled = true;
     status();
     try {

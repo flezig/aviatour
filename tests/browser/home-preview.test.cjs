@@ -29,11 +29,11 @@ function home(origin) {
   };
 }
 
-async function openPage(t, engine, width) {
+async function openPage(t, engine, width, initialOrigin = moscow) {
   const browser = await engine.launch();
   t.after(() => browser.close());
   const page = await browser.newPage({ viewport: { width, height: 580 } });
-  await page.route('**/api/v1/origin', route => route.fulfill({ json: moscow }));
+  await page.route('**/api/v1/origin', route => route.fulfill({ json: initialOrigin }));
   await page.route('**/api/v1/home?*', route => {
     const origin = new URL(route.request().url()).searchParams.get('from') === 'KZN' ? kazan : moscow;
     return route.fulfill({ json: home(origin) });
@@ -129,19 +129,41 @@ test('Талон на ПК показывает маршрут, даты и це
   await page.locator('#detail[open]').waitFor();
 });
 
-test('Туры показывают статус и рабочий переход к авиабилетам на 320 пикселях', async t => {
-  const page = await openPage(t, webkit, 320);
-  const tab = page.getByRole('tab', { name: /Туры.*В разработке/ });
-  await tab.click();
+test('Туры открывают Travelata по выбранным городу и стране на 320 пикселях', async t => {
+  const page = await openPage(t, webkit, 320, { ...moscow, iata: 'DME', all: false });
+  await page.getByRole('tab', { name: 'Туры', exact: true }).click();
   const panel = page.locator('#panel-tours');
-  assert.equal(await panel.locator('input, select').count(), 0);
+  const origin = panel.getByRole('combobox', { name: 'Город вылета' });
+  const links = panel.getByRole('link');
+  const addresses = () => links.evaluateAll(items => items.map(item => item.href));
+  await links.first().waitFor();
+  assert.equal(await origin.inputValue(), 'MOW');
+  assert.deepEqual(await addresses(), ['turkey', 'egypt', 'uae'].map(path => 'https://travelata.ru/' + path));
+  await origin.selectOption('LED');
+  assert.deepEqual(await addresses(), ['turkey', 'egypt', 'uae'].map(path => 'https://spb.travelata.ru/' + path));
+  assert.equal(await panel.locator('input').count(), 0);
+  assert.ok((await origin.boundingBox()).height >= 44);
   assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
-  await panel.getByRole('button', { name: 'Найти авиабилеты' }).click();
-  assert.equal(await page.locator('#tab-flights').getAttribute('aria-selected'), 'true');
-  assert.ok(await page.locator('#flight-service').isVisible());
+  const egypt = 'https://spb.travelata.ru/egypt';
+  await page.route(egypt, route => route.fulfill({ body: 'OK' }));
+  await panel.getByRole('link', { name: 'Египет На Travelata' }).press('Enter');
+  await page.waitForURL(egypt);
 });
 
-test('Поиск работает с сохранённой версией страницы без каталога и кнопки туров', async t => {
+test('Туры предлагают выбрать поддерживаемый вылет без подстановки Москвы', async t => {
+  const page = await openPage(t, chromium, 1280);
+  await page.goto(base + '/?from=KZN&fc=KZN&service=tours');
+  const panel = page.locator('#panel-tours');
+  const origin = panel.getByRole('combobox', { name: 'Город вылета' });
+  await page.waitForFunction(() => document.querySelector('#originLabel').dataset.city === 'KZN');
+  assert.equal(await origin.inputValue(), '');
+  assert.equal(await panel.getByRole('link').count(), 0);
+  assert.match(await panel.getByRole('status').innerText(), /выберите Москву или Санкт-Петербург/);
+  await origin.selectOption('MOW');
+  assert.equal(await panel.getByRole('link', { name: 'ОАЭ На Travelata' }).getAttribute('href'), 'https://travelata.ru/uae');
+});
+
+test('Поиск работает с сохранённой версией страницы без каталога и формы туров', async t => {
   const page = await openPage(t, chromium, 1280);
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
@@ -150,7 +172,7 @@ test('Поиск работает с сохранённой версией ст�
     const response = await route.fetch();
     const html = (await response.text())
       .replace(/<dialog[^>]+id="directionCatalog"[\s\S]*?<\/dialog>/, '')
-      .replace(/<button[^>]+id="toursToFlights"[^>]*>[\s\S]*?<\/button>/, '');
+      .replace(/(<section[^>]+id="panel-tours"[^>]*>)[\s\S]*?(<\/section>)/, '$1$2');
     await route.fulfill({ response, body: html });
   });
   await page.goto(url);
