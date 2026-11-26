@@ -47,6 +47,7 @@ async function setup(t, mobile, sample = offers) {
   await page.route('**/api/v1/search/web?*', route => {
     const p = new URL(route.request().url()).searchParams;
     const matches = sample.filter(offer => {
+      if (p.has('budget') && offer.price_minor > Number(p.get('budget')) * 100) return false;
       if (p.get('direct') === '1' && (offer.transfers || offer.return_transfers)) return false;
       if (p.has('tc')) return p.get('tc') === offer.city_code;
       return !p.has('to') || p.get('to') === offer.destination_airport;
@@ -150,21 +151,37 @@ for (const mobile of [false, true]) {
 
   test('Быстрый поиск до трёх часов и сочетание с выходными сохраняются в ссылке, ' + screen, async t => {
     const page = await setup(t, mobile, filterOffers);
-    const chip = name => page.locator('#results [data-chip="' + name + '"]');
+    const chip = name => page.locator('[data-quick="' + name + '"]');
     const filters = () => new URL(page.url()).searchParams.getAll('filter').sort();
     const calls = [];
     page.on('request', req => {
       if (new URL(req.url()).pathname === '/api/v1/search/web') calls.push(req.url());
     });
     const quick = page.getByRole('group', { name: 'Быстрый поиск по условию' });
-    await searchParams(page, () => quick.getByRole('button', { name: 'В пути до 3 ч' }).press('Enter'));
-    await page.locator('#results [data-chip="near"]:focus').waitFor();
+    const shortcut = quick.getByRole('button', { name: 'В пути до 3 ч' });
+    await shortcut.focus();
+    const position = await page.evaluate(() => {
+      window.quickSearchScrollCalls = 0;
+      const scroll = Element.prototype.scrollIntoView;
+      Element.prototype.scrollIntoView = function (...args) {
+        window.quickSearchScrollCalls++;
+        return scroll.apply(this, args);
+      };
+      return scrollY;
+    });
+    await searchParams(page, () => shortcut.press('Enter'));
+    assert.deepEqual(await page.evaluate(() => [scrollY, window.quickSearchScrollCalls]), [position, 0]);
+    const source = await page.locator('#results .source').innerText();
+    assert.match(source, /^Цены из кеша Aviasales, получены /);
+    assert.doesNotMatch(source, /Куда угодно|Москва|Как мы считаем/u);
+    assert.equal(await shortcut.evaluate(el => el === document.activeElement), true);
     assert.equal(await chip('near').getAttribute('aria-pressed'), 'true');
     assert.deepEqual(filters(), ['near']);
     assert.deepEqual(await visibleIds(page), ['near-weekday', 'near-weekend']);
 
     await chip('noLeave').press('Enter');
     assert.equal(await chip('noLeave').evaluate(el => el === document.activeElement), true);
+    assert.deepEqual(await page.evaluate(() => [scrollY, window.quickSearchScrollCalls]), [position, 0]);
     assert.deepEqual(filters(), ['near', 'noLeave']);
     assert.deepEqual(await visibleIds(page), ['near-weekend']);
     assert.equal(calls.length, 1);
@@ -192,7 +209,7 @@ for (const mobile of [false, true]) {
     assert.deepEqual(await visibleIds(page), ['near-weekend', 'long-weekend']);
 
     const disabled = await searchParams(page, () => direct.press('Enter'));
-    await page.locator('#results [data-chip="direct"]:focus').waitFor();
+    assert.equal(await direct.evaluate(el => el === document.activeElement), true);
     assert.equal(disabled.has('direct'), false);
     assert.equal(await direct.getAttribute('aria-pressed'), 'false');
     assert.deepEqual(await visibleIds(page), ['near-weekday', 'near-weekend']);
@@ -238,30 +255,39 @@ for (const mobile of [false, true]) {
     assert.equal(await page.locator('[data-month="2030-04"]').getAttribute('aria-pressed'), 'true');
   });
 
-  test('Бюджет без лимита, первый шаг, возврат клавишей Home и старая ссылка, ' + screen, async t => {
+  test('Бюджет открывается поверх страницы, принимает сумму и поддерживает старые ссылки, ' + screen, async t => {
     const page = await setup(t, mobile);
-    await page.locator('.flight-budget summary').click();
-    const slider = page.getByRole('slider', { name: 'Бюджет на билеты' });
-    const amount = page.locator('#budgetValue');
-    assert.equal(await slider.inputValue(), await slider.getAttribute('min'));
-    assert.equal(await slider.getAttribute('aria-valuetext'), 'Без лимита');
-    assert.equal(await amount.innerText(), 'Без лимита');
-    assert.equal((await submit(page)).has('budget'), false);
+    const trigger = page.locator('#flightBudget summary');
+    const panel = page.locator('#budgetForm');
+    const input = panel.getByRole('spinbutton', { name: 'Максимум за билет, ₽' });
+    const filter = page.locator('[data-quick="near"]');
+    const before = await filter.boundingBox();
+    await trigger.click();
+    assert.deepEqual(await filter.boundingBox(), before);
+    const box = await panel.boundingBox();
+    assert.ok(box.width <= 304 && box.x >= 0 && box.x + box.width <= (mobile ? 390 : 1280));
+    assert.equal(await input.inputValue(), '');
+    const preset = await searchParams(page, () => panel.getByRole('button', { name: '10 000 ₽' }).click());
+    assert.equal(preset.get('budget'), '10000');
+    assert.equal(await panel.isVisible(), false);
+    assert.equal(await trigger.evaluate(el => el === document.activeElement), true);
 
-    await slider.press('ArrowRight');
-    assert.equal(await slider.inputValue(), '5000');
-    assert.match(await amount.innerText(), /5\s000\s₽/);
-    assert.equal((await submit(page)).get('budget'), '5000');
+    await trigger.click();
+    await input.fill('18500');
+    const custom = await searchParams(page, () => input.press('Enter'));
+    assert.equal(custom.get('budget'), '18500');
+    assert.deepEqual(await visibleIds(page), ['kzn-16', 'saw-14']);
 
     const oldLink = '/?from=SVO&fc=MOW&month=2030-02&weekend=0&budget=25000';
     const restored = await searchParams(page, () => page.goto(base + oldLink));
     assert.equal(restored.get('budget'), '25000');
-    await page.locator('.flight-budget summary').click();
-    assert.equal(await slider.inputValue(), '25000');
-    assert.match(await amount.innerText(), /25\s000\s₽/);
-    await slider.press('Home');
-    assert.equal(await amount.innerText(), 'Без лимита');
-    assert.equal((await submit(page)).has('budget'), false);
+    await trigger.click();
+    assert.equal(await input.inputValue(), '25000');
+    await input.press('Escape');
+    assert.equal(await panel.isVisible(), false);
+    await trigger.click();
+    const unlimited = await searchParams(page, () => panel.getByRole('button', { name: 'Без лимита' }).click());
+    assert.equal(unlimited.has('budget'), false);
   });
 }
 

@@ -17,6 +17,9 @@ function home(origin) {
     price_minor: (i + 1) * 100000, transfers: 0, return_transfers: 0, duration_to: 90, duration_back: 90,
     country: 'Россия', country_code: 'RU', airline: 'SU', flight_number: '100', received_at: new Date().toISOString(),
   }));
+  Object.assign(trips[0], { airline: 'Y7', airline_name: 'NordStar' });
+  Object.assign(trips[1], { airline: '5N', airline_name: 'Smartavia' });
+  Object.assign(trips[2], { airline: 'XX', airline_name: 'Тестовая авиакомпания' });
   const items = destinations.slice(0, 5);
   return {
     origin, received_at: trips[0].received_at, offers: Object.fromEntries(trips.map(trip => [trip.id, trip])),
@@ -24,6 +27,9 @@ function home(origin) {
     notes: { UFA: { leave: null }, AER: { leave: 1 }, KUF: { leave: 0 }, PEE: { leave: 1 } },
     rows: [
       { key: 'hot', title: 'Ближайшие вылеты', kind: 'pass', items },
+      { key: 'weekend-1', title: 'Первые выходные', hint: '10–12 марта', items },
+      { key: 'weekend-2', title: 'Вторые выходные', hint: '17–19 марта', items },
+      { key: 'budget10000', title: 'До 10 000 ₽', hint: 'От 5 000 до 10 000 ₽ туда и обратно', items },
       { key: 'holidays', title: 'Каникулы', hint: 'Праздничные дни', items },
     ],
   };
@@ -88,6 +94,65 @@ for (const [engine, width] of [[chromium, 1280], [webkit, 320]]) {
   });
 }
 
+test('Карточки показывают логотипы, а подборка на выходные сохраняет выбор дат', async t => {
+  const page = await openPage(t, chromium, 1280);
+  const hot = page.locator('[data-feed=hot]');
+  for (const [name, code] of [['NordStar', 'Y7'], ['Smartavia', '5N']]) {
+    const meta = hot.locator('.flight-meta').filter({ hasText: name });
+    const logo = meta.locator('.carrier img');
+    await logo.scrollIntoViewIfNeeded();
+    assert.equal(await logo.getAttribute('src'), '/airlines/' + code + '.png');
+    await page.waitForFunction(img => img.complete && img.naturalWidth > 0, await logo.elementHandle());
+    assert.match(await meta.innerText(), /Без пересадок/);
+  }
+  const fallback = hot.locator('.flight-meta').filter({ hasText: 'Тестовая авиакомпания' });
+  assert.equal(await fallback.locator('.carrier img').count(), 0);
+
+  const weekends = page.getByRole('region', { name: 'На выходные' });
+  await weekends.waitFor();
+  assert.equal(await weekends.getByText('Без отпуска', { exact: true }).count(), 0);
+  const second = weekends.getByRole('button', { name: '17–19 марта' });
+  await second.click();
+  assert.equal(await second.getAttribute('aria-pressed'), 'true');
+  assert.equal(await weekends.getByText('Без отпуска', { exact: true }).count(), 0);
+});
+
+test('Бюджетная подборка без подписи с диапазоном и с ценой под городом', async t => {
+  const page = await openPage(t, chromium, 1280);
+  const row = page.locator('[data-feed=budget10000]');
+  await row.getByRole('heading', { name: 'До 10 000 ₽' }).waitFor();
+  assert.equal(await row.locator('.row-hint').count(), 0);
+  assert.match(await row.locator('.tile-price').first().innerText(), /^от /);
+  const direction = page.locator('.direction-info').first();
+  assert.ok(await direction.evaluate(el =>
+    el.querySelector('span').getBoundingClientRect().top >= el.querySelector('b').getBoundingClientRect().bottom));
+
+  await row.locator('.row-all').click();
+  const results = page.locator('#results');
+  assert.doesNotMatch(await results.locator('.source').innerText(), /5.000|Как мы считаем/u);
+  const card = results.locator('.offer').first();
+  assert.match(await card.locator('.offer-price').innerText(), /^от /);
+  assert.ok(await card.evaluate(el =>
+    el.querySelector('.offer-price').getBoundingClientRect().top >= el.querySelector('.offer-city').getBoundingClientRect().bottom));
+});
+
+test('Пункты подвала раскрываются на месте без перехода', async t => {
+  const page = await openPage(t, webkit, 320);
+  const footer = page.locator('footer.footer--accordion');
+  const summaries = footer.locator('summary:visible');
+  const url = page.url();
+  assert.ok(await summaries.count() >= 9);
+  for (const summary of await summaries.all()) {
+    const item = summary.locator('..');
+    await summary.click();
+    assert.equal(page.url(), url);
+    assert.ok(await item.locator('.footer-answer').isVisible());
+    assert.equal(await item.locator('a').count(), 0);
+    await summary.press('Enter');
+    assert.equal(await item.locator('.footer-answer').isVisible(), false);
+  }
+});
+
 test('Каникулы учитывают отпуск до цены только в своей подборке', async t => {
   const page = await openPage(t, chromium, 1280);
   const row = page.locator('[data-feed=holidays]');
@@ -111,7 +176,7 @@ test('Каникулы учитывают отпуск до цены тольк�
   assert.equal(await results.getByText('Дни отпуска неизвестны').count(), 0);
 });
 
-test('Талон на ПК показывает маршрут, даты и цену с одним сравнением', async t => {
+test('Талон на ПК показывает маршрут, даты и цену без сравнения с обычной', async t => {
   const page = await openPage(t, chromium, 1280);
   const tile = page.locator('[data-feed=hot] .tile').first();
   await tile.waitFor();
@@ -119,8 +184,9 @@ test('Талон на ПК показывает маршрут, даты и це
   assert.ok(await size('.cities') > await size('.codes'));
   assert.match(await tile.locator('.legs').innerText(), /10.*мар/us);
   assert.match(await tile.locator('.legs').innerText(), /12.*мар/us);
-  assert.match(await tile.innerText(), /туда и обратно за одного взрослого/i);
-  assert.equal((await tile.innerText()).match(/50%/g)?.length, 1);
+  assert.match(await tile.innerText(), /2 ночи/u);
+  assert.match(await tile.locator('.pass-price').innerText(), /^от /);
+  assert.doesNotMatch(await tile.innerText(), /дешевле обычного/u);
   await tile.locator('[data-fav]').click();
   assert.equal(await tile.locator('[data-fav]').getAttribute('aria-pressed'), 'true');
   assert.equal(await tile.locator('.city-rating:visible').count(), 0);
@@ -170,6 +236,10 @@ test('Поиск работает с сохранённой версией ст�
   await page.route(url, async route => {
     const response = await route.fetch();
     const html = (await response.text())
+      .replace(/<details class="flight-budget"[\s\S]*?<\/details>/, `<details class="flight-budget">
+        <summary id="lineBudget">Бюджет</summary><output id="budgetValue"></output>
+        <input type="range" id="budget" min="4000" max="500000" step="1000">
+        <p id="budgetUnit" hidden></p><input type="checkbox" id="directOnly"></details>`)
       .replace(/<dialog[^>]+id="directionCatalog"[\s\S]*?<\/dialog>/, '')
       .replace(/(<section[^>]+id="panel-tours"[^>]*>)[\s\S]*?(<\/section>)/, '$1$2');
     await route.fulfill({ response, body: html });
