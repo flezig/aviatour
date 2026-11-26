@@ -21,3 +21,15 @@ test('фотокаталог связывает каждый зарубежны�
     assert.ok(existsSync(flag), code);
   }
 });
+
+test('у каждого фото города есть обе миниатюры и одна запись об авторстве', () => {
+  const photos = json('web/photos/manifest.json');
+  const credits = readFileSync(new URL('web/photos/credits.md', root), 'utf8');
+  const credited = Array.from(credits.matchAll(/^- \*\*([A-Z]{3})\*\*:/gm), match => match[1]);
+  assert.deepEqual(credited.sort(), [...photos].sort());
+  for (const code of photos) {
+    for (const path of [code + '.jpg', 's/' + code + '.webp', 's/' + code + '.jpg']) {
+      assert.ok(existsSync(new URL('web/photos/' + path, root)), path);
+    }
+  }
+});
