@@ -110,6 +110,7 @@ for (const [engine, width] of [[chromium, 1280], [webkit, 320]]) {
     if (width > 600) await checkAlignedRows(results.locator('.offer'), '.offer-dates');
     await results.locator('.offer').filter({ hasText: 'Rossiya Airlines' }).locator('.offer-open').click();
     await page.locator('#detail .route-note').getByText('Rossiya Airlines', { exact: true }).waitFor();
+    assert.equal(await page.locator('#detail .pass-stub > .caption').innerText(), 'Билеты туда и обратно за одного взрослого.');
   });
 }
 
@@ -190,13 +191,15 @@ test('Бюджетная подборка без подписи с диапаз�
   await row.getByRole('heading', { name: 'До 10 000 ₽' }).waitFor();
   assert.equal(await row.locator('.row-hint').count(), 0);
   assert.match(await row.locator('.tile-price').first().innerText(), /^от /);
+  const priceNotice = 'Цены ориентировочные. Проверьте актуальную цену на Aviasales';
+  assert.deepEqual(await page.locator('#showcase .source').allTextContents(), [priceNotice]);
   const direction = page.locator('.direction-info').first();
   assert.ok(await direction.evaluate(el =>
     el.querySelector('span').getBoundingClientRect().top >= el.querySelector('b').getBoundingClientRect().bottom));
 
   await row.locator('.row-all').click();
   const results = page.locator('#results');
-  assert.doesNotMatch(await results.locator('.source').innerText(), /5.000|Как мы считаем/u);
+  assert.deepEqual(await results.locator('.source').allTextContents(), [priceNotice]);
   const card = results.locator('.offer').first();
   assert.match(await card.locator('.offer-price').innerText(), /^от /);
   assert.ok(await card.evaluate(el =>

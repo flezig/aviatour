@@ -42,6 +42,7 @@ const POPULAR = ['MOW', 'LED', 'SVX', 'OVB', 'KZN', 'GOJ', 'KUF', 'UFA', 'AER', 
 // «Куда улететь из …»: родительный падеж для частых городов вылета; для остальных — «Вылет: город».
 // Подписи «из Москвы» — из web/data/origins.json; для остальных городов «из города …».
 const PAGE = 24; // карточек на странице выдачи
+const PRICE_NOTICE = '<p class="source">Цены ориентировочные. Проверьте актуальную цену на Aviasales</p>';
 const config = window.AVIATOR ?? {};
 // A/B: вариант выбирается один раз на браузер и хранится. #ab=A или #ab=B показывает вариант без записи.
 function variant(name) {
@@ -281,8 +282,6 @@ const currentPassengers = () => (state.view === 'results' && state.performed ? s
 const handoff = (offer) => ticketLink(offer, currentPassengers(), { city: offer.city_code, page: 'trip', block: 'tickets', variant: testVariant });
 // Цена часа — до рубля: копейки здесь только шумят.
 const hourCost = (x) => fmtMoney(Math.round(x.cost / 100) * 100);
-const receivedLabel = (iso) => { const date = new Date(iso); return `${fmtDay(date, localZone)}, ${fmtTime(date, localZone)}`; };
-const cachedPriceLabel = iso => 'Цены из кеша Aviasales' + (iso ? `, получены ${receivedLabel(iso)}` : '');
 
 const favButton = (offer) => `<button type="button" class="fav" data-fav="${esc(offer.id)}" aria-pressed="${state.favs.has(offer.id)}" aria-label="В избранное: ${esc(offer.city)}">${icon('heart')}</button>`;
 // Карточка отвечает на три вопроса: куда, сколько, когда. Время рейсов и подробности — в карточке поездки.
@@ -519,8 +518,8 @@ function renderResults() {
       state.page = Math.min(Math.max(1, state.page), pages);
       body += `<div class="grid">${cities.slice((state.page - 1) * PAGE, state.page * PAGE).map(offer => offerCard(offer, holiday)).join('')}</div>${pager(pages)}`;
     }
-    const received = collection ? state.home.received_at : state.result.received_at;
-    body += `<p class="source">${collection?.hint ? esc(collection.hint) + '. ' : ''}${esc(cachedPriceLabel(received))}.</p>`;
+    if (collection?.hint) body += `<p class="caption">${esc(collection.hint)}.</p>`;
+    if (cities.length) body += PRICE_NOTICE;
   }
   const back = homeVariant === 'B' ? `<button type="button" class="chip" data-action="showcase">${icon('arrow-left')}Подборки</button>` : '';
   section.innerHTML = `<div class="results-head"><h2>${esc(title)}</h2>${tools}${back}<button type="button" class="chip chip--fav" data-action="favorites">${icon('heart')}Избранное <span id="favCount">${state.favs.size}</span></button></div>${body}`;
@@ -596,7 +595,7 @@ function openDetail(offer, tripRow = null) {
       </div>
       <div class="pass-stub">
         <p class="pass-price">${esc(fmtMoney(offer.price_minor))}</p>
-        <p class="caption">Билеты туда и обратно за одного взрослого. ${groupSize(currentPassengers()) > 1 ? 'Цену на всех пассажиров покажет Aviasales. ' : ''}${esc(cachedPriceLabel(offer.received_at))}.</p>
+        <p class="caption">Билеты туда и обратно за одного взрослого.${groupSize(currentPassengers()) > 1 ? ' Цену на всех пассажиров покажет Aviasales.' : ''}</p>
         <details class="fare-explanation">
           <summary>О цене и времени</summary>
           <p class="caption">Цена получена из кеша Aviasales и может измениться к покупке. Время прилёта рассчитывается по длительности перелёта и показывается в местном времени аэропорта.</p>
@@ -795,7 +794,7 @@ function renderShowcase() {
   const hidden = ordered.length - visible.length;
   const rows = visible.map(row => showcaseRow(row, row === weekend ? weekends : [])).join('');
   section.innerHTML = recentRow() + (rows ? rows + (hidden > 0 ? `<button type="button" class="btn-inline more-rows" data-more-rows>Ещё подборки (${hidden})</button>` : '') : statusPanel('send', 'Подборок пока нет', 'Для этого города вылета не нашлось поездок на ближайшие недели. Попробуйте поиск в форме выше.'))
-    + directionList() + `<p class="source">${esc(cachedPriceLabel(state.home.received_at))}.</p>`;
+    + directionList() + PRICE_NOTICE;
   $('resultsStatus').textContent = 'Подборки загружены';
 }
 const homeWaiters = [];
