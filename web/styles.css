@@ -1169,6 +1169,7 @@ body:has(.rating-sheet[open]) { overflow: hidden; }
   .tile--pass .codes .icon { width: 12px; height: 12px; }
   .tile--pass .legs b { font-size: 14px; }
 }
+#directionCatalog .sheet-body { padding: var(--s-3) var(--s-4) var(--s-4); }
 #catalogSearch { display: block; width: 100%; min-height: 44px; margin: 6px 0 12px; padding: 0 12px; border: 1px solid var(--line-strong); border-radius: 8px; font: inherit; }
 #catalogLinks .direction-link[hidden] { display: none; }
 @media (max-width: 599px) {

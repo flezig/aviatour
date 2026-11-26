@@ -121,6 +121,22 @@ for (const [engine, width] of [[chromium, 1280], [webkit, 320]]) {
     const dialog = page.locator('#directionCatalog');
     const link = dialog.locator('[data-city="KRR"]');
     await trigger.click();
+    const insets = await dialog.evaluate(el => {
+      const body = el.querySelector('.sheet-body');
+      const { left, right } = body.getBoundingClientRect();
+      const input = el.querySelector('#catalogSearch').getBoundingClientRect();
+      const photo = el.querySelector('.direction-link .portrait').getBoundingClientRect();
+      const title = el.querySelector('h2').getBoundingClientRect();
+      return {
+        inputStart: input.left - left,
+        inputEnd: right - input.right,
+        photoStart: photo.left - left,
+        titleStart: title.left - left,
+      };
+    });
+    assert.ok(insets.inputStart >= 16 && insets.inputEnd >= 16, JSON.stringify(insets));
+    assert.equal(insets.photoStart, insets.titleStart);
+    assert.equal(insets.inputStart, insets.titleStart);
     await dialog.getByRole('searchbox').fill('Город ');
     await link.focus();
     await link.scrollIntoViewIfNeeded();
