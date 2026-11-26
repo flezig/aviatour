@@ -54,7 +54,10 @@ test('Быстрый город заполняет жильё и открыва�
   const quick = page.getByRole('group', { name: 'Быстрый выбор города' });
   const calendar = page.locator('#stayCalendar');
   await quick.waitFor();
-  assert.deepEqual(await quick.getByRole('button').allTextContents(), ['Казань', 'Сочи', 'Стамбул']);
+  assert.deepEqual(await quick.locator('[data-stay-city]').allTextContents(), ['Казань', 'Сочи', 'Стамбул']);
+  await quick.getByRole('button', { name: 'Все города и курорты' }).click();
+  await page.locator('#stayCityQuery').waitFor();
+  await page.keyboard.press('Escape');
   await quick.getByRole('button', { name: 'Казань' }).press('Enter');
   await calendar.waitFor();
   assert.equal(await page.locator('#stayPlace').innerText(), 'Казань');
