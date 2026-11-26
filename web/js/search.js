@@ -1,7 +1,7 @@
 import { openCalendar, shortDay } from './lib/flight-calendar.js';
 // Поиск поездок (главная). Правила повторяют приложение iOS (Aviator/Utilities/SearchRules.swift); источник истины — сервер.
 import { $, esc, icon, adMark } from './lib/ui.js';
-import { DEFAULT_ZONE, localZone, zoned, fmtDate, fmtDay, fmtTime, fmtMoney, fmtRange, monthLabel, months, defaultMonth, addDays, duration, daysLabel, nightsLabel, countLabel } from './lib/format.js';
+import { DEFAULT_ZONE, localZone, zoned, fmtDate, fmtDay, fmtTime, fmtMoney, fmtRange, monthLabel, months, defaultMonth, addDays, duration, daysLabel, nightsLabel, countLabel, plural } from './lib/format.js';
 import { snapshot, tripPath, savedTrips, firstPrompt, saveTrip, tripDates } from './lib/trip.js';
 import { cityRating } from './lib/city-rating.js';
 import { oneAdult, groupSize, passengerLabel, ticketAction, setPassengerParams, passengersFromParams } from './lib/passengers.js';
@@ -213,7 +213,21 @@ function visibleOffers(list, groupByCity, sort) {
   return list.filter(accepts).sort((a, b) => compareOffers(a, b, sort))
     .filter((offer) => !groupByCity || (!seen.has(offer.city_code) && seen.add(offer.city_code)));
 }
-const airlineLabel = (offer) => offer.airline_name || offer.airline || 'Авиакомпания не указана';
+const airlineLabel = (offer) => offer.airline === 'DP' ? 'Победа' : offer.airline_name || offer.airline || 'Авиакомпания не указана';
+
+function transferLabel(offer) {
+  const out = offer.transfers, back = offer.return_transfers;
+  if (out === 0 && back === 0) return 'Без пересадок';
+  const stops = n => n == null ? 'нет данных' : n === 0 ? 'без пересадок' : n + ' ' + plural(n, 'пересадка', 'пересадки', 'пересадок');
+  if (out == null && back == null) return 'Пересадки неизвестны';
+  if (out === 0 && back > 0) return 'На обратном пути — ' + stops(back);
+  if (back === 0 && out > 0) return 'На пути туда — ' + stops(out);
+  return `Туда — ${stops(out)}, обратно — ${stops(back)}`;
+}
+
+function flightMeta(offer) {
+  return `<p class="flight-meta"><span>${esc(airlineLabel(offer))}</span> <span>${esc(transferLabel(offer))}</span></p>`;
+}
 // Locally bundled Aviasales marks. Keep the carrier name for all other airlines.
 const carrierLogos = new Set('3F 4G 5N 6R A4 AA AF AY B2 BA D2 DL DP EK EO EW EY F7 FR FV FZ G9 H9 HY I8 IO IZ J2 J9 KC KL KV LH LO LX N4 OS PC QR R3 RT S7 SK SU SZ TK U2 U6 U9 UA UT VF WZ Y7 YC'.split(' '));
 function carrier(offer) {
@@ -293,7 +307,7 @@ function offerCard(offer, holiday = false) {
       </div>
       <p class="offer-dates">${esc(fmtRange(x.dep, x.ret, offer.origin_timezone, offer.destination_timezone))}, ${esc(stayLabel(offer))}</p>
       ${holiday ? `<p class="offer-meta">${esc(holidayLabel(offer))}</p>` : ''}
-      <p class="offer-meta">${x.direct ? 'прямые' : 'с пересадками'}, ${carrier(offer)}</p>
+      ${flightMeta(offer)}
       ${levelTag(offer)}
       ${offerRating(offer)}
       <p class="offer-about" data-guide="${esc(offer.city_code)}" ${guide?.summary ? '' : 'hidden'}>${esc(guide?.summary ?? '')}</p>
@@ -379,10 +393,6 @@ function compareTable(offers, distinguishFlights = false) {
     return `${city}<small>${esc(flight.join(', '))}</small>`;
   };
   const row = (title, cell) => `<tr><th scope="row">${title}</th>${offers.map((offer) => `<td>${cell(offer, facts(offer))}</td>`).join('')}</tr>`;
-  const changes = offer => {
-    if (offer.transfers == null || offer.return_transfers == null) return 'Нет данных';
-    return offer.transfers === 0 && offer.return_transfers === 0 ? 'Прямые' : `Туда: ${esc(offer.transfers)}, обратно: ${esc(offer.return_transfers)}`;
-  };
   return `<div class="compare"${offers.length > 2 ? ' tabindex="0" role="region" aria-label="Сравнение выбранных билетов"' : ''}><table data-count="${offers.length}">
     <thead><tr><td></td>${offers.map(offer => `<th scope="col">${heading(offer)}</th>`).join('')}</tr></thead>
     <tbody>
@@ -391,7 +401,7 @@ function compareTable(offers, distinguishFlights = false) {
       ${row('На месте', (offer, x) => hoursMinutes(x.stay == null ? null : Math.round(x.stay * 60)))}
       ${row('Час поездки', (offer, x) => x.stay ? esc(hourCost(x)) : 'Нет данных')}
       ${row('В пути', (offer, x) => hoursMinutes(Number.isFinite(x.flight) ? x.flight : null))}
-      ${row('Пересадки', changes)}
+      ${row('Пересадки', offer => esc(transferLabel(offer)))}
       ${row('Авиакомпания', (offer) => esc(airlineLabel(offer)))}
     </tbody></table></div>`;
 }
@@ -709,7 +719,7 @@ function passTile(offer, row) {
       <div class="tile-price-row"><p class="pass-price">${esc(fmtMoney(offer.price_minor))}</p>${levelTag(offer)}${favButton(offer).replace('class="fav"', 'class="fav fav--inline"')}</div>
       <p class="caption pass-fare">Туда и обратно за одного взрослого</p>
       <div class="pass-extra">${offerRating(offer)}</div>
-      <p class="caption">${x.direct ? 'прямые' : 'с пересадками'}, ${carrier(offer)}</p>
+      ${flightMeta(offer)}
     </div></div>${openButton(offer, row)}</article>`;
 }
 // Остальные подборки — марки: фото, город, цена, даты.
