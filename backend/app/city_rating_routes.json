@@ -2064,5 +2064,660 @@
     "router_info_url": "https://routing.openstreetmap.de/about.html",
     "attribution_url": "https://www.openstreetmap.org/copyright",
     "map_feedback_url": "https://www.openstreetmap.org/fixthemap"
+  },
+  "ARH": {
+    "starts": [
+      {
+        "name": "Отель «Пур-Наволок», подход с набережной",
+        "lat": 64.5411322,
+        "lon": 40.5108281,
+        "url": "https://www.openstreetmap.org/node/3094872559",
+        "area": "мыс Пур-Наволок и набережная Северной Двины"
+      },
+      {
+        "name": "Гостиница «Двина», подход с Троицкого проспекта",
+        "lat": 64.5357642,
+        "lon": 40.5227267,
+        "url": "https://www.openstreetmap.org/node/5426877462",
+        "area": "Троицкий проспект и улица Поморская"
+      }
+    ],
+    "places": [
+      {
+        "name": "Гостиные дворы, у музейного входа",
+        "lat": 64.5387721,
+        "lon": 40.5092634,
+        "url": "https://www.openstreetmap.org/node/1444649536"
+      },
+      {
+        "name": "Памятник Петру I, дорожка на набережной",
+        "lat": 64.5367736,
+        "lon": 40.5111511,
+        "url": "https://www.openstreetmap.org/node/729700900"
+      },
+      {
+        "name": "Проспект Чумбарова-Лучинского, скульптура «Сеня Малина»",
+        "lat": 64.5348596,
+        "lon": 40.5287655,
+        "url": "https://www.openstreetmap.org/node/2657821030"
+      },
+      {
+        "name": "Музей художника и сказочника Писахова, наружный подход",
+        "lat": 64.5345932,
+        "lon": 40.5250024,
+        "url": "https://www.openstreetmap.org/node/3737539245"
+      },
+      {
+        "name": "Памятный знак «Архангельск — первый морской порт России»",
+        "lat": 64.5380002,
+        "lon": 40.5145042,
+        "url": "https://www.openstreetmap.org/node/12120131647"
+      }
+    ],
+    "walk_seconds": [
+      [
+        239.6,
+        450.2,
+        1055.1,
+        1080.8,
+        505.8
+      ],
+      [
+        867.9,
+        744.7,
+        367.5,
+        302.2,
+        609.3
+      ]
+    ],
+    "walk_metres": [
+      [
+        299.5,
+        562.9,
+        1318.9,
+        1351,
+        632.1
+      ],
+      [
+        1085,
+        930.8,
+        459.5,
+        377.9,
+        761.5
+      ]
+    ],
+    "walk_minutes": [
+      [
+        3.99,
+        7.5,
+        17.58,
+        18.01,
+        8.43
+      ],
+      [
+        14.46,
+        12.41,
+        6.12,
+        5.04,
+        10.15
+      ]
+    ],
+    "source": "Пешеходные маршруты FOSSGIS OSRM, © OpenStreetMap contributors",
+    "url": "https://routing.openstreetmap.de/routed-foot/table/v1/foot/40.5108281,64.5411322;40.5227267,64.5357642;40.5092634,64.5387721;40.5111511,64.5367736;40.5287655,64.5348596;40.5250024,64.5345932;40.5145042,64.5380002?sources=0;1&destinations=2;3;4;5;6&annotations=duration,distance&generate_hints=false",
+    "checked": "2026-11-26",
+    "valid_until": "2027-02-24",
+    "review_interval_days": 90,
+    "selection": "Два отеля в разных частях центрального района и пять ориентиров. Замер между пешеходными подходами.",
+    "selection_urls": [
+      "https://pomorland.travel/lp/classicrout/",
+      "https://otel-pur-navolok.ru/"
+    ],
+    "saturday_local_times": [
+      "10:00",
+      "15:00"
+    ],
+    "time_zone": "Europe/Moscow",
+    "scope": "В оба субботних часа используется одна пешеходная сеть. Маршрут заканчивается у места на улице. Время осмотра, погода и временные перекрытия не учитываются.",
+    "city_validation": {
+      "city": "Архангельск",
+      "city_code": "ARH",
+      "points_in_city": 7
+    },
+    "snap_metres": [
+      23.25281714,
+      6.553944872,
+      6.170711667,
+      5.807471108,
+      16.22290645,
+      13.8894276,
+      15.17014744
+    ],
+    "router_info_url": "https://routing.openstreetmap.de/about.html",
+    "attribution_url": "https://www.openstreetmap.org/copyright",
+    "map_feedback_url": "https://www.openstreetmap.org/fixthemap"
+  },
+  "IKT": {
+    "starts": [
+      {
+        "name": "Ibis Иркутск Центр, подход с улицы Полины Осипенко",
+        "lat": 52.2873279,
+        "lon": 104.2701124,
+        "url": "https://www.openstreetmap.org/node/5712218837",
+        "area": "улица Полины Осипенко и западная часть центра"
+      },
+      {
+        "name": "Отель Central, подход с улицы Литвинова",
+        "lat": 52.286742,
+        "lon": 104.285274,
+        "url": "https://www.openstreetmap.org/node/6916060989",
+        "area": "улицы Литвинова и Карла Маркса"
+      }
+    ],
+    "places": [
+      {
+        "name": "Сквер имени Кирова, дорожки у фонтана",
+        "lat": 52.2878662,
+        "lon": 104.2807816,
+        "url": "https://www.openstreetmap.org/way/264114508"
+      },
+      {
+        "name": "Собор Богоявления, подход к зданию с Нижней набережной",
+        "lat": 52.2921914,
+        "lon": 104.282729,
+        "url": "https://www.openstreetmap.org/way/121410047"
+      },
+      {
+        "name": "Спасская церковь, наружный подход",
+        "lat": 52.2911211,
+        "lon": 104.2812732,
+        "url": "https://www.openstreetmap.org/way/161547511"
+      },
+      {
+        "name": "Тихвинский сквер, пешеходная дорожка",
+        "lat": 52.2861941,
+        "lon": 104.2814524,
+        "url": "https://www.openstreetmap.org/way/264138136"
+      },
+      {
+        "name": "Сквер имени Сигеки Мори, дорожка у памятного камня",
+        "lat": 52.2828365,
+        "lon": 104.2831619,
+        "url": "https://www.openstreetmap.org/way/179119277"
+      }
+    ],
+    "walk_seconds": [
+      [
+        771.3,
+        1026.1,
+        871.6,
+        919.8,
+        1140.3
+      ],
+      [
+        384.7,
+        737.1,
+        682.5,
+        271.9,
+        499.3
+      ]
+    ],
+    "walk_metres": [
+      [
+        963.7,
+        1282.5,
+        1089.4,
+        1149.6,
+        1425.3
+      ],
+      [
+        480.8,
+        921.7,
+        853.2,
+        339.9,
+        624.1
+      ]
+    ],
+    "walk_minutes": [
+      [
+        12.85,
+        17.1,
+        14.53,
+        15.33,
+        19.0
+      ],
+      [
+        6.41,
+        12.29,
+        11.38,
+        4.53,
+        8.32
+      ]
+    ],
+    "source": "Пешеходные маршруты FOSSGIS OSRM, © OpenStreetMap contributors",
+    "url": "https://routing.openstreetmap.de/routed-foot/table/v1/foot/104.2701124,52.2873279;104.285274,52.286742;104.2807816,52.2878662;104.282729,52.2921914;104.2812732,52.2911211;104.2814524,52.2861941;104.2831619,52.2828365?sources=0;1&destinations=2;3;4;5;6&annotations=duration,distance&generate_hints=false",
+    "checked": "2026-11-26",
+    "valid_until": "2027-02-24",
+    "review_interval_days": 90,
+    "selection": "Два отеля в разных частях центрального района и пять ориентиров. Замер между пешеходными подходами.",
+    "selection_urls": [
+      "https://irkutsk.ru/ru/marshruty/istoricheskiy-tsentr/",
+      "https://admirk.ru/city/interaktivnye-karty/"
+    ],
+    "saturday_local_times": [
+      "10:00",
+      "15:00"
+    ],
+    "time_zone": "Asia/Irkutsk",
+    "scope": "В оба субботних часа используется одна пешеходная сеть. Маршрут заканчивается у места на улице. Время осмотра, погода и временные перекрытия не учитываются.",
+    "city_validation": {
+      "city": "Иркутск",
+      "city_code": "IKT",
+      "points_in_city": 7
+    },
+    "snap_metres": [
+      7.663779074,
+      2.684689605,
+      4.655546176,
+      25.13995078,
+      9.670320638,
+      2.162253709,
+      0.4074306025
+    ],
+    "router_info_url": "https://routing.openstreetmap.de/about.html",
+    "attribution_url": "https://www.openstreetmap.org/copyright",
+    "map_feedback_url": "https://www.openstreetmap.org/fixthemap"
+  },
+  "DXB": {
+    "starts": [
+      {
+        "name": "XVA Art Hotel, подход из квартала Аль-Фахиди",
+        "lat": 25.2641163,
+        "lon": 55.2996612,
+        "url": "https://www.openstreetmap.org/node/5154973021",
+        "area": "Аль-Фахиди"
+      },
+      {
+        "name": "Gateway Hotel, подход с улицы Халид-бин-аль-Валид",
+        "lat": 25.2608512,
+        "lon": 55.2908465,
+        "url": "https://www.openstreetmap.org/node/4106960801",
+        "area": "Аль-Сук-аль-Кабир"
+      }
+    ],
+    "places": [
+      {
+        "name": "Музей Аль-Шиндага, вход в музейный квартал",
+        "lat": 25.2664738,
+        "lon": 55.2889645,
+        "url": "https://www.openstreetmap.org/node/11927748577"
+      },
+      {
+        "name": "Текстильный рынок, подход к торговой улице",
+        "lat": 25.2641413,
+        "lon": 55.296206,
+        "url": "https://www.openstreetmap.org/node/5109606422"
+      },
+      {
+        "name": "Музей монет, уличный подход в Аль-Фахиди",
+        "lat": 25.2645818,
+        "lon": 55.2997933,
+        "url": "https://www.openstreetmap.org/node/12486010908"
+      },
+      {
+        "name": "Чайный дом Arabian Tea House, подход с улицы Аль-Фахиди",
+        "lat": 25.2632875,
+        "lon": 55.2997231,
+        "url": "https://www.openstreetmap.org/way/260895322"
+      },
+      {
+        "name": "Аль-Губайба, пешеходный подход к причалу Дубай-Крик",
+        "lat": 25.2652864,
+        "lon": 55.2910894,
+        "url": "https://www.openstreetmap.org/way/349885415"
+      }
+    ],
+    "walk_seconds": [
+      [
+        1241.3,
+        452.4,
+        52,
+        95.5,
+        1027.3
+      ],
+      [
+        663.9,
+        696.3,
+        1044.5,
+        897,
+        640.8
+      ]
+    ],
+    "walk_metres": [
+      [
+        1552.2,
+        563.1,
+        64.9,
+        119.5,
+        1284.5
+      ],
+      [
+        829.9,
+        870.6,
+        1303.4,
+        1119.1,
+        801.5
+      ]
+    ],
+    "walk_minutes": [
+      [
+        20.69,
+        7.54,
+        0.87,
+        1.59,
+        17.12
+      ],
+      [
+        11.06,
+        11.6,
+        17.41,
+        14.95,
+        10.68
+      ]
+    ],
+    "source": "Пешеходные маршруты FOSSGIS OSRM, © OpenStreetMap contributors",
+    "url": "https://routing.openstreetmap.de/routed-foot/table/v1/foot/55.2996612,25.2641163;55.2908465,25.2608512;55.2889645,25.2664738;55.296206,25.2641413;55.2997933,25.2645818;55.2997231,25.2632875;55.2910894,25.2652864?sources=0;1&destinations=2;3;4;5;6&annotations=duration,distance&generate_hints=false",
+    "checked": "2026-11-26",
+    "valid_until": "2027-02-24",
+    "review_interval_days": 90,
+    "selection": "Два отеля в разных частях центрального района и пять ориентиров. Замер между пешеходными подходами.",
+    "selection_urls": [
+      "https://www.visitdubai.com/en/articles/dubai-cultural-walking-tour",
+      "https://arabianteahouse.com/al-fahidi/"
+    ],
+    "saturday_local_times": [
+      "10:00",
+      "15:00"
+    ],
+    "time_zone": "Asia/Dubai",
+    "scope": "В оба субботних часа используется одна пешеходная сеть. Маршрут заканчивается у места на улице. Время осмотра, погода и временные перекрытия не учитываются.",
+    "city_validation": {
+      "city": "Дубай",
+      "city_code": "DXB",
+      "points_in_city": 7
+    },
+    "snap_metres": [
+      4.126280371,
+      7.064606608,
+      13.30407502,
+      9.721400791,
+      5.443619232,
+      12.64712097,
+      0
+    ],
+    "router_info_url": "https://routing.openstreetmap.de/about.html",
+    "attribution_url": "https://www.openstreetmap.org/copyright",
+    "map_feedback_url": "https://www.openstreetmap.org/fixthemap"
+  },
+  "BKK": {
+    "starts": [
+      {
+        "name": "Riva Arun, подход со стороны Маха-Рат",
+        "lat": 13.7442618,
+        "lon": 100.4917791,
+        "url": "https://www.openstreetmap.org/node/7226467985",
+        "area": "Тха-Тиен у Чаупхраи"
+      },
+      {
+        "name": "Siri Heritage Bangkok Hotel, подход с улицы Атса-Данг",
+        "lat": 13.7552251,
+        "lon": 100.4964954,
+        "url": "https://www.openstreetmap.org/node/6319998585",
+        "area": "Сан-Чао-Пхо-Сыа"
+      }
+    ],
+    "places": [
+      {
+        "name": "Большой дворец, наружный подход к кассам",
+        "lat": 13.7520831,
+        "lon": 100.4933432,
+        "url": "https://www.openstreetmap.org/node/6461412685"
+      },
+      {
+        "name": "Ват-Пхо, пешеходный подход со стороны Маха-Рат",
+        "lat": 13.7465501,
+        "lon": 100.4922309,
+        "url": "https://www.openstreetmap.org/node/7320261736"
+      },
+      {
+        "name": "Саранром, парк у улицы Чароен-Крунг",
+        "lat": 13.7482882,
+        "lon": 100.4954022,
+        "url": "https://www.openstreetmap.org/way/23486019"
+      },
+      {
+        "name": "Тха-Тиен, общедоступная смотровая площадка у причала",
+        "lat": 13.7457964,
+        "lon": 100.4902958,
+        "url": "https://www.openstreetmap.org/node/11806216522"
+      },
+      {
+        "name": "Гигантские качели, пешеходная площадь перед Ват-Сутхат",
+        "lat": 13.7518109,
+        "lon": 100.5012752,
+        "url": "https://www.openstreetmap.org/way/178353988"
+      }
+    ],
+    "walk_seconds": [
+      [
+        1050.6,
+        384.9,
+        758.7,
+        337,
+        1394.8
+      ],
+      [
+        700.2,
+        1158.3,
+        772.6,
+        1357.5,
+        712.2
+      ]
+    ],
+    "walk_metres": [
+      [
+        1313.4,
+        481.1,
+        948.5,
+        420.8,
+        1744.1
+      ],
+      [
+        881,
+        1448.1,
+        965.6,
+        1696.6,
+        890.4
+      ]
+    ],
+    "walk_minutes": [
+      [
+        17.51,
+        6.42,
+        12.65,
+        5.62,
+        23.25
+      ],
+      [
+        11.67,
+        19.3,
+        12.88,
+        22.62,
+        11.87
+      ]
+    ],
+    "source": "Пешеходные маршруты FOSSGIS OSRM, © OpenStreetMap contributors",
+    "url": "https://routing.openstreetmap.de/routed-foot/table/v1/foot/100.4917791,13.7442618;100.4964954,13.7552251;100.4933432,13.7520831;100.4922309,13.7465501;100.4954022,13.7482882;100.4902958,13.7457964;100.5012752,13.7518109?sources=0;1&destinations=2;3;4;5;6&annotations=duration,distance&generate_hints=false",
+    "checked": "2026-11-26",
+    "valid_until": "2027-02-24",
+    "review_interval_days": 90,
+    "selection": "Два отеля в разных частях центрального района и пять ориентиров. Замер между пешеходными подходами.",
+    "selection_urls": [
+      "https://greener.bangkok.go.th/en/park/suan-saran-rom/",
+      "https://www.royalgrandpalace.th/en/visit/practical-information"
+    ],
+    "saturday_local_times": [
+      "10:00",
+      "15:00"
+    ],
+    "time_zone": "Asia/Bangkok",
+    "scope": "В оба субботних часа используется одна пешеходная сеть. Маршрут заканчивается у места на улице. Время осмотра, погода и временные перекрытия не учитываются.",
+    "city_validation": {
+      "city": "Бангкок",
+      "city_code": "BKK",
+      "points_in_city": 7
+    },
+    "snap_metres": [
+      1.243941926,
+      6.368853358,
+      8.218318324,
+      2.792714902,
+      7.824835885,
+      1.037238393,
+      6.218911302
+    ],
+    "router_info_url": "https://routing.openstreetmap.de/about.html",
+    "attribution_url": "https://www.openstreetmap.org/copyright",
+    "map_feedback_url": "https://www.openstreetmap.org/fixthemap"
+  },
+  "HKT": {
+    "starts": [
+      {
+        "name": "Xinlor House, подход с улицы Дибук",
+        "lat": 7.8865596,
+        "lon": 98.3859686,
+        "url": "https://www.openstreetmap.org/node/11627936851",
+        "area": "западная часть Старого города"
+      },
+      {
+        "name": "Courtyard by Marriott Phuket Town, подход с улицы Мон-Три",
+        "lat": 7.8808711,
+        "lon": 98.3927238,
+        "url": "https://www.openstreetmap.org/way/475819205",
+        "area": "Мон-Три и юго-восточная часть центра"
+      }
+    ],
+    "places": [
+      {
+        "name": "Музей Тай-Хуа, наружный подход с улицы Краби",
+        "lat": 7.8856363,
+        "lon": 98.3868409,
+        "url": "https://www.openstreetmap.org/way/1020885012"
+      },
+      {
+        "name": "Улица Таланг, подход к историческим торговым домам",
+        "lat": 7.8847639,
+        "lon": 98.389244,
+        "url": "https://www.openstreetmap.org/way/235838574"
+      },
+      {
+        "name": "Музей перанаканов, наружный подход у Чартерного банка",
+        "lat": 7.8837385,
+        "lon": 98.3906944,
+        "url": "https://www.openstreetmap.org/way/1233476539"
+      },
+      {
+        "name": "Дом Чинпрача, наружный подход с улицы Краби",
+        "lat": 7.885829,
+        "lon": 98.3839958,
+        "url": "https://www.openstreetmap.org/node/6253270085"
+      },
+      {
+        "name": "Мост Пхитак Чинпрача, уличный переход через канал",
+        "lat": 7.8837755,
+        "lon": 98.3927963,
+        "url": "https://www.openstreetmap.org/way/1233476543"
+      }
+    ],
+    "walk_seconds": [
+      [
+        397,
+        415.1,
+        639,
+        638.1,
+        777.6
+      ],
+      [
+        870.1,
+        651.3,
+        432,
+        1154.9,
+        271.2
+      ]
+    ],
+    "walk_metres": [
+      [
+        493.6,
+        518.9,
+        798.5,
+        795,
+        971.9
+      ],
+      [
+        1088.1,
+        814.1,
+        537.5,
+        1444,
+        336.3
+      ]
+    ],
+    "walk_minutes": [
+      [
+        6.62,
+        6.92,
+        10.65,
+        10.63,
+        12.96
+      ],
+      [
+        14.5,
+        10.85,
+        7.2,
+        19.25,
+        4.52
+      ]
+    ],
+    "source": "Пешеходные маршруты FOSSGIS OSRM, © OpenStreetMap contributors",
+    "url": "https://routing.openstreetmap.de/routed-foot/table/v1/foot/98.3859686,7.8865596;98.3927238,7.8808711;98.3868409,7.8856363;98.389244,7.8847639;98.3906944,7.8837385;98.3839958,7.885829;98.3927963,7.8837755?sources=0;1&destinations=2;3;4;5;6&annotations=duration,distance&generate_hints=false",
+    "checked": "2026-11-26",
+    "valid_until": "2027-02-24",
+    "review_interval_days": 90,
+    "selection": "Два отеля в разных частях центрального района и пять ориентиров. Замер между пешеходными подходами.",
+    "selection_urls": [
+      "https://www.tourismthailand.org/Attraction/phuket-old-town",
+      "https://www.tourismthailand.org/Articles/phuket"
+    ],
+    "saturday_local_times": [
+      "10:00",
+      "15:00"
+    ],
+    "time_zone": "Asia/Bangkok",
+    "scope": "В оба субботних часа используется одна пешеходная сеть. Маршрут заканчивается у места на улице. Время осмотра, погода и временные перекрытия не учитываются.",
+    "city_validation": {
+      "city": "Пхукет",
+      "city_code": "HKT",
+      "points_in_city": 7
+    },
+    "snap_metres": [
+      2.894441993,
+      21.23872453,
+      19.77956771,
+      0.6635707369,
+      11.63132274,
+      14.27543978,
+      2.574651849
+    ],
+    "router_info_url": "https://routing.openstreetmap.de/about.html",
+    "attribution_url": "https://www.openstreetmap.org/copyright",
+    "map_feedback_url": "https://www.openstreetmap.org/fixthemap"
   }
 }

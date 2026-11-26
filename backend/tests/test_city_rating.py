@@ -198,6 +198,10 @@ def test_published_observations_match_catalogue_dates_and_source_links():
     ("PKV", 4, 7.8),
     ("PAR", 3, None),
     ("TLL", 3, None),
+    ("ARH", 4, 7.1),
+    ("IKT", 4, 7.0),
+    ("DXB", 3, None),
+    ("BKK", 3, None),
 ])
 def test_verified_december_expansion_matches_public_rating(code, available, score):
     checked = date(2026, 11, 26)
@@ -213,10 +217,22 @@ def test_verified_december_expansion_matches_public_rating(code, available, scor
     assert rating.ROUTES[code]["url"] in {link["url"] for link in mobility["sources"]}
     assert "Посмотреть время пешком по маршрутам" in page
     if score is None:
-        assert cost["score"] is None and cost["sources"]
+        assert cost["score"] is None and cost["missing"]
         assert rating.badge(code, 12, year=2026, today=checked) == ""
     else:
         formatted = str(score).replace(".", ",")
         assert f"{formatted}<small>/10</small>" in page
         assert f"{formatted}<small>/10</small>" in rating.badge(code, 12, year=2026, today=checked)
     assert rating.report(code, 12, 2027, date(2027, 11, 26))["available"] == 1
+
+
+def test_phuket_city_routes_and_partial_weekend_observations():
+    today = date(2026, 11, 26)
+    data = rating.report("HKT", 12, 2026, today)
+    assert (data["available"], data["score"]) == (2, None)
+    activities, costs, climate, mobility = data["components"]
+    assert activities["score"] is None and any("Лад-Яй" in link["label"] for link in activities["sources"])
+    assert costs["score"] is None and climate["score"] is not None
+    assert mobility["score"] == 10 and "20 из 20" in mobility["fact"]
+    assert rating.coverage_index(2026, today)["HKT"][11] == "2"
+    assert rating.badge("HKT", 12, year=2026, today=today) == ""
