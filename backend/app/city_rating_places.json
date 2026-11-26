@@ -477,6 +477,100 @@
         "https://quicktickets.ru/bryansk-teatr-tolstogo/e289",
         "https://quicktickets.ru/bryansk-teatr-tolstogo/e274"
       ]
+    },
+    {
+      "name": "«Снежная королева» в Брянском театре кукол",
+      "category": "stage",
+      "source": "Брянский областной театр кукол, касса Quick Tickets",
+      "url": "https://quicktickets.ru/bryansk-teatr-kukol",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Новогодняя постановка 27 декабря в 11:00.",
+      "weekend_dates": [
+        "2026-12-27"
+      ]
+    },
+    {
+      "name": "Мемориал к 1000-летию Брянска",
+      "category": "history",
+      "source": "Туристический портал Брянска",
+      "url": "https://visitbryansk.ru/where_visit/obekty-istorii-i-kultury/pamyatniki-i-skulptury/memorial-k-1000-letiyu-g-bryanska/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Мемориал на Покровской горе и открытая видовая площадка."
+    },
+    {
+      "name": "Гостиница «Центральная» на площади Карла Маркса",
+      "category": "history",
+      "source": "Туристический портал Брянска",
+      "url": "https://visitbryansk.ru/projects/dosug-razvlecheniya/naberezhnaya-i-bulvar-gagarina/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Историческое здание на Круглой площади. Учитывается осмотр фасада."
+    },
+    {
+      "name": "Парк-музей имени А. К. Толстого",
+      "category": "nature",
+      "source": "Туристический портал Брянска",
+      "url": "https://visitbryansk.ru/where_visit/obekty-istorii-i-kultury/muzei-galerei/park-muzey-im-a-k-tolstogo/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Прогулка по парковым аллеям с деревянными скульптурами."
+    },
+    {
+      "name": "Набережная Десны",
+      "category": "nature",
+      "source": "Туристический портал Брянска",
+      "url": "https://visitbryansk.ru/projects/dosug-razvlecheniya/naberezhnaya-i-bulvar-gagarina/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Общедоступная прогулочная зона у Славянской площади."
+    },
+    {
+      "name": "Авторская кухня в ресторане «Дебри»",
+      "category": "food",
+      "source": "Туристический портал Брянска",
+      "url": "https://visitbryansk.ru/where-to-eat/restorany/debri/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Ресторан на Набережной улице, в меню блюда из русской печи."
+    },
+    {
+      "name": "Шоколадно-кофейная лавка «Потёмкин»",
+      "category": "food",
+      "source": "Туристический портал Брянска",
+      "url": "https://visitbryansk.ru/projects/dosug-razvlecheniya/naberezhnaya-i-bulvar-gagarina/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Местная шоколадная лавка на бульваре Гагарина, 9. Включена в городской гастрономический маршрут."
     }
   ],
   "CEE": [
@@ -3623,6 +3717,119 @@
         "https://quicktickets.ru/orenburg-teatr-kukol/e83",
         "https://quicktickets.ru/orenburg-teatr-kukol/e69"
       ]
+    },
+    {
+      "name": "«Два клёна» в Оренбургском театре кукол",
+      "category": "stage",
+      "source": "Оренбургский областной театр кукол, касса Quick Tickets",
+      "url": "https://quicktickets.ru/orenburg-teatr-kukol/e82",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "В афише есть показы 19, 20 и 27 декабря.",
+      "weekend_dates": [
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-27"
+      ]
+    },
+    {
+      "name": "«Морозко» в Оренбургском драмтеатре",
+      "category": "stage",
+      "source": "Оренбургский областной драматический театр, касса Quick Tickets",
+      "url": "https://quicktickets.ru/orenburg-teatr-gorkogo",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Новогодний спектакль указан в афише на 26 и 27 декабря.",
+      "weekend_dates": [
+        "2026-12-26",
+        "2026-12-27"
+      ]
+    },
+    {
+      "name": "Архитектурный ансамбль Караван-сарая",
+      "category": "history",
+      "source": "Туристический портал Оренбургской области",
+      "url": "https://travel.orb.ru/chem-zanyatsya/points/religiya/mecheti/karavan-saray/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Историческое здание на Парковом проспекте. Учитывается осмотр с улицы."
+    },
+    {
+      "name": "Пешеходный мост Европа — Азия",
+      "category": "history",
+      "source": "Туристический портал Оренбургской области",
+      "url": "https://travel.orb.ru/about/?lang=ru",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Пешеходный подход к городскому мосту через Урал."
+    },
+    {
+      "name": "Набережная Урала",
+      "category": "nature",
+      "source": "Туристический портал Оренбургской области",
+      "url": "https://travel.orb.ru/about/?lang=ru",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Общедоступные прогулочные дорожки вдоль реки."
+    },
+    {
+      "name": "Сад имени Фрунзе",
+      "category": "nature",
+      "source": "Выставочный комплекс «Салют, Победа!»",
+      "url": "https://pobeda-orenburg.ru/posetiteljam/rezhim-raboty",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Прогулка по саду с экспонатами под открытым небом. В расписании есть суббота и воскресенье."
+    },
+    {
+      "name": "Рыба и блюда на мангале в «Ностальгии»",
+      "category": "food",
+      "source": "Ресторан «Ностальгия»",
+      "url": "https://nostal.ru/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Гостиный двор, улица Кирова, 13/3. Заведение работает ежедневно."
+    },
+    {
+      "name": "Ресторан «Форштадт»",
+      "category": "food",
+      "source": "Ресторан «Форштадт»",
+      "url": "https://forshtadt56.ru/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Ресторан на пешеходной Советской улице, 13."
     }
   ],
   "RMZ": [
@@ -9177,6 +9384,353 @@
       "weekend_dates": [
         "2026-12-13",
         "2026-12-20",
+        "2026-12-27"
+      ]
+    }
+  ],
+  "BCN": [
+    {
+      "name": "Рождественский концерт Sant Esteve",
+      "category": "stage",
+      "source": "Дворец каталонской музыки",
+      "url": "https://www.palaumusica.cat/es/concierto-de-sant-esteve_1623843",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Хоровой концерт в субботу 26 декабря.",
+      "weekend_dates": [
+        "2026-12-26"
+      ]
+    },
+    {
+      "name": "Gipsy Kings с Андре Рейесом",
+      "category": "stage",
+      "source": "Дворец каталонской музыки",
+      "url": "https://www.palaumusica.cat/es/gipsy-kings-by-andre-reyes_1725479",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Концерт в воскресенье 27 декабря.",
+      "weekend_dates": [
+        "2026-12-27"
+      ]
+    },
+    {
+      "name": "Музей Пикассо",
+      "category": "museums",
+      "source": "Музей Пикассо",
+      "url": "https://museupicassobcn.cat/en/plan-your-visit/buy-tickets-and-opening-hours",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Коллекция в пяти дворцах на улице Монкада. Суббота и воскресенье указаны в зимнем расписании."
+    },
+    {
+      "name": "Музей Фредерика Мареса",
+      "category": "museums",
+      "source": "Муниципальный справочник Барселоны",
+      "url": "https://guia.barcelona.cat/detall/museu-frederic-mares_92086001132.html",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Коллекция скульптуры на площади Сант-Иу. Музей открыт по выходным."
+    },
+    {
+      "name": "Кафедральный собор Барселоны",
+      "category": "history",
+      "source": "Муниципальный справочник Барселоны",
+      "url": "https://guia.barcelona.cat/ca/detall/visita-a-la-catedral-i-el-claustre-de-barcelona_96267205050.html",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Готический собор. Учитывается внешний осмотр с площади."
+    },
+    {
+      "name": "Пласа-Реаль",
+      "category": "history",
+      "source": "Культурное наследие Каталонии",
+      "url": "https://patrimoni.gencat.cat/en/collection/placa-reial",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Городская площадь XIX века у Ла-Рамблы. Доступна для прогулок."
+    },
+    {
+      "name": "Парк Сьютаделья",
+      "category": "nature",
+      "source": "Муниципальный справочник Барселоны",
+      "url": "https://guia.barcelona.cat/ca/detall/parc-de-la-ciutadella_92086011921.html",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Городской парк с открытыми пешеходными дорожками."
+    },
+    {
+      "name": "Сады Моссен-Коста-и-Льобера",
+      "category": "nature",
+      "source": "Муниципальный справочник Барселоны",
+      "url": "https://guia.barcelona.cat/ca/detall/jardins-de-mossen-costa-i-llobera_99400181025.html",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Сад суккулентов на Монжуике. Муниципальный справочник публикует сезонные часы."
+    },
+    {
+      "name": "Рынок Бокерия",
+      "category": "food",
+      "source": "Рынок Бокерия",
+      "url": "https://www.boqueria.barcelona/market-boqueria",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Продуктовый рынок на Ла-Рамбле, работает по субботам."
+    },
+    {
+      "name": "Рынок Санта-Катерина",
+      "category": "food",
+      "source": "Муниципальный справочник Барселоны",
+      "url": "https://guia.barcelona.cat/ca/detall/mercat-santa-caterina_92086009448.html",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Муниципальный рынок в старом городе. В субботу с 7:30 до 14:30 по обычному расписанию."
+    },
+    {
+      "name": "Балет «Щелкунчик» в Лисео",
+      "category": "stage",
+      "source": "Гран-театр Лисео",
+      "url": "https://www.liceubarcelona.cat/ca/trencanous-2026",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "12 декабря в 19:00 по программе театра.",
+      "weekend_dates": [
+        "2026-12-12"
+      ]
+    },
+    {
+      "name": "Así Canta Jerez en Navidad",
+      "category": "stage",
+      "source": "Дворец каталонской музыки",
+      "url": "https://www.palaumusica.cat/en/asi-canta-jerez-en-navidad_1629541",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Рождественская программа фламенко 12 декабря в 21:00.",
+      "weekend_dates": [
+        "2026-12-12"
+      ]
+    }
+  ],
+  "VLC": [
+    {
+      "name": "Музей изящных искусств Валенсии",
+      "category": "museums",
+      "source": "Муниципальный справочник Валенсии",
+      "url": "https://cultural.valencia.es/es/museu/museo-de-bellas-artes-de-valencia/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Музей на улице Сан-Пио-V открыт по выходным."
+    },
+    {
+      "name": "Музей керамики Гонсалеса Марти",
+      "category": "museums",
+      "source": "Министерство культуры Испании",
+      "url": "https://www.cultura.gob.es/mnceramica/gl/visita-museo/informacion-general.html",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Коллекция во дворце на улице Поэта-Кероль. Суббота есть в расписании."
+    },
+    {
+      "name": "Шёлковая биржа",
+      "category": "history",
+      "source": "Туристический офис Валенсии",
+      "url": "https://www.visitvalencia.com/sites/default/files/media/downloadable-file/files/museos-monumentos-en-2020.pdf",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Историческая биржа рядом с Центральным рынком. Учитывается наружный осмотр."
+    },
+    {
+      "name": "Кафедральный собор Валенсии",
+      "category": "history",
+      "source": "Правительство Валенсийского сообщества",
+      "url": "https://www.gva.es/contenidos/publicados/UnpaseoxVlc_final.pdf",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Собор и башня Микалет. Учитывается наружный осмотр с площадей."
+    },
+    {
+      "name": "Парк в бывшем русле Турии",
+      "category": "nature",
+      "source": "Служба парков и садов Валенсии",
+      "url": "https://jardins.valencia.es/es/jardin/jardin-del-turia-tramos-4-5-6",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Прогулочные участки сада между историческими мостами."
+    },
+    {
+      "name": "Королевские сады Виверос",
+      "category": "nature",
+      "source": "Муниципальный справочник Валенсии",
+      "url": "https://www.valencia.es/es/-/infociudad-jardines-del-real-jardines-de-viveros",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Бесплатный городской сад. Зимнее расписание с 7:30 до 20:30."
+    },
+    {
+      "name": "Центральный рынок Валенсии",
+      "category": "food",
+      "source": "Муниципальный справочник Валенсии",
+      "url": "https://www.valencia.es/cas/infociudad/-/asset_publisher/DFHqZCbLF0Iv/content/infociudad-mercado-central",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Продуктовый рынок на площади Меркадо. По обычному расписанию открыт по субботам."
+    },
+    {
+      "name": "Орчата и выпечка в Horchatería Daniel",
+      "category": "food",
+      "source": "Туристический офис Валенсии",
+      "url": "https://blog.visitvalencia.com/en/where-to-have-breakfast-in-valencia",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Заведение в центре на улице Дель-Мар, 4. В меню орчата и фартонс."
+    },
+    {
+      "name": "Концерт с «Шехеразадой» в Palau de la Música",
+      "category": "stage",
+      "source": "Palau de la Música de València",
+      "url": "https://palauvalencia.com/event/?id=2682&mod=1790160732",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "12 декабря по программе концертного зала.",
+      "weekend_dates": [
+        "2026-12-12"
+      ]
+    },
+    {
+      "name": "Опера «Лоэнгрин» в Les Arts",
+      "category": "stage",
+      "source": "Palau de les Arts Reina Sofía",
+      "url": "https://www.lesarts.com/pujades/files/Temporada%2026-27_En%20un%20vistazo.pdf",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "В программе сезона есть воскресный и субботний спектакли.",
+      "weekend_dates": [
+        "2026-12-13",
+        "2026-12-19"
+      ]
+    },
+    {
+      "name": "Фестиваль иллюзионистов в La Rambleta",
+      "category": "stage",
+      "source": "Театр La Rambleta",
+      "url": "https://larambleta.com/festival-mundial-de-magia/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-26",
+      "valid_until": "2026-12-31",
+      "note": "Декабрьская программа фестиваля включает показы в субботу и воскресенье.",
+      "weekend_dates": [
+        "2026-12-26",
+        "2026-12-27"
+      ]
+    },
+    {
+      "name": "Мюзикл «Звуки музыки» в Teatro Olympia",
+      "category": "stage",
+      "source": "Teatro Olympia",
+      "url": "https://www.teatro-olympia.com/sonrisas-y-lagrimas-el-musical",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-10",
+      "valid_until": "2026-12-31",
+      "note": "Постановка Sonrisas y lágrimas идёт по субботам и воскресеньям.",
+      "weekend_dates": [
+        "2026-12-12",
+        "2026-12-13",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
         "2026-12-27"
       ]
     }

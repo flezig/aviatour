@@ -209,6 +209,10 @@ def test_published_observations_match_catalogue_dates_and_source_links():
     ("KMW", 4, 7.4),
     ("MMK", 4, 6.7),
     ("MAD", 3, None),
+    ("BZK", 4, 7.8),
+    ("REN", 4, 7.5),
+    ("BCN", 3, None),
+    ("VLC", 3, None),
 ])
 def test_verified_december_expansion_matches_public_rating(code, available, score):
     checked = date(2026, 11, 26)
@@ -231,6 +235,12 @@ def test_verified_december_expansion_matches_public_rating(code, available, scor
         assert f"{formatted}<small>/10</small>" in page
         assert f"{formatted}<small>/10</small>" in rating.badge(code, 12, year=2026, today=checked)
     assert rating.report(code, 12, 2027, date(2027, 11, 26))["available"] == 1
+
+
+def test_december_expansion_still_has_activities_on_the_final_weekend():
+    for code in ("BZK", "REN", "BCN", "VLC"):
+        activity = rating.report(code, 12, 2026, date(2026, 12, 26))["components"][0]
+        assert activity["score"] == 10, code
 
 
 def test_belgrade_free_transit_is_reported_without_a_cost_score():
