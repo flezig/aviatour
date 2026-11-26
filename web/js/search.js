@@ -1539,6 +1539,19 @@ window.addEventListener('pageshow', event => {
   }
   restoreCatalog();
 });
+$('showcase').addEventListener('wheel', event => {
+  if (!event.cancelable || event.ctrlKey || event.shiftKey || !event.target.closest('.strip')) return;
+  const mode = event.deltaMode;
+  const { deltaX, deltaY } = event;
+  if (!deltaX || Math.abs(deltaY) <= Math.abs(deltaX)) return;
+
+  // Небольшое боковое движение трекпада может привязать вертикальный жест к ленте.
+  let pixels = deltaY;
+  if (mode === WheelEvent.DOM_DELTA_LINE) pixels *= parseFloat(getComputedStyle(document.body).lineHeight);
+  if (mode === WheelEvent.DOM_DELTA_PAGE) pixels *= window.innerHeight;
+  event.preventDefault();
+  window.scrollBy({ top: pixels, behavior: 'instant' });
+}, { passive: false });
 $('showcase').addEventListener('click', (event) => {
   const period = event.target.closest('[data-weekend]');
   if (period) {
