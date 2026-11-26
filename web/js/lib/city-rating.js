@@ -7,7 +7,7 @@ const scoreFormat = new Intl.NumberFormat('ru-RU', { minimumFractionDigits: 1, m
 const months = 'январь февраль март апрель май июнь июль август сентябрь октябрь ноябрь декабрь'.split(' ');
 
 // Without JavaScript each badge links directly to the server-rendered breakdown.
-export function cityRating(code, { month, year }, from, name, all) {
+export function cityRating(code, { month, year }, from, name, all, { onPhoto = false } = {}) {
   if (!cityCode.test(code) || !Number.isInteger(month) || month < 1 || month > 12) return '';
   const query = new URLSearchParams({ month });
   if (Number.isInteger(year)) query.set('year', year);
@@ -15,9 +15,11 @@ export function cityRating(code, { month, year }, from, name, all) {
     query.set('from', from);
     if (airportCode.test(all)) query.set('fc', all);
   }
-  return `<a hidden class="city-rating" data-rating-city="${esc(code)}" data-rating-month="${month}"
+  const label = onPhoto ? '<span class="city-rating-mark" aria-hidden="true">★</span>'
+    : '<span class="city-rating-label">Рейтинг города</span>';
+  return `<a hidden class="city-rating${onPhoto ? ' city-rating--photo' : ''}" data-rating-city="${esc(code)}" data-rating-month="${month}"
     ${query.has('year') ? `data-rating-year="${year}"` : ''} data-rating-name="${esc(name)}"
-    href="/season/${encodeURIComponent(code)}?${esc(query)}#city-rating"><span class="city-rating-label">Рейтинг города</span><span class="city-rating-value"></span></a>`;
+    href="/season/${encodeURIComponent(code)}?${esc(query)}#city-rating">${label}<span class="city-rating-value"></span></a>`;
 }
 
 const requests = new Map();
