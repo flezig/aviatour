@@ -9695,6 +9695,44 @@
         "2026-12-13",
         "2026-12-19"
       ]
+    },
+    {
+      "name": "Фестиваль иллюзионистов в La Rambleta",
+      "category": "stage",
+      "source": "Театр La Rambleta",
+      "url": "https://larambleta.com/festival-mundial-de-magia/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-26",
+      "valid_until": "2026-12-31",
+      "note": "Декабрьская программа фестиваля включает показы в субботу и воскресенье.",
+      "weekend_dates": [
+        "2026-12-26",
+        "2026-12-27"
+      ]
+    },
+    {
+      "name": "Мюзикл «Звуки музыки» в Teatro Olympia",
+      "category": "stage",
+      "source": "Teatro Olympia",
+      "url": "https://www.teatro-olympia.com/sonrisas-y-lagrimas-el-musical",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-10",
+      "valid_until": "2026-12-31",
+      "note": "Постановка Sonrisas y lágrimas идёт по субботам и воскресеньям.",
+      "weekend_dates": [
+        "2026-12-12",
+        "2026-12-13",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ]
     }
   ]
 }

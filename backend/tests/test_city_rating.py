@@ -237,6 +237,12 @@ def test_verified_december_expansion_matches_public_rating(code, available, scor
     assert rating.report(code, 12, 2027, date(2027, 11, 26))["available"] == 1
 
 
+def test_december_expansion_still_has_activities_on_the_final_weekend():
+    for code in ("BZK", "REN", "BCN", "VLC"):
+        activity = rating.report(code, 12, 2026, date(2026, 12, 26))["components"][0]
+        assert activity["score"] == 10, code
+
+
 def test_belgrade_free_transit_is_reported_without_a_cost_score():
     cost = rating.report("BEG", 12, 2026, date(2026, 11, 26))["components"][1]
     assert cost["score"] is None
