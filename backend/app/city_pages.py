@@ -304,15 +304,17 @@ HEAD = '''<!doctype html>
 </head>
 <body>
   <a class="skip" href="#main">К содержанию</a>
-  <header class="top wrap">
-    <a class="brand" href="/"><span class="brand-mark"><svg class="icon" aria-hidden="true"><use href="/icons.svg#plane"></use></svg></span>Aviator</a>
-    <nav class="nav" aria-label="Разделы сайта">
-      <a href="/">Билеты</a>
-      <a href="/city/"{cities_current}>Города</a>
-      <a href="/#fav">Избранное</a>
-      <a href="/trip.html">Мои поездки</a>
-      <a href="/how-we-count.html">Как мы считаем</a>
-    </nav>
+  <header class="site-header">
+    <div class="top wrap">
+      <a class="brand" href="/"><span class="brand-mark"><svg class="icon" aria-hidden="true"><use href="/icons.svg#plane"></use></svg></span>Aviator</a>
+      <nav class="nav" aria-label="Разделы сайта">
+        <a href="/">Билеты</a>
+        <a href="/city/"{cities_current}>Города</a>
+        <a href="/#fav">Избранное</a>
+        <a href="/trip.html">Мои поездки</a>
+        <a href="/how-we-count.html">Как мы считаем</a>
+      </nav>
+    </div>
   </header>
 '''
 FOOT = '''
@@ -412,7 +414,7 @@ def page(catalog, city, origin, parts, route=False):
     {f'<section class="card routes"><h2>Билеты {esc(city["to"])} из других городов</h2><ul class="route-links">{routes}</ul></section>' if routes else ''}
   </main>'''
     robots = '' if parts['has_prices'] or not route else '\n  <meta name="robots" content="noindex">'
-    return (HEAD.format(title=esc(title), description=esc(description), url=esc(url), image=esc(f'{SITE}/og/{city["slug"]}.jpg'), robots=robots, ld=ld, cities_current='')
+    return (HEAD.format(title=esc(title), description=esc(description), url=esc(url), image=esc(f'{SITE}/og/{city["slug"]}.jpg'), robots=robots, ld=ld, cities_current=' aria-current="location"')
             + body + FOOT.format(dialog='' if route else origin_dialog(catalog, city), script='/js/city.js'))
 
 

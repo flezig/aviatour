@@ -107,7 +107,7 @@ def layout(title, description, path, crumbs, main, script="/js/site.js", photo=N
             image=SITE + (f"/photos/{photo}.jpg" if photo else "/og.jpg"),
             robots="",
             ld=ld,
-            cities_current="",
+            cities_current=' aria-current="location"',
         )
         + f'<main id="main" class="wrap season-page">{visible}{main}</main>'
         + FOOT.format(dialog="", script=script)
