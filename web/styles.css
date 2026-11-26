@@ -310,7 +310,7 @@ img { display: block; max-width: 100%; }
 .tile--pass .level { grid-column: 1; justify-self: start; }
 .tile--pass .level span { white-space: normal; text-align: left; }
 .tile--pass .level-note { grid-column: 1 / -1; }
-.tile--pass .fav--inline { grid-area: 1 / 2; align-self: start; pointer-events: auto; }
+.tile--pass .fav--inline { grid-area: 1 / 2 / span 2; align-self: start; pointer-events: auto; }
 .carrier { display: inline; }
 .carrier img { display: inline-block; width: 20px; height: 20px; margin: 0 4px 0 0; vertical-align: -5px; object-fit: contain; border-radius: 4px; }
 .strip--pass { padding-block: 12px 16px; }
