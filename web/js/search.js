@@ -228,7 +228,12 @@ function transferLabel(offer) {
 }
 
 function flightMeta(offer) {
-  return `<p class="flight-meta">${carrier(offer)} <span>${esc(transferLabel(offer))}</span></p>`;
+  const direct = offer.transfers === 0 && offer.return_transfers === 0;
+  const hasStops = offer.transfers > 0 || offer.return_transfers > 0;
+  const marker = direct ? 'check' : hasStops ? 'swap' : 'info';
+  return `<p class="flight-meta">${carrier(offer)} <span class="flight-transfers">
+    <span class="transfer-icon transfer-icon--${marker}" aria-hidden="true">${icon(marker)}</span><span>${esc(transferLabel(offer))}</span>
+  </span></p>`;
 }
 // Locally bundled Aviasales marks. Keep the carrier name for all other airlines.
 const carrierLogos = new Set('3F 4G 5N 6R A4 AA AF AY B2 BA D2 DL DP EK EO EW EY F7 FR FV FZ G9 H9 HY I8 IO IZ J2 J9 KC KL KV LH LO LX N4 OS PC QR R3 RT S7 SK SU SZ TK U2 U6 U9 UA UT VF WZ Y7 YC'.split(' '));
@@ -292,16 +297,16 @@ const cachedPriceLabel = iso => 'Цены из кеша Aviasales' + (iso ? `, �
 
 const favButton = (offer) => `<button type="button" class="fav" data-fav="${esc(offer.id)}" aria-pressed="${state.favs.has(offer.id)}" aria-label="В избранное: ${esc(offer.city)}">${icon('heart')}</button>`;
 // Карточка отвечает на три вопроса: куда, сколько, когда. Время рейсов и подробности — в карточке поездки.
-function offerRating(offer) {
+function offerRating(offer, onPhoto = false) {
   const x = facts(offer), date = zoned(x.arr ?? x.dep, offer.destination_timezone);
   const query = state.view === 'results' && state.performed ? state.performed : state.query;
   const all = query.originCity === offer.origin_city_code ? query.originCity : null;
-  return cityRating(offer.city_code, date, offer.origin_airport, offer.city, all);
+  return cityRating(offer.city_code, date, offer.origin_airport, offer.city, all, { onPhoto });
 }
 function offerCard(offer, holiday = false) {
   const x = facts(offer);
   return `<article class="offer">
-    ${portrait(offer.city_code, offer.city, { action: favButton(offer) })}
+    ${portrait(offer.city_code, offer.city, { action: favButton(offer) + offerRating(offer, true) })}
     <div class="offer-body">
       <div class="offer-head">
         <h3 class="offer-city"><button type="button" class="offer-open" data-offer="${esc(offer.id)}">${esc(offer.city)}</button></h3>
@@ -310,7 +315,6 @@ function offerCard(offer, holiday = false) {
       <p class="offer-dates">${esc(fmtRange(x.dep, x.ret, offer.origin_timezone, offer.destination_timezone))}, ${esc(stayLabel(offer))}</p>
       ${holiday ? `<p class="offer-meta">${esc(holidayLabel(offer))}</p>` : ''}
       ${flightMeta(offer)}
-      ${offerRating(offer)}
     </div>
   </article>`;
 }
@@ -679,19 +683,18 @@ const rowOffers = (row) => row.items.map(homeOffer).filter((offer) => offer && f
 const tripLabel = offer => `${offer.city}: ${fmtMoney(offer.price_minor)}, ${fmtRange(facts(offer).dep, facts(offer).ret, offer.origin_timezone, offer.destination_timezone)}`;
 const openButton = (offer, row) => `<button type="button" class="tile-open" data-open="${esc(offer.id)}" data-row="${esc(row)}" aria-label="${esc(tripLabel(offer))}"></button>`;
 
-// Ближайшие вылеты показываем как посадочные талоны с датами и сравнением цены.
+// Ближайшие вылеты показываем как посадочные талоны.
 function passTile(offer, row) {
   const x = facts(offer);
   return `<article class="tile tile--pass"><div class="pass">
     <div class="pass-main">
-      ${portrait(offer.city_code, offer.city)}
+      ${portrait(offer.city_code, offer.city, { action: offerRating(offer, true) })}
       <div class="codes"><span>${esc(offer.origin_city_code ?? offer.origin_airport)}</span><span class="flight">${icon('plane')}</span><span>${esc(offer.city_code)}</span></div>
       <div class="cities"><span>${esc(offer.origin_city)}</span><span>${esc(offer.city)}</span></div>
     </div>
     <div class="pass-stub">
       <div class="tile-price-row"><p class="pass-price">от ${esc(fmtMoney(offer.price_minor))}</p>${favButton(offer).replace('class="fav"', 'class="fav fav--inline"')}</div>
       <div class="legs"><span><small>Туда</small><b>${esc(fmtDay(x.dep, offer.origin_timezone, true))}</b></span><span><small>Обратно</small><b>${esc(fmtDay(x.ret, offer.destination_timezone, true))}</b></span><span><small>На месте</small><b>${esc(stayLabel(offer))}</b></span></div>
-      <div class="pass-extra">${offerRating(offer)}</div>
       ${flightMeta(offer)}
     </div></div>${openButton(offer, row)}</article>`;
 }

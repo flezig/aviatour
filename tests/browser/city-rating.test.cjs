@@ -11,8 +11,8 @@ const offer = {
   price_minor: 1000000, duration_to: 100, duration_back: 100, transfers: 0, return_transfers: 0,
   airline: 'SU', flight_number: '100', received_at: new Date().toISOString(),
 };
-const trips = [offer, { ...offer, id: 'sochi-test', city: 'Сочи', city_code: 'AER' },
-  { ...offer, id: 'omsk-test', city: 'Омск', city_code: 'OMS' }];
+const trips = [offer, { ...offer, id: 'sochi-test', city: 'Сочи', city_code: 'AER', transfers: 1 },
+  { ...offer, id: 'omsk-test', city: 'Омск', city_code: 'OMS', transfers: null, return_transfers: null }];
 const home = {
   origin, received_at: offer.received_at, usual: {}, notes: {}, offers: Object.fromEntries(trips.map(trip => [trip.id, trip])),
   rows: [{ key: 'hot', title: 'Горячие билеты', kind: 'pass', items: trips.map(trip => trip.id) }],
@@ -34,15 +34,22 @@ for (const mobile of [false, true]) {
       if (new URL(req.url()).pathname === '/api/v1/city-rating/KZN') details.push(req.url());
     });
     await page.goto(base);
-    const feedBadge = page.locator('.tile--pass .city-rating').first();
-    if (mobile) {
-      await page.locator('[data-open="kzn-test"]').first().tap();
-      await page.locator('#detail:modal').waitFor();
-      assert.equal(await feedBadge.isVisible(), false);
-    }
-    const card = mobile ? page.locator('#detail .city-rating') : feedBadge;
+    const firstTile = page.locator('.tile--pass').first();
+    const card = firstTile.locator('.portrait > .city-rating--photo');
     const panel = page.locator('#city-rating-popover:popover-open');
     await card.waitFor();
+    assert.match(await card.getAttribute('aria-label'), /^Рейтинг города Казань, /);
+    assert.doesNotMatch(await card.innerText(), /Рейтинг города/);
+    assert.equal(await firstTile.locator('.transfer-icon--check + span').innerText(), 'Без пересадок');
+    assert.equal(await page.locator('.tile--pass .transfer-icon--swap + span').innerText(), 'На пути туда — 1 пересадка');
+    assert.equal(await page.locator('.tile--pass .transfer-icon--info + span').innerText(), 'Пересадки неизвестны');
+    const photo = firstTile.locator('.portrait');
+    const withinPhoto = await photo.evaluate(el => {
+      const photo = el.getBoundingClientRect();
+      const badge = el.querySelector('.city-rating--photo').getBoundingClientRect();
+      return Math.abs(photo.bottom - badge.bottom) < 1 && Math.abs(photo.right - badge.right) < 1;
+    });
+    assert.equal(withinPhoto, true);
     assert.equal(await card.getAttribute('data-rating-month'), '12');
     assert.equal(await card.getAttribute('data-rating-year'), '2026');
 
@@ -57,7 +64,7 @@ for (const mobile of [false, true]) {
       assert.match(await panel.innerText(), /Росстат/);
       assert.match(await card.innerText(), /7,0/);
     }
-    assert.equal(await page.locator('#detail').isVisible(), mobile);
+    assert.equal(await page.locator('#detail').isVisible(), false);
     const box = await panel.boundingBox();
     assert.ok(box.x >= 0 && box.x + box.width <= page.viewportSize().width + 1);
     if (mobile) {
@@ -69,7 +76,9 @@ for (const mobile of [false, true]) {
       await page.keyboard.press('Escape');
     }
     await panel.waitFor({ state: 'hidden' });
-    if (!mobile) await page.locator('[data-open="kzn-test"]').first().click();
+    const trip = page.locator('[data-open="kzn-test"]').first();
+    await trip.press('Enter');
+    await page.locator('#detail:modal').waitFor();
     const detailBadge = page.locator('#detail .city-rating');
     if (mobile) await detailBadge.tap(); else await detailBadge.hover();
     await panel.locator('tbody').waitFor();
@@ -77,6 +86,13 @@ for (const mobile of [false, true]) {
     await page.keyboard.press('Escape');
     assert.equal(await page.locator('#detail').isVisible(), true);
     await panel.waitFor({ state: 'hidden' });
+    await page.locator('#detail [data-close]').click();
+    await page.locator('[data-row-all="hot"]').click();
+    const resultBadge = page.locator('#results .offer .portrait > .city-rating--photo[data-rating-city="KZN"]');
+    await resultBadge.waitFor();
+    if (mobile) await resultBadge.tap(); else await resultBadge.hover();
+    await panel.locator('tbody').waitFor();
+    assert.equal(await page.locator('#detail').isVisible(), false);
   });
 }
 
