@@ -209,6 +209,10 @@ def test_published_observations_match_catalogue_dates_and_source_links():
     ("KMW", 4, 7.4),
     ("MMK", 4, 6.7),
     ("MAD", 3, None),
+    ("BZK", 4, 7.8),
+    ("REN", 4, 7.5),
+    ("BCN", 3, None),
+    ("VLC", 3, None),
 ])
 def test_verified_december_expansion_matches_public_rating(code, available, score):
     checked = date(2026, 11, 26)

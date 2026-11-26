@@ -3633,5 +3633,529 @@
     "router_info_url": "https://routing.openstreetmap.de/about.html",
     "attribution_url": "https://www.openstreetmap.org/copyright",
     "map_feedback_url": "https://www.openstreetmap.org/fixthemap"
+  },
+  "BZK": {
+    "starts": [
+      {
+        "name": "Гостиница «Десна», подход с проспекта Ленина",
+        "lat": 53.2441305,
+        "lon": 34.364258,
+        "url": "https://www.openstreetmap.org/node/1306418726",
+        "area": "проспект Ленина"
+      },
+      {
+        "name": "Гостиница «Мегаполис», подход с Набережной улицы",
+        "lat": 53.2388421,
+        "lon": 34.3723808,
+        "url": "https://www.openstreetmap.org/node/12941762401",
+        "area": "Набережная улица"
+      }
+    ],
+    "places": [
+      {
+        "name": "Парк-музей А. К. Толстого, дорожка парка",
+        "lat": 53.2462023,
+        "lon": 34.3602986,
+        "url": "https://www.openstreetmap.org/way/117983257"
+      },
+      {
+        "name": "Круглый сквер, дорожка в сквере",
+        "lat": 53.2422842,
+        "lon": 34.3663523,
+        "url": "https://www.openstreetmap.org/way/356235702"
+      },
+      {
+        "name": "Драмтеатр им. А. К. Толстого, наружный подход",
+        "lat": 53.2425887,
+        "lon": 34.3618632,
+        "url": "https://www.openstreetmap.org/way/105692738"
+      },
+      {
+        "name": "Художественный музей, наружный подход",
+        "lat": 53.2391138,
+        "lon": 34.3542747,
+        "url": "https://www.openstreetmap.org/way/120689748"
+      },
+      {
+        "name": "Брянская филармония, подход к площадке",
+        "lat": 53.2404971,
+        "lon": 34.373603,
+        "url": "https://www.openstreetmap.org/node/1306418724"
+      }
+    ],
+    "walk_seconds": [
+      [
+        412.6,
+        237.7,
+        309.6,
+        1092,
+        755.4
+      ],
+      [
+        1162.1,
+        514.9,
+        821,
+        1246.3,
+        242.5
+      ]
+    ],
+    "walk_metres": [
+      [
+        515.4,
+        297.4,
+        387,
+        1364.9,
+        944.1
+      ],
+      [
+        1452.4,
+        643.5,
+        1026.1,
+        1554.9,
+        303.4
+      ]
+    ],
+    "walk_minutes": [
+      [
+        6.88,
+        3.96,
+        5.16,
+        18.2,
+        12.59
+      ],
+      [
+        19.37,
+        8.58,
+        13.68,
+        20.77,
+        4.04
+      ]
+    ],
+    "source": "Пешеходные маршруты FOSSGIS OSRM, © OpenStreetMap contributors",
+    "url": "https://routing.openstreetmap.de/routed-foot/table/v1/foot/34.364258,53.2441305;34.3723808,53.2388421;34.3602986,53.2462023;34.3663523,53.2422842;34.3618632,53.2425887;34.3542747,53.2391138;34.373603,53.2404971?sources=0;1&destinations=2;3;4;5;6&annotations=duration,distance&generate_hints=false",
+    "checked": "2026-11-26",
+    "valid_until": "2027-02-24",
+    "review_interval_days": 90,
+    "selection": "Два отеля в разных частях центрального района и пять ориентиров. Замер между пешеходными подходами.",
+    "selection_urls": [
+      "https://visitbryansk.ru/projects/dosug-razvlecheniya/naberezhnaya-i-bulvar-gagarina/",
+      "https://visitbryansk.ru/where_visit/obekty-istorii-i-kultury/muzei-galerei/park-muzey-im-a-k-tolstogo/"
+    ],
+    "saturday_local_times": [
+      "10:00",
+      "15:00"
+    ],
+    "time_zone": "Europe/Moscow",
+    "scope": "В оба субботних часа используется одна пешеходная сеть. Маршрут заканчивается у места на улице. Время осмотра, погода и временные перекрытия не учитываются.",
+    "city_validation": {
+      "city": "Брянск",
+      "city_code": "BZK",
+      "points_in_city": 7
+    },
+    "snap_metres": [
+      10.92099422,
+      29.35677663,
+      23.67234622,
+      1.879365734,
+      19.42013896,
+      17.11789687,
+      17.1804076
+    ],
+    "router_info_url": "https://routing.openstreetmap.de/about.html",
+    "attribution_url": "https://www.openstreetmap.org/copyright",
+    "map_feedback_url": "https://www.openstreetmap.org/fixthemap"
+  },
+  "REN": {
+    "starts": [
+      {
+        "name": "Отель Grand, подход со стороны Советской улицы",
+        "lat": 51.7620651,
+        "lon": 55.1001519,
+        "url": "https://www.openstreetmap.org/way/318704623",
+        "area": "Советская улица в центре"
+      },
+      {
+        "name": "Отель «Южные ворота», подход к гостинице",
+        "lat": 51.7554651,
+        "lon": 55.098807,
+        "url": "https://www.openstreetmap.org/node/1395961071",
+        "area": "южная часть центра у Урала"
+      }
+    ],
+    "places": [
+      {
+        "name": "Музей истории Оренбурга, наружный подход",
+        "lat": 51.7554147,
+        "lon": 55.1083279,
+        "url": "https://www.openstreetmap.org/node/5894356467"
+      },
+      {
+        "name": "Памятник Валерию Чкалову, подход с Беловки",
+        "lat": 51.7546527,
+        "lon": 55.1063094,
+        "url": "https://www.openstreetmap.org/node/1208912342"
+      },
+      {
+        "name": "Памятник Пушкину и Далю, пешеходный подход",
+        "lat": 51.7649541,
+        "lon": 55.0994486,
+        "url": "https://www.openstreetmap.org/node/1184146662"
+      },
+      {
+        "name": "Сад имени Фрунзе, пешеходная дорожка",
+        "lat": 51.7603795,
+        "lon": 55.0907604,
+        "url": "https://www.openstreetmap.org/way/35153243"
+      },
+      {
+        "name": "Памятник Неплюеву, пешеходный подход",
+        "lat": 51.7626534,
+        "lon": 55.1012098,
+        "url": "https://www.openstreetmap.org/node/13050289738"
+      }
+    ],
+    "walk_seconds": [
+      [
+        918.9,
+        814.8,
+        530.1,
+        827.6,
+        238.9
+      ],
+      [
+        669.8,
+        550.9,
+        1205,
+        966.7,
+        913.8
+      ]
+    ],
+    "walk_metres": [
+      [
+        1143.8,
+        1013.6,
+        657.6,
+        1032.3,
+        296.2
+      ],
+      [
+        837.4,
+        688.5,
+        1493.8,
+        1206.1,
+        1132.4
+      ]
+    ],
+    "walk_minutes": [
+      [
+        15.31,
+        13.58,
+        8.84,
+        13.79,
+        3.98
+      ],
+      [
+        11.16,
+        9.18,
+        20.08,
+        16.11,
+        15.23
+      ]
+    ],
+    "source": "Пешеходные маршруты FOSSGIS OSRM, © OpenStreetMap contributors",
+    "url": "https://routing.openstreetmap.de/routed-foot/table/v1/foot/55.1001519,51.7620651;55.098807,51.7554651;55.1083279,51.7554147;55.1063094,51.7546527;55.0994486,51.7649541;55.0907604,51.7603795;55.1012098,51.7626534?sources=0;1&destinations=2;3;4;5;6&annotations=duration,distance&generate_hints=false",
+    "checked": "2026-11-26",
+    "valid_until": "2027-02-24",
+    "review_interval_days": 90,
+    "selection": "Два отеля в разных частях центрального района и пять ориентиров. Замер между пешеходными подходами.",
+    "selection_urls": [
+      "https://travel.orb.ru/about/?lang=ru",
+      "https://www.svrpk.ru/for-passengers/travel-with-us/orenburg/"
+    ],
+    "saturday_local_times": [
+      "10:00",
+      "15:00"
+    ],
+    "time_zone": "Asia/Yekaterinburg",
+    "scope": "В оба субботних часа используется одна пешеходная сеть. Маршрут заканчивается у места на улице. Время осмотра, погода и временные перекрытия не учитываются.",
+    "city_validation": {
+      "city": "Оренбург",
+      "city_code": "REN",
+      "points_in_city": 7
+    },
+    "snap_metres": [
+      18.44922684,
+      10.19519905,
+      24.37452048,
+      7.111081725,
+      35.19447373,
+      7.394809621,
+      20.29870062
+    ],
+    "router_info_url": "https://routing.openstreetmap.de/about.html",
+    "attribution_url": "https://www.openstreetmap.org/copyright",
+    "map_feedback_url": "https://www.openstreetmap.org/fixthemap"
+  },
+  "BCN": {
+    "starts": [
+      {
+        "name": "Hotel Royal, подход с улицы Ла-Рамбла",
+        "lat": 41.3842853,
+        "lon": 2.1705638,
+        "url": "https://www.openstreetmap.org/node/672398204",
+        "area": "Ла-Рамбла"
+      },
+      {
+        "name": "Park Hotel Barcelona, подход к гостинице",
+        "lat": 41.3842359,
+        "lon": 2.1843645,
+        "url": "https://www.openstreetmap.org/node/1681460715",
+        "area": "Эль-Борн"
+      }
+    ],
+    "places": [
+      {
+        "name": "Пласа-Реаль, дорожка на площади",
+        "lat": 41.3800662,
+        "lon": 2.1751057,
+        "url": "https://www.openstreetmap.org/way/541071062"
+      },
+      {
+        "name": "Пласа-Сант-Жауме, площадка перед мэрией",
+        "lat": 41.382729,
+        "lon": 2.1767982,
+        "url": "https://www.openstreetmap.org/way/336830730"
+      },
+      {
+        "name": "Кафедральный собор, подход с Авингуда-де-ла-Катедраль",
+        "lat": 41.3850087,
+        "lon": 2.1760369,
+        "url": "https://www.openstreetmap.org/way/336830714"
+      },
+      {
+        "name": "Музей Пикассо, наружный подход",
+        "lat": 41.3851576,
+        "lon": 2.181274,
+        "url": "https://www.openstreetmap.org/way/188938001"
+      },
+      {
+        "name": "Рынок Санта-Катерина, подход с площади",
+        "lat": 41.3860588,
+        "lon": 2.1786691,
+        "url": "https://www.openstreetmap.org/way/31957078"
+      }
+    ],
+    "walk_seconds": [
+      [
+        552.8,
+        578.5,
+        462.5,
+        900.8,
+        733.4
+      ],
+      [
+        921.4,
+        668,
+        706.6,
+        288,
+        484.6
+      ]
+    ],
+    "walk_metres": [
+      [
+        690.9,
+        723,
+        578.4,
+        1126.2,
+        917.2
+      ],
+      [
+        1149.3,
+        834.9,
+        883.1,
+        359.9,
+        605.8
+      ]
+    ],
+    "walk_minutes": [
+      [
+        9.21,
+        9.64,
+        7.71,
+        15.01,
+        12.22
+      ],
+      [
+        15.36,
+        11.13,
+        11.78,
+        4.8,
+        8.08
+      ]
+    ],
+    "source": "Пешеходные маршруты FOSSGIS OSRM, © OpenStreetMap contributors",
+    "url": "https://routing.openstreetmap.de/routed-foot/table/v1/foot/2.1705638,41.3842853;2.1843645,41.3842359;2.1751057,41.3800662;2.1767982,41.382729;2.1760369,41.3850087;2.181274,41.3851576;2.1786691,41.3860588?sources=0;1&destinations=2;3;4;5;6&annotations=duration,distance&generate_hints=false",
+    "checked": "2026-11-26",
+    "valid_until": "2027-02-24",
+    "review_interval_days": 90,
+    "selection": "Два отеля в разных частях центрального района и пять ориентиров. Замер между пешеходными подходами.",
+    "selection_urls": [
+      "https://guia.barcelona.cat/ca/detall/visita-a-la-catedral-i-el-claustre-de-barcelona_96267205050.html",
+      "https://museupicassobcn.cat/en/plan-your-visit/buy-tickets-and-opening-hours"
+    ],
+    "saturday_local_times": [
+      "10:00",
+      "15:00"
+    ],
+    "time_zone": "Europe/Madrid",
+    "scope": "В оба субботних часа используется одна пешеходная сеть. Маршрут заканчивается у места на улице. Время осмотра, погода и временные перекрытия не учитываются.",
+    "city_validation": {
+      "city": "Барселона",
+      "city_code": "BCN",
+      "points_in_city": 7
+    },
+    "snap_metres": [
+      6.904196657,
+      5.231410763,
+      10.68739115,
+      0,
+      0,
+      27.4798166,
+      38.55356036
+    ],
+    "router_info_url": "https://routing.openstreetmap.de/about.html",
+    "attribution_url": "https://www.openstreetmap.org/copyright",
+    "map_feedback_url": "https://www.openstreetmap.org/fixthemap"
+  },
+  "VLC": {
+    "starts": [
+      {
+        "name": "Отель Catalonia Excelsior, подход к гостинице",
+        "lat": 39.4714112,
+        "lon": -0.3759242,
+        "url": "https://www.openstreetmap.org/node/821053533",
+        "area": "площадь Аюнтамьенто"
+      },
+      {
+        "name": "Отель Ad Hoc Carmen, подход к гостинице",
+        "lat": 39.477482,
+        "lon": -0.3762891,
+        "url": "https://www.openstreetmap.org/node/9861398689",
+        "area": "Эль-Кармен"
+      }
+    ],
+    "places": [
+      {
+        "name": "Шёлковая биржа, наружный подход",
+        "lat": 39.4743777,
+        "lon": -0.3784372,
+        "url": "https://www.openstreetmap.org/way/23377876"
+      },
+      {
+        "name": "Центральный рынок, наружный подход",
+        "lat": 39.4734188,
+        "lon": -0.3790983,
+        "url": "https://www.openstreetmap.org/way/5007139"
+      },
+      {
+        "name": "Площадь Богоматери, подход к фонтану Турия",
+        "lat": 39.4764771,
+        "lon": -0.3752716,
+        "url": "https://www.openstreetmap.org/way/552423280"
+      },
+      {
+        "name": "Башни Серранос, наружная площадка",
+        "lat": 39.4791386,
+        "lon": -0.3761372,
+        "url": "https://www.openstreetmap.org/node/11366807086"
+      },
+      {
+        "name": "Сад Турия, пешеходная дорожка у футбольного поля",
+        "lat": 39.4792532,
+        "lon": -0.3736963,
+        "url": "https://www.openstreetmap.org/way/165500961"
+      }
+    ],
+    "walk_seconds": [
+      [
+        378.7,
+        455.1,
+        552.5,
+        784.8,
+        917.9
+      ],
+      [
+        418.8,
+        504.7,
+        159,
+        220,
+        402.7
+      ]
+    ],
+    "walk_metres": [
+      [
+        473.5,
+        568.5,
+        690.8,
+        981.2,
+        1147.3
+      ],
+      [
+        524.1,
+        631,
+        199,
+        275.3,
+        503.2
+      ]
+    ],
+    "walk_minutes": [
+      [
+        6.31,
+        7.58,
+        9.21,
+        13.08,
+        15.3
+      ],
+      [
+        6.98,
+        8.41,
+        2.65,
+        3.67,
+        6.71
+      ]
+    ],
+    "source": "Пешеходные маршруты FOSSGIS OSRM, © OpenStreetMap contributors",
+    "url": "https://routing.openstreetmap.de/routed-foot/table/v1/foot/-0.3759242,39.4714112;-0.3762891,39.477482;-0.3784372,39.4743777;-0.3790983,39.4734188;-0.3752716,39.4764771;-0.3761372,39.4791386;-0.3736963,39.4792532?sources=0;1&destinations=2;3;4;5;6&annotations=duration,distance&generate_hints=false",
+    "checked": "2026-11-26",
+    "valid_until": "2027-02-24",
+    "review_interval_days": 90,
+    "selection": "Два отеля в разных частях центрального района и пять ориентиров. Замер между пешеходными подходами.",
+    "selection_urls": [
+      "https://www.gva.es/contenidos/publicados/UnpaseoxVlc_final.pdf",
+      "https://www.visitvalencia.com/sites/default/files/media/downloadable-file/files/museos-monumentos-en-2020.pdf"
+    ],
+    "saturday_local_times": [
+      "10:00",
+      "15:00"
+    ],
+    "time_zone": "Europe/Madrid",
+    "scope": "В оба субботних часа используется одна пешеходная сеть. Маршрут заканчивается у места на улице. Время осмотра, погода и временные перекрытия не учитываются.",
+    "city_validation": {
+      "city": "Валенсия",
+      "city_code": "VLC",
+      "points_in_city": 7
+    },
+    "snap_metres": [
+      3.119386441,
+      6.700820912,
+      16.60630109,
+      32.81130716,
+      21.7745888,
+      5.297292843,
+      30.93736856
+    ],
+    "router_info_url": "https://routing.openstreetmap.de/about.html",
+    "attribution_url": "https://www.openstreetmap.org/copyright",
+    "map_feedback_url": "https://www.openstreetmap.org/fixthemap"
   }
 }
