@@ -676,7 +676,7 @@ function levelOf(offer) {
 }
 let levelSeq = 0;
 function levelLabel(level) {
-  return level.kind === 'usual' ? 'Обычная цена' : `${Math.abs(level.diff)}% ${level.diff < 0 ? 'ниже' : 'выше'} обычной`;
+  return level.kind === 'usual' ? 'Обычная цена' : `На ${Math.abs(level.diff)}% ${level.diff < 0 ? 'дешевле' : 'дороже'} обычного`;
 }
 // Плашка уровня цены; по нажатию — объяснение в карточке, без всплывающих окон.
 function levelTag(offer) {
@@ -684,7 +684,7 @@ function levelTag(offer) {
   if (!level) return '';
   const id = `level-${++levelSeq}`;
   const text = levelLabel(level);
-  return `<div class="level-wrap"><button type="button" class="level level--${level.kind}" data-level aria-expanded="false" aria-controls="${id}"><span><i aria-hidden="true">${level.kind === 'usual' ? '≈' : level.diff < 0 ? '↘' : '↗'}</i>${text}</span></button>
+  return `<div class="level-wrap"><button type="button" class="level" data-level aria-expanded="false" aria-controls="${id}"><span>${text}</span></button>
     <p class="level-note" id="${id}" hidden>${esc(levelNote({ ...level, usualText: fmtMoney(level.usual) }))} <a href="/how-we-count.html#level">Как мы считаем</a></p></div>`;
 }
 function toggleLevel(button) {
