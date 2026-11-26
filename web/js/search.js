@@ -951,7 +951,6 @@ function renderForm() {
   $('linePassengers').parentElement.title = passengerText;
   const family = groupSize(q.passengers) > 1;
   $('budgetUnit').hidden = !family;
-  $('lineBudget').previousElementSibling.textContent = family ? 'Бюджет на взрослого' : 'Бюджет на билеты';
   const slider = $('budget');
   slider.value = q.budget ?? slider.min;
   slider.style.setProperty('--fill-to', `${100 * (slider.value - slider.min) / (slider.max - slider.min)}%`);
@@ -975,7 +974,7 @@ function renderForm() {
   $('lineWhen').textContent = q.exact ? shortDay(q.departure) : monthLabel(q.month);
   $('returnValue').textContent = q.exact ? shortDay(q.returning) : '';
   $('returnValue').parentElement.hidden = !q.exact;
-  $('lineBudget').textContent = q.budget === null ? budgetText : `до ${budgetText}`;
+  $('lineBudget').textContent = q.budget === null ? 'Бюджет' : `До ${budgetText}${family ? ' на взрослого' : ''}`;
 }
 function setExact(enabled) {
   const q = state.query;
