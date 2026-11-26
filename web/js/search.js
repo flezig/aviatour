@@ -36,7 +36,7 @@ const LENGTHS = { any: '1–14 ночей', short: '1–2 ночи', mid: '3–4
 const FITS = { any: (d) => d >= 1 && d <= 14, short: (d) => d >= 1 && d <= 2, mid: (d) => d >= 3 && d <= 4, week: (d) => d >= 5 && d <= 7, long: (d) => d >= 8 && d <= 14, more: (d) => d > 14, day: (d) => d === 0, all: () => true };
 const SORTS = { price: 'Сначала дешевле', priceDescending: 'Сначала дороже', departure: 'Ближайший вылет', duration: 'Меньше времени в пути', stay: 'Больше времени на месте', value: 'Выгоднее час поездки', flightRating: 'По оценке перелёта' };
 const QUICK_FILTERS = ['direct', 'noLeave', 'near'];
-const CHIPS = { direct: 'Без пересадок', noLeave: 'Без отпуска', near: 'В пути до 3 ч', cheap: 'До 20 000 ₽', comfy: 'Удобное время вылета', russia: 'Россия' };
+const CHIPS = { direct: 'Без пересадок', noLeave: 'На выходные', near: 'В пути до 3 ч', cheap: 'До 20 000 ₽', comfy: 'Удобное время вылета', russia: 'Россия' };
 const TAGS = { sea: 'Море', culture: 'Музеи и культура', food: 'Гастрономия', architecture: 'Архитектура', nature: 'Природа', nightlife: 'Вечерняя жизнь' };
 const POPULAR = ['MOW', 'LED', 'SVX', 'OVB', 'KZN', 'GOJ', 'KUF', 'UFA', 'AER', 'KGD'];
 // «Куда улететь из …»: родительный падеж для частых городов вылета; для остальных — «Вылет: город».
@@ -180,7 +180,7 @@ function holidayLeave(offer) {
 function holidayLabel(offer) {
   const days = holidayLeave(offer);
   if (days === Infinity) return 'Дни отпуска неизвестны';
-  return days ? `${daysLabel(days)} отпуска` : 'Без отпуска';
+  return days ? `${daysLabel(days)} отпуска` : '';
 }
 function sortKey(offer, sort) {
   const x = facts(offer);
@@ -292,7 +292,7 @@ function offerRating(offer, onPhoto = false) {
   return cityRating(offer.city_code, date, offer.origin_airport, offer.city, all, { onPhoto });
 }
 function offerCard(offer, holiday = false) {
-  const x = facts(offer);
+  const x = facts(offer), leave = holiday ? holidayLabel(offer) : '';
   return `<article class="offer">
     ${portrait(offer.city_code, offer.city, { action: offerRating(offer, true) })}
     <div class="offer-body">
@@ -301,7 +301,7 @@ function offerCard(offer, holiday = false) {
         <span class="offer-price">от ${esc(fmtMoney(offer.price_minor))}${groupSize(currentPassengers()) > 1 ? '<small>за 1 взрослого</small>' : ''}</span>
       </div>
       <p class="offer-dates">${esc(fmtRange(x.dep, x.ret, offer.origin_timezone, offer.destination_timezone))}, ${esc(stayLabel(offer))}</p>
-      ${holiday ? `<p class="offer-meta">${esc(holidayLabel(offer))}</p>` : ''}
+      ${leave ? `<p class="offer-meta">${esc(leave)}</p>` : ''}
       ${flightMeta(offer)}
     </div>
   </article>`;
@@ -589,7 +589,7 @@ function openDetail(offer, tripRow = null) {
           <span><small>Обратно</small><b>${esc(fmtDay(x.ret, offer.destination_timezone, true))}</b><b>${esc(fmtTime(x.ret, offer.destination_timezone))}</b></span>
           <span><small>На месте</small><b>${esc(stayLabel(offer))}</b></span>
         </div>
-        ${holiday || (state.view === 'collection' && state.collection === 'holidays') ? `<p class="caption trip-leave">${esc(holidayDetails)}</p>` : ''}
+        ${holidayDetails && (holiday || (state.view === 'collection' && state.collection === 'holidays')) ? `<p class="caption trip-leave">${esc(holidayDetails)}</p>` : ''}
       </div>
       <div class="pass-stub">
         <p class="pass-price">${esc(fmtMoney(offer.price_minor))}</p>
@@ -742,7 +742,7 @@ function showcaseRow(row, weekends) {
     return stampTile(offer, row.key, esc(note));
   }).join('');
   const periods = weekends.map(period => {
-    const date = period.hint?.split(',')[0] || period.title;
+    const date = period.hint || period.title;
     return `<button type="button" data-weekend="${esc(period.key)}" aria-pressed="${period.key === row.key}">${esc(date)}</button>`;
   }).join('');
   const controls = periods ? `<div class="weekend-periods" role="group" aria-label="Даты выходных">${periods}</div>` : '';
@@ -820,6 +820,7 @@ async function loadHome() {
     if (!Array.isArray(data?.rows)) throw new Error('home');
     const rows = data.rows.map(row => {
       if (row.key === 'hot') return { ...row, title: 'Ближайшие вылеты', hint: 'Вылет в ближайшие 14 дней' };
+      if (row.key.startsWith('weekend') && row.hint) return { ...row, hint: row.hint.split(',')[0] };
       if (row.key.startsWith('budget') && row.hint?.startsWith('От ')) return { ...row, hint: '' };
       return row;
     });

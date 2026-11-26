@@ -27,7 +27,7 @@ def directions(count):
 
 def leave_text(note):
     days = lambda n: f'{n} {plural(n, "день", "дня", "дней")}'
-    return f'{days(note["leave"])} отпуска — {days(note["trip"])} поездки' if note['leave'] else f'{days(note["trip"])} без отпуска'
+    return f'{days(note["leave"])} отпуска — {days(note["trip"])} поездки' if note['leave'] else f'{days(note["trip"])} поездки'
 
 
 def sections(pages, kind, upper):
