@@ -312,7 +312,6 @@ HEAD = '''<!doctype html>
         <a href="/city/"{cities_current}>Города</a>
         <a href="/#fav">Избранное</a>
         <a href="/trip.html">Мои поездки</a>
-        <a href="/how-we-count.html">Как мы считаем</a>
       </nav>
     </div>
   </header>

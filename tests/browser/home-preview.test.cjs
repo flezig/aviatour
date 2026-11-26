@@ -216,7 +216,8 @@ test('Пункты подвала раскрываются на месте бе�
     await summary.click();
     assert.equal(page.url(), url);
     assert.ok(await item.locator('.footer-answer').isVisible());
-    assert.equal(await item.locator('a').count(), 0);
+    const expectedLinks = (await summary.innerText()) === 'Как мы считаем' ? ['/how-we-count.html'] : [];
+    assert.deepEqual(await item.locator('a').evaluateAll(links => links.map(a => a.getAttribute('href'))), expectedLinks);
     await summary.press('Enter');
     assert.equal(await item.locator('.footer-answer').isVisible(), false);
   }
