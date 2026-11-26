@@ -1,4 +1,7 @@
-import { $, esc, icon } from './lib/ui.js';
+import { passengerLabel, ticketAction } from './lib/passengers.js';
+import { ticketLink } from './lib/links.js';
+import { $, esc, icon, adMark } from './lib/ui.js';
+import { portrait, loadPortraits } from './lib/portrait.js';
 import { goal } from './lib/measure.js';
 import { daysLabel, fmtDate, fmtDay, fmtMoney, nightsLabel, zoned, addDays, localZone } from './lib/format.js';
 import { budget, countdown, decodeTrip, savedTrips, saveTrip, tripDates, tripPath } from './lib/trip.js';
@@ -20,7 +23,7 @@ function planRating(p) {
 function listPlans(invalid) {
   const trips = savedTrips();
   main.innerHTML = `<h1>Мои поездки</h1>${invalid ? '<p role="status">Ссылка на поездку повреждена. Попросите отправить её ещё раз.</p>' : ''}
-    ${trips.length ? trips.map(p => `<article class="card"><a class="plan-list-item" href="${esc(tripPath(p))}"><span><b>${esc(p.city)}</b>
+    ${trips.length ? trips.map(p => `<article class="card"><a class="plan-list-item" href="${esc(tripPath(p))}">${portrait(p.cityCode, p.city)}<span><b>${esc(p.city)}</b>
     <small>${esc(p.from)}, ${esc(tripDates(p).label)}</small></span>${icon('arrow-right')}</a>${planRating(p)}</article>`).join('') : '<p>Сохраните поездку после перехода за билетом. Здесь будут её даты и план.</p><a class="btn-inline" href="/">Найти поездку</a>'}`;
 }
 
@@ -31,17 +34,22 @@ function updateLinks() {
 }
 function showBudget() {
   const b = budget(plan);
-  $('planTickets').textContent = fmtMoney(b.tickets);
-  $('planTotal').textContent = (b.complete ? 'Бюджет поездки ≈ ' : 'Учтено расходов на ') + fmtMoney(b.total);
+  $('planTickets').textContent = fmtMoney(plan.fare);
+  $('planTotal').textContent = plan.people > 1
+    ? (plan.stay !== null || plan.food !== null ? 'Жильё и питание по вашим оценкам ≈ ' + fmtMoney(b.total) + '. ' : '') + 'Билеты на всех уточните на Aviasales.'
+    : (b.complete ? 'Бюджет поездки ≈ ' : 'Учтено расходов на ') + fmtMoney(b.total);
+  const ticket = $('planTicketLink');
+  const p = plan.passengers;
+  const href = p && Date.parse(plan.out) > Date.now() && ticketLink({
+    origin_airport: plan.fromCode, destination_airport: plan.toCode,
+    departure_at: plan.out, return_at: plan.back, origin_timezone: plan.fromZone, destination_timezone: plan.zone,
+  }, p, { city: plan.cityCode, page: 'plan', block: 'tickets', variant: reportVariant() });
+  $('planTicketAction').hidden = !href;
+  if (href) { ticket.href = href; ticket.textContent = ticketAction(p); }
 }
 function showCity() {
   const g = catalogue.guides[plan.cityCode];
   $('activities').innerHTML = localActivities(plan, catalogue, 'plan', reportVariant());
-  const city = catalogue.cities.get(plan.cityCode);
-  if (city?.photo) {
-    $('planPhoto').innerHTML = `<img src="/photos/s/${esc(plan.cityCode)}.webp" alt="">`;
-    $('planPhoto').hidden = false;
-  }
   if (g?.places?.length) $('places').innerHTML = `<h2>Что посмотреть</h2><ul>${g.places.map(s => `<li>${esc(s)}</li>`).join('')}</ul><p class="caption">Заметки редакции, ${esc(fmtDate(new Date(g.editorial_updated + 'T00:00:00Z'), 'UTC'))}</p>`;
   $('places').hidden = !g?.places?.length;
 }
@@ -75,16 +83,17 @@ function render() {
   const dates = tripDates(plan), route = airportRoutes[plan.toCode];
   document.title = plan.city + ' — Моя поездка — Aviator';
   main.innerHTML = `<a class="plan-back" href="/trip.html">← Мои поездки</a>
-    <header class="plan-hero"><div><p class="label">Моя поездка</p><h1>${esc(plan.city)}</h1>${planRating(plan)}<p id="countdown">${esc(countdown(plan))}</p></div><div class="plan-photo" id="planPhoto" hidden></div></header>
+    <header class="plan-hero"><div><p class="label">Моя поездка</p><h1>${esc(plan.city)}</h1>${planRating(plan)}<p id="countdown">${esc(countdown(plan))}</p></div>${portrait(plan.cityCode, plan.city)}</header>
     <section class="card"><h2>Маршрут</h2><dl class="plan-route"><div><dt>Туда: ${esc(plan.from)} (${plan.fromCode})</dt><dd>${dateTime(plan.out, plan.fromZone)}</dd></div>
     <div><dt>Обратно: ${esc(plan.city)} (${plan.toCode})</dt><dd>${dateTime(plan.back, plan.zone)}</dd></div></dl><p class="caption">Местное время аэропортов</p>
     ${plan.flight ? `<a class="plan-flight" href="https://www.flightradar24.com/data/flights/${plan.flight.toLowerCase()}" rel="noopener" target="_blank">Рейс ${esc(plan.flight)} на Flightradar24 ↗</a><small class="caption">Сверьте дату и маршрут на странице рейса.</small>` : ''}</section>
     <div class="plan-actions"><button class="btn-primary" type="button" id="savePlan" ${stored ? 'hidden' : ''}>Сохранить в мои поездки</button>
     <a class="btn-inline" id="telegram" target="_blank" rel="noopener">Отправить себе в Telegram</a><button class="btn-inline" type="button" id="copyPlan">Скопировать ссылку</button></div>
     <p class="caption" id="planStatus" role="status">${stored ? 'Сохранено в этом браузере' : ''}</p>
-    <section class="card"><h2>Бюджет поездки</h2><p>Билеты туда и обратно: <strong id="planTickets"></strong></p>
-    <p class="caption">Цена Aviasales на ${dateTime(plan.quoted, localZone)}. Жильё и питание можно добавить по своей оценке.</p>
-    <div class="plan-inputs"><label>Путешественники<select id="people" class="menu">${[1,2,3,4].map(n => `<option ${plan.people === n ? 'selected' : ''}>${n}</option>`).join('')}</select></label>
+    <section class="card"><h2>Бюджет поездки</h2><p>Билеты туда и обратно за одного взрослого: <strong id="planTickets"></strong></p>
+    <p class="caption">Цена из кеша Aviasales на ${dateTime(plan.quoted, localZone)}. Жильё и питание можно добавить по своей оценке.</p>
+    <div id="planTicketAction" hidden>${adMark('aviasales')}<a class="btn-inline" id="planTicketLink" data-partner="aviasales" data-block="tickets" target="_blank" rel="noopener"></a></div>
+    <div class="plan-inputs">${plan.passengers?.ages.length ? `<p>Пассажиры<br><strong>${esc(passengerLabel(plan.passengers))}</strong></p>` : `<label>${plan.passengers ? 'Взрослые' : 'Путешественники'}<select id="people" class="menu">${Array.from({ length: plan.passengers ? 9 : 4 }, (_, i) => i + 1).map(n => `<option ${plan.people === n ? 'selected' : ''}>${n}</option>`).join('')}</select></label>`}
     ${dates.nights ? `<label>Жильё, ₽ за ночь на всех<input id="stay" type="number" inputmode="numeric" min="0" max="100000000" step="1" value="${plan.stay ?? ''}"></label>` : ''}
     <label>Питание, ₽ в день на человека<input id="food" type="number" inputmode="numeric" min="0" max="100000000" step="1" value="${plan.food ?? ''}"></label></div>
     <p class="caption">${esc(nightsLabel(dates.nights))}, ${esc(daysLabel(dates.nights + 1))} на месте</p><strong id="planTotal" aria-live="polite"></strong></section>
@@ -101,6 +110,7 @@ main.addEventListener('input', event => {
   const field = event.target;
   if (!['stay','food','people'].includes(field.id) || !field.validity.valid) return;
   plan[field.id] = field.value === '' ? null : Number(field.value);
+  if (field.id === 'people' && plan.passengers) plan.passengers = { adults: plan.people, ages: [] };
   showBudget();
   updateLinks();
   if (stored && !saveTrip(plan)) $('planStatus').textContent = 'Хранилище браузера недоступно. Скопируйте ссылку с изменениями.';
@@ -128,4 +138,5 @@ window.addEventListener('pageshow', () => { if (!location.hash) render(); });
 function tick() { if (plan && $('countdown')) $('countdown').textContent = countdown(plan); }
 document.addEventListener('visibilitychange', tick);
 setInterval(tick, 60000);
+loadPortraits();
 render();

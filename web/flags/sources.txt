@@ -1,0 +1,4 @@
+Square flags: flag-icons v7.5.0 (MIT), https://github.com/lipis/flag-icons
+Additional flags: Wikimedia Commons, using the destination codes of the airport catalogue.
+ab.svg: https://commons.wikimedia.org/wiki/File:Flag_of_the_Republic_of_Abkhazia.svg
+ny.svg: https://commons.wikimedia.org/wiki/File:Flag_of_the_Turkish_Republic_of_Northern_Cyprus.svg

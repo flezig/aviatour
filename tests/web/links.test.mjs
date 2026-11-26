@@ -43,3 +43,30 @@ test('Островок: только страница города, без па�
     assert.equal(partnerLink(url, { kind: 'ostrovok', city: 'KZN' }), null, url);
   }
 });
+
+test('состав семьи заменяет параметры точного предложения и учитывает местные даты обоих аэропортов', async () => {
+  const { ticketLink } = await import('../../web/js/lib/links.js');
+  const { passengersFromParams, setPassengerParams, validPassengers } = await import('../../web/js/lib/passengers.js');
+  const offer = {
+    origin_airport: 'SVO', destination_airport: 'HKT', origin_timezone: 'Europe/Moscow', destination_timezone: 'Asia/Bangkok',
+    departure_at: '2030-04-01T22:15:00Z', return_at: '2030-04-09T18:20:00Z', search_url: TICKETS,
+  };
+  const address = p => new URL(ticketLink(offer, p, {}), 'https://example.org').searchParams.get('u');
+  assert.equal(address({ adults: 1, ages: [] }), TICKETS);
+  for (const [party, suffix] of [
+    [{ adults: 9, ages: [] }, '9'],
+    [{ adults: 2, ages: [2, 11] }, '22'],
+    [{ adults: 1, ages: [0] }, '101'],
+    [{ adults: 2, ages: [1, 7, 0] }, '212'],
+  ]) {
+    assert.equal(address(party), 'https://www.aviasales.com/search/SVO0204HKT1004' + suffix);
+    const params = new URLSearchParams();
+    setPassengerParams(params, party);
+    assert.deepEqual(passengersFromParams(params), party);
+  }
+  for (const invalid of [{ adults: 1, ages: [0, 1] }, { adults: 9, ages: [7] }, { adults: 1, ages: [12] }]) {
+    assert.equal(validPassengers(invalid), false);
+    assert.equal(ticketLink(offer, invalid, {}), null);
+  }
+  assert.deepEqual(passengersFromParams(new URLSearchParams('adults=0&ages=1')), { adults: 1, ages: [] });
+});

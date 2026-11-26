@@ -1,3 +1,6 @@
+import { zoned } from './format.js';
+import { validPassengers, groupSize, infants } from './passengers.js';
+
 // Единственное место, где собираются партнёрские ссылки. Каждая идёт через наш /go с меткой
 // «<код города>-<страница>-<блок>» (только a–z, 0–9 и дефис, до 32 знаков): метка уходит в Travelpayouts как sub_id
 // и видна в отчётах. Пока идёт эксперимент, в конец метки добавляется вариант: led-trip-tickets-b.
@@ -26,4 +29,28 @@ export function partnerLink(address, { kind, city, page, block, variant } = {}) 
   if (!allowed || url.protocol !== 'https:' || url.username || url.password || (url.port && url.port !== '443') || !allowed(url)) return null;
   const label = clickLabel({ city, page, block, variant });
   return `/go?${label ? `s=${label}&` : ''}u=${encodeURIComponent(address)}`;
+}
+
+// Порядок параметров Aviasales: аэропорты, местные даты DDMM и количество ADT/CHD/INF.
+export function ticketLink(offer, passengers, context) {
+  if (!validPassengers(passengers)) return null;
+  const options = { ...context, kind: 'tickets' };
+  if (groupSize(passengers) === 1) {
+    const exact = partnerLink(offer.search_url, options);
+    if (exact) return exact;
+  }
+  const { origin_airport: from, destination_airport: to } = offer;
+  if (![from, to].every(code => typeof code === 'string' && /^[A-Z]{3}$/.test(code))) return null;
+  function ddmm(value, zone) {
+    if (!value || !zone) return null;
+    try {
+      const day = zoned(new Date(value), zone).key;
+      return day.slice(8, 10) + day.slice(5, 7);
+    } catch { return null; }
+  }
+  const out = ddmm(offer.departure_at, offer.origin_timezone), back = ddmm(offer.return_at, offer.destination_timezone);
+  if (!out || !back) return null;
+  const inf = infants(passengers), chd = passengers.ages.length - inf;
+  const counts = String(passengers.adults) + (chd || inf ? chd : '') + (inf || '');
+  return partnerLink('https://www.aviasales.com/search/' + from + out + to + back + counts, options);
 }

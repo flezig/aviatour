@@ -17,6 +17,7 @@ from zoneinfo import ZoneInfo
 
 SITE = 'https://aviatour.vercel.app'
 DATA = Path(__file__).resolve().parents[2] / 'web' / 'data'
+PORTRAIT_INDEX = json.loads((DATA / 'portrait-index.json').read_text())
 MONTHS_AHEAD = 6
 MIN_NIGHTS, MAX_NIGHTS = 1, 7  # поездки до недели — как в подборках главной
 MONTH_NAMES = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь']
@@ -28,6 +29,23 @@ ROUTE_ORIGINS = ('MOW', 'LED', 'SVX', 'KZN', 'OVB', 'KRR')
 
 def esc(value):
     return html.escape('' if value is None else str(value), quote=True)
+
+
+def portrait(code, name, has_photo, *, named=False, eager=False):
+    """Destination photo with a readable title even when no image is available."""
+    thumb = f'/photos/s/{esc(code)}.webp'
+    image = (f'<img src="{thumb}" srcset="{thumb} 1x, /photos/{esc(code)}.jpg 2x" alt="" '
+             f'loading="{"eager" if eager else "lazy"}" decoding="async">') if has_photo else ''
+    country = PORTRAIT_INDEX.get(code) if has_photo else None
+    badge = ''
+    if country:
+        cc, label = country
+        badge = (f'<span class="portrait-country"><img src="/flags/{esc(cc.lower())}.svg" alt="" loading="lazy">'
+                 f'<span>{esc(label)}</span></span>')
+    hidden = '' if named else ' aria-hidden="true"'
+    photo_class = 'portrait portrait--long' if len(name) > 14 or '(' in name else 'portrait'
+    return (f'<span class="{photo_class}" data-city-code="{esc(code)}">{image}'
+            f'<span class="portrait-name"{hidden}>{esc(name)}</span>{badge}</span>')
 
 
 @dataclass
@@ -379,7 +397,7 @@ def page(catalog, city, origin, parts, route=False):
     {visible}
     <nav class="season-tabs" aria-label="Разделы города"><a href="{esc(url)}" aria-current="page">О городе</a><a id="citySeason" href="/season/{esc(city['code'])}?from={esc(origin['iata'])}{'&amp;fc='+esc(origin['code']) if origin['all'] else ''}">Сезонный рейтинг</a></nav>
     <section class="city-hero">
-      <div class="stamp stamp--hero"><div class="photo"><img src="/photos/{esc(city['code'])}.jpg" alt="{esc(name)}" width="720" height="480" fetchpriority="high"></div></div>
+      {portrait(city['code'], name, photo, eager=True)}
       <div class="city-head">
         <p class="city-code"><b>{esc(city['code'])}</b>, {esc(city['country'])}{population(city)}</p>
         <h1>{heading}</h1>
@@ -480,18 +498,17 @@ def directory_url(query='', region='all', guide=False, page=1):
     return '/city/' + ('?' + urlencode(params) if params else '')
 
 
-def directory_row(city, show_places):
+def directory_row(city, show_places, photos):
     url = f'/city/{city.slug}' if city.slug else f'/season/{city.code}'
-    photo = (f'<img src="/photos/s/{esc(city.code)}.webp" width="76" height="55" alt="" loading="lazy" decoding="async">'
-             if city.slug else '')
+    photo = portrait(city.code, city.name, city.code in photos, named=True)
     qualifier = 'погода по месяцам' if not city.slug else 'путеводитель' if city.guide else ''
     places = f'<span class="directory-places">{esc(", ".join(city.places))}</span>' if show_places and city.places else ''
     return f'''<li><a class="directory-city" data-city="{esc(city.code)}" href="{esc(url)}">{photo}
-    <span><strong>{esc(city.name)}</strong><small>{esc(city.country)}{', ' + qualifier if qualifier else ''}</small>{places}</span>
-    <span class="directory-arrow" aria-hidden="true">→</span></a></li>'''
+    <span class="directory-meta"><small>{esc(city.country)}{', ' + qualifier if qualifier else ''}</small>{places}</span>
+    </a></li>'''
 
 
-def index_page(catalog, q='', region='all', guide=False, page=1):
+def index_page(catalog, q='', region='all', guide=False, page=1, *, photos):
     query = directory_term(q)
     cities, seasonal = catalog.directory
     matches = directory_matches(cities, query, region, guide)
@@ -503,7 +520,7 @@ def index_page(catalog, q='', region='all', guide=False, page=1):
     pages = max(1, math.ceil(len(matches) / DIRECTORY_PAGE_SIZE))
     page = min(page, pages)
     start = (page - 1) * DIRECTORY_PAGE_SIZE
-    rows = ''.join(directory_row(c, guide) for c in matches[start:start + DIRECTORY_PAGE_SIZE])
+    rows = ''.join(directory_row(c, guide, photos) for c in matches[start:start + DIRECTORY_PAGE_SIZE])
     title = ('Города с данными по месяцам' if season_only else 'Результаты поиска' if query else
              'Города с путеводителем' if guide else {'all': 'Все города', 'ru': 'Города России', 'abroad': 'Города за рубежом'}[region])
     region_controls = ''.join(
@@ -523,25 +540,22 @@ def index_page(catalog, q='', region='all', guide=False, page=1):
         empty = (f'<div class="directory-empty"><p>{message}</p>'
                  f'<a data-clear href="{esc(reset)}">{"Снять фильтры" if filtered else "Сбросить поиск"}</a></div>')
 
-    cover = catalog.by_code.get('IST')
-    figure = (f'<figure class="directory-cover"><img src="/photos/{esc(cover["code"])}.jpg" width="720" height="480" alt="">'
-              f'<a href="/city/{esc(cover["slug"])}">{esc(cover["name"])}, {esc(cover["country"])}</a></figure>') if cover else ''
     ld, _ = breadcrumbs([('Aviator', '/'), ('Города', '/city/')])
     body = f'''
   <main id="main" class="directory">
-    <form action="/city/" method="get" id="citySearch" role="search">
-      <div class="directory-hero"><div class="wrap directory-intro">
-        <div><h1>Города</h1><div class="directory-search">
-          <label><svg class="icon" aria-hidden="true"><use href="/icons.svg#search"></use></svg>
-            <input type="search" name="q" maxlength="100" value="{esc(q)}" autocomplete="off" aria-label="Город, страна или код аэропорта" placeholder="Город, страна или код"></label>
-          <button class="btn-primary" type="submit">Найти</button>
-        </div></div>{figure}
-      </div></div>
-      <div class="wrap"><div class="directory-controls">
+    <form class="wrap directory-toolbar" action="/city/" method="get" id="citySearch" role="search">
+      <div class="directory-title">
+        <h1>Города</h1>
+        <a class="directory-compare" href="/season/compare/">Сравнить рейтинги</a>
+      </div>
+      <div class="directory-controls">
+        <label class="directory-search"><svg class="icon" aria-hidden="true"><use href="/icons.svg#search"></use></svg>
+          <input type="search" name="q" maxlength="100" value="{esc(q)}" autocomplete="off" aria-label="Город, страна или код аэропорта" placeholder="Город, страна или код">
+        </label>
         <div class="directory-regions" role="group" aria-label="География">{region_controls}</div>
         <label class="directory-guide"><input type="checkbox" name="guide" value="1"{' checked' if guide else ''}>С путеводителем</label>
-        <a class="directory-compare" href="/season/compare/">Сравнить рейтинги</a>
-      </div></div>
+      </div>
+      <button type="submit" hidden>Найти</button>
     </form>
     <div class="wrap"><section id="cityResults" aria-labelledby="resultsHeading">
       <div class="directory-heading"><h2 id="resultsHeading" tabindex="-1">{title}</h2><span data-count>{len(matches)}</span></div>

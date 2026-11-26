@@ -35,8 +35,8 @@ for (const [name, engine] of Object.entries({ chromium, webkit })) {
   test(`${name}: выбор DME и всех аэропортов Москвы меняет параметры поиска`, async t => {
     const { page, request } = await setup(t, engine);
     const picker = page.locator('#picker'), input = page.locator('#pickerInput');
-    async function submit() {
-      const [sent] = await Promise.all([request(), page.locator('#searchButton').click()]);
+    async function selectAirport(select) {
+      const [sent] = await Promise.all([request(), select()]);
       const params = new URL(sent.url()).searchParams;
       return [params.get('from'), params.get('fc')];
     }
@@ -49,27 +49,24 @@ for (const [name, engine] of Object.entries({ chromium, webkit })) {
     assert.equal(await page.locator(':focus').getAttribute('data-iata'), 'LED');
     await picker.locator('.airport-group summary').first().click();
     const dme = picker.locator('.airport-members [data-iata="DME"]');
-    await dme.click();
+    assert.deepEqual(await selectAirport(() => dme.click()), ['DME', null]);
     assert.equal(await page.locator('#lineCode').innerText(), 'DME');
-    assert.deepEqual(await submit(), ['DME', null]);
     await page.locator(origin).click();
     assert.equal(await dme.getAttribute('aria-current'), 'true');
     assert.equal(await picker.locator('[data-city="MOW"]').getAttribute('aria-current'), null);
     await input.fill('mow');
     await input.press('ArrowDown');
     assert.equal(await page.locator(':focus').getAttribute('data-city'), 'MOW');
-    await page.keyboard.press('Enter');
-    assert.deepEqual(await submit(), ['SVO', 'MOW']);
+    assert.deepEqual(await selectAirport(() => page.keyboard.press('Enter')), ['SVO', 'MOW']);
     await page.locator(origin).click();
     await input.fill('dMe');
-    await input.press('Enter');
-    assert.deepEqual(await submit(), ['DME', null]);
+    assert.deepEqual(await selectAirport(() => input.press('Enter')), ['DME', null]);
   });
 
-  test(`${name}: заголовок, свёрнутая и раскрытая формы привязывают панель к нажатому полю`, async t => {
+  test(`${name}: панель аэропортов привязана к нажатому полю формы`, async t => {
     const { page } = await setup(t, engine);
     const picker = page.locator('#picker');
-    for (const selector of ['#originTitle', destination, origin]) {
+    for (const selector of [destination, origin]) {
       const trigger = page.locator(selector);
       await trigger.click();
       await checkAnchor(page, selector);
@@ -82,19 +79,13 @@ for (const [name, engine] of Object.entries({ chromium, webkit })) {
       await picker.waitFor({ state: 'hidden' });
       await page.waitForFunction(selector => document.activeElement === document.querySelector(selector), selector);
     }
-    await page.locator('[data-field="budget"]').click();
-    for (const selector of ['#destinationPick', '#originPick']) {
-      await page.locator(selector).click();
-      await checkAnchor(page, selector);
-      await picker.getByRole('button', { name: 'Закрыть' }).click();
-    }
+
   });
 }
 
 test('WebKit на телефоне: лист, раскрытие других городов, выбор по коду и возврат фокуса', async t => {
   const { page } = await setup(t, webkit, true);
-  await page.locator('#searchSummary').click();
-  const trigger = page.locator('#originPick');
+  const trigger = page.locator(origin);
   await trigger.click();
   const panel = page.locator('#picker');
   const rect = await panel.boundingBox();
@@ -110,7 +101,7 @@ test('WebKit на телефоне: лист, раскрытие других г
   assert.equal(await panel.locator('[data-iata="DME"]').count(), 1);
   await panel.locator('[data-iata="DME"]').click();
   assert.match(await trigger.innerText(), /Москва, DME/);
-  await page.waitForFunction(() => document.activeElement === document.getElementById('originPick'));
+  await page.waitForFunction(() => document.activeElement === document.querySelector('[data-field="origin"]'));
 });
 
 test('на двух экранах список целиком остаётся в панели с полем ввода', async t => {
@@ -120,8 +111,7 @@ test('на двух экранах список целиком остаётся 
     width: 1114, height: 720, deviceScaleFactor: 1, mobile: false,
     displayFeature: { orientation: 'vertical', offset: 540, maskLength: 34 },
   });
-  await page.locator('#searchSummary').click();
-  const trigger = page.locator('#destinationPick');
+  const trigger = page.locator(destination);
   await trigger.click();
   const panel = await page.locator('#picker').boundingBox();
   const field = await trigger.boundingBox();

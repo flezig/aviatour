@@ -11,8 +11,8 @@ const offer = {
   price_minor: 1000000, duration_to: 100, duration_back: 100, transfers: 0, return_transfers: 0,
   airline: 'SU', flight_number: '100', received_at: new Date().toISOString(),
 };
-const trips = [offer, { ...offer, id: 'sochi-test', city: 'Сочи', city_code: 'AER' },
-  { ...offer, id: 'omsk-test', city: 'Омск', city_code: 'OMS' }];
+const trips = [offer, { ...offer, id: 'sochi-test', city: 'Сочи', city_code: 'AER', transfers: 1 },
+  { ...offer, id: 'omsk-test', city: 'Омск', city_code: 'OMS', transfers: null, return_transfers: null }];
 const home = {
   origin, received_at: offer.received_at, usual: {}, notes: {}, offers: Object.fromEntries(trips.map(trip => [trip.id, trip])),
   rows: [{ key: 'hot', title: 'Горячие билеты', kind: 'pass', items: trips.map(trip => trip.id) }],
@@ -23,20 +23,34 @@ for (const mobile of [false, true]) {
     const browser = await (mobile ? webkit : chromium).launch();
     t.after(() => browser.close());
     const context = await browser.newContext(mobile
-      ? { isMobile: true, hasTouch: true, viewport: { width: 375, height: 812 } }
+      ? { isMobile: true, hasTouch: true, reducedMotion: 'reduce', viewport: { width: 375, height: 812 } }
       : { viewport: { width: 1280, height: 850 } });
     await context.route('**/api/v1/origin', route => route.fulfill({ json: origin }));
     await context.route('**/api/v1/home?*', route => route.fulfill({ json: home }));
     const page = await context.newPage();
-    page.setDefaultTimeout(7000);
+    await page.clock.setFixedTime(new Date('2026-11-25T12:00:00Z'));
     const details = [];
     page.on('request', req => {
       if (new URL(req.url()).pathname === '/api/v1/city-rating/KZN') details.push(req.url());
     });
     await page.goto(base);
-    const card = page.locator('.tile--pass .city-rating').first();
+    const firstTile = page.locator('.tile--pass').first();
+    const card = firstTile.locator('.portrait > .city-rating--photo');
     const panel = page.locator('#city-rating-popover:popover-open');
     await card.waitFor();
+    assert.match(await card.getAttribute('aria-label'), /^Рейтинг города Казань, /);
+    assert.doesNotMatch(await card.innerText(), /Рейтинг города/);
+    assert.equal(await firstTile.locator('.flight-transfers').innerText(), 'Без пересадок');
+    assert.equal(await page.locator('.tile--pass .flight-transfers').nth(1).innerText(), 'На пути туда — 1 пересадка');
+    assert.equal(await page.locator('.tile--pass .flight-transfers').nth(2).innerText(), 'Пересадки неизвестны');
+    const photo = firstTile.locator('.portrait');
+    const withinPhoto = await photo.evaluate(el => {
+      const photo = el.getBoundingClientRect();
+      const badge = el.querySelector('.city-rating--photo').getBoundingClientRect();
+      return Math.abs(photo.bottom - badge.bottom) < 1 && Math.abs(photo.right - badge.right) < 1 &&
+        getComputedStyle(el).borderBottomRightRadius === '0px';
+    });
+    assert.equal(withinPhoto, true);
     assert.equal(await card.getAttribute('data-rating-month'), '12');
     assert.equal(await card.getAttribute('data-rating-year'), '2026');
 
@@ -55,7 +69,7 @@ for (const mobile of [false, true]) {
     const box = await panel.boundingBox();
     assert.ok(box.x >= 0 && box.x + box.width <= page.viewportSize().width + 1);
     if (mobile) {
-      await card.tap();
+      await panel.getByRole('button', { name: 'Закрыть рейтинг' }).tap();
     } else {
       await page.keyboard.press('Escape');
       await card.focus();
@@ -63,7 +77,9 @@ for (const mobile of [false, true]) {
       await page.keyboard.press('Escape');
     }
     await panel.waitFor({ state: 'hidden' });
-    await page.locator('[data-open="kzn-test"]').first().click();
+    const trip = page.locator('[data-open="kzn-test"]').first();
+    await trip.press('Enter');
+    await page.locator('#detail:modal').waitFor();
     const detailBadge = page.locator('#detail .city-rating');
     if (mobile) await detailBadge.tap(); else await detailBadge.hover();
     await panel.locator('tbody').waitFor();
@@ -71,6 +87,26 @@ for (const mobile of [false, true]) {
     await page.keyboard.press('Escape');
     assert.equal(await page.locator('#detail').isVisible(), true);
     await panel.waitFor({ state: 'hidden' });
+    await page.locator('#detail [data-close]').click();
+    await page.locator('[data-row-all="hot"]').click();
+    const resultBadge = page.locator('#results .offer .portrait > .city-rating--photo[data-rating-city="KZN"]');
+    await resultBadge.waitFor();
+    const style = () => resultBadge.evaluate(el => {
+      const value = el.querySelector('.city-rating-value').getBoundingClientRect();
+      const photo = el.parentElement.getBoundingClientRect();
+      return {
+        corner: getComputedStyle(el.parentElement).borderBottomRightRadius,
+        textDecoration: getComputedStyle(el).textDecorationLine,
+        surface: getComputedStyle(el).backgroundColor,
+        fits: value.right < photo.right && value.bottom < photo.bottom,
+      };
+    });
+    const expected = { corner: '0px', textDecoration: 'none', surface: 'rgb(245, 246, 248)', fits: true };
+    assert.deepEqual(await style(), expected);
+    if (mobile) await resultBadge.tap(); else await resultBadge.hover();
+    await panel.locator('tbody').waitFor();
+    assert.deepEqual(await style(), expected);
+    assert.equal(await page.locator('#detail').isVisible(), false);
   });
 }
 
@@ -98,10 +134,34 @@ for (const mobile of [false, true]) {
     await panel.getByRole('button', { name: 'Закрыть рейтинг' }).click();
     assert.equal(await badge.evaluate(el => document.activeElement === el), true);
     await page.getByRole('searchbox').fill('SAW');
-    const istanbul = page.locator('.city-rating[data-rating-city="IST"]');
+    const istanbul = page.locator('.rating-tile-city[href*="/season/IST?"]');
     await istanbul.waitFor();
+    assert.equal(await page.locator('.city-rating[data-rating-city="IST"]:visible').count(), 0);
     await page.getByRole('combobox', { name: 'Месяц' }).selectOption('1');
-    await page.locator('.city-rating[data-rating-city="IST"][data-rating-month="1"]').waitFor();
+    await page.locator('.rating-tile-city[href*="/season/IST?month=1&"]').waitFor();
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
   });
 }
+
+test('широкая таблица маршрутов прокручивается внутри рейтинга на телефоне', async t => {
+  const browser = await webkit.launch();
+  t.after(() => browser.close());
+  const page = await browser.newPage({ isMobile: true, hasTouch: true, viewport: { width: 375, height: 812 } });
+  const url = new URL('/season/KGD?month=12&year=2026', base);
+  await page.goto(url.href);
+  const evidence = page.locator('#city-rating .rating-evidence');
+  await evidence.locator('summary').first().tap();
+
+  // The layout also applies after the current route observations expire.
+  await evidence.locator('dl').evaluate(list => {
+    const row = list.appendChild(document.createElement('div'));
+    row.innerHTML = `<dt>Передвижение</dt><dd><details class="rating-comparison">
+      <summary>Время пешком</summary><div class="rating-comparison-scroll"><table><tbody><tr>
+      <th>Кафедральный собор</th><td>Из гостиницы на Октябрьской улице</td><td>Из гостиницы на Московском проспекте</td>
+      </tr></tbody></table></div></details></dd>`;
+  });
+  await evidence.getByText('Время пешком', { exact: true }).tap();
+  const scroller = evidence.locator('details[open] .rating-comparison-scroll').last();
+  assert.equal(await scroller.evaluate(el => el.scrollWidth > el.clientWidth), true);
+  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
+});

@@ -13,7 +13,7 @@ test('ссылка переносит маршрут и бюджет, включ
   assert.deepEqual(decodeTrip(new URL(tripPath(p), 'https://example.org').hash), p);
   assert.equal(tripDates(p).start,'2026-12-04');
   assert.equal(tripDates(p).nights,3);
-  assert.deepEqual(budget(p),{ tickets:1004700, complete:true, total:2554700 });
+  assert.deepEqual(budget(p),{ tickets:null, complete:false, total:1550000 });
   assert.equal(budget(snapshot(offer)).complete,false);
   assert.equal(countdown(p,new Date('2026-12-02T18:01Z')), 'Вылет сегодня');
   assert.equal(countdown(p,new Date('2026-12-04T00:00Z')), 'Поездка началась');

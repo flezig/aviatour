@@ -1,14 +1,16 @@
+import { openCalendar, shortDay } from './lib/flight-calendar.js';
 // Поиск поездок (главная). Правила повторяют приложение iOS (Aviator/Utilities/SearchRules.swift); источник истины — сервер.
 import { $, esc, icon, adMark } from './lib/ui.js';
-import { DEFAULT_ZONE, localZone, zoned, fmtDate, fmtDay, fmtTime, fmtMoney, fmtRange, monthLabel, months, defaultMonth, addDays, duration, daysLabel, nightsLabel, countLabel } from './lib/format.js';
+import { DEFAULT_ZONE, localZone, zoned, fmtDate, fmtDay, fmtTime, fmtMoney, fmtRange, monthLabel, months, defaultMonth, addDays, duration, daysLabel, nightsLabel, countLabel, plural } from './lib/format.js';
 import { snapshot, tripPath, savedTrips, firstPrompt, saveTrip, tripDates } from './lib/trip.js';
 import { cityRating } from './lib/city-rating.js';
-import { partnerLink } from './lib/links.js';
+import { oneAdult, groupSize, passengerLabel, ticketAction, setPassengerParams, passengersFromParams } from './lib/passengers.js';
+import { passengerPicker } from './lib/passenger-picker.js';
+import { partnerLink, ticketLink } from './lib/links.js';
+import { portrait, loadPortraits, longPortraitName } from './lib/portrait.js';
 import { goal } from './lib/measure.js';
-import { currentOrigin, saveOrigin } from './lib/origin.js';
-import { priceLevel, usualKey, hotLine, leaveLine, levelNote, priceChange } from './lib/levels.js';
-import { mountSky } from './lib/sky.js';
-import { flightLoader } from './lib/art.js';
+import { currentOrigin, saveOrigin, storedOrigin } from './lib/origin.js';
+import { leaveLine, priceChange } from './lib/levels.js';
 import { sticker, rowSticker } from './lib/stickers.js';
 import { favoriteList, favoriteComparison, favoriteOptions, hoursMinutes } from './lib/favorites.js';
 import { DESTINATION_SCOPES } from './lib/destination-scopes.js';
@@ -34,7 +36,7 @@ const LENGTHS = { any: '1–14 ночей', short: '1–2 ночи', mid: '3–4
 const FITS = { any: (d) => d >= 1 && d <= 14, short: (d) => d >= 1 && d <= 2, mid: (d) => d >= 3 && d <= 4, week: (d) => d >= 5 && d <= 7, long: (d) => d >= 8 && d <= 14, more: (d) => d > 14, day: (d) => d === 0, all: () => true };
 const SORTS = { price: 'Сначала дешевле', priceDescending: 'Сначала дороже', departure: 'Ближайший вылет', duration: 'Меньше времени в пути', stay: 'Больше времени на месте', value: 'Выгоднее час поездки', flightRating: 'По оценке перелёта' };
 const QUICK_FILTERS = ['direct', 'noLeave', 'near'];
-const CHIPS = { direct: 'Без пересадок', noLeave: 'Без отпуска', near: 'В пути до 3 ч', cheap: 'До 20 000 ₽', comfy: 'Удобное время вылета', russia: 'Россия', unique: 'Один вариант на город' };
+const CHIPS = { direct: 'Без пересадок', noLeave: 'На выходные', near: 'В пути до 3 ч', cheap: 'До 20 000 ₽', comfy: 'Удобное время вылета', russia: 'Россия' };
 const TAGS = { sea: 'Море', culture: 'Музеи и культура', food: 'Гастрономия', architecture: 'Архитектура', nature: 'Природа', nightlife: 'Вечерняя жизнь' };
 const POPULAR = ['MOW', 'LED', 'SVX', 'OVB', 'KZN', 'GOJ', 'KUF', 'UFA', 'AER', 'KGD'];
 // «Куда улететь из …»: родительный падеж для частых городов вылета; для остальных — «Вылет: город».
@@ -62,13 +64,12 @@ if (config.experiments?.afterTicket) goal('trip_variant', { variant: afterTicket
 
 // --- состояние ---
 const state = {
-  query: { origin: 'SVO', originCity: 'MOW', destination: null, destinationCity: null, region: 'any', exact: false, month: defaultMonth(DEFAULT_ZONE), departure: null, returning: null, weekend: false, budget: null, direct: false },
+  query: { passengers: oneAdult(), origin: 'SVO', originCity: 'MOW', destination: null, destinationCity: null, region: 'any', exact: false, month: defaultMonth(DEFAULT_ZONE), departure: null, returning: null, weekend: false, budget: null, direct: false },
   labels: { origin: 'Москва, все аэропорты', destination: null },
-  performed: null, performedLabels: null, performedSummary: null, performedLabel: '', status: 'idle', error: '', result: null,
-  // Новичок спрашивает «куда», поэтому по умолчанию один лучший вариант на город; «Все» показывает каждую дату и рейс.
-  filters: { cheap: false, direct: false, noLeave: false, comfy: false, near: false, russia: false, unique: true }, length: null, sort: 'price', page: 1, allRows: false,
+  performed: null, performedLabels: null, status: 'idle', error: '', result: null,
+  filters: { cheap: false, direct: false, noLeave: false, comfy: false, near: false, russia: false }, length: null, sort: 'price', holidaySort: 'leave', page: 1, allRows: false, weekendKey: null,
   home: null, homeStatus: 'idle', recent: readRecent(), recentPrices: {}, recentOffers: new Map(), collection: null,
-  airports: null, cities: null, byIata: new Map(), fromNames: new Map([['MOW', 'Москвы']]), cityPages: new Map(), photos: new Set(), guides: {}, hotels: {}, view: 'results', favs: readFavs(), pickerTarget: 'origin', shown: new Map(), detail: null, backFrom: null, nudged: new Set(),
+  airports: null, cities: null, byIata: new Map(), fromNames: new Map([['MOW', 'Москвы']]), guides: {}, hotels: {}, view: 'results', favs: readFavs(), pickerTarget: 'origin', shown: new Map(), detail: null, backFrom: null, nudged: new Set(),
 };
 const searchShortcuts = $('searchShortcuts') ?? document.createElement('div');
 searchShortcuts.id = 'searchShortcuts';
@@ -78,7 +79,13 @@ searchShortcuts.setAttribute('aria-label', 'Быстрый поиск по ус�
 searchShortcuts.hidden = true;
 searchShortcuts.innerHTML = QUICK_FILTERS.map(name =>
   `<button type="button" class="chip" data-quick="${name}">${CHIPS[name]}</button>`).join('');
-$('search').after(searchShortcuts);
+const flightTools = document.createElement('div');
+flightTools.className = 'flight-tools';
+$('search').after(flightTools);
+const flightBudget = document.querySelector('.flight-budget');
+const budgetForm = $('budgetForm');
+const budgetInput = $('budget');
+flightTools.append(flightBudget, searchShortcuts);
 let request = null;
 let budgetPool = null;
 // «Продолжить планирование»: последние открытые поездки — только в этом браузере, до восьми.
@@ -151,7 +158,8 @@ function effectiveLength() {
 }
 function accepts(offer) {
   const f = state.filters, x = facts(offer);
-  if (x.dep <= Date.now()) return false;
+  const originCity = offer.origin_city_code ?? state.byIata.get(offer.origin_airport)?.city_code;
+  if (offer.city_code === originCity || x.dep <= Date.now()) return false;
   if (state.view === 'collection' && f.direct && !x.direct) return false;
   if (f.cheap && offer.price_minor > 2000000) return false;
   if (f.russia && (state.view === 'collection' || state.performed?.region === 'any') && offer.country_code !== 'RU') return false;
@@ -166,9 +174,19 @@ function accepts(offer) {
   }
   return true;
 }
-function sortKey(offer) {
+function holidayLeave(offer) {
+  const days = state.home?.notes?.[offer.id]?.leave;
+  return Number.isInteger(days) && days >= 0 ? days : Infinity;
+}
+function holidayLabel(offer) {
+  const days = holidayLeave(offer);
+  if (days === Infinity) return 'Дни отпуска неизвестны';
+  return days ? `${daysLabel(days)} отпуска` : '';
+}
+function sortKey(offer, sort) {
   const x = facts(offer);
-  switch (state.sort) {
+  switch (sort) {
+    case 'leave': return holidayLeave(offer);
     case 'priceDescending': return -offer.price_minor;
     case 'departure': return x.dep.getTime();
     case 'duration': return x.flight;
@@ -181,27 +199,37 @@ function sortKey(offer) {
 // Предложения вокруг открытой поездки: выдача поиска или подборки главной.
 const contextOffers = () => state.view === 'results' ? state.result?.offers ?? [] : [...(state.home?.offers.values() ?? [])];
 function resetResultFilters() {
-  const keepGrouping = state.view === 'results' && state.performed?.destination && state.filters.unique;
   for (const name of Object.keys(state.filters)) state.filters[name] = false;
-  state.filters.unique = Boolean(keepGrouping);
   state.length = null;
 }
-function visibleOffers(list, groupByCity) {
-  const seen = new Set();
-  return list.filter(accepts).sort((a, b) => {
-    const av = sortKey(a), bv = sortKey(b);
-    if (av !== bv) return av < bv ? -1 : 1;
-    if (a.price_minor !== b.price_minor) return a.price_minor - b.price_minor;
-    if (a.city_code !== b.city_code) return a.city_code < b.city_code ? -1 : 1;
-    return a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
-  }).filter((offer) => !groupByCity || (!seen.has(offer.city_code) && seen.add(offer.city_code)));
+function compareOffers(a, b, sort) {
+  const av = sortKey(a, sort), bv = sortKey(b, sort);
+  if (av !== bv) return av < bv ? -1 : 1;
+  if (a.price_minor !== b.price_minor) return a.price_minor - b.price_minor;
+  if (a.city_code !== b.city_code) return a.city_code < b.city_code ? -1 : 1;
+  return a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
 }
-const airlineLabel = (offer) => offer.airline_name || offer.airline || 'Авиакомпания не указана';
+const airlineLabel = (offer) => offer.airline === 'DP' ? 'Победа' : offer.airline_name || offer.airline || 'Авиакомпания не указана';
+
+function transferLabel(offer) {
+  const out = offer.transfers, back = offer.return_transfers;
+  if (facts(offer).direct) return 'Без пересадок';
+  const stops = n => n == null ? 'нет данных' : n === 0 ? 'без пересадок' : n + ' ' + plural(n, 'пересадка', 'пересадки', 'пересадок');
+  if (out == null && back == null) return 'Пересадки неизвестны';
+  if (out === 0 && back > 0) return 'На обратном пути — ' + stops(back);
+  if (back === 0 && out > 0) return 'На пути туда — ' + stops(out);
+  return `Туда — ${stops(out)}, обратно — ${stops(back)}`;
+}
+
+function flightMeta(offer) {
+  const directClass = facts(offer).direct ? ' flight-meta--direct' : '';
+  return `<p class="flight-meta${directClass}">${carrier(offer)} <span class="flight-transfers">${esc(transferLabel(offer))}</span></p>`;
+}
 // Locally bundled Aviasales marks. Keep the carrier name for all other airlines.
 const carrierLogos = new Set('3F 4G 5N 6R A4 AA AF AY B2 BA D2 DL DP EK EO EW EY F7 FR FV FZ G9 H9 HY I8 IO IZ J2 J9 KC KL KV LH LO LX N4 OS PC QR R3 RT S7 SK SU SZ TK U2 U6 U9 UA UT VF WZ Y7 YC'.split(' '));
 function carrier(offer) {
   const logo = carrierLogos.has(offer.airline) ? `<img width="20" height="20" loading="lazy" decoding="async" src="/airlines/${offer.airline}.png" alt="">` : '';
-  return `<span class="carrier">${logo}${esc(airlineLabel(offer))}</span>`;
+  return `<span class="carrier">${logo}<span class="carrier-name">${esc(airlineLabel(offer))}</span></span>`;
 }
 
 const stayLabel = (offer) => { const days = facts(offer).days; return days > 0 ? nightsLabel(days) : 'в тот же день'; };
@@ -222,10 +250,10 @@ function lodging(offer, block) {
   const checkin = zoned(x.arr ?? x.dep, zone).key, checkout = zoned(x.ret, zone).key;
   const nights = Math.round((Date.parse(checkout) - Date.parse(checkin)) / 86400000);
   if (nights < 1) return null;
-  const url = `https://www.aviasales.ru/hotels/search?location_id=${location}&location_type=city&checkin=${checkin}&checkout=${checkout}&adults=1`;
+  const url = `https://www.aviasales.ru/hotels/search?location_id=${location}&location_type=city&checkin=${checkin}&checkout=${checkout}&adults=${currentPassengers().adults}`;
   const link = partnerLink(url, { kind: 'hotels', city: offer.city_code, page: 'trip', block, variant: testVariant });
   const day = (key) => new Date(key + 'T00:00:00Z');
-  return link && { link, block, nights, dates: fmtRange(day(checkin), day(checkout), 'UTC', 'UTC') };
+  return link && { link, block, checkin, checkout, nights, dates: fmtRange(day(checkin), day(checkout), 'UTC', 'UTC') };
 }
 // «Дешевле в соседние дни»: тот же город и длина поездки, вылет на 1–3 дня раньше или позже,
 // дешевле минимум на 5 % и 300 ₽, пересадок не больше. Из уже найденных вариантов.
@@ -249,44 +277,34 @@ function similar(offer) {
     .sort((a, b) => a.price_minor - b.price_minor)
     .filter((other) => !seen.has(other.city_code) && seen.add(other.city_code)).slice(0, 3);
 }
-function photoImage(code, wide) {
-  const thumb = `<img src="/photos/s/${esc(code)}.webp" alt="" loading="${wide ? 'eager' : 'lazy'}" decoding="async">`;
-  return wide ? thumb + `<img src="/photos/${esc(code)}.jpg" alt="" decoding="async">` : thumb;
-}
-function photo(code, extra = '', wide = false) {
-  const pending = !state.photos.has(code);
-  return `<div class="photo"${pending ? ` data-photo="${esc(code)}" data-wide="${wide}"` : ''}>${pending ? icon('plane') : photoImage(code, wide)}${extra}</div>`;
-}
 // Билеты: только HTTPS-поиск Aviasales и только через /go (links.js).
-const handoff = (offer) => partnerLink(offer.search_url, { kind: 'tickets', city: offer.city_code, page: 'trip', block: 'tickets', variant: testVariant });
+const currentPassengers = () => (state.view === 'results' && state.performed ? state.performed : state.query).passengers;
+const handoff = (offer) => ticketLink(offer, currentPassengers(), { city: offer.city_code, page: 'trip', block: 'tickets', variant: testVariant });
 // Цена часа — до рубля: копейки здесь только шумят.
 const hourCost = (x) => fmtMoney(Math.round(x.cost / 100) * 100);
-const receivedLabel = (iso) => { const date = new Date(iso); return `${fmtDay(date, localZone)}, ${fmtTime(date, localZone)}`; };
-const cachedPriceLabel = iso => 'Цены из кеша Aviasales' + (iso ? `, получены ${receivedLabel(iso)}` : '');
 
 const favButton = (offer) => `<button type="button" class="fav" data-fav="${esc(offer.id)}" aria-pressed="${state.favs.has(offer.id)}" aria-label="В избранное: ${esc(offer.city)}">${icon('heart')}</button>`;
 // Карточка отвечает на три вопроса: куда, сколько, когда. Время рейсов и подробности — в карточке поездки.
-function offerRating(offer) {
+function offerRating(offer, onPhoto = false) {
   const x = facts(offer), date = zoned(x.arr ?? x.dep, offer.destination_timezone);
   const query = state.view === 'results' && state.performed ? state.performed : state.query;
   const all = query.originCity === offer.origin_city_code ? query.originCity : null;
-  return cityRating(offer.city_code, date, offer.origin_airport, offer.city, all);
+  return cityRating(offer.city_code, date, offer.origin_airport, offer.city, all, { onPhoto });
 }
-function offerCard(offer) {
-  const x = facts(offer), hint = longer(offer), guide = state.guides[offer.city_code];
+function offerCard(offer, holiday = false) {
+  const x = facts(offer), leave = holiday ? holidayLabel(offer) : '';
   return `<article class="offer">
-    <div class="stamp">${photo(offer.city_code, favButton(offer))}</div>
+    ${portrait(offer.city_code, offer.city, { action: offerRating(offer, true) })}
     <div class="offer-body">
       <div class="offer-head">
         <h3 class="offer-city"><button type="button" class="offer-open" data-offer="${esc(offer.id)}">${esc(offer.city)}</button></h3>
-        <span class="offer-price">${esc(fmtMoney(offer.price_minor))}</span>
+        <span class="offer-price">от ${esc(fmtMoney(offer.price_minor))}${groupSize(currentPassengers()) > 1 ? '<small>за 1 взрослого</small>' : ''}</span>
       </div>
-      <p class="offer-dates">${esc(fmtRange(x.dep, x.ret, offer.origin_timezone, offer.destination_timezone))}, ${esc(stayLabel(offer))}</p>
-      <p class="offer-meta">${x.direct ? 'прямые' : 'с пересадками'}, ${carrier(offer)}</p>
-      ${levelTag(offer)}
-      ${offerRating(offer)}
-      <p class="offer-about" data-guide="${esc(offer.city_code)}" ${guide?.summary ? '' : 'hidden'}>${esc(guide?.summary ?? '')}</p>
-      ${hint ? `<p class="offer-hint">+${esc(daysLabel(hint.days))} на месте — на ${esc(fmtMoney(hint.saving))} дешевле</p>` : ''}
+      <div>
+        <p class="offer-dates">${esc(fmtRange(x.dep, x.ret, offer.origin_timezone, offer.destination_timezone))}, ${esc(stayLabel(offer))}</p>
+        ${leave ? `<p class="offer-meta">${esc(leave)}</p>` : ''}
+      </div>
+      ${flightMeta(offer)}
     </div>
   </article>`;
 }
@@ -360,16 +378,14 @@ function compareTable(offers, distinguishFlights = false) {
     return `${price}<small class="compare-price-note">${esc(note)}</small>`;
   };
   const heading = (offer) => {
-    if (!distinguishFlights) return esc(offer.city);
+    const long = longPortraitName(offer.city);
+    const city = portrait(offer.city_code, offer.city, { named: !long }) + (long ? '<span class="compare-city-name">' + esc(offer.city) + '</span>' : '');
+    if (!distinguishFlights) return city;
     const dep = facts(offer).dep, zone = offer.origin_timezone;
     const flight = [`${fmtDay(dep, zone)}, ${fmtTime(dep, zone)}`, `${offer.origin_airport} → ${offer.destination_airport}`, offer.flight_number].filter(Boolean);
-    return `${esc(offer.city)}<small>${esc(flight.join(', '))}</small>`;
+    return `${city}<small>${esc(flight.join(', '))}</small>`;
   };
   const row = (title, cell) => `<tr><th scope="row">${title}</th>${offers.map((offer) => `<td>${cell(offer, facts(offer))}</td>`).join('')}</tr>`;
-  const changes = offer => {
-    if (offer.transfers == null || offer.return_transfers == null) return 'Нет данных';
-    return offer.transfers === 0 && offer.return_transfers === 0 ? 'Прямые' : `Туда: ${esc(offer.transfers)}, обратно: ${esc(offer.return_transfers)}`;
-  };
   return `<div class="compare"${offers.length > 2 ? ' tabindex="0" role="region" aria-label="Сравнение выбранных билетов"' : ''}><table data-count="${offers.length}">
     <thead><tr><td></td>${offers.map(offer => `<th scope="col">${heading(offer)}</th>`).join('')}</tr></thead>
     <tbody>
@@ -378,7 +394,7 @@ function compareTable(offers, distinguishFlights = false) {
       ${row('На месте', (offer, x) => hoursMinutes(x.stay == null ? null : Math.round(x.stay * 60)))}
       ${row('Час поездки', (offer, x) => x.stay ? esc(hourCost(x)) : 'Нет данных')}
       ${row('В пути', (offer, x) => hoursMinutes(Number.isFinite(x.flight) ? x.flight : null))}
-      ${row('Пересадки', changes)}
+      ${row('Пересадки', offer => esc(transferLabel(offer)))}
       ${row('Авиакомпания', (offer) => esc(airlineLabel(offer)))}
     </tbody></table></div>`;
 }
@@ -401,7 +417,7 @@ function renderFavorites() {
   section.hidden = false;
   section.innerHTML = state.favoriteDetails
     ? favoriteComparison(chosen, offers.length > 2, compareTable(chosen, true), removedFavorite?.offer)
-    : favoriteList(offers, chosen, removedFavorite?.offer, facts, photo);
+    : favoriteList(offers, chosen, removedFavorite?.offer, facts);
   document.title = $('favoriteTitle').textContent + ' — Aviator';
   if ($('favoritePicker').open && offers.length < 3) $('favoritePicker').close();
 }
@@ -446,7 +462,7 @@ function closestOverBudget() {
 }
 
 async function updateBudgetHint() {
-  if (!$('budgetHint') || state.view !== 'results') return;
+  if (!$('budgetHint') || state.view !== 'results' || !request) return;
   const q = state.performed;
   if (!budgetPool) {
     budgetPool = { offers: [] };
@@ -457,7 +473,7 @@ async function updateBudgetHint() {
       if (!response.ok) return;
       const data = await response.json();
       if (signal.aborted || !Array.isArray(data?.offers)) return;
-      budgetPool = { offers: data.offers, incomplete: data.incomplete, receivedAt: data.received_at };
+      budgetPool = { offers: data.offers, incomplete: data.incomplete };
     } catch { return; }
   }
   // Render against the current filters even if they changed during the fetch.
@@ -467,13 +483,11 @@ async function updateBudgetHint() {
   if (!offer) { slot.replaceChildren(); return; }
   const x = facts(offer);
   const dates = fmtRange(x.dep, x.ret, offer.origin_timezone, offer.destination_timezone);
-  const stamp = offer.received_at ?? budgetPool.receivedAt;
-  const received = stamp && receivedLabel(stamp);
-  const note = [budgetPool.incomplete && 'Проверена часть предложений.',
-    received && (!state.result.received_at || received !== receivedLabel(state.result.received_at)) && `Цена получена ${received}.`].filter(Boolean).join(' ');
-  slot.innerHTML = `<h3>Билет выше бюджета</h3>
+  const note = budgetPool.incomplete && !state.result.incomplete ? 'Проверена часть предложений.' : '';
+  const priceBasis = groupSize(q.passengers) > 1 ? 'туда и обратно за одного взрослого' : 'туда и обратно';
+  slot.innerHTML = `<h3>Ближайший билет по цене</h3>
     <p><strong>${esc(offer.origin_city)} → ${esc(offer.city)}</strong><br>${esc(dates)}, ${esc(stayLabel(offer))}</p>
-    <p><b class="offer-price">${esc(fmtMoney(offer.price_minor))}</b> туда и обратно<br>На ${esc(fmtMoney(offer.price_minor - q.budget * 100))} выше бюджета</p>
+    <p><b class="offer-price">${esc(fmtMoney(offer.price_minor))}</b> ${priceBasis}<br>На ${esc(fmtMoney(offer.price_minor - q.budget * 100))} выше бюджета</p>
     ${note ? `<span class="caption">${esc(note)}</span>` : ''}
     <button type="button" class="btn-primary" data-action="budgetTicket" data-ticket="${esc(offer.id)}">Открыть билет</button>`;
 }
@@ -481,6 +495,7 @@ async function updateBudgetHint() {
 function renderResults() {
   if (state.view === 'fav') { renderFavorites(); return; }
   if (state.view === 'showcase') { $('results').hidden = true; return; }
+  renderQuickFilters();
   // «Все» в подборке — та же выдача с фильтрами и сортировками, но из поездок подборки.
   const collection = state.view === 'collection' ? homeRow(state.collection) : null;
   const section = $('results'), q = collection ? { region: 'any' } : state.performed, status = collection ? 'done' : state.status;
@@ -492,7 +507,7 @@ function renderResults() {
   const announce = (text) => { $('resultsStatus').textContent = text; };
   if (status === 'loading') {
     // Заготовки карточек: страница держит форму, пока грузятся цены.
-    body = flightLoader('Ищем варианты поездки…');
+    body = '<p class="caption" role="status">Ищем варианты поездки…</p>';
     announce('Ищем варианты поездки');
   } else if (status === 'error') {
     body = statusPanel('alert', 'Поиск не завершён', state.error) + `<div class="status-actions">${action('retry', 'Попробовать ещё раз')}</div>`;
@@ -501,26 +516,31 @@ function renderResults() {
     body = statusPanel('offline', 'Нет связи', 'Не удалось связаться с сервером. Проверьте подключение.') + `<div class="status-actions">${action('retry', 'Повторить поиск')}</div>`;
     announce('Нет связи с сервером');
   } else {
-    const offers = visibleOffers(collection ? rowOffers(collection) : state.result.offers, !q.destination && state.filters.unique);
-    const filters = Object.entries(CHIPS).filter(([name]) =>
-      (name !== 'unique' || !q.destination) && (name !== 'russia' || q.region === 'any'));
+    const holiday = collection?.key === 'holidays';
+    const sort = holiday ? state.holidaySort : state.sort;
+    const sorts = holiday ? { leave: 'Меньше дней отпуска', ...SORTS } : SORTS;
+    const list = collection ? rowOffers(collection) : state.result.offers;
+    const offers = list.filter(accepts).sort((a, b) => compareOffers(a, b, sort));
+    const seen = new Set();
+    const cities = offers.filter(offer => !seen.has(offer.city_code) && seen.add(offer.city_code));
+    const filters = Object.entries(CHIPS).filter(([name]) => name !== 'russia' || q.region === 'any');
     const selected = name => name === 'direct' && !collection ? q.direct : state.filters[name];
     const active = filters.some(([name]) => selected(name)) || state.length !== null;
-    // «Один вариант на город» ничего не прячет целиком, поэтому пустую выдачу объясняют только остальные фильтры.
-    const hiding = filters.some(([name]) => state.filters[name] && name !== 'unique') || state.length !== null;
-    state.shown = new Map(offers.map((offer) => [offer.id, offer]));
-    title = collection ? `${collection.title} (${countLabel(offers.length)})` : countLabel(offers.length);
-    announce(offers.length ? `Найдено: ${countLabel(offers.length)}` : 'Подходящих вариантов нет');
+    const hiding = filters.some(([name]) => state.filters[name]) || state.length !== null;
+    state.shown = new Map(cities.map(offer => [offer.id, offer]));
+    const cityCount = `${cities.length} ${plural(cities.length, 'город', 'города', 'городов')}`;
+    const count = cities.length ? cityCount : countLabel(0);
+    title = collection ? `${collection.title} (${count})` : count;
+    announce(offers.length ? `Найдено: ${count}` : 'Подходящих вариантов нет');
     const chips = `<button type="button" class="chip" data-chip="all" aria-pressed="${!active}">Все</button>` + filters
+      .filter(([name]) => collection || !QUICK_FILTERS.includes(name))
       .map(([name, title]) => `<button type="button" class="chip" data-chip="${name}" aria-pressed="${Boolean(selected(name))}">${title}</button>`).join('');
     const menu = (id, label, options, value) => `<select class="menu menu--plain" id="${id}" aria-label="${label}">${Object.entries(options).map(([name, title]) => `<option value="${name}" ${value === name ? 'selected' : ''}>${title}</option>`).join('')}</select>`;
-    tools = `<div class="sort-menus">${menu('sort', 'Сортировка', SORTS, state.sort)}${menu('length', 'Длительность поездки', LENGTHS, effectiveLength())}</div>`;
-    body = collection ? `<p class="source">${esc(collection.hint)}. ${esc(cachedPriceLabel(state.home.received_at))} для поездки туда и обратно на одного. <a href="/how-we-count.html#home">Как мы считаем</a></p>`
-      : `<p class="source"><span class="summary">${esc(state.performedLabel)}. </span>${esc(cachedPriceLabel(state.result.received_at))} для поездки туда и обратно на одного. <a href="/how-we-count.html">Как мы считаем</a></p>`;
-    body += `
+    tools = `<div class="sort-menus">${menu('sort', 'Сортировка', sorts, sort)}${menu('length', 'Длительность поездки', LENGTHS, effectiveLength())}</div>`;
+    body = `
       <div class="chips" role="group" aria-label="Быстрые фильтры">${chips}</div>
-      ${state.sort === 'flightRating' ? '<p class="caption">Оценка перелёта — цена и дорога, 0–100. Варианты без оценки идут в конце.</p>' : ''}
-      ${state.sort === 'stay' || state.sort === 'value' ? '<p class="caption">Время на месте — от расчётного прилёта до обратного вылета, включая ночи.</p>' : ''}
+      ${sort === 'flightRating' ? '<p class="caption">Оценка перелёта — цена и дорога, 0–100. Варианты без оценки идут в конце.</p>' : ''}
+      ${sort === 'stay' || sort === 'value' ? '<p class="caption">Время на месте — от расчётного прилёта до обратного вылета, включая ночи.</p>' : ''}
       ${!collection && state.result.incomplete ? (state.result.warnings?.length ? state.result.warnings : ['Удалось проверить только часть вариантов.']).map(text => `<p class="caption">${esc(text)}</p>`).join('') : ''}`;
     if (!offers.length) {
       const hint = !collection && q.budget !== null && !(state.filters.cheap && q.budget >= 20000)
@@ -540,10 +560,11 @@ function renderResults() {
           </div>`;
       }
     } else {
-      const pages = Math.ceil(offers.length / PAGE);
+      const pages = Math.ceil(cities.length / PAGE);
       state.page = Math.min(Math.max(1, state.page), pages);
-      body += `<div class="grid">${offers.slice((state.page - 1) * PAGE, state.page * PAGE).map(offerCard).join('')}</div>${pager(pages)}`;
+      body += `<div class="grid">${cities.slice((state.page - 1) * PAGE, state.page * PAGE).map(offer => offerCard(offer, holiday)).join('')}</div>${pager(pages)}`;
     }
+    if (collection?.hint) body += `<p class="caption">${esc(collection.hint)}.</p>`;
   }
   const back = homeVariant === 'B' ? `<button type="button" class="chip" data-action="showcase">${icon('arrow-left')}Подборки</button>` : '';
   section.innerHTML = `<div class="results-head"><h2>${esc(title)}</h2>${tools}${back}<button type="button" class="chip chip--fav" data-action="favorites">${icon('heart')}Избранное <span id="favCount">${state.favs.size}</span></button></div>${body}`;
@@ -572,7 +593,6 @@ function guideBlock(code) {
   const guide = state.guides[code];
   if (!guide) return '';
   const list = (items) => `<ul>${items.map((item) => `<li>${esc(item)}</li>`).join('')}</ul>`;
-  const link = /^https:\/\//.test(guide.tourism_url ?? '') ? guide.tourism_url : null;
   return `<section class="card guide">
     <h3>О городе</h3>
     <p>${esc(guide.summary)}</p>
@@ -580,30 +600,33 @@ function guideBlock(code) {
     <h4>Идеи прогулок</h4>${list(guide.places)}
     <h4>Районы</h4>${list(guide.areas)}
     <p class="caption">${esc(guide.days)}. Заметки редакции от ${esc(fmtDate(new Date(guide.editorial_updated + 'T00:00:00Z'), 'UTC'))}.</p>
-    ${link ? `<a class="btn-inline" href="${esc(link)}" target="_blank" rel="noopener">Официальный туристический портал</a>` : ''}
   </section>`;
 }
 function hotelBlock(offer, hotel) {
+  const guests = currentPassengers();
+  const params = new URLSearchParams({
+    service: 'stays', 'stay-city': offer.city_code, checkin: hotel.checkin, checkout: hotel.checkout
+  });
+  setPassengerParams(params, guests);
   return `<section class="card lodging">
     <h3>${icon('bed')}Где жить</h3>
-    <p>${esc(offer.city)}, ${esc(hotel.dates)}, ${esc(nightsLabel(hotel.nights))}, один взрослый</p>
-    <a class="btn-inline" href="${esc(hotel.link)}" target="_blank" rel="noopener" data-partner="aviasales" data-block="${hotel.block}">Отели на эти даты на Aviasales ${icon('arrow-right')}</a>
-    ${adMark('aviasales')}
+    <p>${esc(offer.city)}, ${esc(hotel.dates)}, ${esc(nightsLabel(hotel.nights))}. ${esc(passengerLabel(guests))}.</p>
+    <a class="btn-inline" href="/?${esc(params.toString())}">Найти жильё на эти даты ${icon('arrow-right')}</a>
   </section>`;
 }
-function openDetail(offer) {
+function openDetail(offer, tripRow = null) {
   state.backFrom = null;
   const x = facts(offer), past = x.dep <= Date.now(), link = past ? null : handoff(offer), hint = past ? null : longer(offer), hotel = lodging(offer, 'hotel');
-  const alike = past ? [] : similar(offer), nearby = past ? null : shifted(offer), level = past ? null : levelOf(offer);
+  const alike = past ? [] : similar(offer), nearby = past ? null : shifted(offer);
   const holiday = state.home?.notes?.[offer.id];
+  const holidayDetails = holiday && Number.isFinite(holidayLeave(offer)) && Number.isInteger(holiday.trip)
+    ? leaveLine(holiday.leave, holiday.trip) : holidayLabel(offer);
   if (!past) rememberTrip(offer);
   state.detail = offer; state.alike = new Map(alike.map((other) => [other.id, other]));
   $('detailTitle').textContent = offer.city;
   $('detailBody').innerHTML = `<div class="detail">
-    <div class="stamp stamp--wide">${photo(offer.city_code, favButton(offer), true)}</div>
-    <div class="detail-head"><h2>${esc(offer.city)}</h2><p class="caption">${esc(offer.country ?? '')}</p></div>
-    ${offerRating(offer)}
-    ${state.cityPages.has(offer.city_code) ? `<a class="btn-inline city-link" href="/city/${esc(state.cityPages.get(offer.city_code))}">Когда лететь дешевле и где жить${icon('arrow-right')}</a>` : ''}
+    <header class="detail-hero">${portrait(offer.city_code, offer.city, { action: favButton(offer), eager: true })}
+      <div class="detail-head"><h2>${esc(offer.city)}</h2><p class="caption">${esc(offer.country ?? '')}</p>${offerRating(offer)}</div></header>
     ${past ? '<p class="caption">Даты прошли. Выполните новый поиск.</p>' : ''}
     <article class="pass">
       <div class="pass-main">
@@ -614,15 +637,18 @@ function openDetail(offer) {
           <span><small>Обратно</small><b>${esc(fmtDay(x.ret, offer.destination_timezone, true))}</b><b>${esc(fmtTime(x.ret, offer.destination_timezone))}</b></span>
           <span><small>На месте</small><b>${esc(stayLabel(offer))}</b></span>
         </div>
-        ${holiday ? `<p class="caption trip-leave">${esc(leaveLine(holiday.leave, holiday.trip))}</p>` : ''}
+        ${holidayDetails && (holiday || (state.view === 'collection' && state.collection === 'holidays')) ? `<p class="caption trip-leave">${esc(holidayDetails)}</p>` : ''}
       </div>
       <div class="pass-stub">
         <p class="pass-price">${esc(fmtMoney(offer.price_minor))}</p>
-        <p class="caption">Билеты туда и обратно на одного. ${esc(cachedPriceLabel(offer.received_at))}. <a href="/how-we-count.html">Как мы считаем</a></p>
-        ${level ? `<details class="detail-price-level"><summary>${esc(levelLabel(level))}</summary>
-          <p>${esc(levelNote({ ...level, usualText: fmtMoney(level.usual) }))} <a href="/how-we-count.html#level">Как мы считаем</a></p></details>` : ''}
+        <p class="caption">Билеты туда и обратно за одного взрослого.${groupSize(currentPassengers()) > 1 ? ' Цену на всех пассажиров покажет Aviasales.' : ''}</p>
+        <details class="fare-explanation">
+          <summary>О цене и времени</summary>
+          <p class="caption">Цена получена из кеша Aviasales и может измениться к покупке. Время прилёта рассчитывается по длительности перелёта и показывается в местном времени аэропорта.</p>
+        </details>
       </div>
     </article>
+    ${hotel ? hotelBlock(offer, hotel) : ''}
     ${hint ? `<section class="idea">
       <h3>Дольше — дешевле</h3>
       <p>Если вернуться ${esc(fmtDay(facts(hint.trip).ret, offer.destination_timezone, true))}, билеты будут на <b>${esc(fmtMoney(hint.saving))} дешевле</b>, а на месте — на ${esc(daysLabel(hint.days))} больше.</p>
@@ -642,7 +668,6 @@ function openDetail(offer) {
       <p><b>≈ ${Math.floor(x.stay)} ч</b>, ≈ ${esc(hourCost(x))} за час поездки</p>
       <p class="caption">От расчётного прилёта до обратного вылета, включая ночи.</p>
     </section>` : ''}
-    ${hotel ? hotelBlock(offer, hotel) : ''}
     ${alike.length ? `<section class="card alike">
       <h3>За эти же деньги</h3>
       ${alike.map((other) => `<button type="button" class="alike-row" data-similar="${esc(other.id)}">
@@ -650,10 +675,10 @@ function openDetail(offer) {
         <b class="alike-price">${esc(fmtMoney(other.price_minor))}</b>
       </button>`).join('')}
     </section>` : ''}
-    <p class="trust">${icon('shield')}<span>Aviasales откроется в новой вкладке. Покупка и оплата — там; мы не просим данные карты и паспорта. <a href="/how-we-earn.html">Как мы зарабатываем</a></span></p>
+    <p class="caption">Покупка и оплата на Aviasales. Ссылка откроется в новой вкладке.</p>
     <div class="detail-cta">
       ${!link && !past ? '<p class="caption">Не удалось сформировать безопасную ссылку.</p>' : ''}
-      ${link ? `${adMark('aviasales')}<a class="btn-primary" href="${esc(link)}" target="_blank" rel="noopener" data-partner="aviasales" data-block="tickets">Проверить цену на Aviasales ${icon('arrow-right')}</a>` : `<span class="btn-primary" aria-disabled="true">Проверить цену на Aviasales</span>`}
+      ${link ? `${adMark('aviasales')}<a class="btn-primary" href="${esc(link)}" target="_blank" rel="noopener" data-partner="aviasales" data-block="tickets">${ticketAction(currentPassengers())} ${icon('arrow-right')}</a>` : `<span class="btn-primary" aria-disabled="true">${ticketAction(currentPassengers())}</span>`}
     </div>
   </div>`;
   $('detailBody').scrollTop = 0;
@@ -661,18 +686,18 @@ function openDetail(offer) {
   // У поездки свой адрес: «Назад» закрывает карточку, а ссылкой можно поделиться.
   // Поездка из подборки знает свой поиск (q с сервера): по этой ссылке её найдёт и откроет любой браузер.
   const params = new URLSearchParams(offer.q ?? toParams(state.performed ?? state.query));
+  setPassengerParams(params, currentPassengers());
   params.set('city', offer.city_code);
   params.set('trip', offer.id);
   const href = '/?' + params;
-  if (history.state?.trip) history.replaceState({ trip: offer.id }, '', href); else history.pushState({ trip: offer.id }, '', href);
+  if (history.state?.trip) history.replaceState({ trip: offer.id, tripRow }, '', href); else history.pushState({ trip: offer.id, tripRow }, '', href);
   $('share').textContent = 'Поделиться';
   goal('view_city', { city: offer.city_code, from: offer.origin_city_code, page: 'trip' });
 }
 async function shareTrip() {
   const offer = state.detail;
   if (!offer) return;
-  const saved = savedTrips().find(p => p.id === offer.id);
-  const url = new URL(tripPath(saved ?? snapshot(offer)), location.href).href, title = `${offer.city} за ${fmtMoney(offer.price_minor)} туда-обратно`;
+  const url = new URL(tripPath(planFor(offer)), location.href).href, title = `${offer.city}, ${fmtMoney(offer.price_minor)} за одного взрослого туда и обратно`;
   goal('share', { city: offer.city_code });
   if (navigator.share) {
     try { await navigator.share({ title, text: title, url }); return; } catch (error) { if (error.name === 'AbortError') return; }
@@ -694,69 +719,43 @@ const homeOffer = (id) => state.home?.offers.get(id);
 const feedOffer = (key, id) => key === 'recent' ? state.recentOffers.get(id) : homeOffer(id);
 const homeRow = (key) => state.home?.rows.find((row) => row.key === key) ?? null;
 const rowOffers = (row) => row.items.map(homeOffer).filter((offer) => offer && facts(offer).dep > Date.now());
-const daysFromToday = (offer) => Math.round((Date.parse(facts(offer).out.key) - Date.parse(zoned(new Date(), offer.origin_timezone).key)) / 86400000);
 
-// Уровень цены — только если для города, месяца и длины поездки сервер посчитал обычную цену (поиск маршрута на месяц).
-function levelOf(offer) {
-  if (!state.home || offer.origin_city_code !== state.home.origin.code) return null;
-  const x = facts(offer), month = x.out.key.slice(0, 7);
-  const found = x.days >= 1 && x.days <= 14 ? state.home.usual[usualKey(offer.city_code, month, x.days)] : null;
-  return found ? { ...priceLevel(offer.price_minor, found[0]), usual: found[0], pairs: found[1], month, nights: x.days } : null;
-}
-let levelSeq = 0;
-function levelLabel(level) {
-  return level.kind === 'usual' ? 'Обычная цена' : `${Math.abs(level.diff)}% ${level.diff < 0 ? 'ниже' : 'выше'} обычной`;
-}
-// Плашка уровня цены; по нажатию — объяснение в карточке, без всплывающих окон.
-function levelTag(offer) {
-  const level = levelOf(offer);
-  if (!level) return '';
-  const id = `level-${++levelSeq}`;
-  const text = levelLabel(level);
-  return `<div class="level-wrap"><button type="button" class="level level--${level.kind}" data-level aria-expanded="false" aria-controls="${id}"><span><i aria-hidden="true">${level.kind === 'usual' ? '≈' : level.diff < 0 ? '↘' : '↗'}</i>${text}</span></button>
-    <p class="level-note" id="${id}" hidden>${esc(levelNote({ ...level, usualText: fmtMoney(level.usual) }))} <a href="/how-we-count.html#level">Как мы считаем</a></p></div>`;
-}
-function toggleLevel(button) {
-  const open = button.getAttribute('aria-expanded') !== 'true';
-  button.setAttribute('aria-expanded', String(open));
-  document.getElementById(button.getAttribute('aria-controls')).hidden = !open;
-}
 const tripLabel = offer => `${offer.city}: ${fmtMoney(offer.price_minor)}, ${fmtRange(facts(offer).dep, facts(offer).ret, offer.origin_timezone, offer.destination_timezone)}`;
 const openButton = (offer, row) => `<button type="button" class="tile-open" data-open="${esc(offer.id)}" data-row="${esc(row)}" aria-label="${esc(tripLabel(offer))}"></button>`;
 
-// Ближайшие вылеты показываем как посадочные талоны с датами и сравнением цены.
+// Ближайшие вылеты показываем как посадочные талоны.
 function passTile(offer, row) {
-  const x = facts(offer), level = levelOf(offer);
+  const x = facts(offer);
   return `<article class="tile tile--pass"><div class="pass">
     <div class="pass-main">
+      ${portrait(offer.city_code, offer.city, { action: offerRating(offer, true) })}
       <div class="codes"><span>${esc(offer.origin_city_code ?? offer.origin_airport)}</span><span class="flight">${icon('plane')}</span><span>${esc(offer.city_code)}</span></div>
       <div class="cities"><span>${esc(offer.origin_city)}</span><span>${esc(offer.city)}</span></div>
-      <div class="legs"><span><small>Туда</small><b>${esc(fmtDay(x.dep, offer.origin_timezone, true))}</b></span><span><small>Обратно</small><b>${esc(fmtDay(x.ret, offer.destination_timezone, true))}</b></span><span><small>На месте</small><b>${esc(stayLabel(offer))}</b></span></div>
     </div>
     <div class="pass-stub">
-      <div class="tile-price-row"><p class="pass-price">${esc(fmtMoney(offer.price_minor))}</p>${levelTag(offer)}${favButton(offer).replace('class="fav"', 'class="fav fav--inline"')}</div>
-      ${level && level.diff < 0 ? `<p class="caption">${esc(hotLine(daysFromToday(offer), level.diff, level.month))}</p>` : ''}
-      ${offerRating(offer)}
-      <p class="caption">${x.direct ? 'прямые' : 'с пересадками'}, ${carrier(offer)}</p>
+      <p class="pass-price">от ${esc(fmtMoney(offer.price_minor))}</p>
+      <div class="legs"><span><small>Туда</small><b>${esc(fmtDay(x.dep, offer.origin_timezone, true))}</b></span><span><small>Обратно</small><b>${esc(fmtDay(x.ret, offer.destination_timezone, true))}</b></span><span><small>На месте</small><b>${esc(stayLabel(offer))}</b></span></div>
+      ${flightMeta(offer)}
     </div></div>${openButton(offer, row)}</article>`;
 }
 // Остальные подборки — марки: фото, город, цена, даты.
 function stampTile(offer, row, note = '') {
   const x = facts(offer);
   return `<article class="tile">
-    <div class="stamp">${photo(offer.city_code, favButton(offer))}</div>
+    ${portrait(offer.city_code, offer.city)}
     <div class="tile-body">
-      <h3 class="tile-city">${esc(offer.city)}</h3>
-      <b class="tile-price">${esc(fmtMoney(offer.price_minor))}</b>
-      <p class="tile-dates">${esc(fmtRange(x.dep, x.ret, offer.origin_timezone, offer.destination_timezone))}</p>
+      <h3 class="tile-city sr-only">${esc(offer.city)}</h3>
+      <b class="tile-price">от ${esc(fmtMoney(offer.price_minor))}</b>
+      <p class="tile-dates">${esc(fmtRange(x.dep, x.ret, offer.origin_timezone, offer.destination_timezone))}, ${esc(stayLabel(offer))}</p>
+      ${flightMeta(offer)}
       ${note ? `<p class="tile-note">${note}</p>` : ''}
     </div>${openButton(offer, row)}</article>`;
 }
-function rowSection(key, title, hint, tiles, action, pass = false, mark = 'weekend') {
+function rowSection(key, title, hint, tiles, action, pass = false, mark = 'weekend', controls = '') {
   const label = pairLabel(key);
   return `<section class="row" data-feed="${esc(key)}" aria-labelledby="row-${key}">
     <div class="row-head"><span class="row-mark">${sticker(mark)}</span><h2 id="row-${key}">${esc(title)}</h2>${hint ? `<p class="row-hint">${esc(hint)}</p>` : ''}${action}</div>
-    <div class="strip${pass ? ' strip--pass' : ''}">${tiles}</div>
+    ${controls}<div class="strip ${pass ? 'strip--pass' : 'strip--stamps'}">${tiles}</div>
     <div class="compare-prompt"${label ? '' : ' hidden'}>
       <span class="compare-count">${icon('heart')}Выбрано 2 поездки</span>
       <button type="button" class="btn-primary" data-compare-row="${esc(key)}" aria-haspopup="dialog" aria-controls="pairComparison"><span>${esc(label)}</span>${icon('arrow-right')}</button>
@@ -782,10 +781,48 @@ function recentRow() {
   }).join('');
   return rowSection('recent', 'Продолжить планирование', '', tiles, '', false, 'recent');
 }
+function showcaseRow(row, weekends) {
+  const offers = rowOffers(row);
+  if (row.key === 'holidays') offers.sort((a, b) => compareOffers(a, b, 'leave'));
+  const tiles = offers.slice(0, 6).map((offer) => {
+    if (row.kind === 'pass') return passTile(offer, row.key);
+    const note = row.key === 'holidays' ? holidayLabel(offer) : '';
+    return stampTile(offer, row.key, esc(note));
+  }).join('');
+  const periods = weekends.map(period => {
+    const date = period.hint || period.title;
+    return `<button type="button" data-weekend="${esc(period.key)}" aria-pressed="${period.key === row.key}">${esc(date)}</button>`;
+  }).join('');
+  const controls = periods ? `<div class="weekend-periods" role="group" aria-label="Даты выходных">${periods}</div>` : '';
+  const action = `<button type="button" class="row-all" data-row-all="${esc(row.key)}" aria-label="Все варианты: ${esc(row.title)}">Все${icon('arrow-right')}</button>`;
+  return rowSection(row.key, periods ? 'На выходные' : row.title, periods ? '' : row.hint, tiles, action, row.kind === 'pass', rowSticker(row), controls);
+}
+
+function directionList(catalog = false) {
+  const { origin, offers } = state.home;
+  const cheapest = new Map();
+  for (const offer of offers.values()) {
+    if (facts(offer).dep <= Date.now()) continue;
+    const previous = cheapest.get(offer.city_code);
+    if (!previous || offer.price_minor < previous.price_minor) cheapest.set(offer.city_code, offer);
+  }
+  if (!cheapest.size) return '';
+  const sorted = Array.from(cheapest.values()).sort((a, b) => a.price_minor - b.price_minor);
+  const links = (catalog ? sorted : sorted.slice(0, 6)).map(offer => {
+    const params = new URLSearchParams({ from: origin.iata, to: offer.destination_airport, tc: offer.city_code, month: facts(offer).out.key.slice(0, 7), weekend: '0' });
+    if (origin.all) params.set('fc', origin.code);
+    setPassengerParams(params, state.query.passengers);
+    return `<a class="direction-link" data-city="${esc(offer.city_code)}" href="/?${esc(params.toString())}">${portrait(offer.city_code, offer.city)}<span class="direction-info"><b>${esc(offer.city)}</b><span>от ${esc(fmtMoney(offer.price_minor))}</span></span></a>`;
+  }).join('');
+  if (catalog) return links;
+  const toggle = sorted.length > 4 && $('directionCatalog') ? `<button type="button" class="btn-inline directions-toggle" aria-haspopup="dialog" aria-controls="directionCatalog">Все направления (${sorted.length})</button>` : '';
+  return `<section class="home-directions${sorted.length <= 6 ? ' compact-list' : ''}" aria-labelledby="direction-heading"><h2 id="direction-heading">Направления из ${esc(origin.from || 'города ' + origin.name)}</h2>
+    <div id="direction-links" class="direction-links" data-expanded="false">${links}</div>${toggle}</section>`;
+}
 function renderShowcase() {
   const section = $('showcase');
   if (state.homeStatus === 'loading') {
-    section.innerHTML = flightLoader('Подбираем билеты из вашего города…') + recentRow();
+    section.innerHTML = '<p class="caption" role="status">Подбираем билеты из вашего города…</p>' + recentRow();
     $('resultsStatus').textContent = 'Подбираем билеты';
     return;
   }
@@ -794,22 +831,16 @@ function renderShowcase() {
       + `<div class="status-actions">${action('retryHome', 'Загрузить подборки')}</div>`;
     return;
   }
-  const visible = state.allRows ? state.home.rows : state.home.rows.slice(0, 5), hidden = state.home.rows.length - visible.length;
-  const rows = visible.map((row) => {
-    const offers = rowOffers(row);
-    if (offers.length < 3) return '';
-    // В ленте — до шести карточек, дальше полупрозрачная карточка «Ещё N»: лента не тянется бесконечно.
-    const tiles = offers.slice(0, 6).map((offer) => {
-      if (row.kind === 'pass') return passTile(offer, row.key);
-      const holiday = row.key === 'holidays' && state.home.notes?.[offer.id];
-      const note = holiday ? (holiday.leave ? `${daysLabel(holiday.leave)} отпуска` : 'Без отпуска') : '';
-      return stampTile(offer, row.key, esc(note));
-    }).join('')
-      + (offers.length > 6 ? `<button type="button" class="tile-more" data-row-all="${esc(row.key)}"><b>+${offers.length - 6}</b><span>Показать все</span>${icon('arrow-right')}</button>` : '');
-    return rowSection(row.key, row.title, row.hint, tiles, `<button type="button" class="row-all" data-row-all="${esc(row.key)}">Все${icon('arrow-right')}</button>`, row.kind === 'pass', rowSticker(row));
-  }).join('');
+  const available = state.home.rows.filter(row => rowOffers(row).length >= 3);
+  const weekends = available.filter(row => row.key.startsWith('weekend'));
+  const weekend = weekends.find(row => row.key === state.weekendKey) ?? weekends[0];
+  const first = [available.find(row => row.key === 'hot'), weekend, available.find(row => row.key.startsWith('budget'))].filter(Boolean);
+  const ordered = [...first, ...available.filter(row => !first.includes(row) && !weekends.includes(row))];
+  const visible = state.allRows ? ordered : ordered.slice(0, 4);
+  const hidden = ordered.length - visible.length;
+  const rows = visible.map(row => showcaseRow(row, row === weekend ? weekends : [])).join('');
   section.innerHTML = recentRow() + (rows ? rows + (hidden > 0 ? `<button type="button" class="btn-inline more-rows" data-more-rows>Ещё подборки (${hidden})</button>` : '') : statusPanel('send', 'Подборок пока нет', 'Для этого города вылета не нашлось поездок на ближайшие недели. Попробуйте поиск в форме выше.'))
-    + `<p class="source">${esc(cachedPriceLabel(state.home.received_at))} для поездки туда и обратно на одного. <a href="/how-we-count.html#home">Как мы считаем подборки</a></p>`;
+    + directionList();
   $('resultsStatus').textContent = 'Подборки загружены';
 }
 const homeWaiters = [];
@@ -820,7 +851,11 @@ async function loadHome() {
   if (q.originCity) params.set('fc', q.originCity);
   const key = params.toString();
   if (state.homeStatus === 'loading' && homeRequest?.key === key) return;
-  if (homeRequest?.key !== key) rowPicks.clear();
+  if (homeRequest?.key !== key) {
+    rowPicks.clear();
+    state.weekendKey = null;
+    state.allRows = false;
+  }
   homeRequest?.controller.abort();
   const controller = new AbortController();
   homeRequest = { key, controller };
@@ -831,9 +866,12 @@ async function loadHome() {
     const data = response.ok ? await response.json() : null;
     if (controller.signal.aborted) return;
     if (!Array.isArray(data?.rows)) throw new Error('home');
-    const rows = data.rows.map(row => row.key === 'hot'
-      ? { ...row, title: 'Ближайшие вылеты', hint: 'Вылет через 1–14 дней, цена минимум на 20 % ниже обычной' }
-      : row);
+    const rows = data.rows.map(row => {
+      if (row.key === 'hot') return { ...row, title: 'Ближайшие вылеты', hint: 'Вылет в ближайшие 14 дней' };
+      if (row.key.startsWith('weekend') && row.hint) return { ...row, hint: row.hint.split(',')[0] };
+      if (row.key.startsWith('budget') && row.hint?.startsWith('От ')) return { ...row, hint: '' };
+      return row;
+    });
     state.home = { ...data, rows, offers: new Map(Object.entries(data.offers)) };
     state.homeStatus = 'done';
   } catch { if (controller.signal.aborted) return; state.homeStatus = 'error'; state.home = null; }
@@ -870,8 +908,14 @@ function setView(view) {
   }
   markNav(view);
   $('showcase').hidden = view !== 'showcase';
-  searchShortcuts.hidden = view !== 'showcase';
+  searchShortcuts.hidden = view !== 'showcase' && view !== 'results';
   if (view === 'showcase') $('results').hidden = true;
+}
+function setHomeOrigin(origin) {
+  Object.assign(state.query, { origin: origin.iata, originCity: origin.all ? origin.code : null });
+  state.labels.origin = `${origin.name}, ${origin.all ? 'все аэропорты' : origin.iata}`;
+  originHint = origin;
+  if (origin.from) state.fromNames.set(origin.code, origin.from);
 }
 function showShowcase() {
   setView('showcase');
@@ -883,6 +927,7 @@ function showShowcase() {
 function showCollection(key, push = true) {
   if (!homeRow(key)) return;
   Object.assign(state, { collection: key, page: 1 });
+  if (push && key === 'holidays') state.holidaySort = 'leave';
   if (push) history.pushState({ row: key }, '', `${location.pathname}#row=${key}`);
   setView('collection');
   renderResults();
@@ -905,14 +950,24 @@ function syncView() {
 }
 
 // --- форма ---
+let originReady = false;
+let originHint;
+function renderQuickFilters() {
+  const query = state.view === 'results' && state.performed ? state.performed : state.query;
+  for (const button of searchShortcuts.children) {
+    const name = button.dataset.quick;
+    button.setAttribute('aria-pressed', String(name === 'direct' ? query.direct : state.filters[name]));
+  }
+}
 function renderForm() {
   const q = state.query, zone = originZone(), list = months(zone), today = zoned(new Date(), zone).key;
   if (!q.exact && !list.includes(q.month)) q.month = list[0];
-  $('originLabel').textContent = state.labels.origin;
-  const city = q.originCity ?? state.byIata.get(q.origin)?.city_code;
-  const from = state.fromNames.get(city);
+  const originLabel = $('originLabel');
+  originLabel.textContent = state.labels.origin;
+  const knownCity = originHint?.iata === q.origin ? originHint.code : q.originCity;
+  const originCity = state.byIata.get(q.origin)?.city_code ?? knownCity ?? q.origin;
+  if (originReady && originLabel.dataset.city !== originCity) originLabel.dataset.city = originCity;
   const originName = state.byIata.get(q.origin)?.city ?? state.labels.origin.split(', ')[0];
-  $('originTitle').innerHTML = `${from ? `из&nbsp;${esc(from)}` : `из&nbsp;города ${esc(originName)}`}${icon('chevron-down')}`;
   $('destinationLabel').textContent = state.labels.destination ?? DESTINATION_SCOPES[q.region].label;
   $('searchAction').textContent = q.destination ? 'Найти билеты' : 'Показать направления';
   document.querySelector(`input[name="dateMode"][value="${q.exact ? 'exact' : 'month'}"]`).checked = true;
@@ -926,26 +981,32 @@ function renderForm() {
     $('departureDate').min = today; $('departureDate').max = addDays(last, -1); $('departureDate').value = q.departure;
     $('returnDate').min = addDays(q.departure, 1); $('returnDate').max = addDays(q.departure, 60); $('returnDate').value = q.returning;
   }
-  const slider = $('budget');
-  slider.value = q.budget ?? slider.min;
-  slider.style.setProperty('--fill-to', `${100 * (slider.value - slider.min) / (slider.max - slider.min)}%`);
+  const passengerText = passengerLabel(q.passengers);
+  $('passengerValue').textContent = $('linePassengers').textContent = passengerText;
+  $('linePassengers').parentElement.title = passengerText;
+  const family = groupSize(q.passengers) > 1;
+  $('budgetUnit').hidden = !family;
   const budgetText = q.budget === null ? 'Без лимита' : fmtMoney(q.budget * 100);
-  slider.setAttribute('aria-valuetext', budgetText);
-  $('budgetValue').textContent = budgetText;
-  $('directOnly').checked = q.direct;
-  for (const button of searchShortcuts.children) {
-    const name = button.dataset.quick;
-    button.setAttribute('aria-pressed', String(name === 'direct' ? q.direct : state.filters[name]));
+  if (!budgetForm) {
+    budgetInput.value = q.budget ?? budgetInput.min;
+    $('budgetValue').textContent = budgetText;
+    budgetInput.setAttribute('aria-valuetext', budgetText);
+    $('directOnly').checked = q.direct;
   }
+  renderQuickFilters();
   const line = summary(q);
   $('summaryCode').textContent = line.code;
   $('summaryRoute').textContent = line.route;
-  $('summaryDetails').textContent = line.details;
+  $('summaryDetails').textContent = line.dates + (q.budget === null ? '' : ', до ' + budgetText + (family ? ' на взрослого' : ''));
+  $('summaryPassengers').textContent = passengerText;
   $('lineCode').textContent = q.originCity ?? q.origin;
-  $('lineOrigin').textContent = originName;
+  $('lineOrigin').textContent = q.originCity ? originName : state.labels.origin;
   $('lineTo').textContent = line.route;
-  $('lineWhen').textContent = line.dates;
-  $('lineBudget').textContent = q.budget === null ? budgetText : `до ${budgetText}`;
+  $('whenCaption').textContent = q.exact ? 'Туда' : 'Когда';
+  $('lineWhen').textContent = q.exact ? shortDay(q.departure) : monthLabel(q.month);
+  $('returnValue').textContent = q.exact ? shortDay(q.returning) : '';
+  $('returnValue').parentElement.hidden = !q.exact;
+  $('lineBudget').textContent = q.budget === null ? 'Бюджет' : `До ${budgetText}${family ? ' на взрослого' : ''}`;
 }
 function setExact(enabled) {
   const q = state.query;
@@ -966,11 +1027,14 @@ function setDeparture(key) {
   const lower = addDays(key, 1), upper = addDays(key, 60);
   q.returning = !q.returning || q.returning < lower ? lower : q.returning > upper ? upper : q.returning;
 }
-function summary(q) {
+function summary(q, labels = state.labels) {
   const day = (key) => fmtDay(new Date(key + 'T00:00:00Z'), 'UTC');
   const dates = q.exact ? `${day(q.departure)} – ${day(q.returning)}` : monthLabel(q.month);
   // Свёрнутая форма: код города вылета, куда и когда — как на талоне.
-  return { code: q.originCity ?? q.origin, route: state.labels.destination ?? DESTINATION_SCOPES[q.region].label, dates, details: q.budget === null ? dates : `${dates}, до ${fmtMoney(q.budget * 100)}` };
+  const details = [dates];
+  if (groupSize(q.passengers) > 1) details.push(passengerLabel(q.passengers));
+  if (q.budget !== null) details.push('до ' + fmtMoney(q.budget * 100) + (groupSize(q.passengers) > 1 ? ' на взрослого' : ''));
+  return { code: q.originCity ?? q.origin, route: labels.destination ?? DESTINATION_SCOPES[q.region].label, dates, details: details.join(', ') };
 }
 // Телефон: когда пошёл поиск, форма сворачивается в строку, чтобы первые карточки были на первом экране.
 // Класс меняет раскладку только уже 900 px; на широком экране форма видна целиком.
@@ -995,10 +1059,10 @@ function toParams(q) {
 }
 function searchAddress(q) {
   const params = toParams(q);
+  setPassengerParams(params, q.passengers);
   for (const name of Object.keys(CHIPS)) {
-    if (name !== 'unique' && name !== 'direct' && state.filters[name]) params.append('filter', name);
+    if (name !== 'direct' && state.filters[name]) params.append('filter', name);
   }
-  if (!state.filters.unique && !q.destination) params.set('group', '0');
   if (state.length !== null) params.set('length', state.length);
   return '?' + params;
 }
@@ -1010,8 +1074,8 @@ async function search({ scroll = true, auto = false } = {}) {
   request?.abort();
   request = new AbortController();
   budgetPool = null;
-  const q = { ...state.query }, signal = request.signal, label = summary(q), fromShowcase = state.view === 'showcase' || state.view === 'collection';
-  Object.assign(state, { performed: q, performedLabels: { ...state.labels }, performedSummary: label, performedLabel: `${state.labels.origin} → ${label.route}, ${label.details}`, status: 'loading', page: 1, view: 'results' });
+  const q = { ...state.query }, signal = request.signal, fromShowcase = state.view === 'showcase' || state.view === 'collection';
+  Object.assign(state, { performed: q, performedLabels: { ...state.labels }, status: 'loading', page: 1, view: 'results' });
   if (!auto) {
     history[fromShowcase ? 'pushState' : 'replaceState'](null, '', searchAddress(q));
     goal('search', { from: q.originCity ?? q.origin, region: q.region });
@@ -1202,9 +1266,13 @@ function openPicker(target, trigger) {
 }
 function choose(iata, cityCode) {
   const q = state.query;
+  const originChanged = state.pickerTarget === 'origin' && (q.origin !== iata || q.originCity !== cityCode);
   if (state.pickerTarget === 'origin') {
     q.origin = iata; q.originCity = cityCode; state.labels.origin = airportLabel(iata, cityCode);
     const airport = state.byIata.get(iata);
+    if (airport && state.byIata.get(q.destination)?.city_code === airport.city_code) {
+      q.destination = q.destinationCity = state.labels.destination = null;
+    }
     // Выбор запоминается: в следующий раз и на страницах городов цены будут из этого города.
     if (airport) saveOrigin({ code: airport.city_code, iata, all: Boolean(cityCode), name: airport.city, from: state.fromNames.get(airport.city_code) ?? null }, true);
   } else {
@@ -1214,8 +1282,10 @@ function choose(iata, cityCode) {
   }
   $('picker').close();
   renderForm();
-  // Подборки — из нового города вылета.
-  if (state.pickerTarget === 'origin' && state.view === 'showcase') showShowcase();
+  if (originChanged) {
+    if (state.view === 'showcase') showShowcase();
+    else if ((state.view === 'results' && state.performed) || state.view === 'collection') search({ scroll: false });
+  }
 }
 function showFavorites(focusTitle = true) {
   const detailed = location.hash === '#fav/compare';
@@ -1229,9 +1299,8 @@ function showFavorites(focusTitle = true) {
 
 // --- события ---
 $('originPick').addEventListener('click', event => openPicker('origin', event.currentTarget));
-$('originTitle').addEventListener('click', event => openPicker('origin', event.currentTarget));
 $('destinationPick').addEventListener('click', event => openPicker('destination', event.currentTarget));
-for (const trigger of document.querySelectorAll('#originTitle, #originPick, #destinationPick, [data-field="origin"], [data-field="destination"]')) {
+for (const trigger of document.querySelectorAll('#originPick, #destinationPick, [data-field="origin"], [data-field="destination"]')) {
   const preload = () => loadAirports().catch(() => {});
   trigger.addEventListener('pointerenter', preload, { once:true });
   trigger.addEventListener('focus', preload, { once:true });
@@ -1287,11 +1356,46 @@ $('month').addEventListener('change', (event) => { state.query.month = event.tar
 $('weekendOnly').addEventListener('change', (event) => { state.query.weekend = event.target.checked; });
 $('departureDate').addEventListener('change', (event) => { setDeparture(event.target.value); renderForm(); });
 $('returnDate').addEventListener('change', (event) => { if (event.target.value) state.query.returning = event.target.value; renderForm(); });
-$('budget').addEventListener('input', (event) => { state.query.budget = event.target.value === event.target.min ? null : Number(event.target.value); renderForm(); });
-$('directOnly').addEventListener('change', (event) => { state.query.direct = event.target.checked; });
+if (budgetForm) {
+  function applyBudget(value) {
+    const changed = state.query.budget !== value;
+    state.query.budget = value;
+    flightBudget.open = false;
+    flightBudget.querySelector('summary').focus({ preventScroll: true });
+    renderForm();
+    if (changed && ['showcase', 'results'].includes(state.view)) search({ scroll: false });
+  }
+  budgetForm.addEventListener('submit', event => {
+    event.preventDefault();
+    applyBudget(budgetInput.value === '' ? null : budgetInput.valueAsNumber);
+  });
+  flightBudget.addEventListener('click', event => {
+    const option = event.target.closest('[data-budget]');
+    if (option) applyBudget(option.dataset.budget === '' ? null : Number(option.dataset.budget));
+    else if (!flightBudget.open && event.target.closest('summary')) budgetInput.value = state.query.budget ?? '';
+  });
+  document.addEventListener('click', event => {
+    if (flightBudget.open && !flightBudget.contains(event.target)) flightBudget.open = false;
+  });
+  flightBudget.addEventListener('keydown', event => {
+    if (event.key !== 'Escape' || !flightBudget.open) return;
+    event.preventDefault();
+    flightBudget.open = false;
+    flightBudget.querySelector('summary').focus({ preventScroll: true });
+  });
+} else {
+  // Старый HTML может сохраниться в кеше при обновлении скрипта.
+  budgetInput.addEventListener('input', () => {
+    state.query.budget = budgetInput.value === budgetInput.min ? null : budgetInput.valueAsNumber;
+    renderForm();
+  });
+  $('directOnly').addEventListener('change', event => { state.query.direct = event.target.checked; });
+}
 $('search').addEventListener('submit', (event) => { event.preventDefault(); search(); });
 function planFor(offer) {
-  return savedTrips().find(p => p.id === offer.id) ?? snapshot(offer);
+  const saved = savedTrips().find(p => p.id === offer.id);
+  const passengers = currentPassengers();
+  return { ...(saved ?? snapshot(offer)), passengers, people: groupSize(passengers) };
 }
 function showWaiting(offer) {
   if (!$('detail').open || state.detail !== offer || $('waiting')) return;
@@ -1300,7 +1404,7 @@ function showWaiting(offer) {
   $('detailBody').innerHTML = `<div class="detail waiting" id="waiting">
     <header class="plan-hero"><div><p class="label">Пока смотрите билет</p><h2>${esc(plan.city)}</h2>
     <p>${esc(plan.from)} → ${esc(plan.city)}, ${esc(tripDates(plan).label)}</p></div>
-    ${state.photos.has(plan.cityCode) ? `<div class="plan-photo"><img src="/photos/s/${esc(plan.cityCode)}.webp" alt=""></div>` : ''}</header>
+    ${portrait(plan.cityCode, plan.city)}</header>
     <div id="returnPrompt"></div><div id="waitingOptions" class="plan-options"></div>
     <a class="btn-inline" href="${esc(tripPath(plan))}">Открыть план поездки ${icon('arrow-right')}</a>
     <button type="button" class="btn-inline" data-ticket-details>Вернуться к билету</button></div>`;
@@ -1332,17 +1436,126 @@ function onReturn() {
 }
 document.addEventListener('visibilitychange', onReturn);
 window.addEventListener('focus', onReturn);
-const detailNav = $('detail').querySelector('.detail-nav');
-for (const link of document.querySelector('.top .nav').children) detailNav.append(link.cloneNode(true));
 $('share').addEventListener('click', shareTrip);
+const openPassengers = passengerPicker(passengers => {
+  state.query.passengers = passengers;
+  renderForm();
+  if (state.view !== 'results' || !state.performed) return;
+  state.performed = { ...state.performed, passengers };
+  updateFilterAddress();
+  renderResults();
+});
+$('passengerPick').addEventListener('click', event => openPassengers(event.currentTarget, state.query.passengers));
 $('searchLine').addEventListener('click', (event) => {
   const field = event.target.closest('[data-field]')?.dataset.field;
   if (!field) return;
+  if (field === 'passengers') { openPassengers(event.target.closest('[data-field]'), state.query.passengers); return; }
   if (field === 'origin' || field === 'destination') { openPicker(field, event.target.closest('[data-field]')); return; }
-  collapseForm(false);
-  ({ when: state.query.exact ? $('departureDate') : $('month'), budget: $('budget') })[field]?.focus();
+  if (field === 'when' || field === 'returning') {
+    const trigger = event.target.closest('[data-field]');
+    openCalendar(trigger, state.query, months(originZone()), zoned(new Date(), originZone()).key, draft => {
+      Object.assign(state.query, draft);
+      renderForm();
+    }, async (month, signal) => {
+      const params = toParams({ ...state.query, month, exact: false, weekend: false });
+      const response = await fetch('/api/v1/search/web?' + params, { signal });
+      if (!response.ok) throw new Error('calendar fares');
+      return response.json();
+    });
+  }
+});
+function filterCatalog() {
+  const normalize = text => text.toLocaleLowerCase('ru').replaceAll('ё', 'е').trim();
+  const query = normalize($('catalogSearch').value);
+  let matches = 0;
+  for (const link of $('catalogLinks').children) {
+    link.hidden = !normalize(link.querySelector('b').textContent).includes(query);
+    if (!link.hidden) matches++;
+  }
+  $('catalogEmpty').hidden = matches > 0;
+}
+const catalog = $('directionCatalog');
+const catalogBody = catalog?.querySelector('.sheet-body');
+function openCatalog(saved) {
+  const trigger = $('showcase').querySelector('.directions-toggle');
+  if (!catalog || !trigger) return;
+  $('catalogTitle').textContent = $('direction-heading').textContent;
+  $('catalogSearch').value = saved?.query ?? '';
+  $('catalogLinks').innerHTML = directionList(true);
+  filterCatalog();
+  trigger.focus({ preventScroll: true });
+  if (!catalog.open) catalog.showModal();
+  const target = saved && [...$('catalogLinks').children].find(link => !link.hidden && link.dataset.city === saved.city);
+  (target || $('catalogSearch')).focus({ preventScroll: true });
+  catalogBody.scrollTop = saved?.listTop ?? 0;
+  if (saved) window.scrollTo({ top: saved.pageTop, behavior: 'instant' });
+}
+$('catalogSearch')?.addEventListener('input', filterCatalog);
+$('catalogLinks')?.addEventListener('click', event => {
+  const link = event.target.closest('.direction-link');
+  if (!link || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey || event.defaultPrevented) return;
+  const { iata, code, all } = state.home.origin;
+  history.replaceState({ ...history.state, catalog: {
+    iata, code, all, query: $('catalogSearch').value, city: link.dataset.city,
+    listTop: catalogBody.scrollTop, pageTop: scrollY, allRows: state.allRows, weekendKey: state.weekendKey
+  } }, '');
+});
+function clearCatalogHistory() {
+  if (!history.state?.catalog) return;
+  const rest = { ...history.state };
+  delete rest.catalog;
+  history.replaceState(rest, '');
+}
+catalog?.addEventListener('close', () => {
+  if (catalog.open) return;
+  clearCatalogHistory();
+  $('showcase').querySelector('.directions-toggle')?.focus({ preventScroll: true });
+});
+function restoreCatalog() {
+  const saved = history.state?.catalog;
+  if (!saved || state.view !== 'showcase' || !state.home) return;
+  const { iata, code, all } = state.home.origin;
+  if (saved.iata !== iata || saved.code !== code || saved.all !== all) {
+    clearCatalogHistory();
+    return;
+  }
+  if (saved.allRows !== state.allRows || saved.weekendKey !== state.weekendKey) {
+    state.allRows = saved.allRows;
+    state.weekendKey = saved.weekendKey;
+    renderShowcase();
+  }
+  openCatalog(saved);
+}
+window.addEventListener('pageshow', event => {
+  if (!event.persisted || state.view !== 'showcase' || !history.state?.catalog) return;
+  const origin = storedOrigin();
+  if (origin && (state.query.origin !== origin.iata || state.query.originCity !== (origin.all ? origin.code : null))) {
+    clearCatalogHistory();
+    if (catalog?.open) catalog.close();
+    setHomeOrigin(origin);
+    renderForm();
+    showShowcase();
+    return;
+  }
+  restoreCatalog();
 });
 $('showcase').addEventListener('click', (event) => {
+  const period = event.target.closest('[data-weekend]');
+  if (period) {
+    state.weekendKey = period.dataset.weekend;
+    const weekends = state.home.rows.filter(row => row.key.startsWith('weekend') && rowOffers(row).length >= 3);
+    const selected = weekends.find(row => row.key === state.weekendKey);
+    if (selected) {
+      period.closest('.row').outerHTML = showcaseRow(selected, weekends);
+      $('showcase').querySelector('[data-weekend][aria-pressed="true"]').focus({ preventScroll: true });
+    }
+    return;
+  }
+  const directions = event.target.closest('.directions-toggle');
+  if (directions) {
+    openCatalog();
+    return;
+  }
   const compare = event.target.closest('[data-compare-row]');
   if (compare) {
     compare.focus({ preventScroll: true });
@@ -1350,22 +1563,13 @@ $('showcase').addEventListener('click', (event) => {
     syncComparison();
     return;
   }
-  const level = event.target.closest('[data-level]');
-  if (level) { toggleLevel(level); return; }
   const all = event.target.closest('[data-row-all]');
   if (all) { goal('select_idea', { idea: `row-${all.dataset.rowAll}` }); showCollection(all.dataset.rowAll); return; }
   if (event.target.closest('[data-action="retryHome"]')) { loadHome(); return; }
-  const fav = event.target.closest('[data-fav]');
-  if (fav) {
-    const key = fav.closest('[data-feed]').dataset.feed;
-    toggleFav(fav.dataset.fav, key);
-    $('resultsStatus').textContent = pairLabel(key);
-    return;
-  }
   if (event.target.closest('[data-more-rows]')) { state.allRows = true; renderShowcase(); return; }
   const open = event.target.closest('[data-open]');
   const offer = open && feedOffer(open.dataset.row, open.dataset.open);
-  if (offer) { goal('select_idea', { idea: `row-${open.dataset.row}` }); openDetail(offer); }
+  if (offer) { goal('select_idea', { idea: `row-${open.dataset.row}` }); openDetail(offer, open.dataset.row); }
 });
 // Закрытие карточки рукой отступает на её запись в истории, один раз: сюда приходят и щелчок, и событие закрытия диалога.
 let leaving = false;
@@ -1373,7 +1577,12 @@ function leaveTrip() { if (!leaving && history.state?.trip) { leaving = true; hi
 window.addEventListener('popstate', () => {
   leaving = false;
   if (history.state?.compareRow || $('pairComparison').open) syncComparison();
-  if (!history.state?.trip && $('detail').open) $('detail').close();
+  const tripId = history.state?.trip;
+  if (tripId && !$('detail').open) {
+    const offer = state.detail?.id === tripId ? state.detail : state.shown.get(tripId) ?? homeOffer(tripId) ?? state.favs.get(tripId);
+    if (offer) openDetail(offer, history.state.tripRow);
+  }
+  if (!tripId && $('detail').open) $('detail').close();
   if (!history.state?.trip) syncView();
 });
 $('pairComparison').addEventListener('close', () => {
@@ -1404,7 +1613,12 @@ $('applyFavoriteChoice').addEventListener('click', () => {
 $('searchSummary').addEventListener('click', () => { collapseForm(false); $('originPick').focus(); });
 $('detailBody').addEventListener('click', (event) => {
   const fav = event.target.closest('[data-fav]');
-  if (fav) { toggleFav(fav.dataset.fav); return; }
+  if (fav) {
+    const row = history.state?.tripRow;
+    toggleFav(fav.dataset.fav, row);
+    if (row) $('resultsStatus').textContent = pairLabel(row);
+    return;
+  }
   if (event.target.closest('[data-hotel-close]')) { event.target.closest('.cta-hotel').remove(); return; }
   if (event.target.closest('[data-dismiss-plan]')) {
     $('returnPrompt').replaceChildren();
@@ -1439,29 +1653,39 @@ $('detailBody').addEventListener('click', (event) => {
 searchShortcuts.addEventListener('click', event => {
   const name = event.target.closest('[data-quick]')?.dataset.quick;
   if (!QUICK_FILTERS.includes(name)) return;
-  if (name === 'direct') state.query.direct = !state.query.direct;
-  else state.filters[name] = !state.filters[name];
-  renderForm();
-  search().then(() => {
-    if (state.view === 'results' && !document.querySelector('dialog[open]')) {
-      $('results').querySelector(`[data-chip="${name}"]`)?.focus({ preventScroll: true });
+  const performed = state.view === 'results' ? state.performed : null;
+  if (name === 'direct') {
+    if (performed) {
+      Object.assign(state.query, performed);
+      state.labels = { ...state.performedLabels };
     }
-  });
+    state.query.direct = !state.query.direct;
+  } else {
+    state.filters[name] = !state.filters[name];
+    if (state.filters[name]) goal('select_idea', { idea: `filter-${name}` });
+    if (performed) {
+      state.page = 1;
+      updateFilterAddress();
+      renderResults();
+      return;
+    }
+  }
+  renderForm();
+  search({ scroll: false });
 });
 
 $('results').addEventListener('click', (event) => {
   if (event.target.closest('[data-choose-favorites]')) { openFavoritePicker(); return; }
   if (event.target.closest('#undoFavorite')) { undoFavorite(); return; }
   const chip = event.target.closest('[data-chip]'), act = event.target.closest('[data-action]'), open = event.target.closest('[data-offer]'), fav = event.target.closest('[data-fav]');
-  const level = event.target.closest('[data-level]'), page = event.target.closest('[data-page]');
-  if (level) { toggleLevel(level); return; }
+  const page = event.target.closest('[data-page]');
   if (fav) { toggleFav(fav.dataset.fav); return; }
   if (page && !page.disabled) { state.page = Number(page.dataset.page); renderResults(); $('results').scrollIntoView({ block: 'start' }); return; }
   if (chip) {
     const name = chip.dataset.chip;
     if (name === 'all') resetResultFilters();
-    if (state.view === 'results' && (name === 'direct' || (name === 'all' && state.performed.direct))) {
-      Object.assign(state.query, state.performed, { direct: name === 'direct' && !state.performed.direct });
+    if (state.view === 'results' && name === 'all' && state.performed.direct) {
+      Object.assign(state.query, state.performed, { direct: false });
       state.labels = { ...state.performedLabels };
       renderForm();
       search({ scroll: false }).then(() => $('results').querySelector(`[data-chip="${name}"]`)?.focus({ preventScroll: true }));
@@ -1482,8 +1706,9 @@ $('results').addEventListener('click', (event) => {
       if (offer && offer.id === act.dataset.ticket) {
         // A shared detail URL must still find this ticket. Back restores the original capped search.
         openDetail({ ...offer, q: toParams({ ...state.performed, budget: null }).toString() });
+      } else {
+        updateBudgetHint();
       }
-      else updateBudgetHint();
       return;
     }
     if (name === 'favorites') { history.pushState(null, '', '/#fav'); showFavorites(); return; }
@@ -1501,6 +1726,11 @@ $('results').addEventListener('click', (event) => {
     openDetail(state.shown.get(open.dataset.offer));
   }
 });
+// Нативный select может показывать видимый фокус и после клика или касания.
+$('results').addEventListener('pointerdown', event => {
+  $('results').toggleAttribute('data-heading-pointer', Boolean(event.target.closest('.results-head :is(select, button)')));
+});
+document.addEventListener('keydown', () => $('results').removeAttribute('data-heading-pointer'), true);
 $('results').addEventListener('change', (event) => {
   const { id, value } = event.target;
   if (id === 'length') {
@@ -1508,7 +1738,8 @@ $('results').addEventListener('change', (event) => {
     updateFilterAddress();
     goal('select_idea', { idea: `length-${value}` });
   } else if (id === 'sort') {
-    state.sort = value;
+    if (state.view === 'collection' && state.collection === 'holidays') state.holidaySort = value;
+    else state.sort = value;
   } else return;
   state.page = 1;
   renderResults();
@@ -1528,10 +1759,10 @@ async function restore() {
   try { await loadAirports(); } catch { return false; }
   if (!state.byIata.has(code('from'))) return false;
   for (const name of params.getAll('filter')) {
-    if (Object.hasOwn(CHIPS, name) && name !== 'unique' && name !== 'direct') state.filters[name] = true;
+    if (Object.hasOwn(CHIPS, name) && name !== 'direct') state.filters[name] = true;
   }
-  state.filters.unique = params.get('group') !== '0';
   if (Object.hasOwn(LENGTHS, params.get('length'))) state.length = params.get('length');
+  q.passengers = passengersFromParams(params);
   q.origin = code('from'); q.originCity = code('fc');
   state.labels.origin = airportLabel(q.origin, q.originCity);
   if (Object.hasOwn(DESTINATION_SCOPES, params.get('region'))) q.region = params.get('region');
@@ -1545,7 +1776,7 @@ async function restore() {
 }
 // Фото в шапке — до низа свёрнутой формы (+ немного воздуха): тёмные заголовки ниже не попадают на фото.
 function fitHero() {
-  if (state.view === 'fav' || !$('search').classList.contains('search--collapsed')) return;
+  if (document.body.classList.contains('other-service') || state.view === 'fav') return;
   document.documentElement.style.setProperty('--hero-h', `${Math.round($('search').getBoundingClientRect().bottom + scrollY + 28)}px`);
 }
 const heroLayout = new ResizeObserver(fitHero);
@@ -1554,36 +1785,20 @@ for (const element of [document.querySelector('.top'), document.querySelector('.
 }
 document.fonts?.ready.then(fitHero);
 (async () => {
-  mountSky();
   renderForm();
   fitHero();
-  // Photos and offers may arrive in either order. Hydrate placeholders in place to preserve scroll and focus.
-  fetch('/photos/manifest.json', { cache: 'no-cache' }).then(response => response.ok ? response.json() : []).then(codes => {
-    state.photos = new Set(codes);
-    for (const slot of document.querySelectorAll('[data-photo]')) {
-      if (state.photos.has(slot.dataset.photo)) slot.firstElementChild.outerHTML = photoImage(slot.dataset.photo, slot.dataset.wide === 'true');
-      delete slot.dataset.photo;
-    }
-  }).catch(() => {});
+  loadPortraits();
   fetch('/data/hotel-locations.json').then((response) => response.ok ? response.json() : {}).then((hotels) => { state.hotels = hotels; }).catch(() => {});
   fetch('/data/origins.json').then((response) => response.ok ? response.json() : null).then((data) => { for (const origin of data?.cities ?? []) state.fromNames.set(origin.code, origin.from); renderForm(); }).catch(() => {});
-  fetch('/data/cities.json').then((response) => response.ok ? response.json() : null).then((data) => { state.cityPages = new Map((data?.cities ?? []).map((city) => [city.code, city.slug])); }).catch(() => {});
-  fetch('/data/city-guides.json').then((response) => response.ok ? response.json() : {}).then((guides) => { state.guides = guides;
-    for (const slot of document.querySelectorAll('[data-guide]')) {
-      const guide = guides[slot.dataset.guide];
-      if (guide?.summary) { slot.textContent = guide.summary; slot.hidden = false; }
-    } }).catch(() => {});
+  fetch('/data/city-guides.json').then(response => response.ok ? response.json() : {}).then(guides => { state.guides = guides; }).catch(() => {});
   if (favoritesHash()) showFavorites(false);
   const restored = await restore();
   // Без параметров поиска в адресе — город вылета посетителя: его выбор или ближайший город по местоположению.
   if (!restored) {
     const origin = await currentOrigin();
-    if (origin) {
-      Object.assign(state.query, { origin: origin.iata, originCity: origin.all ? origin.code : null });
-      state.labels.origin = `${origin.name}, ${origin.all ? 'все аэропорты' : origin.iata}`;
-      if (origin.from) state.fromNames.set(origin.code, origin.from);
-    }
+    if (origin) setHomeOrigin(origin);
   }
+  originReady = true;
   renderForm();
   fitHero();
   if (favoritesHash()) return;
@@ -1596,5 +1811,9 @@ document.fonts?.ready.then(fitHero);
   if (restored) search({ scroll: false }).then(() => { if (linked && state.status === 'done') openLinked(linked); });
   // Эксперимент home: A — прежняя главная (форма и сразу список), B — витрина с подборками.
   else if (homeVariant === 'A') search({ scroll: false, auto: true });
-  else { showShowcase(); if (wantRow) loadHomeThen(() => showCollection(wantRow, false)); }
+  else {
+    showShowcase();
+    if (wantRow) loadHomeThen(() => showCollection(wantRow, false));
+    else if (history.state?.catalog) loadHomeThen(restoreCatalog);
+  }
 })();

@@ -1,0 +1,82 @@
+#search {display:grid;grid-template-columns:minmax(90px,1.3fr) minmax(110px,1.55fr) repeat(2,minmax(84px,1fr)) minmax(100px,1.1fr) auto;align-items:stretch;gap:0;padding:6px;background:#fff;border:0;border-radius:15px;box-shadow:0 5px 20px #132c451c}
+#search .search-summary,#search .search-fields {display:none}
+#search .search-line {display:contents}
+#search .line-field {display:grid;align-content:center;gap:4px;min-width:0;min-height:58px;padding:6px 13px;text-align:left;border:0;border-right:1px solid #e0e5eb;background:white;border-radius:0}
+#search .line-field:first-child {border-radius:10px 0 0 10px}
+#search .line-field:last-child {border:0}
+#search .line-field[hidden] {display:none}
+#search .flight-when:has(+[hidden]) {grid-column:span 2}
+#search .flight-when {grid-template-columns:auto minmax(0,1fr);column-gap:8px}
+#search .date-field-icon {grid-column:1;grid-row:1 / span 2;align-self:center;width:20px;height:20px;color:#64748b}
+#search .flight-when :is(.label,.line-value) {grid-column:2}
+#search .line-value {font:600 16px/1.2 var(--f-text);color:var(--ink);white-space:nowrap;text-overflow:ellipsis;overflow:hidden}
+#search .label {text-transform:none;letter-spacing:0;font:600 12px/1.3 var(--f-text);color:var(--ink-2)}
+#search .line-field:hover,#search .line-field:focus-visible,#flight-service:has(+ *) .line-field[aria-expanded="true"] {background:#f2f5fa}
+#search .search-go {display:inline-flex;margin-left:4px;align-self:stretch;min-height:44px;border-radius:10px;padding:0 16px}
+.flight-budget {position:relative;max-width:100%}
+.flight-budget summary {cursor:pointer;list-style:none}
+.flight-budget summary::-webkit-details-marker {display:none}
+.flight-budget[open] summary .icon {transform:rotate(180deg)}
+.budget-panel {
+  position:absolute;inset:calc(100% + 6px) auto auto 0;z-index:6;
+  display:grid;gap:10px;width:min(304px,calc(100vw - 2 * var(--gutter)));
+  padding:12px;border:1px solid var(--line);border-radius:var(--r-field);background:var(--card);box-shadow:var(--sh-sheet);
+}
+.budget-panel label {font-size:var(--fs-small);font-weight:600}
+.budget-panel input {
+  min-width:0;width:100%;min-height:44px;padding:0 10px;border:1px solid var(--line-strong);
+  border-radius:var(--r-tag);font:inherit;font-size:16px;
+}
+.budget-presets,.budget-actions {display:flex;flex-wrap:wrap;gap:4px}
+.budget-presets button {flex:1;white-space:nowrap;font-size:var(--fs-cap);padding-inline:6px}
+.budget-actions {justify-content:space-between}
+.budget-actions button {padding-inline:10px}
+#flightCalendar {position:fixed;inset:auto;margin:0;width:min(544px,calc(100vw - 16px));max-width:none;max-height:calc(100dvh - 16px);padding:0;border:1px solid #dbe1e7;border-radius:16px;box-shadow:0 12px 44px #11283d33;background:white;color:var(--ink);overflow:auto}
+#flightCalendar::backdrop {background:transparent}
+.cal-inner {padding:16px}.cal-head,.cal-foot {display:flex;align-items:center;justify-content:space-between;gap:8px}
+.cal-modes {display:inline-flex;gap:2px;background:#edf1f6;padding:3px;border-radius:9px}
+.cal-modes button,.month-options button {font-weight:600;font-size:13px;border-radius:7px;padding:8px 12px}
+.cal-modes [aria-pressed="true"],.month-options [aria-pressed="true"] {background:white;color:var(--cobalt);box-shadow:0 1px 4px #24365024}
+.cal-x,.cal-prev,.cal-next {width:32px;height:32px;border-radius:8px;font:22px/1 Arial;color:#425771}
+#calBody {position:relative}
+.cal-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:12px}
+.cal-grid h3 {height:34px;text-align:center;font:700 16px/34px var(--f-text)}
+.cal-prev,.cal-next {position:absolute;top:0}.cal-prev {left:0}.cal-next {right:0}
+.week,.days {display:grid;grid-template-columns:repeat(7,minmax(0,1fr));text-align:center}
+.week {font:500 11px/23px var(--f-text);color:#607084}
+.cal-grid .week > :is(:nth-child(6), :nth-child(7)),
+.cal-grid .days > button:is(:nth-child(7n + 6), :nth-child(7n)):not(:disabled, .edge) > span {
+  color: #a33759;
+}
+.days button {height:31px;font-size:14px;font-weight:500}
+#flightCalendar button:disabled {color:#a1aab5;cursor:default}
+.days .between {background:#e4ebff}.days .edge,#flightCalendar .days .edge:disabled {border-radius:8px;background:var(--cobalt);color:white}
+.days button:hover:not(:disabled):not(.edge),.cal-x:hover,.cal-prev:hover:not(:disabled),.cal-next:hover:not(:disabled) {background:#edf2ff}
+.cal-foot {border-top:1px solid #e1e5eb;margin-top:12px;padding-top:10px;font-size:14px}
+.cal-foot .btn-primary {min-height:38px;border-radius:8px}.month-options {display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:16px 0}.month-options button {background:#f1f4fa}.month-options [aria-pressed="true"] {box-shadow:inset 0 0 0 1px var(--cobalt)}
+.weekend-opt {font-size:14px;display:flex;align-items:center;gap:8px}
+@media(max-width:899px){
+#search {grid-template-columns:repeat(2,minmax(0,1fr));padding:5px}
+#search .line-field {min-height:47px;padding:5px 9px;border-right:0;border-bottom:1px solid #e4e9ef}
+#search .line-field:first-child,#search .flight-when:not(:has(+[hidden])) {border-right:1px solid #e4e9ef}
+#search .line-value {font-size:14px}#search .search-go {font-size:13px;padding:0 5px}
+}
+@media(max-width:699px){
+#flightCalendar {inset:auto 0 0!important;width:100%;max-height:90dvh;border-radius:18px 18px 0 0}
+#flightCalendar::backdrop {background:#10203952}
+.cal-grid {grid-template-columns:1fr}.days button {height:44px}.cal-foot .btn-primary {min-height:44px}
+.cal-inner {padding:14px 16px max(16px,env(safe-area-inset-bottom))}
+}
+.flight-tools {display:flex;align-items:flex-start;gap:8px;flex-wrap:wrap;margin-top:10px}
+.flight-tools .search-shortcuts:not([hidden]) {display:contents}
+.flight-tools .flight-budget summary {padding-inline:12px;font-size:var(--fs-cap)}
+#search #lineCode {display:none}
+#search .line-field[aria-expanded="true"] {background:#f2f5ff}
+#calLegend {font-size:12px;color:#495d70;margin:10px 0 0}
+.days button {display:flex;flex-direction:column;align-items:center;justify-content:center;height:38px;line-height:16px;padding:0;min-width:0}
+.days small {font:600 10px/12px var(--f-text);font-variant-numeric:tabular-nums;white-space:nowrap}
+.days .lowest:not(.edge) small,#calCheaper {color:#087047}
+#calCheaper {background:#eef8f2;border-radius:7px;padding:8px;margin-top:8px;text-align:left;font-size:13px}
+@media(max-width:699px){.days button {height:44px}}
+
+#calChangeStart {margin-top:8px;color:var(--cobalt);font-size:13px;padding:3px 0}

@@ -17,9 +17,9 @@ body.favorites-page { background: #f4f6fa; }
 .favorite-actions { justify-content: flex-start; gap: 4px 16px; }
 .favorites-page .btn-primary, .favorite-picker .btn-primary { min-height: var(--tap); padding: 9px 16px; font-size: 15px; }
 .favorite-list { list-style: none; padding: 0; }
-.favorite-ticket { display: grid; grid-template-columns: 150px minmax(0,1fr) auto var(--tap); align-items: center; gap: 20px; padding: 18px 24px; }
+.favorite-ticket { display: grid; grid-template-columns: 96px minmax(0,1fr) auto var(--tap); align-items: center; gap: 20px; padding: 18px 24px; }
 .favorite-ticket + .favorite-ticket { border-top: 1px solid var(--line); }
-.favorite-ticket .photo { width: 100%; height: 88px; aspect-ratio: auto; }
+.favorite-ticket .portrait { align-self: center; }
 .favorite-info .favorite-link { min-height: 0; color: var(--ink); overflow-wrap: anywhere; }
 .favorite-info .favorite-link, .favorite-comparison .compare thead th, .favorite-option-city, .favorite-details .favorite-link { font: var(--city-title); letter-spacing: 0; }
 .favorite-info p { margin-top: 4px; font-size: 15px; }
@@ -52,7 +52,7 @@ body.favorites-page { background: #f4f6fa; }
   .favorite-summary h2 { font-size: 16px; }
   .favorite-summary p { font-size: 13px; }
   .favorite-ticket { grid-template-columns: 70px minmax(0,1fr) var(--tap); grid-template-rows: auto auto; gap: 3px 10px; padding: 14px 10px; }
-  .favorite-ticket .photo { grid-area: 1 / 1 / 3 / 2; height: 66px; align-self: start; }
+  .favorite-ticket .portrait { grid-area: 1 / 1 / 3 / 2; }
   .favorite-info { grid-area: 1 / 2; }
   .favorite-info p { font-size: 13px; line-height: 1.35; }
   .favorite-info .caption { font-size: 12px; }
@@ -73,6 +73,5 @@ body.favorites-page { background: #f4f6fa; }
   .favorite-heading h1 { grid-column: 1 / -1; }
   .favorite-heading p { align-self: center; }
   .favorite-heading > .favorite-link { justify-self: end; }
-  .favorite-ticket { grid-template-columns: 50px minmax(0,1fr) var(--tap); gap: 3px 7px; }
-  .favorite-ticket .photo { height: 50px; }
+  .favorite-ticket { grid-template-columns: 66px minmax(0,1fr) var(--tap); gap: 3px 7px; }
 }

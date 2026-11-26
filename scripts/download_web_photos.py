@@ -79,14 +79,14 @@ def picked(query):
     return [row['title'] for row in found['query']['search']]
 
 
-def usable(title):
+def usable(title, *, reviewed=False):
     pages = api('commons.wikimedia.org', titles=title, prop='imageinfo', iiprop='url|extmetadata|size|mime', iiurlwidth=1000)['query']['pages']
     info = next(iter(pages.values())).get('imageinfo', [None])[0]
-    if not info or info.get('mime') != 'image/jpeg' or not 1 / 1.6 <= info['width'] / info['height'] <= 2.3:
+    if not info or info.get('mime') != 'image/jpeg' or (not reviewed and not 1 / 1.6 <= info['width'] / info['height'] <= 2.3):
         return None
     meta = info.get('extmetadata', {})
     license = meta.get('LicenseShortName', {}).get('value', '')
-    if not license.lower().startswith(FREE):
+    if not license.lower().startswith(FREE) or re.search(r'\b(?:nc|nd)\b', license, re.I):
         return None
     return info, meta, license
 
@@ -94,20 +94,23 @@ def usable(title):
 def main():
     airports = json.loads((ROOT / 'backend/app/airports.json').read_text())
     cities = {a['city_code']: a for a in airports}
-    wanted = sys.argv[1:] or CITIES
     lines = CREDITS.read_text().splitlines() if CREDITS.exists() else [
         '## Города на сайте', '', 'Добавлено 26.10.2026 для сайта. Изображение города из Wikidata или Wikimedia Commons; рейсы не подтверждает.', '']
+    reviewed = dict(re.findall(r'^- \*\*([A-Z]{3})\*\*: \[(File:[^\]]+)\]', '\n'.join(lines), re.M))
+    wanted = sys.argv[1:] or list(dict.fromkeys([*CITIES, *reviewed]))
     for code in wanted:
         if (OUT / f'{code}.jpg').exists() and len(sys.argv) == 1:
             continue
         city = cities[code]
         try:
-            if code in PICKS:
+            if code in reviewed:
+                titles = [reviewed[code]]
+            elif code in PICKS:
                 titles = picked(PICKS[code])
             else:
                 item = wikidata_item(TITLES.get(code) or re.sub(r'\s*\(.*\)', '', city['city']), city['country'])
                 titles = candidates(item) if item else []
-            choice = next(((title, found) for title in titles if (found := usable(title))), None)
+            choice = next(((title, found) for title in titles if (found := usable(title, reviewed=code in reviewed))), None)
             if not choice:
                 print('NO PHOTO', code, city['city'], flush=True)
                 continue
@@ -117,6 +120,9 @@ def main():
                 source.flush()
                 subprocess.run(['sips', '-s', 'format', 'jpeg', '-s', 'formatOptions', '62', '-Z', '720', source.name, '--out', str(OUT / f'{code}.jpg')],
                                check=True, capture_output=True)
+            if code in reviewed:
+                print(code, city['city'], title, license, flush=True)
+                continue  # Keep the approved photographer credit, including preferred attribution.
             artist = html.unescape(re.sub('<[^>]+>', '', meta.get('Artist', {}).get('value', 'Wikimedia Commons'))).strip()
             lines = [line for line in lines if not line.startswith(f'- **{code}**:')]
             lines.append(f"- **{code}**: [{title}]({info['descriptionurl']}) — {artist}; [{license}]({meta.get('LicenseUrl', {}).get('value', info['descriptionurl'])}). Фото масштабировано, отображается с кадрированием.")

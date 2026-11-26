@@ -9,7 +9,7 @@ from zoneinfo import ZoneInfo
 
 from .city_rating import badge
 
-from .city_pages import FOOT, HEAD, SITE, breadcrumbs, date_range, esc, money, nights_label, received_html, slug
+from .city_pages import FOOT, HEAD, SITE, breadcrumbs, date_range, esc, money, nights_label, portrait, received_html, slug
 from .showcase import BUDGET_TIERS, ROW_MIN, plural
 
 # Города вылета со страницами-сценариями — те же, что прогреваются после выкладки (scripts/warm_home.sh).
@@ -27,7 +27,7 @@ def directions(count):
 
 def leave_text(note):
     days = lambda n: f'{n} {plural(n, "день", "дня", "дней")}'
-    return f'{days(note["leave"])} отпуска — {days(note["trip"])} поездки' if note['leave'] else f'{days(note["trip"])} без отпуска'
+    return f'{days(note["leave"])} отпуска — {days(note["trip"])} поездки' if note['leave'] else f'{days(note["trip"])} поездки'
 
 
 def sections(pages, kind, upper):
@@ -67,8 +67,7 @@ def item(offer, note, photos, cities):
     fc = query.get('fc', [None])[0]
     origin = {'iata': departure, 'all': bool(fc), 'code': fc} if departure else None
     local_arrival = arriving.astimezone(ZoneInfo(offer.get("destination_timezone") or "UTC"))
-    thumb = (f'<span class="stamp"><span class="photo"><img src="/photos/s/{esc(offer["city_code"])}.webp" alt="" loading="lazy" decoding="async"></span></span>'
-             if offer['city_code'] in photos else '<span class="stamp"><span class="photo"></span></span>')
+    thumb = portrait(offer['city_code'], offer['city'], offer['city_code'] in photos)
     extra = f'<span class="caption">{esc(leave_text(note))}</span>' if note else ''
     about = f'<a class="scenario-city" href="/city/{esc(city["slug"])}">Всё о городе</a>' if city else ''
     return f'''<li class="scenario-item">
