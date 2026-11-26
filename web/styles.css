@@ -277,12 +277,6 @@ img { display: block; max-width: 100%; }
 .tile { position: relative; flex: none; width: 168px; display: grid; gap: var(--s-2); align-content: start; scroll-snap-align: start; }
 .tile--pass { align-self: stretch; align-content: stretch; grid-template-rows: 1fr; width: min(330px, calc(100vw - 2 * var(--gutter) - var(--s-6))); }
 @media (min-width: 900px) { .tile { width: 200px; } .tile--pass { width: 340px; } }
-.tile-more { flex: none; width: 140px; scroll-snap-align: start; display: grid; place-content: center; justify-items: center; gap: var(--s-2); min-height: 160px;
-  border: 2px dashed var(--line-strong); border-radius: var(--r-pass); background: rgba(255, 255, 255, .45); color: var(--cobalt); font-weight: 600; text-align: center; }
-.tile-more:hover { background: rgba(255, 255, 255, .75); border-color: var(--cobalt); }
-.tile-more b { font: 700 var(--fs-h3) var(--f-mono); }
-.tile-more .icon { width: 22px; height: 22px; }
-.strip--pass .tile-more { align-self: stretch; }
 .intro-lead { margin-top: var(--s-2); max-width: 46em; font-size: var(--fs-small); }
 .has-hero .intro-lead { color: var(--on-photo); text-shadow: 0 1px 8px rgba(15, 27, 61, .4); }
 .tile-body { display: grid; align-content: start; gap: var(--s-1); padding-inline: 2px; }
