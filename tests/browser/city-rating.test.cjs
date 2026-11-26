@@ -40,9 +40,9 @@ for (const mobile of [false, true]) {
     await card.waitFor();
     assert.match(await card.getAttribute('aria-label'), /^Рейтинг города Казань, /);
     assert.doesNotMatch(await card.innerText(), /Рейтинг города/);
-    assert.equal(await firstTile.locator('.transfer-icon--check + span').innerText(), 'Без пересадок');
-    assert.equal(await page.locator('.tile--pass .transfer-icon--swap + span').innerText(), 'На пути туда — 1 пересадка');
-    assert.equal(await page.locator('.tile--pass .transfer-icon--info + span').innerText(), 'Пересадки неизвестны');
+    assert.equal(await firstTile.locator('.flight-transfers').innerText(), 'Без пересадок');
+    assert.equal(await page.locator('.tile--pass .flight-transfers').nth(1).innerText(), 'На пути туда — 1 пересадка');
+    assert.equal(await page.locator('.tile--pass .flight-transfers').nth(2).innerText(), 'Пересадки неизвестны');
     const photo = firstTile.locator('.portrait');
     const withinPhoto = await photo.evaluate(el => {
       const photo = el.getBoundingClientRect();

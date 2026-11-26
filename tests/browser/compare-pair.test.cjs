@@ -28,7 +28,7 @@ const home = {
 };
 
 for (const [engine, viewport] of [[chromium, { width: 1280, height: 800 }], [webkit, { width: 375, height: 812 }]]) {
-  test(`два сердечка в одной ленте — ${engine.name()} ${viewport.width}`, async t => {
+  test(`две сохранённые поездки в одной ленте — ${engine.name()} ${viewport.width}`, async t => {
     const browser = await engine.launch();
     t.after(() => browser.close());
     const context = await browser.newContext({ viewport });
@@ -40,7 +40,16 @@ for (const [engine, viewport] of [[chromium, { width: 1280, height: 800 }], [web
     }, saved);
     await page.goto(base);
     const hot = page.locator('[data-feed="hot"]'), other = page.locator('[data-feed="weekend"]');
-    const like = (row, id) => row.locator(`[data-fav="${id}"]`).click();
+    const detail = page.locator('#detail');
+    const like = async (row, id) => {
+      assert.equal(await row.locator('[data-fav]').count(), 0);
+      await row.locator(`[data-open="${id}"]`).click();
+      await detail.locator(`[data-fav="${id}"]`).click();
+      await detail.locator('[data-close]').click();
+      await page.waitForFunction(() => !history.state?.trip);
+    };
+    const isSaved = id => page.evaluate(id =>
+      JSON.parse(localStorage.getItem('aviator.favorites')).some(offer => offer.id === id), id);
     const compare = hot.locator('[data-compare-row]'), sheet = page.locator('#pairComparison');
     const heads = sheet.locator('th[scope="col"]');
     await like(hot, 'psk1');
@@ -58,7 +67,7 @@ for (const [engine, viewport] of [[chromium, { width: 1280, height: 800 }], [web
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
     await page.goBack();
     await sheet.waitFor({ state: 'hidden' });
-    assert.equal(await hot.locator('[data-fav="psk1"]').getAttribute('aria-pressed'), 'true');
+    assert.equal(await isSaved('psk1'), true);
     assert.equal(await compare.evaluate(el => document.activeElement === el), true);
     await page.goForward();
     await sheet.getByRole('button', { name: 'Назад к подборке' }).click();
@@ -76,7 +85,7 @@ for (const [engine, viewport] of [[chromium, { width: 1280, height: 800 }], [web
     await page.keyboard.press('Escape');
     await page.waitForFunction(() => !history.state?.compareRow);
     await page.locator('.top a[href="/#fav"]').click();
-    await like(page.locator('#results'), 'psk1');
+    await page.locator('#results [data-fav="psk1"]').click();
     await page.goBack();
     await hot.waitFor();
     assert.equal(await compare.isVisible(), false);
@@ -84,7 +93,7 @@ for (const [engine, viewport] of [[chromium, { width: 1280, height: 800 }], [web
     await compare.click();
     const otherTab = await context.newPage();
     await otherTab.goto(base + '/#fav');
-    await like(otherTab.locator('#results'), 'psk2');
+    await otherTab.locator('#results [data-fav="psk2"]').click();
     await sheet.waitFor({ state: 'hidden' });
     assert.equal(await compare.isVisible(), false);
     await otherTab.close();
@@ -92,8 +101,8 @@ for (const [engine, viewport] of [[chromium, { width: 1280, height: 800 }], [web
     assert.equal(await compare.isVisible(), true);
     await page.reload();
     await hot.waitFor();
-    assert.equal(await hot.locator('[data-fav="psk1"]').getAttribute('aria-pressed'), 'true');
-    assert.equal(await hot.locator('[data-fav="psk2"]').getAttribute('aria-pressed'), 'true');
+    assert.equal(await isSaved('psk1'), true);
+    assert.equal(await isSaved('psk2'), true);
     assert.equal(await compare.isVisible(), false);
   });
 }
