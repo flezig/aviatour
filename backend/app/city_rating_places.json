@@ -118,6 +118,122 @@
         "https://quicktickets.ru/arhangelsk-teatr-kukol/e287",
         "https://quicktickets.ru/arhangelsk-teatr-kukol/e283"
       ]
+    },
+    {
+      "name": "Пешеходный проспект Чумбарова-Лучинского",
+      "category": "history",
+      "source": "Туристический портал Архангельской области",
+      "url": "https://pomorland.travel/what-to-see/prospekt-chumbarova-luchinskogo-chumbarovka/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Деревянная застройка Архангельска и памятники литературным героям. Учитывается прогулка по улице."
+    },
+    {
+      "name": "Архангельские Гостиные дворы",
+      "category": "history",
+      "source": "Туристический портал Архангельской области",
+      "url": "https://pomorland.travel/what-to-see/gostinyy-dvor-istoriko-arkhitekturnyy-kompleks/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Торговый и оборонительный комплекс XVII века. Учитывается внешний осмотр с набережной."
+    },
+    {
+      "name": "Набережная Северной Двины",
+      "category": "nature",
+      "source": "Туристический портал Архангельской области",
+      "url": "https://pomorland.travel/what-to-see/naberezhnaya-severnoy-dviny/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Открытый прогулочный маршрут вдоль реки."
+    },
+    {
+      "name": "Литературный сквер",
+      "category": "nature",
+      "source": "Туристический портал Архангельской области",
+      "url": "https://pomorland.travel/news/v_arkhangelske_poyavilsya_literaturnyy_skver/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Городской сквер напротив литературного музея на пересечении Чумбарова-Лучинского и Володарского."
+    },
+    {
+      "name": "Поморская кухня в ресторане «Поморский»",
+      "category": "food",
+      "source": "Туристический портал Архангельской области",
+      "url": "https://pomorland.travel/where-to-eat/restoran-pomorskiy/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "В меню блюда из сёмги, трески и других рыб северных морей. Ресторан работает по выходным."
+    },
+    {
+      "name": "Поморская кухня в ресторане «Пур-Наволок»",
+      "category": "food",
+      "source": "Пур-Наволок Отель",
+      "url": "https://otel-pur-navolok.ru/restaurants/restoran-pur-navolok/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Поморские и европейские блюда. Ресторан на набережной принимает гостей ежедневно."
+    },
+    {
+      "name": "Спектакль «Волк и семеро козлят»",
+      "category": "stage",
+      "source": "Архангельский театр драмы",
+      "url": "https://arhdrama.culture29.ru/afisha/tickets/dekabr-2026/9037/?date_key=10",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Театр у Петровского парка. В афише 19, 20, 26 и 27 декабря.",
+      "weekend_dates": [
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ]
+    },
+    {
+      "name": "Спектакль «Сбежавшие желания»",
+      "category": "stage",
+      "source": "Архангельский театр кукол, билетная касса Quick Tickets",
+      "url": "https://quicktickets.ru/arhangelsk-teatr-kukol",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "На Троицком проспекте, 5. В афише 19, 20, 26 и 27 декабря.",
+      "weekend_dates": [
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ]
     }
   ],
   "ASF": [
@@ -1324,6 +1440,120 @@
       ],
       "schedule_urls": [
         "https://quicktickets.ru/irkutsk-teatr-podval/e30"
+      ]
+    },
+    {
+      "name": "Собор Богоявления",
+      "category": "history",
+      "source": "Иркутск.ру, маршрут по историческому центру",
+      "url": "https://irkutsk.ru/ru/marshruty/istoricheskiy-tsentr/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Барочный собор на Нижней набережной. Учитывается осмотр со стороны улицы."
+    },
+    {
+      "name": "130-й квартал",
+      "category": "history",
+      "source": "Администрация Иркутска",
+      "url": "https://admirk.ru/news/do_kontsa_goda_v_irkutske_ustanovyat_171_kameru_videonablyudeniya_/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Открытый прогулочный квартал с деревянными домами. Учитывается осмотр с улицы."
+    },
+    {
+      "name": "Сквер имени Кирова",
+      "category": "nature",
+      "source": "Администрация Иркутска",
+      "url": "https://admirk.ru/news/v_irkutske_proydet_proverka_sistemy_opoveshcheniya_v_15_obshchestvennykh_mestakh/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Общедоступный центральный сквер."
+    },
+    {
+      "name": "Нижняя набережная Ангары",
+      "category": "nature",
+      "source": "Администрация Иркутска",
+      "url": "https://admirk.ru/city/interaktivnye-karty/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Открытая прогулочная зона по берегу Ангары."
+    },
+    {
+      "name": "Сибирская кухня в Komorebi",
+      "category": "food",
+      "source": "Komorebi",
+      "url": "https://www.nuurhotel.com/restaurant/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Ресторан в центре Иркутска. Основное меню и режим работы опубликованы на сайте."
+    },
+    {
+      "name": "Байкальская кухня в «Ламу»",
+      "category": "food",
+      "source": "Ресторан «Ламу»",
+      "url": "https://lamu-rest.ru/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Сибирская и бурятская кухня на улице Красных Мадьяр. Принимает гостей по выходным."
+    },
+    {
+      "name": "Большой новогодний концерт музыкального театра",
+      "category": "stage",
+      "source": "Иркутский музыкальный театр имени Загурского",
+      "url": "https://ok.ru/irk.muz.teatr",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Театр объявил показы 26 и 27 декабря.",
+      "weekend_dates": [
+        "2026-12-26",
+        "2026-12-27"
+      ]
+    },
+    {
+      "name": "Кукольный спектакль «Маленький Генри и снежный монстр»",
+      "category": "stage",
+      "source": "Иркутский областной театр кукол «Аистёнок»",
+      "url": "https://aistenok-irkutsk.ru/sites/default/files/afisha_files/1_%D0%94%D0%B5%D0%BA%D0%B0%D0%B1%D1%80%D1%8C%202026.pdf",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "На основной сцене 19, 20, 26 и 27 декабря.",
+      "weekend_dates": [
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
       ]
     }
   ],
@@ -7786,6 +8016,340 @@
         "2026-12-26",
         "2026-12-27"
       ]
+    }
+  ],
+  "DXB": [
+    {
+      "name": "Музей Аль-Шиндага",
+      "category": "museums",
+      "source": "Dubai Culture",
+      "url": "https://alshindagha.dubaiculture.gov.ae/Documents/ASM-Brochure-English.pdf",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Музей исторического района у Дубай-Крик. Открывается ежедневно."
+    },
+    {
+      "name": "Музей Этихад",
+      "category": "museums",
+      "source": "Dubai Culture",
+      "url": "https://etihadmuseum.dubaiculture.gov.ae/Documents/EMworkshops.pdf",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Музей истории ОАЭ. Ежедневно с 10:00 до 20:00, последний вход в 19:00."
+    },
+    {
+      "name": "Исторический квартал Аль-Фахиди",
+      "category": "history",
+      "source": "Департамент экономики и туризма Дубая",
+      "url": "https://www.visitdubai.com/en/places-to-visit/dubai-old-town/al-fahidi-historical-neighbourhood",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Пешеходные улицы исторического квартала с ветряными башнями."
+    },
+    {
+      "name": "Торговые ряды старого Бур-Дубая",
+      "category": "history",
+      "source": "Департамент экономики и туризма Дубая",
+      "url": "https://www.visitdubai.com/en/articles/dubai-cultural-walking-tour",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Открытая прогулка у старого текстильного рынка и причала Дубай-Крик."
+    },
+    {
+      "name": "Сафа-парк",
+      "category": "nature",
+      "source": "Департамент экономики и туризма Дубая",
+      "url": "https://www.visitdubai.com/en/places-to-visit/safa-park",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Городской парк. В субботу и воскресенье работает с 8:00 до 23:00."
+    },
+    {
+      "name": "Забиль-парк",
+      "category": "nature",
+      "source": "Департамент экономики и туризма Дубая",
+      "url": "https://www.visitdubai.com/places-to-visit/zabeel-park",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Городской парк, в котором находится Dubai Frame. Учитывается посещение парка."
+    },
+    {
+      "name": "Эмиратская кухня в Arabian Tea House",
+      "category": "food",
+      "source": "Arabian Tea House",
+      "url": "https://arabianteahouse.com/al-fahidi/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Традиционная эмиратская кухня. Заведение в Аль-Фахиди работает ежедневно."
+    },
+    {
+      "name": "Эмиратская кухня в Al Khayma Heritage Restaurant",
+      "category": "food",
+      "source": "Департамент экономики и туризма Дубая",
+      "url": "https://www.visitdubai.com/en/restaurants/al-khayma-heritage-restaurant",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Традиционные завтраки и местные блюда в Аль-Фахиди."
+    },
+    {
+      "name": "Концерт The ABBA Reunion Tribute Show",
+      "category": "stage",
+      "source": "Департамент экономики и туризма Дубая",
+      "url": "https://www.visitdubai.com/en/festivals-and-events/dubai-events-calendar/the-abba-reunion-tribute-show",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "В афише Theatre by QE2 на 27 декабря, 20:00.",
+      "weekend_dates": [
+        "2026-12-27"
+      ]
+    },
+    {
+      "name": "Выступление Макса Амини",
+      "category": "stage",
+      "source": "Департамент экономики и туризма Дубая",
+      "url": "https://www.visitdubai.com/en/festivals-and-events/dubai-events-calendar/max-amini-coca-cola-arena-dubai",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "В афише Coca-Cola Arena на 27 декабря, 20:30.",
+      "weekend_dates": [
+        "2026-12-27"
+      ]
+    },
+    {
+      "name": "Концерт Бассан Исмаил",
+      "category": "stage",
+      "source": "Департамент экономики и туризма Дубая",
+      "url": "https://www.visitdubai.com/en/dubai-shopping-festival-2027/dsf-nights",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Концерт в Festival Bay на 26 декабря, 21:00. Возможна предварительная регистрация.",
+      "weekend_dates": [
+        "2026-12-26"
+      ]
+    }
+  ],
+  "BKK": [
+    {
+      "name": "Музей Сиама",
+      "category": "museums",
+      "source": "Управление по туризму Таиланда",
+      "url": "https://www.tourismthailand.org/Attraction/museum-siam-a-learning-museum",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "По субботам и воскресеньям с 10:00 до 18:00."
+    },
+    {
+      "name": "Национальный музей Бангкока",
+      "category": "museums",
+      "source": "Волонтёрская служба Национального музея Бангкока",
+      "url": "https://www.mynmv.com/plan-your-visit",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Музей открыт со среды по воскресенье с 9:00 до 16:00."
+    },
+    {
+      "name": "Большой дворец в Бангкоке",
+      "category": "history",
+      "source": "Большой дворец",
+      "url": "https://www.royalgrandpalace.th/en/visit/practical-information",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Дворец и храм Изумрудного Будды. Перед посещением сверяйте исключения в расписании дворца."
+    },
+    {
+      "name": "Храм Ват-Пхо",
+      "category": "history",
+      "source": "Храм Ват-Пхо",
+      "url": "https://www.watpho.com/th/home",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Храмовый комплекс в историческом районе Пхра-Накхон, в том числе зал Лежащего Будды."
+    },
+    {
+      "name": "Парк Саранром",
+      "category": "nature",
+      "source": "Администрация Бангкока",
+      "url": "https://greener.bangkok.go.th/en/park/suan-saran-rom/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Общественный парк напротив Большого дворца."
+    },
+    {
+      "name": "Парк Ромманинат",
+      "category": "nature",
+      "source": "Администрация Бангкока",
+      "url": "https://greener.bangkok.go.th/park/suan-romanee-nat/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Городской парк со свободным входом. Ежедневно с 4:00 до 21:00."
+    },
+    {
+      "name": "Пад-тай в Thipsamai",
+      "category": "food",
+      "source": "Thipsamai",
+      "url": "https://thipsamai.com/contact-us/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Исторический ресторан на Маха-Чай. Часы работы филиала опубликованы на сайте."
+    },
+    {
+      "name": "Тайская кухня в Krua Apsorn",
+      "category": "food",
+      "source": "Krua Apsorn",
+      "url": "https://www.krua-apsorn.com/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Филиал на улице Динсо открыт по субботам с 10:30 до 19:30."
+    },
+    {
+      "name": "Вечер тайского бокса на стадионе Раджадамнерн",
+      "category": "stage",
+      "source": "Стадион Раджадамнерн",
+      "url": "https://rajadamnern.com/tickets/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Юбилейный вечер 26 декабря, вход с 18:00. Традиционные поединки 27 декабря, вход с 17:00.",
+      "weekend_dates": [
+        "2026-12-26",
+        "2026-12-27"
+      ]
+    },
+    {
+      "name": "Концертная программа Amazing Thailand Countdown",
+      "category": "stage",
+      "source": "ICONSIAM",
+      "url": "https://iconsiam.com/en/events-activities/amazing-thailand-countdown-2027",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Программа на набережной ICONSIAM открывается 27 декабря. У организатора опубликованы условия входа.",
+      "weekend_dates": [
+        "2026-12-27"
+      ]
+    }
+  ],
+  "HKT": [
+    {
+      "name": "Museum Phuket, история города и культура перанаканов",
+      "category": "museums",
+      "source": "Управление по туризму Таиланда",
+      "url": "https://www.tourismthailand.org/Articles/phuket",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "В субботу с 9:00 до 16:30, в воскресенье с 13:00 до 20:30. Вход свободный."
+    },
+    {
+      "name": "Старый город Пхукета",
+      "category": "history",
+      "source": "Управление по туризму Таиланда",
+      "url": "https://www.tourismthailand.org/Attraction/phuket-old-town",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Осмотр исторической сино-португальской застройки с улиц Старого города."
+    },
+    {
+      "name": "Воскресный рынок Лад-Яй",
+      "category": "food",
+      "source": "Управление по туризму Таиланда",
+      "url": "https://www.tourismthailand.org/Attraction/phuket-old-town",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Уличная еда на улице Таланг. По воскресеньям с 16:00 до 22:00."
     }
   ]
 }
