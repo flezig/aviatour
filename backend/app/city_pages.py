@@ -540,26 +540,22 @@ def index_page(catalog, q='', region='all', guide=False, page=1, *, photos):
         empty = (f'<div class="directory-empty"><p>{message}</p>'
                  f'<a data-clear href="{esc(reset)}">{"Снять фильтры" if filtered else "Сбросить поиск"}</a></div>')
 
-    cover = catalog.by_code.get('IST')
-    figure = (f'<a class="directory-cover" href="/city/{esc(cover["slug"])}">'
-              f'{portrait(cover["code"], cover["name"], cover["code"] in photos, named=True, eager=True)}'
-              f'<span class="sr-only">, {esc(cover["country"])}</span></a>') if cover else ''
     ld, _ = breadcrumbs([('Aviator', '/'), ('Города', '/city/')])
     body = f'''
   <main id="main" class="directory">
-    <form action="/city/" method="get" id="citySearch" role="search">
-      <div class="directory-hero"><div class="wrap directory-intro">
-        <div><h1>Города</h1><div class="directory-search">
-          <label><svg class="icon" aria-hidden="true"><use href="/icons.svg#search"></use></svg>
-            <input type="search" name="q" maxlength="100" value="{esc(q)}" autocomplete="off" aria-label="Город, страна или код аэропорта" placeholder="Город, страна или код"></label>
-          <button class="btn-primary" type="submit">Найти</button>
-        </div></div>{figure}
-      </div></div>
-      <div class="wrap"><div class="directory-controls">
+    <form class="wrap directory-toolbar" action="/city/" method="get" id="citySearch" role="search">
+      <div class="directory-title">
+        <h1>Города</h1>
+        <a class="directory-compare" href="/season/compare/">Сравнить рейтинги</a>
+      </div>
+      <div class="directory-controls">
+        <label class="directory-search"><svg class="icon" aria-hidden="true"><use href="/icons.svg#search"></use></svg>
+          <input type="search" name="q" maxlength="100" value="{esc(q)}" autocomplete="off" aria-label="Город, страна или код аэропорта" placeholder="Город, страна или код">
+        </label>
         <div class="directory-regions" role="group" aria-label="География">{region_controls}</div>
         <label class="directory-guide"><input type="checkbox" name="guide" value="1"{' checked' if guide else ''}>С путеводителем</label>
-        <a class="directory-compare" href="/season/compare/">Сравнить рейтинги</a>
-      </div></div>
+      </div>
+      <button type="submit" hidden>Найти</button>
     </form>
     <div class="wrap"><section id="cityResults" aria-labelledby="resultsHeading">
       <div class="directory-heading"><h2 id="resultsHeading" tabindex="-1">{title}</h2><span data-count>{len(matches)}</span></div>

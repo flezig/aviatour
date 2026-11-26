@@ -182,7 +182,7 @@ test('Карточки показывают логотипы, а подборк�
   assert.equal(await weekends.getByText('Без отпуска', { exact: true }).count(), 0);
   assert.equal(await page.locator('[data-quick="noLeave"]').innerText(), 'На выходные');
   await weekends.locator('.row-all').click();
-  assert.doesNotMatch(await page.locator('#results .source').innerText(), /без отпуска/iu);
+  assert.equal(await page.locator('#results').getByText('Без отпуска', { exact: true }).count(), 0);
 });
 
 test('Бюджетная подборка без подписи с диапазоном и с ценой под городом', async t => {
@@ -191,15 +191,14 @@ test('Бюджетная подборка без подписи с диапаз�
   await row.getByRole('heading', { name: 'До 10 000 ₽' }).waitFor();
   assert.equal(await row.locator('.row-hint').count(), 0);
   assert.match(await row.locator('.tile-price').first().innerText(), /^от /);
-  const priceNotice = 'Цены ориентировочные. Проверьте актуальную цену на Aviasales';
-  assert.deepEqual(await page.locator('#showcase .source').allTextContents(), [priceNotice]);
+  assert.equal(await page.locator('#showcase').getByText('Цены ориентировочные', { exact: false }).count(), 0);
   const direction = page.locator('.direction-info').first();
   assert.ok(await direction.evaluate(el =>
     el.querySelector('span').getBoundingClientRect().top >= el.querySelector('b').getBoundingClientRect().bottom));
 
   await row.locator('.row-all').click();
   const results = page.locator('#results');
-  assert.deepEqual(await results.locator('.source').allTextContents(), [priceNotice]);
+  assert.equal(await results.getByText('Цены ориентировочные', { exact: false }).count(), 0);
   const card = results.locator('.offer').first();
   assert.match(await card.locator('.offer-price').innerText(), /^от /);
   assert.ok(await card.evaluate(el =>

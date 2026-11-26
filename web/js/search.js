@@ -42,7 +42,6 @@ const POPULAR = ['MOW', 'LED', 'SVX', 'OVB', 'KZN', 'GOJ', 'KUF', 'UFA', 'AER', 
 // «Куда улететь из …»: родительный падеж для частых городов вылета; для остальных — «Вылет: город».
 // Подписи «из Москвы» — из web/data/origins.json; для остальных городов «из города …».
 const PAGE = 24; // карточек на странице выдачи
-const PRICE_NOTICE = '<p class="source">Цены ориентировочные. Проверьте актуальную цену на Aviasales</p>';
 const config = window.AVIATOR ?? {};
 // A/B: вариант выбирается один раз на браузер и хранится. #ab=A или #ab=B показывает вариант без записи.
 function variant(name) {
@@ -519,7 +518,6 @@ function renderResults() {
       body += `<div class="grid">${cities.slice((state.page - 1) * PAGE, state.page * PAGE).map(offer => offerCard(offer, holiday)).join('')}</div>${pager(pages)}`;
     }
     if (collection?.hint) body += `<p class="caption">${esc(collection.hint)}.</p>`;
-    if (cities.length) body += PRICE_NOTICE;
   }
   const back = homeVariant === 'B' ? `<button type="button" class="chip" data-action="showcase">${icon('arrow-left')}Подборки</button>` : '';
   section.innerHTML = `<div class="results-head"><h2>${esc(title)}</h2>${tools}${back}<button type="button" class="chip chip--fav" data-action="favorites">${icon('heart')}Избранное <span id="favCount">${state.favs.size}</span></button></div>${body}`;
@@ -794,7 +792,7 @@ function renderShowcase() {
   const hidden = ordered.length - visible.length;
   const rows = visible.map(row => showcaseRow(row, row === weekend ? weekends : [])).join('');
   section.innerHTML = recentRow() + (rows ? rows + (hidden > 0 ? `<button type="button" class="btn-inline more-rows" data-more-rows>Ещё подборки (${hidden})</button>` : '') : statusPanel('send', 'Подборок пока нет', 'Для этого города вылета не нашлось поездок на ближайшие недели. Попробуйте поиск в форме выше.'))
-    + directionList() + PRICE_NOTICE;
+    + directionList();
   $('resultsStatus').textContent = 'Подборки загружены';
 }
 const homeWaiters = [];
