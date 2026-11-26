@@ -34,6 +34,68 @@ async function rect(page, selector) {
   return box;
 }
 
+test('Шапка одинакова на страницах сайта, вкладки сервисов находятся над поиском', async t => {
+  for (const [engine, width] of [[chromium, 1440], [webkit, 390], [webkit, 320]]) {
+    const browser = await engine.launch();
+    t.after(() => browser.close());
+    const page = await openPage(browser, { width, height: 850 }, width < 400);
+    const header = page.locator('.site-header');
+    const nav = header.getByRole('navigation', { name: 'Разделы сайта' });
+    const links = nav.getByRole('link');
+    const baseLinks = ['Билеты', 'Города', 'Избранное', 'Мои поездки', 'Как мы считаем'];
+    const services = page.getByRole('tablist', { name: 'Что ищем' });
+    const geometry = () => header.evaluate(el => [el, ...el.querySelectorAll('a')].map(link => {
+      const { x, y, width, height } = link.getBoundingClientRect();
+      return [x, y, width, height].map(Math.round);
+    }));
+
+    await visit(page, '/');
+    assert.deepEqual(await links.allTextContents(), baseLinks);
+    const expectedGeometry = await geometry();
+    for (const [path, current] of [
+      ['/city/', 'Города'], ['/city/kazan', 'Города'], ['/season/compare/', 'Города'],
+      ['/trip.html', 'Мои поездки'], ['/how-we-count.html', 'Как мы считаем'],
+      ['/about.html', null], ['/#fav', 'Избранное'], ['/', 'Билеты'],
+    ]) {
+      await visit(page, path);
+      assert.deepEqual(await links.allTextContents(), baseLinks, path);
+      assert.deepEqual(await geometry(), expectedGeometry, path);
+      assert.deepEqual(await nav.locator('[aria-current]').allTextContents(), current ? [current] : [], path);
+      assert.equal(await services.isVisible(), path === '/', path);
+    }
+
+    const expectedServices = await rect(page, '.service-tabs');
+    for (const [name, panel] of [
+      ['Жильё', '#panel-stays'], [/^Авто/, '#panel-cars'], ['Туры', '#panel-tours'], ['Авиабилеты', '#flight-service'],
+    ]) {
+      const tab = services.getByRole('tab', { name });
+      await tab.click();
+      assert.equal(await tab.getAttribute('aria-selected'), 'true');
+      assert.deepEqual(await geometry(), expectedGeometry);
+      const serviceBox = await rect(page, '.service-tabs');
+      assert.deepEqual(serviceBox, expectedServices);
+      assert.ok(serviceBox.y + serviceBox.height <= (await rect(page, panel)).y);
+      const tabPositions = await services.getByRole('tab').evaluateAll(tabs => tabs.map(tab => {
+        const { top, right } = tab.getBoundingClientRect();
+        return [top, right];
+      }));
+      assert.equal(new Set(tabPositions.map(([top]) => top)).size, 1);
+      assert.ok(tabPositions.every(([, right]) => right <= width));
+    }
+
+    const flights = services.getByRole('tab', { name: 'Авиабилеты' });
+    await flights.press('ArrowRight');
+    assert.equal(await services.getByRole('tab', { name: 'Жильё' }).getAttribute('aria-selected'), 'true');
+    await nav.getByRole('link', { name: 'Избранное' }).click();
+    await page.locator('#favoriteTitle').waitFor();
+    assert.equal(await services.isVisible(), false);
+    assert.equal(await page.locator('#panel-stays').isVisible(), false);
+    await nav.getByRole('link', { name: 'Билеты' }).click();
+    await services.waitFor();
+    assert.deepEqual(await nav.locator('[aria-current]').allTextContents(), ['Билеты']);
+  }
+});
+
 test('Поиск городов обновляет карточки на месте по городу, стране и коду аэропорта', async t => {
   for (const [engine, width] of [[chromium, 1280], [webkit, 320]]) {
     const browser = await engine.launch();
@@ -90,7 +152,7 @@ test('iPhone и один экран Duo: страницы, навигация, �
     await visit(page, '/');
     const visibleLinks = await page.locator('.service-tabs [role=tab]').evaluateAll(links =>
       links.length === 4 && links.every(el => el.getBoundingClientRect().left >= 0 && el.getBoundingClientRect().right <= innerWidth));
-    assert.ok(visibleLinks, 'Пункты шапки должны быть доступны без горизонтальной прокрутки');
+    assert.ok(visibleLinks, 'Вкладки поиска должны быть доступны без горизонтальной прокрутки');
     await page.locator('.hero-photo img').evaluate(img => img.decode());
     assert.equal(await page.locator('.sky-plane, .flyby-plane').count(), 0);
     const images = await page.evaluate(() => performance.getEntriesByType('resource')

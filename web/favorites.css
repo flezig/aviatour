@@ -1,7 +1,6 @@
 body.favorites-page { background: #f4f6fa; }
-.favorites-page .sky, .favorites-page .hero-photo, .favorites-page .hero-credit, .favorites-page .intro, .favorites-page #search { display: none; }
+.favorites-page :is(.sky, .hero-photo, .hero-credit, .intro, .service-nav, #flight-service, .service-panel) { display: none; }
 .favorites-page main { min-height: 66vh; }
-.favorites-page .top { border-bottom: 1px solid var(--line); }
 .favorites-page #results { padding-top: clamp(24px, 4vw, 48px); gap: 16px; }
 .favorite-heading, .favorite-summary, .favorite-actions, .favorite-undo, .favorite-picker-actions {
   display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 20px;

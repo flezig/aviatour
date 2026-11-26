@@ -83,20 +83,29 @@
       <img src="/photos/hero-madeira-1920.jpg" alt="" fetchpriority="high" decoding="async">
     </picture>
   </div>
-  <header class="top wrap">
-    <div class="header-account-row">
-      <a class="brand" href="/"><span class="brand-name">Aviator</span><span class="brand-beta">Бета</span></a>
-      <div class="header-account-links">
-        <a class="header-trips" href="/#fav" aria-label="Избранное"><svg width="18" height="18" fill="none" aria-hidden="true"><use href="#ui-heart"/></svg></a>
-        <a class="header-trips" href="/trip.html"><svg width="18" height="18" aria-hidden="true"><use href="/icons.svg#ticket"/></svg>Мои поездки</a>
-      </div>
+  <header class="site-header">
+    <div class="top wrap">
+      <a class="brand" href="/"><span class="brand-mark"><svg class="icon" aria-hidden="true"><use href="/icons.svg#plane"></use></svg></span>Aviator</a>
+      <nav class="nav" aria-label="Разделы сайта">
+        <a href="/" aria-current="page">Билеты</a>
+        <a href="/city/">Города</a>
+        <a href="/#fav">Избранное</a>
+        <a href="/trip.html">Мои поездки</a>
+        <a href="/how-we-count.html">Как мы считаем</a>
+      </nav>
     </div>
-    <nav class="service-nav" aria-label="Разделы поиска"><div class="service-tabs" role="tablist" aria-label="Что ищем"><button id="tab-flights" role="tab" aria-selected="true" aria-controls="flight-service" tabindex="0" type="button" data-service="flights"><img src="/tab-flights.svg" width="24" height="24" alt=""><span>Авиабилеты</span></button><button id="tab-stays" role="tab" aria-selected="false" aria-controls="panel-stays" tabindex="-1" type="button" data-service="stays"><img src="/tab-stays.svg" width="24" height="24" alt=""><span>Жильё</span></button><button id="tab-cars" role="tab" aria-selected="false" aria-controls="panel-cars" tabindex="-1" type="button" data-service="cars"><img src="/tab-cars.svg" width="24" height="24" alt=""><span class="service-tab-label">Авто<small>В бете</small></span></button><button id="tab-tours" role="tab" aria-selected="false" aria-controls="panel-tours" tabindex="-1" type="button" data-service="tours"><img src="/tab-tours.svg" width="24" height="24" alt=""><span>Туры</span></button></div>
-      <a class="header-cities" href="/city/"><svg width="20" height="20" aria-hidden="true"><use href="/icons.svg#pin"/></svg>Города</a>
-    </nav>
   </header>
 
   <main class="wrap">
+    <div class="service-nav">
+      <div class="service-tabs" role="tablist" aria-label="Что ищем">
+        <button id="tab-flights" role="tab" aria-selected="true" aria-controls="flight-service" tabindex="0" type="button" data-service="flights"><img src="/tab-flights.svg" width="24" height="24" alt=""><span>Авиабилеты</span></button>
+        <button id="tab-stays" role="tab" aria-selected="false" aria-controls="panel-stays" tabindex="-1" type="button" data-service="stays"><img src="/tab-stays.svg" width="24" height="24" alt=""><span>Жильё</span></button>
+        <button id="tab-cars" role="tab" aria-selected="false" aria-controls="panel-cars" tabindex="-1" type="button" data-service="cars"><img src="/tab-cars.svg" width="24" height="24" alt=""><span class="service-tab-label">Авто<small>В бете</small></span></button>
+        <button id="tab-tours" role="tab" aria-selected="false" aria-controls="panel-tours" tabindex="-1" type="button" data-service="tours"><img src="/tab-tours.svg" width="24" height="24" alt=""><span>Туры</span></button>
+      </div>
+    </div>
+
     <section class="intro" hidden>
       <div>
         <h1></h1>
@@ -107,7 +116,7 @@
       <p class="ai" aria-disabled="true" hidden><svg class="icon" aria-hidden="true"><use href="#ui-pen"></use></svg><span>Опишите поездку словами</span><span class="ai-note">пока недоступно</span></p>
     </section>
 
-<section role="tabpanel" id="flight-service" aria-labelledby="tab-flights"><form class="search search--collapsed" id="search" novalidate aria-label="Поиск поездок">
+    <section role="tabpanel" id="flight-service" aria-labelledby="tab-flights"><form class="search search--collapsed" id="search" novalidate aria-label="Поиск поездок">
       <button type="button" class="search-summary" id="searchSummary" aria-controls="searchFields" aria-expanded="false">
         <b class="code" id="summaryCode"></b>
         <span class="pick-text"><span class="pick-value" id="summaryRoute"></span><span class="caption" id="summaryDetails"></span><span class="caption" id="summaryPassengers">1 взрослый</span></span>
@@ -185,7 +194,7 @@
       </form>
     </details>
 
-</section>
+    </section>
     <section class="service-panel" role="tabpanel" id="panel-stays" aria-labelledby="tab-stays" hidden>
       <form class="stay-search" id="hotelSearch">
         <button class="stay-field stay-place" type="button" aria-haspopup="dialog" aria-controls="stayCities"><span>Город или курорт</span><b id="stayPlace">Куда едете?</b></button>
