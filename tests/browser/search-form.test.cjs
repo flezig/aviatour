@@ -37,7 +37,7 @@ async function setup(t, mobile, sample = offers) {
   const browser = await (mobile ? webkit : chromium).launch();
   t.after(() => browser.close());
   const page = await browser.newPage({
-    isMobile: mobile, hasTouch: mobile, timezoneId: 'Europe/Moscow',
+    isMobile: mobile, hasTouch: mobile, timezoneId: 'Europe/Moscow', reducedMotion: 'reduce',
     viewport: { width: mobile ? 390 : 1280, height: 844 },
   });
   page.setDefaultTimeout(7000);
@@ -47,6 +47,7 @@ async function setup(t, mobile, sample = offers) {
   await page.route('**/api/v1/search/web?*', route => {
     const p = new URL(route.request().url()).searchParams;
     const matches = sample.filter(offer => {
+      if (p.has('fc') ? offer.origin_city_code !== p.get('fc') : offer.origin_airport !== p.get('from')) return false;
       if (p.has('budget') && offer.price_minor > Number(p.get('budget')) * 100) return false;
       if (p.get('direct') === '1' && (offer.transfers || offer.return_transfers)) return false;
       if (p.has('tc')) return p.get('tc') === offer.city_code;
@@ -77,7 +78,7 @@ async function searchParams(page, action) {
 }
 
 const submit = page => searchParams(page, () => page.locator('#searchButton').click());
-const visibleIds = page => page.locator('#results [data-offer]').evaluateAll(nodes => nodes.map(node => node.dataset.offer));
+const visibleIds = page => page.locator('#results [data-offer]:visible').evaluateAll(nodes => nodes.map(node => node.dataset.offer));
 
 for (const mobile of [false, true]) {
   const screen = mobile ? 'телефон' : 'компьютер';
@@ -126,17 +127,39 @@ for (const mobile of [false, true]) {
 
   test('Поиск везде, в городе и в аэропорту показывает нужные даты, ' + screen, async t => {
     const page = await setup(t, mobile);
-    await submit(page);
+    await searchParams(page, () => page.goto(base + '/?from=SVO&fc=MOW&month=2030-02&weekend=0&group=0'));
+    assert.equal(new URL(page.url()).searchParams.has('group'), false);
     assert.deepEqual(await visibleIds(page), ['kzn-16', 'saw-14']);
-    assert.equal(await page.locator('[data-chip="unique"]').getAttribute('aria-pressed'), 'true');
+    await page.locator('#results [data-chip="all"]').click();
+    assert.deepEqual(await visibleIds(page), ['kzn-16', 'saw-14']);
+    const card = page.locator('#results .offer-group').filter({ hasText: 'Стамбул' });
+    const more = card.locator('.offer-variants summary');
+    assert.match(await more.innerText(), /Ещё варианты/);
+    await more.evaluate(el => el.scrollIntoView({ block: 'center', behavior: 'instant' }));
+    const position = await page.evaluate(() => scrollY);
+    const address = page.url();
+    await more.press('Enter');
+    await card.locator('.offer-variant').first().waitFor();
+    assert.deepEqual(await visibleIds(page), ['kzn-16', 'saw-14', 'ist-12', 'saw-17']);
+    assert.equal(await card.locator('.portrait').count(), 1);
+    assert.equal(await page.evaluate(() => scrollY), position);
+    assert.equal(page.url(), address);
+    await more.click();
+    assert.deepEqual(await visibleIds(page), ['kzn-16', 'saw-14']);
 
     await page.locator('[data-field="destination"]').click();
     await page.locator('#pickerInput').fill('Стамбул');
     await page.locator('#picker [data-city="IST"]').click();
     const city = await submit(page);
     assert.equal(city.get('tc'), 'IST');
+    assert.deepEqual(await visibleIds(page), ['saw-14']);
+    await more.click();
+    const otherDate = card.locator('[data-offer="saw-19-nights"]');
+    await otherDate.waitFor();
     assert.deepEqual(await visibleIds(page), ['saw-14', 'ist-12', 'saw-17', 'saw-19-nights']);
-    assert.equal(await page.locator('[data-chip="unique"]').count(), 0);
+    await otherDate.click();
+    await page.locator('#detail:modal').waitFor();
+    await page.locator('#detail [data-close]').click();
 
     await page.locator('[data-field="destination"]').click();
     await page.locator('#pickerInput').fill('SAW');
@@ -144,9 +167,34 @@ for (const mobile of [false, true]) {
     const airport = await submit(page);
     assert.equal(airport.get('to'), 'SAW');
     assert.equal(airport.get('tc'), null);
+    assert.deepEqual(await visibleIds(page), ['saw-14']);
+    await more.click();
+    await otherDate.waitFor();
     assert.deepEqual(await visibleIds(page), ['saw-14', 'saw-17', 'saw-19-nights']);
     await page.locator('#length').selectOption('short');
+    await more.click();
+    await card.locator('.offer-variant').first().waitFor();
     assert.deepEqual(await visibleIds(page), ['saw-14', 'saw-17']);
+  });
+
+  test('Выбор Москвы обновляет выдачу и исключает город вылета, ' + screen, async t => {
+    const fromKazan = {
+      ...offer('kazan-to-moscow', 'Москва', 'SVO', 14, 5000),
+      city_code: 'MOW', origin_airport: 'KZN', origin_city_code: 'KZN', origin_city: 'Казань',
+    };
+    const inMoscow = {
+      ...offer('moscow-to-moscow', 'Москва', 'DME', 14, 5000),
+      city_code: 'MOW',
+    };
+    const page = await setup(t, mobile, [...offers, fromKazan, inMoscow]);
+    await searchParams(page, () => page.goto(base + '/?from=KZN&month=2030-02&weekend=0'));
+    assert.deepEqual(await visibleIds(page), ['kazan-to-moscow']);
+    await page.locator('[data-field="origin"]').click();
+    await page.locator('#pickerInput').fill('Москва');
+    const updated = await searchParams(page, () => page.locator('#picker [data-city="MOW"]').click());
+    assert.equal(updated.get('fc'), 'MOW');
+    assert.deepEqual(await visibleIds(page), ['kzn-16', 'saw-14']);
+    assert.equal(await page.locator('#results .offer-city').filter({ hasText: 'Москва' }).count(), 0);
   });
 
   test('Быстрый поиск до трёх часов и сочетание с выходными сохраняются в ссылке, ' + screen, async t => {
@@ -222,7 +270,10 @@ for (const mobile of [false, true]) {
     await page.locator('#results [data-chip="all"]:focus').waitFor();
     assert.equal(cleared.has('direct'), false);
     assert.equal(await direct.getAttribute('aria-pressed'), 'false');
-    assert.deepEqual(await visibleIds(page), ['near-weekday', 'near-weekend', 'long-weekend']);
+    assert.deepEqual(await visibleIds(page), ['near-weekday', 'near-weekend']);
+    await page.locator('#results .offer-variants summary').click();
+    await page.locator('#results [data-offer="long-weekend"]').waitFor();
+    assert.deepEqual(await visibleIds(page), ['near-weekday', 'long-weekend', 'near-weekend']);
   });
 
   test('Месяц и точные даты сохраняются независимо при переключении и отправке, ' + screen, async t => {

@@ -112,6 +112,9 @@ def zone(name):
 
 
 def matches(offer, request, now):
+    origin_city = offer.origin_city_code or (BY_IATA.get(offer.origin_airport) or {}).get('city_code')
+    if origin_city == offer.city_code:
+        return False
     if offer.availability == "unavailable" or (offer.expires_at is not None and offer.expires_at <= now):
         return False
     if not includes(request.region, offer.country_code):

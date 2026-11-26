@@ -36,7 +36,7 @@ const LENGTHS = { any: '1–14 ночей', short: '1–2 ночи', mid: '3–4
 const FITS = { any: (d) => d >= 1 && d <= 14, short: (d) => d >= 1 && d <= 2, mid: (d) => d >= 3 && d <= 4, week: (d) => d >= 5 && d <= 7, long: (d) => d >= 8 && d <= 14, more: (d) => d > 14, day: (d) => d === 0, all: () => true };
 const SORTS = { price: 'Сначала дешевле', priceDescending: 'Сначала дороже', departure: 'Ближайший вылет', duration: 'Меньше времени в пути', stay: 'Больше времени на месте', value: 'Выгоднее час поездки', flightRating: 'По оценке перелёта' };
 const QUICK_FILTERS = ['direct', 'noLeave', 'near'];
-const CHIPS = { direct: 'Без пересадок', noLeave: 'Без отпуска', near: 'В пути до 3 ч', cheap: 'До 20 000 ₽', comfy: 'Удобное время вылета', russia: 'Россия', unique: 'Один вариант на город' };
+const CHIPS = { direct: 'Без пересадок', noLeave: 'Без отпуска', near: 'В пути до 3 ч', cheap: 'До 20 000 ₽', comfy: 'Удобное время вылета', russia: 'Россия' };
 const TAGS = { sea: 'Море', culture: 'Музеи и культура', food: 'Гастрономия', architecture: 'Архитектура', nature: 'Природа', nightlife: 'Вечерняя жизнь' };
 const POPULAR = ['MOW', 'LED', 'SVX', 'OVB', 'KZN', 'GOJ', 'KUF', 'UFA', 'AER', 'KGD'];
 // «Куда улететь из …»: родительный падеж для частых городов вылета; для остальных — «Вылет: город».
@@ -67,8 +67,8 @@ const state = {
   query: { passengers: oneAdult(), origin: 'SVO', originCity: 'MOW', destination: null, destinationCity: null, region: 'any', exact: false, month: defaultMonth(DEFAULT_ZONE), departure: null, returning: null, weekend: false, budget: null, direct: false },
   labels: { origin: 'Москва, все аэропорты', destination: null },
   performed: null, performedLabels: null, status: 'idle', error: '', result: null,
-  // Новичок спрашивает «куда», поэтому по умолчанию один лучший вариант на город; «Все» показывает каждую дату и рейс.
-  filters: { cheap: false, direct: false, noLeave: false, comfy: false, near: false, russia: false, unique: true }, length: null, sort: 'price', holidaySort: 'leave', page: 1, allRows: false, weekendKey: null,
+  filters: { cheap: false, direct: false, noLeave: false, comfy: false, near: false, russia: false }, length: null, sort: 'price', holidaySort: 'leave', page: 1, allRows: false, weekendKey: null,
+  offerGroups: new Map(),
   home: null, homeStatus: 'idle', recent: readRecent(), recentPrices: {}, recentOffers: new Map(), collection: null,
   airports: null, cities: null, byIata: new Map(), fromNames: new Map([['MOW', 'Москвы']]), cityPages: new Map(), guides: {}, hotels: {}, view: 'results', favs: readFavs(), pickerTarget: 'origin', shown: new Map(), detail: null, backFrom: null, nudged: new Set(),
 };
@@ -158,7 +158,8 @@ function effectiveLength() {
 }
 function accepts(offer) {
   const f = state.filters, x = facts(offer);
-  if (x.dep <= Date.now()) return false;
+  const originCity = offer.origin_city_code ?? state.byIata.get(offer.origin_airport)?.city_code;
+  if (offer.city_code === originCity || x.dep <= Date.now()) return false;
   if (state.view === 'collection' && f.direct && !x.direct) return false;
   if (f.cheap && offer.price_minor > 2000000) return false;
   if (f.russia && (state.view === 'collection' || state.performed?.region === 'any') && offer.country_code !== 'RU') return false;
@@ -198,9 +199,7 @@ function sortKey(offer, sort) {
 // Предложения вокруг открытой поездки: выдача поиска или подборки главной.
 const contextOffers = () => state.view === 'results' ? state.result?.offers ?? [] : [...(state.home?.offers.values() ?? [])];
 function resetResultFilters() {
-  const keepGrouping = state.view === 'results' && state.performed?.destination && state.filters.unique;
   for (const name of Object.keys(state.filters)) state.filters[name] = false;
-  state.filters.unique = Boolean(keepGrouping);
   state.length = null;
 }
 function compareOffers(a, b, sort) {
@@ -210,10 +209,13 @@ function compareOffers(a, b, sort) {
   if (a.city_code !== b.city_code) return a.city_code < b.city_code ? -1 : 1;
   return a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
 }
-function visibleOffers(list, groupByCity, sort) {
-  const seen = new Set();
-  return list.filter(accepts).sort((a, b) => compareOffers(a, b, sort))
-    .filter((offer) => !groupByCity || (!seen.has(offer.city_code) && seen.add(offer.city_code)));
+function groupOffers(offers) {
+  const groups = new Map();
+  for (const offer of offers) {
+    if (!groups.has(offer.city_code)) groups.set(offer.city_code, []);
+    groups.get(offer.city_code).push(offer);
+  }
+  return groups;
 }
 const airlineLabel = (offer) => offer.airline === 'DP' ? 'Победа' : offer.airline_name || offer.airline || 'Авиакомпания не указана';
 
@@ -313,6 +315,31 @@ function offerCard(offer, holiday = false) {
       ${offerRating(offer)}
     </div>
   </article>`;
+}
+
+function offerGroup(offers, holiday) {
+  const [offer] = offers;
+  const remaining = offers.length - 1;
+  return `<div class="offer-group">
+    ${offerCard(offer, holiday)}
+    ${remaining ? `<details class="offer-variants" data-offer-city="${esc(offer.city_code)}">
+      <summary><span class="offer-variants-more">Ещё варианты</span><span class="offer-variants-less">Свернуть варианты</span>
+        <span class="offer-variants-count">${remaining}</span><span class="sr-only">, ${esc(offer.city)}</span>${icon('chevron-down')}</summary>
+    </details>` : ''}
+  </div>`;
+}
+
+function offerVariant(offer, holiday) {
+  const { dep, ret } = facts(offer);
+  return `<li class="offer-variant">
+    <button type="button" class="offer-variant-open" data-offer="${esc(offer.id)}">
+      <b>${esc(fmtMoney(offer.price_minor))}</b>
+      <span>${esc(fmtRange(dep, ret, offer.origin_timezone, offer.destination_timezone))}, ${esc(stayLabel(offer))}</span>
+    </button>
+    ${favButton(offer).replace('class="fav"', 'class="fav fav--inline"')}
+    ${flightMeta(offer)}
+    ${holiday ? `<p class="offer-meta">${esc(holidayLabel(offer))}</p>` : ''}
+  </li>`;
 }
 
 // Избранное хранится только в этом браузере: целые варианты, новые в конце, не больше 30.
@@ -481,16 +508,19 @@ function renderResults() {
     const holiday = collection?.key === 'holidays';
     const sort = holiday ? state.holidaySort : state.sort;
     const sorts = holiday ? { leave: 'Меньше дней отпуска', ...SORTS } : SORTS;
-    const offers = visibleOffers(collection ? rowOffers(collection) : state.result.offers, !q.destination && state.filters.unique, sort);
-    const filters = Object.entries(CHIPS).filter(([name]) =>
-      (name !== 'unique' || !q.destination) && (name !== 'russia' || q.region === 'any'));
+    const list = collection ? rowOffers(collection) : state.result.offers;
+    const offers = list.filter(accepts).sort((a, b) => compareOffers(a, b, sort));
+    state.offerGroups = groupOffers(offers);
+    const cities = [...state.offerGroups.values()];
+    const filters = Object.entries(CHIPS).filter(([name]) => name !== 'russia' || q.region === 'any');
     const selected = name => name === 'direct' && !collection ? q.direct : state.filters[name];
     const active = filters.some(([name]) => selected(name)) || state.length !== null;
-    // «Один вариант на город» ничего не прячет целиком, поэтому пустую выдачу объясняют только остальные фильтры.
-    const hiding = filters.some(([name]) => state.filters[name] && name !== 'unique') || state.length !== null;
-    state.shown = new Map(offers.map((offer) => [offer.id, offer]));
-    title = collection ? `${collection.title} (${countLabel(offers.length)})` : countLabel(offers.length);
-    announce(offers.length ? `Найдено: ${countLabel(offers.length)}` : 'Подходящих вариантов нет');
+    const hiding = filters.some(([name]) => state.filters[name]) || state.length !== null;
+    state.shown = new Map(offers.map(offer => [offer.id, offer]));
+    const cityCount = `${cities.length} ${plural(cities.length, 'город', 'города', 'городов')}`;
+    const count = cities.length === offers.length ? countLabel(offers.length) : `${cityCount}, ${countLabel(offers.length)}`;
+    title = collection ? `${collection.title} (${count})` : count;
+    announce(offers.length ? `Найдено: ${count}` : 'Подходящих вариантов нет');
     const chips = `<button type="button" class="chip" data-chip="all" aria-pressed="${!active}">Все</button>` + filters
       .filter(([name]) => collection || !QUICK_FILTERS.includes(name))
       .map(([name, title]) => `<button type="button" class="chip" data-chip="${name}" aria-pressed="${Boolean(selected(name))}">${title}</button>`).join('');
@@ -517,9 +547,9 @@ function renderResults() {
           </div>`;
       }
     } else {
-      const pages = Math.ceil(offers.length / PAGE);
+      const pages = Math.ceil(cities.length / PAGE);
       state.page = Math.min(Math.max(1, state.page), pages);
-      body += `<div class="grid">${offers.slice((state.page - 1) * PAGE, state.page * PAGE).map(offer => offerCard(offer, holiday)).join('')}</div>${pager(pages)}`;
+      body += `<div class="grid">${cities.slice((state.page - 1) * PAGE, state.page * PAGE).map(group => offerGroup(group, holiday)).join('')}</div>${pager(pages)}`;
     }
     const received = collection ? state.home.received_at : state.result.received_at;
     body += `<p class="source">${collection?.hint ? esc(collection.hint) + '. ' : ''}${esc(cachedPriceLabel(received))}.</p>`;
@@ -1017,9 +1047,8 @@ function searchAddress(q) {
   const params = toParams(q);
   setPassengerParams(params, q.passengers);
   for (const name of Object.keys(CHIPS)) {
-    if (name !== 'unique' && name !== 'direct' && state.filters[name]) params.append('filter', name);
+    if (name !== 'direct' && state.filters[name]) params.append('filter', name);
   }
-  if (!state.filters.unique && !q.destination) params.set('group', '0');
   if (state.length !== null) params.set('length', state.length);
   return '?' + params;
 }
@@ -1222,9 +1251,13 @@ function openPicker(target, trigger) {
 }
 function choose(iata, cityCode) {
   const q = state.query;
+  const originChanged = state.pickerTarget === 'origin' && (q.origin !== iata || q.originCity !== cityCode);
   if (state.pickerTarget === 'origin') {
     q.origin = iata; q.originCity = cityCode; state.labels.origin = airportLabel(iata, cityCode);
     const airport = state.byIata.get(iata);
+    if (airport && state.byIata.get(q.destination)?.city_code === airport.city_code) {
+      q.destination = q.destinationCity = state.labels.destination = null;
+    }
     // Выбор запоминается: в следующий раз и на страницах городов цены будут из этого города.
     if (airport) saveOrigin({ code: airport.city_code, iata, all: Boolean(cityCode), name: airport.city, from: state.fromNames.get(airport.city_code) ?? null }, true);
   } else {
@@ -1234,8 +1267,10 @@ function choose(iata, cityCode) {
   }
   $('picker').close();
   renderForm();
-  // Подборки — из нового города вылета.
-  if (state.pickerTarget === 'origin' && state.view === 'showcase') showShowcase();
+  if (originChanged) {
+    if (state.view === 'showcase') showShowcase();
+    else if ((state.view === 'results' && state.performed) || state.view === 'collection') search({ scroll: false });
+  }
 }
 function showFavorites(focusTitle = true) {
   const detailed = location.hash === '#fav/compare';
@@ -1626,6 +1661,14 @@ searchShortcuts.addEventListener('click', event => {
   search({ scroll: false });
 });
 
+$('results').addEventListener('toggle', event => {
+  const details = event.target;
+  if (!details.matches('.offer-variants[open]') || details.querySelector('ul')) return;
+  const [, ...alternatives] = state.offerGroups.get(details.dataset.offerCity) ?? [];
+  const holiday = state.view === 'collection' && state.collection === 'holidays';
+  details.insertAdjacentHTML('beforeend', `<ul>${alternatives.map(offer => offerVariant(offer, holiday)).join('')}</ul>`);
+}, true);
+
 $('results').addEventListener('click', (event) => {
   if (event.target.closest('[data-choose-favorites]')) { openFavoritePicker(); return; }
   if (event.target.closest('#undoFavorite')) { undoFavorite(); return; }
@@ -1702,9 +1745,8 @@ async function restore() {
   try { await loadAirports(); } catch { return false; }
   if (!state.byIata.has(code('from'))) return false;
   for (const name of params.getAll('filter')) {
-    if (Object.hasOwn(CHIPS, name) && name !== 'unique' && name !== 'direct') state.filters[name] = true;
+    if (Object.hasOwn(CHIPS, name) && name !== 'direct') state.filters[name] = true;
   }
-  state.filters.unique = params.get('group') !== '0';
   if (Object.hasOwn(LENGTHS, params.get('length'))) state.length = params.get('length');
   q.passengers = passengersFromParams(params);
   q.origin = code('from'); q.originCity = code('fc');
