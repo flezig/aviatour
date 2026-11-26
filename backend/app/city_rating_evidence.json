@@ -1068,5 +1068,38 @@
       "url": "https://www.tob.rs/en/info/useful-info/city-public-transport",
       "note": "С 1 января 2025 года обычный городской общественный транспорт бесплатен для всех пассажиров. В том числе автобусы, трамваи, троллейбусы и BG Voz."
     }
+  },
+  "MAD": {
+    "fare": {
+      "amount": 1.5,
+      "currency": "EUR",
+      "year": 2026,
+      "checked": "2026-11-26",
+      "source": "Муниципальный автобусный оператор Мадрида EMT",
+      "url": "https://www.emtmadrid.es/ViajarenBus/Titulosytarifas.aspx",
+      "note": "Разовый билет на обычный автобус EMT. Экспресс до аэропорта оплачивается по отдельному тарифу."
+    }
+  },
+  "EVN": {
+    "fare": {
+      "amount": 150,
+      "currency": "AMD",
+      "year": 2026,
+      "checked": "2026-11-26",
+      "source": "Оператор оплаты проезда Telcell",
+      "url": "https://telcell.am/en/blog/transport-faq-2",
+      "note": "Разовый билет на городской транспорт. Активируется в течение трёх дней после покупки."
+    }
+  },
+  "TBS": {
+    "fare": {
+      "amount": 1,
+      "currency": "GEL",
+      "year": 2026,
+      "checked": "2026-11-26",
+      "source": "Тбилисская транспортная компания",
+      "url": "https://ttc.com.ge/index.php/en/tariff/10",
+      "note": "Базовый городской тариф. При оплате Metromoney или поддерживаемой банковской картой действуют пересадки в течение 90 минут."
+    }
   }
 }

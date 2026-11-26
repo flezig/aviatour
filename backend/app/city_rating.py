@@ -153,7 +153,7 @@ def survey_cost(city, year, month, today):
     return part
 
 
-def costs(evidence, month, year, today, survey_city, observations):
+def costs(evidence, month, year, today, survey_city, world_prices):
     detail = "Корзина на человека: две ночи, четыре приёма пищи и четыре поездки по городу."
     # Reviewed price sets share one currency, collection date and comparison cohort.
     sample = evidence.get("baskets", {}).get(f"{year:04}-{month:02}", {})
@@ -161,6 +161,7 @@ def costs(evidence, month, year, today, survey_city, observations):
                        <= sample.get("valid_until", "")):
         sample = {}
     fare = evidence.get("fare", {})
+    fare_current = fare.get("year") == year and fare["checked"] <= today.isoformat()
     missing, links = [], list(sample.get("sources", []))
     stays = [median(prices.values()) for prices in sample.get("hotel_weekends", {}).values()
              if len(prices) >= 10 and all(price > 0 for price in prices.values())]
@@ -178,7 +179,7 @@ def costs(evidence, month, year, today, survey_city, observations):
     elif sample.get("meal_unit"):
         meal = median(meals.values())
         detail += f' Еда в {len(meals)} заведениях: {sample["meal_unit"]}, медиана {number(meal)} ₽, четыре порции — {number(meal * 4)} ₽.'
-    if fare.get("year") == year and fare["checked"] <= today.isoformat():
+    if fare_current:
         price = fare["amount"]
         detail += f' Тариф {year} года — {number(price)} {fare["currency"]} за поездку, {number(price * 4)} {fare["currency"]} за четыре.'
         detail += " " + fare["note"]
@@ -191,7 +192,7 @@ def costs(evidence, month, year, today, survey_city, observations):
     if len(cohort) < 20 or not all(price > 0 for price in cohort.values()):
         missing.append("Сопоставимые корзины минимум для 20 городов за тот же месяц.")
     estimate = None
-    if len(stays) >= 3 and len(meals) >= 5 and fare.get("year") == year and fare.get("checked", "") <= today.isoformat() and sample["currency"] == fare.get("currency"):
+    if len(stays) >= 3 and len(meals) >= 5 and fare_current and sample["currency"] == fare.get("currency"):
         estimate = median(stays) + 4 * median(meals.values()) + 4 * fare["amount"]
         detail += f' Ориентир по опубликованным ценам — {rubles(estimate)} на человека за выходные, без перелёта.'
     if sample.get("comparison_note"):
@@ -214,16 +215,17 @@ def costs(evidence, month, year, today, survey_city, observations):
             survey["trip_detail"] = detail + (" Включение всех обязательных сборов продавец отдельно не подтвердил." if dates and sample.get("fees_confirmed") is False else "")
         survey["sources"].extend(links)
         return survey
-    if observations and score is None and applicable(WORLD_PRICES, month, year, today):
+    if world_prices and score is None and applicable(world_prices, month, year, today):
+        observations = world_prices["observations"]
         kinds = {obs["kind"] for obs in observations}
-        part["detail"] = (f"Опубликованные цены и тарифы в местной валюте. Проверено {WORLD_PRICES['checked']}. "
-                          "Условия и даты приведены у каждого источника.")
+        part["detail"] += (f" Отдельные данные в местной валюте проверены {world_prices['checked']}. "
+                           "Условия и даты приведены у каждого источника.")
         part["sources"].extend(dict(source(obs["label"], obs["url"]), note=obs["detail"]) for obs in observations)
         part["missing"] = [
             "Нужны сопоставимые городские цены на проживание одного человека в гостинице 3★ и на обычный обед.",
             "Нужна полная корзина и сопоставимая группа минимум из 20 городов за тот же период.",
         ]
-        if "bus" not in kinds:
+        if "bus" not in kinds and not fare_current:
             part["missing"].append("Нужен подтверждённый городской тариф.")
         part["gap"] = "Есть отдельные цены. Не хватает сопоставимых данных по жилью и обедам."
     return part
@@ -293,10 +295,12 @@ def available_score(components):
 
 def report(code, month, year, today):
     evidence = EVIDENCE.get(code, {})
+    local_prices = WORLD_PRICES["cities"].get(code)
+    world_prices = WORLD_PRICE_VALIDITY | local_prices if local_prices else None
     year = target_year(month, year, today)
     components = [activities(code, evidence, month, year, today),
-                  costs(evidence, month, year, today, SURVEY_CITIES.get(code),
-                        WORLD_PRICES["cities"].get(code, {}).get("observations", [])), climate(code, month),
+                  costs(evidence, month, year, today, SURVEY_CITIES.get(code), world_prices),
+                  climate(code, month),
                   mobility(ROUTES.get(code), month, year, today)]
     for part in components:
         if "fact" not in part:
@@ -511,6 +515,7 @@ for city_code, places in load_snapshot("city_rating_places.json").items():
 ROUTES = load_snapshot("city_rating_routes.json")
 PRICES = load_snapshot("city_rating_prices.json")
 WORLD_PRICES = load_snapshot("city_rating_world_prices.json")
+WORLD_PRICE_VALIDITY = {key: WORLD_PRICES[key] for key in ("checked", "valid_from", "valid_until")}
 SURVEY_RATES = {**PRICES["partial_cities"], **PRICES["additional_cities"], **PRICES["cities"]}
 SURVEY_CITIES = {
     code: city["city"] for code, city in season.CITIES.items()
