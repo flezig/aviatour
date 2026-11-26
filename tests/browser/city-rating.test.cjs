@@ -23,12 +23,12 @@ for (const mobile of [false, true]) {
     const browser = await (mobile ? webkit : chromium).launch();
     t.after(() => browser.close());
     const context = await browser.newContext(mobile
-      ? { isMobile: true, hasTouch: true, viewport: { width: 375, height: 812 } }
+      ? { isMobile: true, hasTouch: true, reducedMotion: 'reduce', viewport: { width: 375, height: 812 } }
       : { viewport: { width: 1280, height: 850 } });
     await context.route('**/api/v1/origin', route => route.fulfill({ json: origin }));
     await context.route('**/api/v1/home?*', route => route.fulfill({ json: home }));
     const page = await context.newPage();
-    page.setDefaultTimeout(7000);
+    await page.clock.setFixedTime(new Date('2026-11-25T12:00:00Z'));
     const details = [];
     page.on('request', req => {
       if (new URL(req.url()).pathname === '/api/v1/city-rating/KZN') details.push(req.url());
@@ -37,6 +37,7 @@ for (const mobile of [false, true]) {
     const feedBadge = page.locator('.tile--pass .city-rating').first();
     if (mobile) {
       await page.locator('[data-open="kzn-test"]').first().tap();
+      await page.locator('#detail:modal').waitFor();
       assert.equal(await feedBadge.isVisible(), false);
     }
     const card = mobile ? page.locator('#detail .city-rating') : feedBadge;
