@@ -226,7 +226,7 @@ function transferLabel(offer) {
 }
 
 function flightMeta(offer) {
-  return `<p class="flight-meta"><span>${esc(airlineLabel(offer))}</span> <span>${esc(transferLabel(offer))}</span></p>`;
+  return `<p class="flight-meta">${carrier(offer)} <span>${esc(transferLabel(offer))}</span></p>`;
 }
 // Locally bundled Aviasales marks. Keep the carrier name for all other airlines.
 const carrierLogos = new Set('3F 4G 5N 6R A4 AA AF AY B2 BA D2 DL DP EK EO EW EY F7 FR FV FZ G9 H9 HY I8 IO IZ J2 J9 KC KL KV LH LO LX N4 OS PC QR R3 RT S7 SK SU SZ TK U2 U6 U9 UA UT VF WZ Y7 YC'.split(' '));
@@ -778,7 +778,7 @@ function showcaseRow(row, weekends) {
   }).join('');
   const controls = periods ? `<div class="weekend-periods" role="group" aria-label="Даты выходных">${periods}</div>` : '';
   const action = `<button type="button" class="row-all" data-row-all="${esc(row.key)}" aria-label="Все варианты: ${esc(row.title)}">Все${icon('arrow-right')}</button>`;
-  return rowSection(row.key, periods ? 'На выходные' : row.title, periods ? 'Без отпуска' : row.hint, tiles, action, row.kind === 'pass', rowSticker(row), controls);
+  return rowSection(row.key, periods ? 'На выходные' : row.title, periods ? '' : row.hint, tiles, action, row.kind === 'pass', rowSticker(row), controls);
 }
 
 function directionList(catalog = false) {

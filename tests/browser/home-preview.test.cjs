@@ -17,6 +17,9 @@ function home(origin) {
     price_minor: (i + 1) * 100000, transfers: 0, return_transfers: 0, duration_to: 90, duration_back: 90,
     country: 'Россия', country_code: 'RU', airline: 'SU', flight_number: '100', received_at: new Date().toISOString(),
   }));
+  Object.assign(trips[0], { airline: 'Y7', airline_name: 'NordStar' });
+  Object.assign(trips[1], { airline: '5N', airline_name: 'Smartavia' });
+  Object.assign(trips[2], { airline: 'XX', airline_name: 'Тестовая авиакомпания' });
   const items = destinations.slice(0, 5);
   return {
     origin, received_at: trips[0].received_at, offers: Object.fromEntries(trips.map(trip => [trip.id, trip])),
@@ -24,6 +27,8 @@ function home(origin) {
     notes: { UFA: { leave: null }, AER: { leave: 1 }, KUF: { leave: 0 }, PEE: { leave: 1 } },
     rows: [
       { key: 'hot', title: 'Ближайшие вылеты', kind: 'pass', items },
+      { key: 'weekend-1', title: 'Первые выходные', hint: '10–12 марта', items },
+      { key: 'weekend-2', title: 'Вторые выходные', hint: '17–19 марта', items },
       { key: 'holidays', title: 'Каникулы', hint: 'Праздничные дни', items },
     ],
   };
@@ -87,6 +92,29 @@ for (const [engine, width] of [[chromium, 1280], [webkit, 320]]) {
     assert.equal(await dialog.isVisible(), false);
   });
 }
+
+test('Карточки показывают логотипы, а подборка на выходные сохраняет выбор дат', async t => {
+  const page = await openPage(t, chromium, 1280);
+  const hot = page.locator('[data-feed=hot]');
+  for (const [name, code] of [['NordStar', 'Y7'], ['Smartavia', '5N']]) {
+    const meta = hot.locator('.flight-meta').filter({ hasText: name });
+    const logo = meta.locator('.carrier img');
+    await logo.scrollIntoViewIfNeeded();
+    assert.equal(await logo.getAttribute('src'), '/airlines/' + code + '.png');
+    await page.waitForFunction(img => img.complete && img.naturalWidth > 0, await logo.elementHandle());
+    assert.match(await meta.innerText(), /Без пересадок/);
+  }
+  const fallback = hot.locator('.flight-meta').filter({ hasText: 'Тестовая авиакомпания' });
+  assert.equal(await fallback.locator('.carrier img').count(), 0);
+
+  const weekends = page.getByRole('region', { name: 'На выходные' });
+  await weekends.waitFor();
+  assert.equal(await weekends.getByText('Без отпуска', { exact: true }).count(), 0);
+  const second = weekends.getByRole('button', { name: '17–19 марта' });
+  await second.click();
+  assert.equal(await second.getAttribute('aria-pressed'), 'true');
+  assert.equal(await weekends.getByText('Без отпуска', { exact: true }).count(), 0);
+});
 
 test('Каникулы учитывают отпуск до цены только в своей подборке', async t => {
   const page = await openPage(t, chromium, 1280);
