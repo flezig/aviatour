@@ -201,6 +201,38 @@ test('Карточки показывают логотипы, а подборк�
   assert.equal(await page.locator('#results').getByText('Без отпуска', { exact: true }).count(), 0);
 });
 
+for (const [engine, width] of [[chromium, 960], [webkit, 320]]) {
+  test('Прокрутка над подборкой следует направлению жеста — ' + engine.name(), async t => {
+    const page = await openPage(t, engine, width);
+    for (const feed of ['weekend-1', 'budget10000']) {
+      const strip = page.locator(`[data-feed=${feed}] .strip`);
+      const card = strip.locator('.tile').first();
+      await card.scrollIntoViewIfNeeded();
+      const stripElement = await strip.elementHandle();
+      const position = () => strip.evaluate(el => ({
+        pageTop: window.scrollY, stripLeft: el.scrollLeft, stripTop: el.scrollTop,
+      }));
+
+      for (const horizontalDrift of [0, 12]) {
+        await card.hover();
+        const beforeVertical = await position();
+        await page.mouse.wheel(horizontalDrift, 140);
+        await page.waitForFunction(top => window.scrollY > top, beforeVertical.pageTop);
+        const afterVertical = await position();
+        assert.equal(afterVertical.stripLeft, beforeVertical.stripLeft);
+        assert.equal(afterVertical.stripTop, 0);
+      }
+
+      await card.hover();
+      const beforeHorizontal = await position();
+      await page.mouse.wheel(260, 0);
+      await page.waitForFunction(el => el.scrollLeft > 0, stripElement);
+      assert.equal((await position()).pageTop, beforeHorizontal.pageTop);
+      assert.equal(await strip.evaluate(el => getComputedStyle(el).overflowY), 'hidden');
+    }
+  });
+}
+
 test('Бюджетная подборка без подписи с диапазоном и с ценой под городом', async t => {
   const page = await openPage(t, chromium, 1280);
   const row = page.locator('[data-feed=budget10000]');
