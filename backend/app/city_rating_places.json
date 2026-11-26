@@ -7679,7 +7679,7 @@
       "name": "Ратушная площадь в Старом городе",
       "category": "history",
       "source": "Visit Tallinn",
-      "url": "https://web.visittallinn.ee/eng/visitor/ideas-tips/tips-and-guides/best-places-in-tallinn-old-town",
+      "url": "https://www.visittallinn.ee/eng/visitor/ideas-tips/tips-and-guides/best-places-in-tallinn-old-town",
       "months": [
         12
       ],
@@ -7754,26 +7754,27 @@
       "note": "Кафе на Пикк открыто ежедневно с 9:00 до 20:00."
     },
     {
-      "name": "Органный концерт в Домском соборе",
+      "name": "Концерт «Рождество в Вене» в зале «Эстония»",
       "category": "stage",
-      "source": "Visit Tallinn",
-      "url": "https://www.visittallinn.ee/eng/visitor/see-do/events/events/8476",
+      "source": "Eesti Kontsert",
+      "url": "https://concert.ee/en/kontsert/joulud-viinis/?ek_id=5371",
       "months": [
         12
       ],
       "checked": "2026-11-26",
       "valid_from": "2026-12-01",
       "valid_until": "2026-12-31",
-      "note": "В афише на 26 декабря, 12:00. Собор проводит органные концерты по субботам.",
+      "note": "Организатор указал показы 26 и 27 декабря в Таллине.",
       "weekend_dates": [
-        "2026-12-26"
+        "2026-12-26",
+        "2026-12-27"
       ]
     },
     {
       "name": "Органный концерт в музее Нигулисте",
       "category": "stage",
-      "source": "Visit Tallinn",
-      "url": "https://www.visittallinn.ee/eng/visitor/see-do/events/events/14329",
+      "source": "Художественный музей Эстонии",
+      "url": "https://kunstimuuseum.ekm.ee/en/syndmus/half-an-hour-of-organ-music/",
       "months": [
         12
       ],
