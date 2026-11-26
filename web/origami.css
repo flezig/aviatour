@@ -7,31 +7,39 @@ header.top { display: flex; flex-direction: column; align-items: flex-start; jus
   color: var(--on-photo);
   font: 600 11px/1.2 var(--f-text);
 }
-.service-nav { max-width: 100%; }
+.header-account-row { display:flex; align-items:center; justify-content:space-between; width:100%; }
+.header-trips { display:inline-flex; align-items:center; gap:6px; padding:0 12px; min-height:44px;
+  font:600 14px/1 var(--f-text); color:white; background:#0b253eea; border-radius:999px; text-decoration:none; }
+.service-nav { display:flex; flex-wrap:wrap; align-items:center; gap:8px; max-width:100%; }
+.header-cities { text-decoration:none; }
 .service-tabs { display: flex; align-items: center; gap: 8px; }
-.service-tabs button { display:inline-flex; align-items:center; justify-content:center; gap:8px;
+.service-tabs button, .header-cities { display:inline-flex; align-items:center; justify-content:center; gap:8px;
   padding:0 18px; min-height:44px; border:1px solid #71899b; background:#0b253eea;
   color:#fff; border-radius:999px; font:600 15px/1 var(--f-text); cursor:pointer; }
-.service-tabs button:hover { background:#20405d; border-color:#c3d3df; }
+.service-tabs button:hover, .header-cities:hover, .header-trips:hover { background:#20405d; border-color:#c3d3df; }
 .service-tabs button[aria-selected="true"] { background:#155add; border-color:#3681ff; }
 .service-tabs #tab-cars { background:#444d57; border-color:#87929c; }
 .service-tabs #tab-cars:hover { background:#525c66; }
 .service-tabs #tab-cars[aria-selected="true"] { background:#59636e; border-color:white; }
 .service-tab-label { display:grid; gap:2px; text-align:left; }
 .service-tab-label small { font-size:10px; font-weight:500; color:#f0f2f5; white-space:nowrap; }
-.service-tabs button:focus-visible { outline:2px solid #fff; outline-offset:-3px; }
-.service-tabs img { width:22px; height:22px; object-fit:contain; }
+.service-tabs button:focus-visible, .header-cities:focus-visible, .header-trips:focus-visible { outline:2px solid #fff; outline-offset:-3px; }
+.service-tabs img, .header-cities svg { width:22px; height:22px; object-fit:contain; }
 body.other-service :is(#results,#showcase), .service-panel[hidden], #flight-service[hidden] { display:none; }
 @media(max-width:599px) {
   header.top { padding-block: max(13px,var(--inset-top)) 32px; gap:9px; }
   .service-tabs { gap:5px; }
-  .service-tabs button { min-height:44px; padding:0 10px; gap:5px; font-size:13px; }
-  .service-tabs img { width:18px; height:18px; }
+  .service-tabs button, .header-cities { min-height:44px; padding:0 10px; gap:5px; font-size:13px; }
+  .service-tabs img, .header-cities svg { width:18px; height:18px; }
 }
 @media(max-width:365px) {
   .service-tabs { gap:3px; flex-wrap:wrap; }
-  .service-tabs button { padding:0 7px; gap:3px; font-size:12px; }
-  .service-tabs img { display:none; }
+  .service-tabs button, .header-cities { padding:0 7px; gap:3px; font-size:12px; }
+  .service-tabs img, .header-cities svg { display:none; }
+}
+@media(max-width:599px) {
+  .service-nav { gap:5px; }
+  .service-tabs { display:contents; }
 }
 .service-form { display: grid; grid-template-columns: 1.4fr repeat(3,minmax(0,1fr)) auto; gap: 0; align-items:center;
   padding: 8px; border-radius: var(--r-pass); background: var(--card); box-shadow: var(--sh-pass); }
