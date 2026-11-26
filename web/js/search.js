@@ -68,7 +68,6 @@ const state = {
   labels: { origin: 'Москва, все аэропорты', destination: null },
   performed: null, performedLabels: null, status: 'idle', error: '', result: null,
   filters: { cheap: false, direct: false, noLeave: false, comfy: false, near: false, russia: false }, length: null, sort: 'price', holidaySort: 'leave', page: 1, allRows: false, weekendKey: null,
-  offerGroups: new Map(),
   home: null, homeStatus: 'idle', recent: readRecent(), recentPrices: {}, recentOffers: new Map(), collection: null,
   airports: null, cities: null, byIata: new Map(), fromNames: new Map([['MOW', 'Москвы']]), guides: {}, hotels: {}, view: 'results', favs: readFavs(), pickerTarget: 'origin', shown: new Map(), detail: null, backFrom: null, nudged: new Set(),
 };
@@ -209,14 +208,6 @@ function compareOffers(a, b, sort) {
   if (a.city_code !== b.city_code) return a.city_code < b.city_code ? -1 : 1;
   return a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
 }
-function groupOffers(offers) {
-  const groups = new Map();
-  for (const offer of offers) {
-    if (!groups.has(offer.city_code)) groups.set(offer.city_code, []);
-    groups.get(offer.city_code).push(offer);
-  }
-  return groups;
-}
 const airlineLabel = (offer) => offer.airline === 'DP' ? 'Победа' : offer.airline_name || offer.airline || 'Авиакомпания не указана';
 
 function transferLabel(offer) {
@@ -314,31 +305,6 @@ function offerCard(offer, holiday = false) {
       ${flightMeta(offer)}
     </div>
   </article>`;
-}
-
-function offerGroup(offers, holiday) {
-  const [offer] = offers;
-  const remaining = offers.length - 1;
-  return `<div class="offer-group">
-    ${offerCard(offer, holiday)}
-    ${remaining ? `<details class="offer-variants" data-offer-city="${esc(offer.city_code)}">
-      <summary><span class="offer-variants-more">Ещё варианты</span><span class="offer-variants-less">Свернуть варианты</span>
-        <span class="offer-variants-count">${remaining}</span><span class="sr-only">, ${esc(offer.city)}</span>${icon('chevron-down')}</summary>
-    </details>` : ''}
-  </div>`;
-}
-
-function offerVariant(offer, holiday) {
-  const { dep, ret } = facts(offer);
-  return `<li class="offer-variant">
-    <button type="button" class="offer-variant-open" data-offer="${esc(offer.id)}">
-      <b>${esc(fmtMoney(offer.price_minor))}</b>
-      <span>${esc(fmtRange(dep, ret, offer.origin_timezone, offer.destination_timezone))}, ${esc(stayLabel(offer))}</span>
-    </button>
-    ${favButton(offer).replace('class="fav"', 'class="fav fav--inline"')}
-    ${flightMeta(offer)}
-    ${holiday ? `<p class="offer-meta">${esc(holidayLabel(offer))}</p>` : ''}
-  </li>`;
 }
 
 // Избранное хранится только в этом браузере: целые варианты, новые в конце, не больше 30.
@@ -509,15 +475,15 @@ function renderResults() {
     const sorts = holiday ? { leave: 'Меньше дней отпуска', ...SORTS } : SORTS;
     const list = collection ? rowOffers(collection) : state.result.offers;
     const offers = list.filter(accepts).sort((a, b) => compareOffers(a, b, sort));
-    state.offerGroups = groupOffers(offers);
-    const cities = [...state.offerGroups.values()];
+    const seen = new Set();
+    const cities = offers.filter(offer => !seen.has(offer.city_code) && seen.add(offer.city_code));
     const filters = Object.entries(CHIPS).filter(([name]) => name !== 'russia' || q.region === 'any');
     const selected = name => name === 'direct' && !collection ? q.direct : state.filters[name];
     const active = filters.some(([name]) => selected(name)) || state.length !== null;
     const hiding = filters.some(([name]) => state.filters[name]) || state.length !== null;
-    state.shown = new Map(offers.map(offer => [offer.id, offer]));
+    state.shown = new Map(cities.map(offer => [offer.id, offer]));
     const cityCount = `${cities.length} ${plural(cities.length, 'город', 'города', 'городов')}`;
-    const count = cities.length === offers.length ? countLabel(offers.length) : `${cityCount}, ${countLabel(offers.length)}`;
+    const count = cities.length ? cityCount : countLabel(0);
     title = collection ? `${collection.title} (${count})` : count;
     announce(offers.length ? `Найдено: ${count}` : 'Подходящих вариантов нет');
     const chips = `<button type="button" class="chip" data-chip="all" aria-pressed="${!active}">Все</button>` + filters
@@ -548,7 +514,7 @@ function renderResults() {
     } else {
       const pages = Math.ceil(cities.length / PAGE);
       state.page = Math.min(Math.max(1, state.page), pages);
-      body += `<div class="grid">${cities.slice((state.page - 1) * PAGE, state.page * PAGE).map(group => offerGroup(group, holiday)).join('')}</div>${pager(pages)}`;
+      body += `<div class="grid">${cities.slice((state.page - 1) * PAGE, state.page * PAGE).map(offer => offerCard(offer, holiday)).join('')}</div>${pager(pages)}`;
     }
     const received = collection ? state.home.received_at : state.result.received_at;
     body += `<p class="source">${collection?.hint ? esc(collection.hint) + '. ' : ''}${esc(cachedPriceLabel(received))}.</p>`;
@@ -1657,14 +1623,6 @@ searchShortcuts.addEventListener('click', event => {
   renderForm();
   search({ scroll: false });
 });
-
-$('results').addEventListener('toggle', event => {
-  const details = event.target;
-  if (!details.matches('.offer-variants[open]') || details.querySelector('ul')) return;
-  const [, ...alternatives] = state.offerGroups.get(details.dataset.offerCity) ?? [];
-  const holiday = state.view === 'collection' && state.collection === 'holidays';
-  details.insertAdjacentHTML('beforeend', `<ul>${alternatives.map(offer => offerVariant(offer, holiday)).join('')}</ul>`);
-}, true);
 
 $('results').addEventListener('click', (event) => {
   if (event.target.closest('[data-choose-favorites]')) { openFavoritePicker(); return; }

@@ -132,20 +132,8 @@ for (const mobile of [false, true]) {
     assert.deepEqual(await visibleIds(page), ['kzn-16', 'saw-14']);
     await page.locator('#results [data-chip="all"]').click();
     assert.deepEqual(await visibleIds(page), ['kzn-16', 'saw-14']);
-    const card = page.locator('#results .offer-group').filter({ hasText: 'Стамбул' });
-    const more = card.locator('.offer-variants summary');
-    assert.match(await more.innerText(), /Ещё варианты/);
-    await more.evaluate(el => el.scrollIntoView({ block: 'center', behavior: 'instant' }));
-    const position = await page.evaluate(() => scrollY);
-    const address = page.url();
-    await more.press('Enter');
-    await card.locator('.offer-variant').first().waitFor();
-    assert.deepEqual(await visibleIds(page), ['kzn-16', 'saw-14', 'ist-12', 'saw-17']);
-    assert.equal(await card.locator('.portrait').count(), 1);
-    assert.equal(await page.evaluate(() => scrollY), position);
-    assert.equal(page.url(), address);
-    await more.click();
-    assert.deepEqual(await visibleIds(page), ['kzn-16', 'saw-14']);
+    assert.equal(await page.getByText('Ещё варианты', { exact: true }).count(), 0);
+    assert.equal(await page.locator('#results .offer .portrait').count(), 2);
 
     await page.locator('[data-field="destination"]').click();
     await page.locator('#pickerInput').fill('Стамбул');
@@ -153,14 +141,6 @@ for (const mobile of [false, true]) {
     const city = await submit(page);
     assert.equal(city.get('tc'), 'IST');
     assert.deepEqual(await visibleIds(page), ['saw-14']);
-    await more.click();
-    const otherDate = card.locator('[data-offer="saw-19-nights"]');
-    await otherDate.waitFor();
-    assert.deepEqual(await visibleIds(page), ['saw-14', 'ist-12', 'saw-17', 'saw-19-nights']);
-    await otherDate.click();
-    await page.locator('#detail:modal').waitFor();
-    await page.locator('#detail [data-close]').click();
-
     await page.locator('[data-field="destination"]').click();
     await page.locator('#pickerInput').fill('SAW');
     await page.locator('#picker [data-iata="SAW"]:not([data-city])').click();
@@ -168,13 +148,8 @@ for (const mobile of [false, true]) {
     assert.equal(airport.get('to'), 'SAW');
     assert.equal(airport.get('tc'), null);
     assert.deepEqual(await visibleIds(page), ['saw-14']);
-    await more.click();
-    await otherDate.waitFor();
-    assert.deepEqual(await visibleIds(page), ['saw-14', 'saw-17', 'saw-19-nights']);
     await page.locator('#length').selectOption('short');
-    await more.click();
-    await card.locator('.offer-variant').first().waitFor();
-    assert.deepEqual(await visibleIds(page), ['saw-14', 'saw-17']);
+    assert.deepEqual(await visibleIds(page), ['saw-14']);
   });
 
   test('Выбор Москвы обновляет выдачу и исключает город вылета, ' + screen, async t => {
@@ -271,9 +246,7 @@ for (const mobile of [false, true]) {
     assert.equal(cleared.has('direct'), false);
     assert.equal(await direct.getAttribute('aria-pressed'), 'false');
     assert.deepEqual(await visibleIds(page), ['near-weekday', 'near-weekend']);
-    await page.locator('#results .offer-variants summary').click();
-    await page.locator('#results [data-offer="long-weekend"]').waitFor();
-    assert.deepEqual(await visibleIds(page), ['near-weekday', 'long-weekend', 'near-weekend']);
+
   });
 
   test('Месяц и точные даты сохраняются независимо при переключении и отправке, ' + screen, async t => {
