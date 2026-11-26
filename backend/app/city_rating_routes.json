@@ -3240,5 +3240,398 @@
     "router_info_url": "https://routing.openstreetmap.de/about.html",
     "attribution_url": "https://www.openstreetmap.org/copyright",
     "map_feedback_url": "https://www.openstreetmap.org/fixthemap"
+  },
+  "KMW": {
+    "starts": [
+      {
+        "name": "Отель Old Street, тротуар у входа",
+        "lat": 57.7644298,
+        "lon": 40.9355151,
+        "url": "https://www.openstreetmap.org/way/428983522",
+        "area": "улица Советская и восточная часть центра"
+      },
+      {
+        "name": "Я-Отель, подход со стороны Симановского",
+        "lat": 57.7705478,
+        "lon": 40.9236883,
+        "url": "https://www.openstreetmap.org/way/852263312",
+        "area": "квартал улицы Симановского"
+      }
+    ],
+    "places": [
+      {
+        "name": "Пожарная каланча, внешний подход",
+        "lat": 57.7686169,
+        "lon": 40.9259862,
+        "url": "https://www.openstreetmap.org/way/1304473891"
+      },
+      {
+        "name": "Романовский музей, подход со стороны проспекта Мира",
+        "lat": 57.7693957,
+        "lon": 40.9300523,
+        "url": "https://www.openstreetmap.org/way/322914840"
+      },
+      {
+        "name": "Беседка Островского, площадка у ротонды",
+        "lat": 57.7617878,
+        "lon": 40.9287198,
+        "url": "https://www.openstreetmap.org/way/347643760"
+      },
+      {
+        "name": "Музей природы, подход со стороны Пряничных рядов",
+        "lat": 57.765971,
+        "lon": 40.9242974,
+        "url": "https://www.openstreetmap.org/way/348892639"
+      },
+      {
+        "name": "Красные ряды, пешеходная дорожка",
+        "lat": 57.7669729,
+        "lon": 40.9262042,
+        "url": "https://www.openstreetmap.org/way/41397885"
+      }
+    ],
+    "walk_seconds": [
+      [
+        663.9,
+        757.8,
+        506.5,
+        640.8,
+        562.6
+      ],
+      [
+        343,
+        547.6,
+        1097.4,
+        652.2,
+        519.9
+      ]
+    ],
+    "walk_metres": [
+      [
+        829.5,
+        947.2,
+        633.2,
+        800.9,
+        703.1
+      ],
+      [
+        428.7,
+        684.6,
+        1371.6,
+        815.4,
+        649.9
+      ]
+    ],
+    "walk_minutes": [
+      [
+        11.06,
+        12.63,
+        8.44,
+        10.68,
+        9.38
+      ],
+      [
+        5.72,
+        9.13,
+        18.29,
+        10.87,
+        8.66
+      ]
+    ],
+    "source": "Пешеходные маршруты FOSSGIS OSRM, © OpenStreetMap contributors",
+    "url": "https://routing.openstreetmap.de/routed-foot/table/v1/foot/40.9355151,57.7644298;40.9236883,57.7705478;40.9259862,57.7686169;40.9300523,57.7693957;40.9287198,57.7617878;40.9242974,57.765971;40.9262042,57.7669729?sources=0;1&destinations=2;3;4;5;6&annotations=duration,distance&generate_hints=false",
+    "checked": "2026-11-26",
+    "valid_until": "2027-02-24",
+    "review_interval_days": 90,
+    "selection": "Два отеля в разных частях центрального района и пять ориентиров. Замер между пешеходными подходами.",
+    "selection_urls": [
+      "https://www.visit-kostroma.ru/marshruty/",
+      "https://kosmuseum.ru/visitors/kak-dobratsya/"
+    ],
+    "saturday_local_times": [
+      "10:00",
+      "15:00"
+    ],
+    "time_zone": "Europe/Moscow",
+    "scope": "В оба субботних часа используется одна пешеходная сеть. Маршрут заканчивается у места на улице. Время осмотра, погода и временные перекрытия не учитываются.",
+    "city_validation": {
+      "city": "Кострома",
+      "city_code": "KMW",
+      "points_in_city": 7
+    },
+    "snap_metres": [
+      0,
+      13.90715732,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "router_info_url": "https://routing.openstreetmap.de/about.html",
+    "attribution_url": "https://www.openstreetmap.org/copyright",
+    "map_feedback_url": "https://www.openstreetmap.org/fixthemap"
+  },
+  "MMK": {
+    "starts": [
+      {
+        "name": "Гостиница «Губернский», подход к зданию",
+        "lat": 68.9686329,
+        "lon": 33.0812103,
+        "url": "https://www.openstreetmap.org/way/310993276",
+        "area": "квартал улицы Софьи Перовской"
+      },
+      {
+        "name": "Cosmos Murmansk, подход со стороны улицы Книповича",
+        "lat": 68.9601013,
+        "lon": 33.0777328,
+        "url": "https://www.openstreetmap.org/way/295264464",
+        "area": "район улицы Книповича"
+      }
+    ],
+    "places": [
+      {
+        "name": "Морской вокзал, наружный подход со стороны Портового проезда",
+        "lat": 68.9748605,
+        "lon": 33.0623274,
+        "url": "https://www.openstreetmap.org/way/1422990512"
+      },
+      {
+        "name": "Мурманский областной художественный музей, подход со стороны улицы Коминтерна",
+        "lat": 68.9726847,
+        "lon": 33.0756241,
+        "url": "https://www.openstreetmap.org/way/88229811"
+      },
+      {
+        "name": "Дворец культуры имени Кирова, подход со стороны улицы Перовской",
+        "lat": 68.9691029,
+        "lon": 33.0803118,
+        "url": "https://www.openstreetmap.org/way/88227218"
+      },
+      {
+        "name": "Областной драматический театр, тротуар у здания",
+        "lat": 68.9612813,
+        "lon": 33.0737188,
+        "url": "https://www.openstreetmap.org/way/88176817"
+      },
+      {
+        "name": "Ленинградская улица, пешеходный променад",
+        "lat": 68.9714287,
+        "lon": 33.0752639,
+        "url": "https://www.openstreetmap.org/way/526084700"
+      }
+    ],
+    "walk_seconds": [
+      [
+        1140.9,
+        673.2,
+        96.4,
+        865.5,
+        461.8
+      ],
+      [
+        1785.8,
+        1436.5,
+        938.9,
+        226.6,
+        1225.1
+      ]
+    ],
+    "walk_metres": [
+      [
+        1426.5,
+        841.7,
+        120.5,
+        1081.9,
+        577.3
+      ],
+      [
+        2229.9,
+        1795.5,
+        1173.5,
+        283.1,
+        1531.1
+      ]
+    ],
+    "walk_minutes": [
+      [
+        19.02,
+        11.22,
+        1.61,
+        14.43,
+        7.7
+      ],
+      [
+        29.76,
+        23.94,
+        15.65,
+        3.78,
+        20.42
+      ]
+    ],
+    "source": "Пешеходные маршруты FOSSGIS OSRM, © OpenStreetMap contributors",
+    "url": "https://routing.openstreetmap.de/routed-foot/table/v1/foot/33.0812103,68.9686329;33.0777328,68.9601013;33.0623274,68.9748605;33.0756241,68.9726847;33.0803118,68.9691029;33.0737188,68.9612813;33.0752639,68.9714287?sources=0;1&destinations=2;3;4;5;6&annotations=duration,distance&generate_hints=false",
+    "checked": "2026-11-26",
+    "valid_until": "2027-02-24",
+    "review_interval_days": 90,
+    "selection": "Два отеля в разных частях центрального района и пять ориентиров. Замер между пешеходными подходами.",
+    "selection_urls": [
+      "https://murmansk.travel/municipality/murmansk",
+      "https://www.citymurmansk.ru/novosti/2026/04/18/?newsid=32283&page=1"
+    ],
+    "saturday_local_times": [
+      "10:00",
+      "15:00"
+    ],
+    "time_zone": "Europe/Moscow",
+    "scope": "В оба субботних часа используется одна пешеходная сеть. Маршрут заканчивается у места на улице. Время осмотра, погода и временные перекрытия не учитываются.",
+    "city_validation": {
+      "city": "Мурманск",
+      "city_code": "MMK",
+      "points_in_city": 7
+    },
+    "snap_metres": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "router_info_url": "https://routing.openstreetmap.de/about.html",
+    "attribution_url": "https://www.openstreetmap.org/copyright",
+    "map_feedback_url": "https://www.openstreetmap.org/fixthemap"
+  },
+  "MAD": {
+    "starts": [
+      {
+        "name": "Petit Palace Plaza Mayor, подход с Кава-де-Сан-Мигель",
+        "lat": 40.4159041,
+        "lon": -3.7090177,
+        "url": "https://www.openstreetmap.org/way/49016414",
+        "area": "исторический квартал Аустриас"
+      },
+      {
+        "name": "Hotel Villa Real, подход с площади Кортес",
+        "lat": 40.4159004,
+        "lon": -3.6969799,
+        "url": "https://www.openstreetmap.org/way/7972546",
+        "area": "квартал Лас-Летрас"
+      }
+    ],
+    "places": [
+      {
+        "name": "Пласа-Майор, пешеходный проход у аркад",
+        "lat": 40.4154015,
+        "lon": -3.7067954,
+        "url": "https://www.openstreetmap.org/way/549551722"
+      },
+      {
+        "name": "Королевский дворец, наружный подход с площади Ориенте",
+        "lat": 40.4178383,
+        "lon": -3.7128967,
+        "url": "https://www.openstreetmap.org/way/1443015597"
+      },
+      {
+        "name": "Музей Тиссена-Борнемисы, подход с Пасео-дель-Прадо",
+        "lat": 40.4164198,
+        "lon": -3.6949587,
+        "url": "https://www.openstreetmap.org/way/138884786"
+      },
+      {
+        "name": "Дворец Сибелес, тротуар у главного фасада",
+        "lat": 40.4190581,
+        "lon": -3.6921623,
+        "url": "https://www.openstreetmap.org/way/1291584233"
+      },
+      {
+        "name": "Пуэрта-дель-Соль, пешеходная часть площади",
+        "lat": 40.4167501,
+        "lon": -3.7027137,
+        "url": "https://www.openstreetmap.org/way/66835169"
+      }
+    ],
+    "walk_seconds": [
+      [
+        190.6,
+        487.3,
+        1132.7,
+        1343.7,
+        478.1
+      ],
+      [
+        756.5,
+        1157.5,
+        265.9,
+        675.3,
+        425.1
+      ]
+    ],
+    "walk_metres": [
+      [
+        235.6,
+        604.2,
+        1403.1,
+        1676.8,
+        594.8
+      ],
+      [
+        935.5,
+        1436.8,
+        332.5,
+        844.1,
+        521.4
+      ]
+    ],
+    "walk_minutes": [
+      [
+        3.18,
+        8.12,
+        18.88,
+        22.39,
+        7.97
+      ],
+      [
+        12.61,
+        19.29,
+        4.43,
+        11.25,
+        7.08
+      ]
+    ],
+    "source": "Пешеходные маршруты FOSSGIS OSRM, © OpenStreetMap contributors",
+    "url": "https://routing.openstreetmap.de/routed-foot/table/v1/foot/-3.7090177,40.4159041;-3.6969799,40.4159004;-3.7067954,40.4154015;-3.7128967,40.4178383;-3.6949587,40.4164198;-3.6921623,40.4190581;-3.7027137,40.4167501?sources=0;1&destinations=2;3;4;5;6&annotations=duration,distance&generate_hints=false",
+    "checked": "2026-11-26",
+    "valid_until": "2027-02-24",
+    "review_interval_days": 90,
+    "selection": "Два отеля в разных частях центрального района и пять ориентиров. Замер между пешеходными подходами.",
+    "selection_urls": [
+      "https://www.esmadrid.com/madrid-clasico",
+      "https://www.esmadrid.com/en/parks-gardens-madrid"
+    ],
+    "saturday_local_times": [
+      "10:00",
+      "15:00"
+    ],
+    "time_zone": "Europe/Madrid",
+    "scope": "В оба субботних часа используется одна пешеходная сеть. Маршрут заканчивается у места на улице. Время осмотра, погода и временные перекрытия не учитываются.",
+    "city_validation": {
+      "city": "Мадрид",
+      "city_code": "MAD",
+      "points_in_city": 7
+    },
+    "snap_metres": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "router_info_url": "https://routing.openstreetmap.de/about.html",
+    "attribution_url": "https://www.openstreetmap.org/copyright",
+    "map_feedback_url": "https://www.openstreetmap.org/fixthemap"
   }
 }

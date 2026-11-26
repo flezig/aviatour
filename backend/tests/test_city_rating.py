@@ -206,6 +206,9 @@ def test_published_observations_match_catalogue_dates_and_source_links():
     ("VGD", 4, 7.4),
     ("BEG", 3, None),
     ("AYT", 3, None),
+    ("KMW", 4, 7.4),
+    ("MMK", 4, 6.7),
+    ("MAD", 3, None),
 ])
 def test_verified_december_expansion_matches_public_rating(code, available, score):
     checked = date(2026, 11, 26)
@@ -236,6 +239,35 @@ def test_belgrade_free_transit_is_reported_without_a_cost_score():
     assert "0 RSD за поездку" in cost["detail"]
     assert "20 городов" in " ".join(cost["missing"])
     assert any("tob.rs" in item["url"] for item in cost["sources"])
+
+
+def test_spanish_hotel_statistics_keep_their_own_date_and_madrid_fare():
+    today = date(2026, 11, 26)
+    spanish = [code for code in rating.WORLD_PRICES["cities"] if rating.season.CITIES[code]["country_code"] == "ES"]
+    assert len(spanish) == 31
+    for code in spanish:
+        cost = rating.report(code, 12, 2026, today)["components"][1]
+        assert cost["score"] is None
+        assert "2026-11-26" in cost["detail"]
+        assert any("t=46298" in item["url"] and "Октябрь 2026" in item["note"] for item in cost["sources"])
+    madrid = rating.report("MAD", 12, 2026, today)["components"][1]
+    assert any("229,40 €" in item.get("note", "") for item in madrid["sources"])
+    assert "1,5 EUR за поездку" in madrid["detail"]
+    assert not any("городской тариф" in item for item in madrid["missing"])
+    assert "20 городов" in " ".join(madrid["missing"])
+    earlier = date(2026, 11, 25)
+    assert rating.report("MAD", 12, 2026, earlier)["components"][1]["sources"] == []
+    assert "2026-11-18" in rating.report("ALA", 12, 2026, earlier)["components"][1]["detail"]
+    assert rating.report("MAD", 1, 2027, today)["components"][1]["sources"] == []
+
+
+@pytest.mark.parametrize(("code", "fare", "domain"), [("EVN", "150 AMD", "telcell.am"), ("TBS", "1 GEL", "ttc.com.ge")])
+def test_yerevan_and_tbilisi_report_fare_without_scoring_cost(code, fare, domain):
+    report = rating.report(code, 12, 2026, date(2026, 11, 26))
+    cost = report["components"][1]
+    assert (report["available"], report["score"]) == (3, None)
+    assert cost["score"] is None and f"{fare} за поездку" in cost["detail"]
+    assert any(domain in source["url"] for source in cost["sources"])
 
 
 def test_phuket_city_routes_and_partial_weekend_observations():

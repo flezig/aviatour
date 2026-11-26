@@ -2074,6 +2074,117 @@
         "https://quicktickets.ru/kostromskoy-oblastnoy-teatr-kukol/e23",
         "https://quicktickets.ru/kostromskoy-oblastnoy-teatr-kukol/e15"
       ]
+    },
+    {
+      "name": "Художественный музей в Романовском здании",
+      "category": "museums",
+      "source": "Костромской музей-заповедник",
+      "url": "https://www.kosmuseum.ru/locations/kostroma/khudozhestvenny-musey",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Художественная коллекция на проспекте Мира, 5. Ежедневно с 11:00 до 19:00."
+    },
+    {
+      "name": "Музей природы Костромской области",
+      "category": "museums",
+      "source": "Костромской музей-заповедник",
+      "url": "https://www.kosmuseum.ru/locations/kostroma/myzey-prirody",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Вход со стороны Пряничных рядов. В субботу с 10:00 до 19:00, в воскресенье с 10:00 до 18:00."
+    },
+    {
+      "name": "Пожарная каланча",
+      "category": "history",
+      "source": "Костромской музей-заповедник",
+      "url": "https://kostroma.arhiv-museum.ru/pozharnaya-kalancha/glavnaya-kalancha/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Осмотр с Сусанинской площади."
+    },
+    {
+      "name": "Красные ряды",
+      "category": "history",
+      "source": "Туристический портал Костромы",
+      "url": "https://www.visit-kostroma.ru/kuda-skhodit/dostoprimechatelnosti/krasnye-ryady-gostinyy-dvor/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Торговый ансамбль конца XVIII века. Учитывается прогулка снаружи."
+    },
+    {
+      "name": "Традиционная костромская кухня в «Грозе»",
+      "category": "food",
+      "source": "Ресторан «Гроза»",
+      "url": "https://ostrovskiyhotel.ru/restaurant",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Авторские блюда по местным рецептам на проспекте Мира, 4Б."
+    },
+    {
+      "name": "Сырная кухня в «Доме Костромского сыровара»",
+      "category": "food",
+      "source": "Ресторан «Сыровар»",
+      "url": "https://syrovar-kostroma.ru/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Блюда с сыром собственного производства на проспекте Мира, 4."
+    },
+    {
+      "name": "Спектакль «Дни Турбиных»",
+      "category": "stage",
+      "source": "Театр Островского, касса Quick Tickets",
+      "url": "https://quicktickets.ru/kostromskoj-dramaticheskij-teatr-ostrovskogo/e160",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "27 декабря в 18:00, проспект Мира, 9.",
+      "weekend_dates": [
+        "2026-12-27"
+      ]
+    },
+    {
+      "name": "Спектакль «Операция Ряба»",
+      "category": "stage",
+      "source": "Камерный драматический театр, касса Quick Tickets",
+      "url": "https://quicktickets.ru/kostroma-kamernyj-teatr/e217",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "26 декабря в 10:30 и 27 декабря в 12:00, улица Симановского, 11.",
+      "weekend_dates": [
+        "2026-12-26",
+        "2026-12-27"
+      ]
     }
   ],
   "KRO": [
@@ -2553,6 +2664,120 @@
       ],
       "schedule_urls": [
         "https://quicktickets.ru/murmansk-teatr-dramy/e14"
+      ]
+    },
+    {
+      "name": "Мемориал «Защитникам Советского Заполярья»",
+      "category": "history",
+      "source": "Туристский информационный центр Мурманской области",
+      "url": "https://www.murmansk.travel/places/38",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Памятник «Алёша». Учитывается внешний осмотр мемориала."
+    },
+    {
+      "name": "Мемориальный маяк в память о моряках",
+      "category": "history",
+      "source": "Туристский информационный центр Мурманской области",
+      "url": "https://murmansk.travel/excursions/925",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Осмотр мемориала снаружи у смотровой площадки."
+    },
+    {
+      "name": "Набережная Семёновского озера",
+      "category": "nature",
+      "source": "Туристский информационный центр Мурманской области",
+      "url": "https://www.murmansk.travel/places/22",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Прогулка вдоль озера, без сезонных лодок и аттракционов."
+    },
+    {
+      "name": "Смотровая площадка у озера Среднее",
+      "category": "nature",
+      "source": "Туристский информационный центр Мурманской области",
+      "url": "https://murmansk.travel/places/1617",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Благоустроенный берег и обзор озера в Октябрьском округе."
+    },
+    {
+      "name": "Кухня Поморья и Заполярья в «Царской охоте»",
+      "category": "food",
+      "source": "Ресторан «Царская охота»",
+      "url": "https://restsyndicate.ru/carskaya-ohota/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Локальные продукты и авторские интерпретации поморской кухни."
+    },
+    {
+      "name": "Арктическая кухня в «Тундре»",
+      "category": "food",
+      "source": "Гриль-бар «Тундра»",
+      "url": "https://restsyndicate.ru/tundra",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Блюда северной кухни на улице Полярные Зори."
+    },
+    {
+      "name": "Спектакль «Принц Огненный и зачарованный лес»",
+      "category": "stage",
+      "source": "Мурманский областной драматический театр, касса БилетКонцерт",
+      "url": "https://www.biletconcert.ru/ru/murmansk/venue/murmanskiy-oblastnoy-dramaticheskiy-teatr/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "На проспекте Ленина, 49, в 11:00 и 14:00.",
+      "weekend_dates": [
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ]
+    },
+    {
+      "name": "Кукольный спектакль «Морозко»",
+      "category": "stage",
+      "source": "Мурманский областной театр кукол, касса Quick Tickets",
+      "url": "https://quicktickets.ru/murmansk-teatr-kukol",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Сеансы на проспекте Ленина, 27. В частности, 26 декабря в 14:00, 27 декабря в 12:00 и 15:00.",
+      "weekend_dates": [
+        "2026-12-19",
+        "2026-12-26",
+        "2026-12-27"
       ]
     }
   ],
@@ -8805,6 +9030,153 @@
       "valid_until": "2026-12-31",
       "note": "27 декабря в 20:00 в культурном центре имени Назыма Хикмета в Коньяалты.",
       "weekend_dates": [
+        "2026-12-27"
+      ]
+    }
+  ],
+  "MAD": [
+    {
+      "name": "Национальный музей Прадо",
+      "category": "museums",
+      "source": "Музей Прадо",
+      "url": "https://servicios.museodelprado.es/doclinks/pdf/visita/plano/m/2025/plano_ing.pdf?v=20250314",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "В субботу с 10:00 до 20:00, в воскресенье с 10:00 до 19:00."
+    },
+    {
+      "name": "Музей Тиссена-Борнемисы",
+      "category": "museums",
+      "source": "Национальный музей Тиссена-Борнемисы",
+      "url": "https://www.museothyssen.org/visita/horarios-tarifas",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Постоянная коллекция открыта в субботу и воскресенье."
+    },
+    {
+      "name": "Пласа-Майор",
+      "category": "history",
+      "source": "Туристический портал Мадрида",
+      "url": "https://www.esmadrid.com/informacion-turistica/Plaza-mayor-madrid",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Прогулка по исторической площади и её аркадам."
+    },
+    {
+      "name": "Королевский дворец Мадрида",
+      "category": "history",
+      "source": "Туристический портал Мадрида",
+      "url": "https://www.esmadrid.com/informacion-turistica/palacio-real",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Внешний осмотр со стороны площади Ориенте."
+    },
+    {
+      "name": "Парк Ретиро",
+      "category": "nature",
+      "source": "Туристический портал Мадрида",
+      "url": "https://www.esmadrid.com/informacion-turistica/parque-del-retiro",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Аллеи и сады исторического парка. При неблагоприятной погоде возможны ограничения."
+    },
+    {
+      "name": "Парк Мадрид-Рио",
+      "category": "nature",
+      "source": "Туристический портал Мадрида",
+      "url": "https://www.esmadrid.com/informacion-turistica/madrid-rio",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Городской парк и пешеходные дорожки вдоль Мансанареса."
+    },
+    {
+      "name": "Мадридское косидо в Lhardy",
+      "category": "food",
+      "source": "Ресторан Lhardy",
+      "url": "https://lhardy.com/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Традиционное мадридское рагу, Каррера-де-Сан-Херонимо, 8."
+    },
+    {
+      "name": "Чуррос с шоколадом в San Ginés",
+      "category": "food",
+      "source": "Chocolatería San Ginés",
+      "url": "https://chocolateriasangines.com/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Фирменные чуррос в исторической шоколатерии. Основной зал открыт ежедневно."
+    },
+    {
+      "name": "Мюзикл «Зорро»",
+      "category": "stage",
+      "source": "Туристический портал Мадрида",
+      "url": "https://www.esmadrid.com/en/whats-on/zorro-musical-teatro-latina",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Театр La Latina. В программе с ноября по февраль, в том числе по субботам и воскресеньям.",
+      "weekend_dates": [
+        "2026-12-05",
+        "2026-12-06",
+        "2026-12-12",
+        "2026-12-13",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ]
+    },
+    {
+      "name": "Балет «Кибела, ритуал»",
+      "category": "stage",
+      "source": "Туристический портал Мадрида",
+      "url": "https://www.esmadrid.com/en/whats-on/cybele-ritual-spanish-ballet-community-madrid-teatros-canal",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Teatros del Canal. Декабрьские воскресные показы в 18:30.",
+      "weekend_dates": [
+        "2026-12-13",
+        "2026-12-20",
         "2026-12-27"
       ]
     }
