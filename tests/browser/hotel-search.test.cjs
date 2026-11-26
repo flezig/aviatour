@@ -46,6 +46,38 @@ for (const [engine, width] of [[chromium, 1280], [webkit, 375]]) {
   });
 }
 
+test('Быстрый город заполняет жильё и открывает календарь только без дат', async t => {
+  const browser = await chromium.launch();
+  t.after(() => browser.close());
+  const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+  await page.goto((process.env.AVIATOR_TEST_URL ?? 'http://localhost:8000') + '/?service=stays');
+  const quick = page.getByRole('group', { name: 'Быстрый выбор города' });
+  const calendar = page.locator('#stayCalendar');
+  await quick.waitFor();
+  assert.deepEqual(await quick.getByRole('button').allTextContents(), ['Казань', 'Сочи', 'Стамбул']);
+  await quick.getByRole('button', { name: 'Казань' }).press('Enter');
+  await calendar.waitFor();
+  assert.equal(await page.locator('#stayPlace').innerText(), 'Казань');
+  assert.equal(await quick.isVisible(), false);
+  await page.keyboard.press('Escape');
+  assert.ok(await page.locator('[data-stay-date=checkin]').evaluate(button => button === document.activeElement));
+
+  await page.evaluate(() => sessionStorage.removeItem('aviator.stay'));
+  await page.reload();
+  await page.locator('[data-stay-date=checkin]').click();
+  await calendar.locator('[data-day]:not([disabled])').first().click();
+  await calendar.locator('[data-day]:not([disabled])').first().click();
+  await calendar.locator('[data-apply]').click();
+  const dates = await page.locator('#stayNights').innerText();
+  await quick.getByRole('button', { name: 'Сочи' }).click();
+  await page.getByRole('button', { name: 'Город или курорт Сочи' }).waitFor();
+  assert.equal(await calendar.isVisible(), false);
+  await page.reload();
+  await page.getByRole('button', { name: 'Город или курорт Сочи' }).waitFor();
+  assert.equal(await quick.isVisible(), false);
+  assert.equal(await page.locator('#stayNights').innerText(), dates);
+});
+
 test('Из билета в жильё передаются местная дата прилёта и состав семьи', async t => {
   const browser = await chromium.launch();
   t.after(() => browser.close());
@@ -72,6 +104,7 @@ test('Из билета в жильё передаются местная дат
   assert.match(await page.locator('#stayNights').innerText(), /2 ночи/);
   assert.match(await page.locator('#stayFamily').innerText(), /2 взрослых, 1 ребёнок.*6 лет.*добавьте на Авиасейлс/);
   assert.equal(await form.locator('[name=adults]').inputValue(), '2');
+  assert.equal(await page.locator('#stayQuick').isVisible(), false);
   await page.goBack();
   await page.locator('#detail[open]').waitFor();
   assert.equal(await page.locator('#detailTitle').innerText(), 'Казань');

@@ -77,9 +77,74 @@ button.stay-field:hover { background: var(--fill); }
 .stay-meta > p { margin: 0; }
 .stay-meta > p + p:not([hidden]) { margin-top: 2px; }
 #stayStatus { color: var(--ink); }
+.stay-quick:not([hidden]) {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  width: min(100%, 448px);
+  margin-top: 12px;
+}
+.stay-quick-city {
+  display: grid;
+  gap: 5px;
+  padding: 4px 4px 8px;
+  overflow: hidden;
+  border-radius: 12px;
+  background: var(--card);
+  color: var(--ink);
+  box-shadow: var(--sh-pass);
+  font-weight: 600;
+}
+.stay-quick-city:hover { background: var(--fill); }
+.stay-quick-city img {
+  width: 100%;
+  height: clamp(42px, 11vw, 56px);
+  border-radius: 8px;
+  object-fit: cover;
+}
 #stayCities .sheet-body { padding: 12px 16px max(12px, env(safe-area-inset-bottom)); }
 #stayCityQuery { width: 100%; min-height: 44px; margin-bottom: 8px; padding: 0 12px; border: 1px solid var(--line-strong); border-radius: 8px; font: inherit; }
 #stayCityList .airport-option { min-height: 44px; }
+.tour-search {
+  display: grid;
+  gap: 12px;
+  width: min(100%, 740px);
+  padding: 14px;
+  border-radius: var(--r-pass);
+  background: var(--card);
+  box-shadow: var(--sh-pass);
+}
+.tour-origin { display: grid; gap: 4px; width: min(100%, 240px); }
+.tour-origin > span { font-size: var(--fs-cap); font-weight: 600; }
+.tour-origin select {
+  height: 44px;
+  width: 100%;
+  padding: 5px 10px;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  background-color: var(--card);
+  color: var(--ink);
+  font: 600 16px var(--f-text);
+}
+.tour-countries:not([hidden]) { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.tour-country {
+  display: grid;
+  align-items: center;
+  gap: 2px;
+  min-height: 48px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: var(--fill);
+  text-decoration: none;
+}
+.tour-country:hover { text-decoration: underline; }
+.tour-country > span { font-size: var(--fs-cap); }
+.tour-prompt { margin: 0; }
+@media (max-width: 599px) {
+  .tour-origin { width: 100%; }
+  .tour-countries:not([hidden]) { grid-template-columns: 1fr; gap: 6px; }
+  .tour-country { grid-template-columns: minmax(0, 1fr) auto; }
+}
 @media (max-width: 899px) {
   .stay-search { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
   .stay-place, .stay-guests, .stay-submit { grid-column: 1 / -1; }

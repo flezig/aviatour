@@ -9,7 +9,7 @@ const lead = intro.querySelector('.intro-lead');
 const labels = {
   stays: ['Где остановиться', 'Выберите город, даты проживания и количество гостей.'],
   cars: ['Аренда авто', 'Тестируем раздел и решаем, подключать ли поиск авто.'],
-  tours: ['Туры в разработке', 'Пока можно найти билеты туда и обратно для самостоятельной поездки.']
+  tours: ['Пакетные туры', 'Выберите страну. Даты и состав туристов укажите на Travelata.']
 };
 let selected = 'flights';
 function sizeHero() {
@@ -44,11 +44,39 @@ for (const [i, tab] of tabs.entries()) {
     e.preventDefault(); tabs[n].focus(); choose(tabs[n]);
   });
 }
-document.getElementById('toursToFlights')?.addEventListener('click', () => {
-  const flights = document.getElementById('tab-flights');
-  choose(flights);
-  flights.focus();
-});
+const tourOrigin = document.getElementById('tourOrigin');
+if (tourOrigin) {
+  const flightOrigin = document.getElementById('originLabel');
+  const countries = document.getElementById('tourCountries');
+  const prompt = document.getElementById('tourOriginPrompt');
+  const links = countries.querySelectorAll('[data-tour-path]');
+  const origins = new Map([['MOW', 'https://travelata.ru'], ['LED', 'https://spb.travelata.ru']]);
+  let chosenLocally = false;
+
+  function renderTours() {
+    const origin = origins.get(tourOrigin.value);
+    for (const link of links) {
+      if (origin) link.href = origin + link.dataset.tourPath;
+      else link.removeAttribute('href');
+    }
+    countries.hidden = !origin;
+    prompt.hidden = Boolean(origin);
+  }
+
+  function syncTourOrigin() {
+    if (chosenLocally) return;
+    const city = flightOrigin.dataset.city;
+    tourOrigin.value = origins.has(city) ? city : '';
+    renderTours();
+  }
+
+  tourOrigin.addEventListener('change', () => {
+    chosenLocally = true;
+    renderTours();
+  });
+  new MutationObserver(syncTourOrigin).observe(flightOrigin, { attributeFilter: ['data-city'] });
+  syncTourOrigin();
+}
 function futureDay(days) {
   const d = new Date(); d.setDate(d.getDate()+days);
   return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');
