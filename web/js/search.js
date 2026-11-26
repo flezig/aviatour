@@ -767,19 +767,17 @@ function recentRow() {
 function showcaseRow(row, weekends) {
   const offers = rowOffers(row);
   if (row.key === 'holidays') offers.sort((a, b) => compareOffers(a, b, 'leave'));
-  // В ленте — до шести карточек, дальше полупрозрачная карточка «Ещё N»: лента не тянется бесконечно.
   const tiles = offers.slice(0, 6).map((offer) => {
     if (row.kind === 'pass') return passTile(offer, row.key);
     const note = row.key === 'holidays' ? holidayLabel(offer) : '';
     return stampTile(offer, row.key, esc(note));
-  }).join('')
-    + (offers.length > 6 ? `<button type="button" class="tile-more" data-row-all="${esc(row.key)}"><b>+${offers.length - 6}</b><span>Показать все</span>${icon('arrow-right')}</button>` : '');
+  }).join('');
   const periods = weekends.map(period => {
     const date = period.hint?.split(',')[0] || period.title;
     return `<button type="button" data-weekend="${esc(period.key)}" aria-pressed="${period.key === row.key}">${esc(date)}</button>`;
   }).join('');
   const controls = periods ? `<div class="weekend-periods" role="group" aria-label="Даты выходных">${periods}</div>` : '';
-  const action = `<button type="button" class="row-all" data-row-all="${esc(row.key)}">Все${icon('arrow-right')}</button>`;
+  const action = `<button type="button" class="row-all" data-row-all="${esc(row.key)}" aria-label="Все варианты: ${esc(row.title)}">Все${icon('arrow-right')}</button>`;
   return rowSection(row.key, periods ? 'На выходные' : row.title, periods ? 'Без отпуска' : row.hint, tiles, action, row.kind === 'pass', rowSticker(row), controls);
 }
 
