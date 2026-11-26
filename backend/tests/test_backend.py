@@ -61,6 +61,15 @@ def test_past_and_exact_airport():
     row.pop('origin_airport')
     with pytest.raises(ValueError): normalize(row,QUERY,NOW)
 
+@pytest.mark.parametrize('origin_city_code', [None, 'MOW'])
+def test_search_excludes_trips_between_airports_of_the_same_city(origin_city_code):
+    query = QUERY.model_copy(update={'origin_city_code': origin_city_code})
+    same_city = record()
+    same_city.update(destination='MOW', destination_airport='DME')
+    assert normalize(same_city, query, NOW) is None
+    assert normalize(record(), query, NOW).city_code == 'LED'
+
+
 def test_missing_optional_fields_and_identity():
     row=record();row.pop('transfers');row.pop('return_transfers')
     offer=normalize(row,QUERY,NOW)
