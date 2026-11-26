@@ -4609,6 +4609,102 @@
         "https://quicktickets.ru/vologda-kamernyj-teatr/e9",
         "https://quicktickets.ru/vologda-kamernyj-teatr/e86"
       ]
+    },
+    {
+      "name": "Софийский собор в Вологде",
+      "category": "history",
+      "source": "Туристический портал Вологды",
+      "url": "https://turvologda.ru/excursions/98/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Кафедральный собор у Кремлёвской площади. Учитывается обзор со стороны общедоступной площади."
+    },
+    {
+      "name": "Дом Засецких",
+      "category": "history",
+      "source": "Туристический портал Вологды",
+      "url": "https://turvologda.ru/museums-and-display-facilities/44/5881/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Деревянная усадьба на Ленинградской улице. Учитывается внешний осмотр."
+    },
+    {
+      "name": "Вологодский ботанический сад",
+      "category": "nature",
+      "source": "Туристический портал Вологды",
+      "url": "https://www.turvologda.ru/museums-and-display-facilities/35/722/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Коллекции растений в Ершовском переулке. Сад открыт для посетителей по выходным."
+    },
+    {
+      "name": "Прогулка по Пречистенской набережной",
+      "category": "nature",
+      "source": "Туристский информационный центр Вологодской области",
+      "url": "https://travel-vologda.ru/assets/files/zhurnal-o-turizme/20250807_jurnal_basco_01_medium.pdf",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Пешеходная прогулка вдоль реки между улицей Лермонтова и Красным мостом."
+    },
+    {
+      "name": "Вологодская кухня в кафе «Родное»",
+      "category": "food",
+      "source": "Кафе «Родное»",
+      "url": "https://rodnoevologda.ru/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Местные северные блюда и рецепты из экспедиций по Вологодчине."
+    },
+    {
+      "name": "Северная кухня в «Доме купчихи Ершовой»",
+      "category": "food",
+      "source": "Дом купчихи Ершовой",
+      "url": "https://www.restoran-ershovoy.ru/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Ресторан северной кухни в историческом особняке на Советском проспекте."
+    },
+    {
+      "name": "Музыкальная постановка «Серебряное копытце»",
+      "category": "stage",
+      "source": "Дирекция праздников Вологды, касса Quick Tickets",
+      "url": "https://quicktickets.ru/vologda-direkciya-prazdnikov/e106",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Сеансы в 11:00 и 14:00 на улице Горького, 105.",
+      "weekend_dates": [
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ]
     }
   ],
   "VKT": [
@@ -5080,6 +5176,74 @@
       "schedule_urls": [
         "https://quicktickets.ru/vladimir-teatr-razgulyaj/e21",
         "https://quicktickets.ru/vladimir-teatr-razgulyaj/e6"
+      ]
+    },
+    {
+      "name": "Успенский собор во Владимире",
+      "category": "history",
+      "source": "Владимиро-Суздальский музей-заповедник",
+      "url": "https://collection.vladmuseum.ru/entity/WHITP/3276",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Белокаменный собор XII века на Соборной площади. Учитывается осмотр с улицы."
+    },
+    {
+      "name": "Дмитриевский собор",
+      "category": "history",
+      "source": "Владимиро-Суздальский музей-заповедник",
+      "url": "https://collection.vladmuseum.ru/entity/WHITP/3273",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Белокаменная резьба фасадов собора. Учитывается внешний осмотр."
+    },
+    {
+      "name": "Пельмени ручной лепки в кафе «Тоня и её пельмени»",
+      "category": "food",
+      "source": "Золотые ворота культуры",
+      "url": "https://vladimirculture.ru/restaurants/1018/kafe-tonya-i-eyo-pelmeni",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Кафе на Большой Московской. Пельмени лепят вручную на открытой кухне."
+    },
+    {
+      "name": "Местные продукты в ресторане «Круча»",
+      "category": "food",
+      "source": "Ресторан «Круча»",
+      "url": "https://krucha-rest.ru/menu/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "В меню уха, пельмени и блюда с владимирской вишней. Ресторан открыт ежедневно."
+    },
+    {
+      "name": "Представление «В гостях у месяцев!»",
+      "category": "stage",
+      "source": "Владимирский академический театр драмы",
+      "url": "https://www.dramavladimir.ru/playbill",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "В афише на 27 декабря, в 11:00 и 14:00.",
+      "weekend_dates": [
+        "2026-12-27"
       ]
     }
   ],
@@ -8350,6 +8514,299 @@
       "valid_from": "2026-12-01",
       "valid_until": "2026-12-31",
       "note": "Уличная еда на улице Таланг. По воскресеньям с 16:00 до 22:00."
+    }
+  ],
+  "BEG": [
+    {
+      "name": "Национальный музей Сербии",
+      "category": "museums",
+      "source": "Национальный музей Сербии",
+      "url": "https://www.narodnimuzej.rs/visit-us/?lang=en",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Собрание археологии и искусства на площади Республики, музей открыт по выходным."
+    },
+    {
+      "name": "Этнографический музей в Белграде",
+      "category": "museums",
+      "source": "Этнографический музей",
+      "url": "https://etnografskimuzej.rs/en/contact-us/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Музей на Студенческой площади. В субботу и воскресенье с 10:00 до 20:00."
+    },
+    {
+      "name": "Белградская крепость",
+      "category": "history",
+      "source": "Администрация Белграда",
+      "url": "https://www.beograd.rs/en/discover-belgrade/a80019/Sights.html",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Осмотр укреплений и ворот с общедоступных дорожек."
+    },
+    {
+      "name": "Историческая улица Скадарлия",
+      "category": "history",
+      "source": "Администрация Белграда",
+      "url": "https://www.beograd.rs/lat/zivot-u-beogradu/beogradska-riznica/a85617/Skadarlija-ulica-boema-i-steciste-turista.html",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Пешеходная прогулка по историческому кварталу."
+    },
+    {
+      "name": "Парк Ташмайдан",
+      "category": "nature",
+      "source": "Администрация Белграда",
+      "url": "https://www.beograd.rs/lat/zivot-u-beogradu/beogradska-riznica/a85633/Tasmajdanski-park-nezaobilazno-mesto-za-druzenje-u-centru-Beograda.html",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Общедоступный городской парк в центре Белграда."
+    },
+    {
+      "name": "Парк Топчидер",
+      "category": "nature",
+      "source": "Администрация Белграда",
+      "url": "https://www.beograd.rs/lat/zivot-u-beogradu/beogradska-riznica/a85693/Topciderski-park-jedinstvena-prostorna-i-kulturna-celina-Beograda.html",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Исторический общедоступный парк в долине Топчидерской реки."
+    },
+    {
+      "name": "Сербская кухня в Tri šešira",
+      "category": "food",
+      "source": "Tri šešira",
+      "url": "https://trisesira.rs/en/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Историческое заведение на Скадарской улице с традиционным сербским меню."
+    },
+    {
+      "name": "Сербская кухня в Dva jelena",
+      "category": "food",
+      "source": "Dva jelena, касса бронирования Ontopo",
+      "url": "https://ontopo.com/en/rs/page/52941226",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Традиционная кухня в исторической кафане квартала Скадарлия."
+    },
+    {
+      "name": "Спектакль «Андрич и Елена»",
+      "category": "stage",
+      "source": "Национальный театр в Белграде",
+      "url": "https://www.narodnopozoriste.rs/lat/repertoar/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "В афише на 26 и 27 декабря, 20:30, сцена Раши Плаовича.",
+      "weekend_dates": [
+        "2026-12-26",
+        "2026-12-27"
+      ]
+    },
+    {
+      "name": "Спектакль «Война и мир»",
+      "category": "stage",
+      "source": "Национальный театр в Белграде",
+      "url": "https://www.narodnopozoriste.rs/lat/repertoar/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "В афише на 27 декабря, 19:30, большая сцена. Титры на русском.",
+      "weekend_dates": [
+        "2026-12-27"
+      ]
+    }
+  ],
+  "AYT": [
+    {
+      "name": "Дом-музей Ататюрка",
+      "category": "museums",
+      "source": "Turkish Museums",
+      "url": "https://www.turkishmuseums.com/museum/detail/1954-antalya-ataturk-evi-muzesi/1954/1",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "На улице Ышыклар. В официальном расписании указаны суббота и воскресенье."
+    },
+    {
+      "name": "Музей Мевлевихане",
+      "category": "museums",
+      "source": "Министерство культуры и туризма Турции",
+      "url": "https://muze.gov.tr/s3/MysFileLibrary/Antalya%20Mevlevihane%20M%C3%BCzesi-a4140456-28d1-451a-bd01-4d86dddfe8bc.pdf",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Экспозиция в историческом комплексе Калеичи. В официальном расписании указаны выходные."
+    },
+    {
+      "name": "Ворота Адриана",
+      "category": "history",
+      "source": "Администрация Антальи",
+      "url": "https://www.antalya.bel.tr/en/kaleici",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Уличный осмотр римских ворот на входе в Калеичи."
+    },
+    {
+      "name": "Башня Хыдырлык",
+      "category": "history",
+      "source": "Администрация Антальи",
+      "url": "https://www.antalya.bel.tr/en/kaleici",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Наружный осмотр исторической башни у парка Караалиоглу."
+    },
+    {
+      "name": "Парк Караалиоглу",
+      "category": "nature",
+      "source": "Администрация Антальи",
+      "url": "https://cop31.antalya.bel.tr/ziyaretci-rehberi",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Городской парк рядом с Калеичи, включён в пешеходный маршрут муниципалитета."
+    },
+    {
+      "name": "Парк Нижнего Дюдена",
+      "category": "nature",
+      "source": "Администрация Антальи",
+      "url": "https://cop31.antalya.bel.tr/ziyaretci-rehberi",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Публичная прогулочная зона у места, где Нижний Дюден впадает в море."
+    },
+    {
+      "name": "Кухня Антальи в 7 Mehmet",
+      "category": "food",
+      "source": "7 Mehmet",
+      "url": "https://7mehmet.com/en/7-mehmet-antalya",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Ресторан Антальи со средиземноморским и традиционным турецким меню."
+    },
+    {
+      "name": "Тахинный пияз в Piyazcı Ahmet",
+      "category": "food",
+      "source": "Piyazcı Ahmet",
+      "url": "https://www.piyazciahmet.com.tr/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Фасолевый салат по-антальски, кёфте и местные десерты."
+    },
+    {
+      "name": "Новогодний концерт Государственной оперы и балета Антальи",
+      "category": "stage",
+      "source": "Билетная касса Biletinial",
+      "url": "https://cdn.biletinial.com/en-tr/opera-bale/yilbasi-konseri-antalya-dob",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "26 декабря в 20:00 на оперной сцене центра имени Хашима Ишджана.",
+      "weekend_dates": [
+        "2026-12-26"
+      ]
+    },
+    {
+      "name": "Балет «Щелкунчик» в Анталье",
+      "category": "stage",
+      "source": "Государственная опера и балет Антальи, касса Biletinial",
+      "url": "https://biletinial.com/en-tr/mekan/antalya-devlet-opera-balesi",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "В декабрьском репертуаре Государственной оперы и балета.",
+      "weekend_dates": [
+        "2026-12-19"
+      ]
+    },
+    {
+      "name": "Спектакль «Hijyenik Aşklar»",
+      "category": "stage",
+      "source": "Билетная касса Biletinial",
+      "url": "https://biletinial.com/tr-tr/tiyatro/hijyenik-asklar-tiyatro-oyunu?cinemaBranchId=17215",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "27 декабря в 20:00 в культурном центре имени Назыма Хикмета в Коньяалты.",
+      "weekend_dates": [
+        "2026-12-27"
+      ]
     }
   ]
 }
