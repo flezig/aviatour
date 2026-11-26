@@ -2086,6 +2086,84 @@
         "https://quicktickets.ru/kaluga-teatr-kukol/e65",
         "https://quicktickets.ru/kaluga-teatr-kukol/e140"
       ]
+    },
+    {
+      "name": "Каменный мост",
+      "category": "history",
+      "source": "Туристический портал Калужской области",
+      "url": "https://visit-kaluga.ru/routes/istoriko-kulturnaya-kaluga/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Каменный виадук над Березуйским оврагом. Учитывается внешний осмотр."
+    },
+    {
+      "name": "Гостиные ряды",
+      "category": "history",
+      "source": "Туристический портал Калужской области",
+      "url": "https://visit-kaluga.ru/routes/istoriko-kulturnaya-kaluga/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Архитектурный ансамбль на площади Старый Торг. Учитывается внешний осмотр."
+    },
+    {
+      "name": "Центральный парк Калуги",
+      "category": "nature",
+      "source": "Туристический портал Калужской области",
+      "url": "https://visit-kaluga.ru/routes/istoriko-kulturnaya-kaluga/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Открытые аллеи парка рядом с Троицким собором."
+    },
+    {
+      "name": "Сквер Мира",
+      "category": "nature",
+      "source": "Туристический портал Калужской области",
+      "url": "https://visit-kaluga.ru/catalog/entry/skver-mira/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Городской сквер у памятника Циолковскому."
+    },
+    {
+      "name": "Калужское тесто в музейной лавке",
+      "category": "food",
+      "source": "Туристический портал Калужской области",
+      "url": "https://visit-kaluga.ru/catalog/entry/kafe-pryanichnaya-quot-lyubimaya-kaluga-quot/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "В лавке продают местные пряники и традиционное калужское тесто."
+    },
+    {
+      "name": "Кафе-музей «Русские традиции»",
+      "category": "food",
+      "source": "Кафе-музей «Русские традиции»",
+      "url": "https://cafemuseum40.ru/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Блюда по семейным рецептам купцов Калужской губернии. Есть часы работы в выходные."
     }
   ],
   "KMW": [
@@ -3455,6 +3533,120 @@
       ],
       "schedule_urls": [
         "https://quicktickets.ru/petropavlovsk-kamchatskiy-dramteatr/e250"
+      ]
+    },
+    {
+      "name": "Памятник Витусу Берингу",
+      "category": "history",
+      "source": "Камчатский туристический портал",
+      "url": "https://visitkamchatka.ru/activities/petropavlovsk-kamchatskiy/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Наружный осмотр памятника на Советской улице."
+    },
+    {
+      "name": "Стела «Город воинской славы»",
+      "category": "history",
+      "source": "Камчатский туристический портал",
+      "url": "https://visitkamchatka.ru/events/torzhestvennye-meropriyatiya-posvyashchennye-dnyu-svyatykh-pervoverkhovnykh-apostolov-petra-i-pavla/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Открытая площадь рядом с Озерновской косой."
+    },
+    {
+      "name": "Парк на Никольской сопке",
+      "category": "nature",
+      "source": "Камчатский туристический портал",
+      "url": "https://visitkamchatka.ru/activities/petropavlovsk-kamchatskiy/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Пешеходная прогулка по парку. Доступ к отдельным тропам зависит от погоды."
+    },
+    {
+      "name": "Набережная Авачинской губы",
+      "category": "nature",
+      "source": "Камчатский туристический портал",
+      "url": "https://visitkamchatka.ru/activities/petropavlovsk-kamchatskiy/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Прогулочная часть набережной в центре города."
+    },
+    {
+      "name": "Два моря, Океан",
+      "category": "food",
+      "source": "Камчатский туристический портал",
+      "url": "https://visitkamchatka.ru/food/rybnyy-restoran-dva-morya-okean/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Блюда из камчатского краба, палтуса и местных дикоросов."
+    },
+    {
+      "name": "Камчатка Local Kitchen",
+      "category": "food",
+      "source": "Камчатский туристический портал",
+      "url": "https://visitkamchatka.ru/food/restoran-kamchatka-local-kitchen/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Тихоокеанская кухня из продуктов камчатских поставщиков."
+    },
+    {
+      "name": "«Кот в сапогах» в Камчатском театре кукол",
+      "category": "stage",
+      "source": "Камчатский театр кукол, касса БилетКонцерт",
+      "url": "https://biletconcert.ru/ru/petropavlovsk-kamchatskiy/venue/kamchatskiy-teatr-kukol/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Спектакль есть в афише 19, 20, 26 и 27 декабря.",
+      "weekend_dates": [
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ]
+    },
+    {
+      "name": "«Жар-птица и Василиса-царевна»",
+      "category": "stage",
+      "source": "Камчатский театр драмы и комедии, касса Quick Tickets",
+      "url": "https://quicktickets.ru/petropavlovsk-kamchatskiy-dramteatr",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Семейная постановка новогоднего репертуара. Есть показы 26 и 27 декабря.",
+      "weekend_dates": [
+        "2026-12-26",
+        "2026-12-27"
       ]
     }
   ],
@@ -5305,6 +5497,84 @@
         "https://quicktickets.ru/volgograd-tyuz/e81",
         "https://quicktickets.ru/volgograd-tyuz/e96"
       ]
+    },
+    {
+      "name": "Мемориал на Мамаевом кургане",
+      "category": "history",
+      "source": "Администрация Волгограда",
+      "url": "https://www.volgadmin.ru/d/about/Tourism",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Открытая часть мемориального комплекса и подходы к монументу."
+    },
+    {
+      "name": "Аллея Героев",
+      "category": "history",
+      "source": "Администрация Волгограда",
+      "url": "https://www.volgadmin.ru/d/about/Tourism",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Пешеходный маршрут в центре, от площади Павших Борцов к Волге."
+    },
+    {
+      "name": "Комсомольский сад",
+      "category": "nature",
+      "source": "Волгоградский институт бизнеса, сборник о туризме",
+      "url": "https://volbi.ru/wp-content/uploads/2026/04/%D0%A1%D0%B1%D0%BE%D1%80%D0%BD%D0%B8%D0%BA-%D0%9A%D0%BE%D0%BD%D1%84%D0%B5%D1%80%D0%B5%D0%BD%D1%86%D0%B8%D0%B8-%D0%92%D0%98%D0%91-2026-1.pdf",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Городской сад в центральной части Волгограда."
+    },
+    {
+      "name": "Парк Победы на набережной",
+      "category": "nature",
+      "source": "Волгоградский институт бизнеса, сборник о туризме",
+      "url": "https://volbi.ru/wp-content/uploads/2026/04/%D0%A1%D0%B1%D0%BE%D1%80%D0%BD%D0%B8%D0%BA-%D0%9A%D0%BE%D0%BD%D1%84%D0%B5%D1%80%D0%B5%D0%BD%D1%86%D0%B8%D0%B8-%D0%92%D0%98%D0%91-2026-1.pdf",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Общедоступная зелёная зона на набережной 62-й Армии."
+    },
+    {
+      "name": "Ресторан «Река»",
+      "category": "food",
+      "source": "Ресторан «Река»",
+      "url": "https://rekarest.ru/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Блюда волжской кухни. Ресторан на набережной у Речного вокзала."
+    },
+    {
+      "name": "Ресторан «Раковаръ»",
+      "category": "food",
+      "source": "Ресторан «Раковаръ»",
+      "url": "https://restrakovar.ru/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "В меню раки и блюда из рыбы, заведение рядом с Аллеей Героев."
     }
   ],
   "VOZ": [
@@ -5386,6 +5656,119 @@
       "schedule_urls": [
         "https://quicktickets.ru/voronej-tyuz/e90",
         "https://quicktickets.ru/voronej-tyuz/e100"
+      ]
+    },
+    {
+      "name": "Адмиралтейская площадь",
+      "category": "history",
+      "source": "Туристский центр Воронежской области",
+      "url": "https://visitvrn.ru/wp-content/uploads/2025/06/Chek-list-Voronezhskaya-oblast-1.pdf",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Историческая площадь, вид на пришвартованный корабль и Успенский храм."
+    },
+    {
+      "name": "Театр оперы и балета на площади Ленина",
+      "category": "history",
+      "source": "Реестр туристических ресурсов Воронежской области",
+      "url": "https://visitvrn.ru/wp-content/uploads/2024/10/REESTR-TURRESURSOV-2024.pdf",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Внешний осмотр здания на площади Ленина."
+    },
+    {
+      "name": "Кольцовский сквер",
+      "category": "nature",
+      "source": "Туристский центр Воронежской области",
+      "url": "https://visitvrn.ru/wp-content/uploads/2025/06/Chek-list-Voronezhskaya-oblast-1.pdf",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Прогулочные дорожки вокруг памятника Кольцову."
+    },
+    {
+      "name": "Петровский сквер",
+      "category": "nature",
+      "source": "Туристский центр Воронежской области",
+      "url": "https://visitvrn.ru/wp-content/uploads/2025/06/Chek-list-Voronezhskaya-oblast-1.pdf",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Открытая зелёная зона в историческом центре."
+    },
+    {
+      "name": "Ресторан «Гармошка»",
+      "category": "food",
+      "source": "Туристско-информационный центр Воронежа",
+      "url": "https://visit-voronezh.ru/guide/gde-poest/restoran-garmoshka.html",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "В меню традиционные блюда и воронежская мраморная говядина."
+    },
+    {
+      "name": "Ресторан «1586»",
+      "category": "food",
+      "source": "Ресторан «1586»",
+      "url": "https://1586.rest/kuhnya",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Меню с продуктами местных производителей."
+    },
+    {
+      "name": "«Домашняя ёлка» в Никитинском театре",
+      "category": "stage",
+      "source": "Никитинский театр",
+      "url": "https://www.nikitincenter.ru/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "Новогодние истории Бродячего театра.",
+      "weekend_dates": [
+        "2026-12-20",
+        "2026-12-26",
+        "2026-12-27"
+      ]
+    },
+    {
+      "name": "Балет «Щелкунчик»",
+      "category": "stage",
+      "source": "Воронежский государственный театр оперы и балета",
+      "url": "https://www.theatre-vrn.ru/",
+      "months": [
+        12
+      ],
+      "checked": "2026-11-26",
+      "valid_from": "2026-12-01",
+      "valid_until": "2026-12-31",
+      "note": "В декабрьской афише есть показы на последних выходных месяца.",
+      "weekend_dates": [
+        "2026-12-26",
+        "2026-12-27"
       ]
     }
   ],

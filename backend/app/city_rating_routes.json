@@ -4157,5 +4157,525 @@
     "router_info_url": "https://routing.openstreetmap.de/about.html",
     "attribution_url": "https://www.openstreetmap.org/copyright",
     "map_feedback_url": "https://www.openstreetmap.org/fixthemap"
+  },
+  "VOG": {
+    "starts": [
+      {
+        "name": "Гостиница «Интурист»",
+        "lat": 48.7091036,
+        "lon": 44.5160102,
+        "url": "https://www.openstreetmap.org/node/1387111552",
+        "area": "площадь Павших Борцов"
+      },
+      {
+        "name": "Отель Cosmos",
+        "lat": 48.7132847,
+        "lon": 44.5109738,
+        "url": "https://www.openstreetmap.org/node/6806328377",
+        "area": "улица Михаила Балонина"
+      }
+    ],
+    "places": [
+      {
+        "name": "Площадь Павших Борцов, подход к тополю",
+        "lat": 48.7076658,
+        "lon": 44.5160106,
+        "url": "https://www.openstreetmap.org/node/8809597118"
+      },
+      {
+        "name": "Аллея Героев, центральная дорожка",
+        "lat": 48.7058517,
+        "lon": 44.5186686,
+        "url": "https://www.openstreetmap.org/way/758948931"
+      },
+      {
+        "name": "Комсомольский сад, внутренняя дорожка",
+        "lat": 48.7079787,
+        "lon": 44.5112807,
+        "url": "https://www.openstreetmap.org/way/758948923"
+      },
+      {
+        "name": "Волгоградский музыкальный театр, наружный подход",
+        "lat": 48.7057601,
+        "lon": 44.5221725,
+        "url": "https://www.openstreetmap.org/way/115551424"
+      },
+      {
+        "name": "Новый экспериментальный театр, наружный подход",
+        "lat": 48.7077322,
+        "lon": 44.5123699,
+        "url": "https://www.openstreetmap.org/way/115572034"
+      }
+    ],
+    "walk_seconds": [
+      [
+        189.8,
+        411.3,
+        340.8,
+        673,
+        272.2
+      ],
+      [
+        639.3,
+        860.8,
+        587.8,
+        1151.7,
+        667.8
+      ]
+    ],
+    "walk_metres": [
+      [
+        237.2,
+        509.3,
+        426,
+        841.2,
+        340.4
+      ],
+      [
+        799,
+        1071.1,
+        734.5,
+        1434.6,
+        834.7
+      ]
+    ],
+    "walk_minutes": [
+      [
+        3.16,
+        6.86,
+        5.68,
+        11.22,
+        4.54
+      ],
+      [
+        10.65,
+        14.35,
+        9.8,
+        19.2,
+        11.13
+      ]
+    ],
+    "source": "Пешеходные маршруты FOSSGIS OSRM, © OpenStreetMap contributors",
+    "url": "https://routing.openstreetmap.de/routed-foot/table/v1/foot/44.5160102,48.7091036;44.5109738,48.7132847;44.5160106,48.7076658;44.5186686,48.7058517;44.5112807,48.7079787;44.5221725,48.7057601;44.5123699,48.7077322?sources=0;1&destinations=2;3;4;5;6&annotations=duration,distance&generate_hints=false",
+    "checked": "2026-11-26",
+    "valid_until": "2027-02-24",
+    "review_interval_days": 90,
+    "selection": "Два отеля в разных частях центрального района и пять ориентиров. Замер между пешеходными подходами.",
+    "selection_urls": [
+      "https://www.volgadmin.ru/d/about/Tourism"
+    ],
+    "saturday_local_times": [
+      "10:00",
+      "15:00"
+    ],
+    "time_zone": "Europe/Volgograd",
+    "scope": "В оба субботних часа используется одна пешеходная сеть. Маршрут заканчивается у места на улице. Время осмотра, погода и временные перекрытия не учитываются.",
+    "city_validation": {
+      "city": "Волгоград",
+      "city_code": "VOG",
+      "points_in_city": 7
+    },
+    "snap_metres": [
+      10.95589642,
+      43.1775646,
+      1.880055675,
+      1.619381352,
+      4.139067821,
+      21.98974563,
+      24.76676869
+    ],
+    "router_info_url": "https://routing.openstreetmap.de/about.html",
+    "attribution_url": "https://www.openstreetmap.org/copyright",
+    "map_feedback_url": "https://www.openstreetmap.org/fixthemap"
+  },
+  "VOZ": {
+    "starts": [
+      {
+        "name": "Отель Azimut",
+        "lat": 51.6622699,
+        "lon": 39.1980222,
+        "url": "https://www.openstreetmap.org/node/710380088",
+        "area": "Кольцовская улица"
+      },
+      {
+        "name": "Отель «Дегас»",
+        "lat": 51.6677447,
+        "lon": 39.2088693,
+        "url": "https://www.openstreetmap.org/node/2724952862",
+        "area": "Пятницкого и проспект Революции"
+      }
+    ],
+    "places": [
+      {
+        "name": "Кольцовский сквер, подход к памятнику",
+        "lat": 51.6614895,
+        "lon": 39.2011617,
+        "url": "https://www.openstreetmap.org/node/460257399"
+      },
+      {
+        "name": "Площадь Победы, пешеходная зона",
+        "lat": 51.6712734,
+        "lon": 39.2105042,
+        "url": "https://www.openstreetmap.org/way/70979260"
+      },
+      {
+        "name": "Театр кукол «Шут», наружный подход",
+        "lat": 51.6662558,
+        "lon": 39.2047723,
+        "url": "https://www.openstreetmap.org/node/425523847"
+      },
+      {
+        "name": "Камерный театр, наружный подход",
+        "lat": 51.6652848,
+        "lon": 39.2026147,
+        "url": "https://www.openstreetmap.org/node/3070466703"
+      },
+      {
+        "name": "Театр оперы и балета, наружный подход",
+        "lat": 51.6614197,
+        "lon": 39.1989243,
+        "url": "https://www.openstreetmap.org/node/1261080745"
+      }
+    ],
+    "walk_seconds": [
+      [
+        260.9,
+        1164.2,
+        596.5,
+        510.9,
+        169.6
+      ],
+      [
+        825.2,
+        472.8,
+        355.3,
+        509.6,
+        902.5
+      ]
+    ],
+    "walk_metres": [
+      [
+        326.2,
+        1450,
+        745.3,
+        638.7,
+        212.1
+      ],
+      [
+        1029.1,
+        590.5,
+        439.2,
+        632.4,
+        1125.8
+      ]
+    ],
+    "walk_minutes": [
+      [
+        4.35,
+        19.4,
+        9.94,
+        8.51,
+        2.83
+      ],
+      [
+        13.75,
+        7.88,
+        5.92,
+        8.49,
+        15.04
+      ]
+    ],
+    "source": "Пешеходные маршруты FOSSGIS OSRM, © OpenStreetMap contributors",
+    "url": "https://routing.openstreetmap.de/routed-foot/table/v1/foot/39.1980222,51.6622699;39.2088693,51.6677447;39.2011617,51.6614895;39.2105042,51.6712734;39.2047723,51.6662558;39.2026147,51.6652848;39.1989243,51.6614197?sources=0;1&destinations=2;3;4;5;6&annotations=duration,distance&generate_hints=false",
+    "checked": "2026-11-26",
+    "valid_until": "2027-02-24",
+    "review_interval_days": 90,
+    "selection": "Два отеля в разных частях центрального района и пять ориентиров. Замер между пешеходными подходами.",
+    "selection_urls": [
+      "https://visit-voronezh.ru/"
+    ],
+    "saturday_local_times": [
+      "10:00",
+      "15:00"
+    ],
+    "time_zone": "Europe/Moscow",
+    "scope": "В оба субботних часа используется одна пешеходная сеть. Маршрут заканчивается у места на улице. Время осмотра, погода и временные перекрытия не учитываются.",
+    "city_validation": {
+      "city": "Воронеж",
+      "city_code": "VOZ",
+      "points_in_city": 7
+    },
+    "snap_metres": [
+      11.26817549,
+      19.58098341,
+      5.051356403,
+      3.578742612,
+      9.183469259,
+      19.91808746,
+      25.28354999
+    ],
+    "router_info_url": "https://routing.openstreetmap.de/about.html",
+    "attribution_url": "https://www.openstreetmap.org/copyright",
+    "map_feedback_url": "https://www.openstreetmap.org/fixthemap"
+  },
+  "KLF": {
+    "starts": [
+      {
+        "name": "Гостиница «Георгиевская»",
+        "lat": 54.5117638,
+        "lon": 36.2469648,
+        "url": "https://www.openstreetmap.org/node/12721931275",
+        "area": "Георгиевская улица"
+      },
+      {
+        "name": "Гостиница «Ока»",
+        "lat": 54.5082319,
+        "lon": 36.2540306,
+        "url": "https://www.openstreetmap.org/node/347680425",
+        "area": "улица Карпова"
+      }
+    ],
+    "places": [
+      {
+        "name": "Каменный мост, пешеходный подход",
+        "lat": 54.5094545,
+        "lon": 36.2475952,
+        "url": "https://www.openstreetmap.org/node/347678788"
+      },
+      {
+        "name": "Гостиные ряды, наружный подход",
+        "lat": 54.5074324,
+        "lon": 36.2541943,
+        "url": "https://www.openstreetmap.org/node/347679403"
+      },
+      {
+        "name": "Троицкий собор, наружный подход",
+        "lat": 54.507468,
+        "lon": 36.2488748,
+        "url": "https://www.openstreetmap.org/way/94511521"
+      },
+      {
+        "name": "Западная арка Присутственных мест",
+        "lat": 54.5084406,
+        "lon": 36.2491736,
+        "url": "https://www.openstreetmap.org/way/137476284"
+      },
+      {
+        "name": "Сквер Пушкина, дорожка",
+        "lat": 54.5097232,
+        "lon": 36.2488257,
+        "url": "https://www.openstreetmap.org/way/134822476"
+      }
+    ],
+    "walk_seconds": [
+      [
+        323.9,
+        807.7,
+        678.2,
+        463.8,
+        414
+      ],
+      [
+        457.8,
+        144.5,
+        358.7,
+        335.8,
+        407
+      ]
+    ],
+    "walk_metres": [
+      [
+        404.8,
+        1009.5,
+        847.7,
+        579.7,
+        517.4
+      ],
+      [
+        572.6,
+        180.6,
+        448.6,
+        419.8,
+        508.8
+      ]
+    ],
+    "walk_minutes": [
+      [
+        5.4,
+        13.46,
+        11.3,
+        7.73,
+        6.9
+      ],
+      [
+        7.63,
+        2.41,
+        5.98,
+        5.6,
+        6.78
+      ]
+    ],
+    "source": "Пешеходные маршруты FOSSGIS OSRM, © OpenStreetMap contributors",
+    "url": "https://routing.openstreetmap.de/routed-foot/table/v1/foot/36.2469648,54.5117638;36.2540306,54.5082319;36.2475952,54.5094545;36.2541943,54.5074324;36.2488748,54.507468;36.2491736,54.5084406;36.2488257,54.5097232?sources=0;1&destinations=2;3;4;5;6&annotations=duration,distance&generate_hints=false",
+    "checked": "2026-11-26",
+    "valid_until": "2027-02-24",
+    "review_interval_days": 90,
+    "selection": "Два отеля в разных частях центрального района и пять ориентиров. Замер между пешеходными подходами.",
+    "selection_urls": [
+      "https://visit-kaluga.ru/routes/istoriko-kulturnaya-kaluga/"
+    ],
+    "saturday_local_times": [
+      "10:00",
+      "15:00"
+    ],
+    "time_zone": "Europe/Moscow",
+    "scope": "В оба субботних часа используется одна пешеходная сеть. Маршрут заканчивается у места на улице. Время осмотра, погода и временные перекрытия не учитываются.",
+    "city_validation": {
+      "city": "Калуга",
+      "city_code": "KLF",
+      "points_in_city": 7
+    },
+    "snap_metres": [
+      8.394742967,
+      9.589875089,
+      1.586532627,
+      3.207593531,
+      26.49154257,
+      1.782196426,
+      2.702116119
+    ],
+    "router_info_url": "https://routing.openstreetmap.de/about.html",
+    "attribution_url": "https://www.openstreetmap.org/copyright",
+    "map_feedback_url": "https://www.openstreetmap.org/fixthemap"
+  },
+  "PKC": {
+    "starts": [
+      {
+        "name": "Гостиница «Командор»",
+        "lat": 53.024806,
+        "lon": 158.6480466,
+        "url": "https://www.openstreetmap.org/node/14180189501",
+        "area": "верхняя часть Ленинской улицы"
+      },
+      {
+        "name": "Гостиница «Амто»",
+        "lat": 53.0195198,
+        "lon": 158.647819,
+        "url": "https://www.openstreetmap.org/node/14200652064",
+        "area": "нижняя часть центра"
+      }
+    ],
+    "places": [
+      {
+        "name": "Памятник Витусу Берингу",
+        "lat": 53.0180577,
+        "lon": 158.6490517,
+        "url": "https://www.openstreetmap.org/node/5824613653"
+      },
+      {
+        "name": "Камчатский театр драмы и комедии, внешний подход",
+        "lat": 53.0220936,
+        "lon": 158.6459292,
+        "url": "https://www.openstreetmap.org/way/98328203"
+      },
+      {
+        "name": "Художественный музей, внешний подход",
+        "lat": 53.0157406,
+        "lon": 158.6495481,
+        "url": "https://www.openstreetmap.org/way/128672867"
+      },
+      {
+        "name": "Стела «Город воинской славы»",
+        "lat": 53.0245898,
+        "lon": 158.6432403,
+        "url": "https://www.openstreetmap.org/node/12143553989"
+      },
+      {
+        "name": "Мемориал обороны Петропавловска на Никольской сопке",
+        "lat": 53.0163442,
+        "lon": 158.6428086,
+        "url": "https://www.openstreetmap.org/node/2159371459"
+      }
+    ],
+    "walk_seconds": [
+      [
+        645.8,
+        374.5,
+        874.4,
+        582.7,
+        907.8
+      ],
+      [
+        181.3,
+        264.5,
+        348.2,
+        596.2,
+        494.6
+      ]
+    ],
+    "walk_metres": [
+      [
+        807.5,
+        468.4,
+        1093.4,
+        728.4,
+        1134.5
+      ],
+      [
+        226.8,
+        330.7,
+        435.6,
+        745.2,
+        618.2
+      ]
+    ],
+    "walk_minutes": [
+      [
+        10.76,
+        6.24,
+        14.57,
+        9.71,
+        15.13
+      ],
+      [
+        3.02,
+        4.41,
+        5.8,
+        9.94,
+        8.24
+      ]
+    ],
+    "source": "Пешеходные маршруты FOSSGIS OSRM, © OpenStreetMap contributors",
+    "url": "https://routing.openstreetmap.de/routed-foot/table/v1/foot/158.6480466,53.024806;158.647819,53.0195198;158.6490517,53.0180577;158.6459292,53.0220936;158.6495481,53.0157406;158.6432403,53.0245898;158.6428086,53.0163442?sources=0;1&destinations=2;3;4;5;6&annotations=duration,distance&generate_hints=false",
+    "checked": "2026-11-26",
+    "valid_until": "2027-02-24",
+    "review_interval_days": 90,
+    "selection": "Два отеля в разных частях центрального района и пять ориентиров. Замер между пешеходными подходами.",
+    "selection_urls": [
+      "https://visitkamchatka.ru/activities/petropavlovsk-kamchatskiy/"
+    ],
+    "saturday_local_times": [
+      "10:00",
+      "15:00"
+    ],
+    "time_zone": "Asia/Kamchatka",
+    "scope": "В оба субботних часа используется одна пешеходная сеть. Маршрут заканчивается у места на улице. Время осмотра, погода и временные перекрытия не учитываются.",
+    "city_validation": {
+      "city": "Петропавловск-Камчатский",
+      "city_code": "PKC",
+      "points_in_city": 7
+    },
+    "snap_metres": [
+      8.663493937,
+      14.71370439,
+      4.969935805,
+      16.82897274,
+      18.02586038,
+      30.94803571,
+      1.73552045
+    ],
+    "router_info_url": "https://routing.openstreetmap.de/about.html",
+    "attribution_url": "https://www.openstreetmap.org/copyright",
+    "map_feedback_url": "https://www.openstreetmap.org/fixthemap"
   }
 }
