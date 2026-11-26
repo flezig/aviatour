@@ -1,6 +1,6 @@
 /* Шапка и основной контент стоят на одной сетке. */
 header.top { display: flex; flex-direction: column; align-items: flex-start; justify-content: center;
-  gap: 10px; padding-block: max(20px,var(--inset-top)) 15px; min-height: 0; }
+  gap: 10px; padding-block: max(20px,var(--inset-top)) 52px; min-height: 0; }
 .top .brand { min-height: 36px; }
 .brand-beta {
   flex: none;
@@ -23,7 +23,7 @@ header.top { display: flex; flex-direction: column; align-items: flex-start; jus
 .service-tabs img { width:22px; height:22px; object-fit:contain; }
 body.other-service :is(#results,#showcase), .service-panel[hidden], #flight-service[hidden] { display:none; }
 @media(max-width:599px) {
-  header.top { padding-block: max(13px,var(--inset-top)) 10px; gap:9px; }
+  header.top { padding-block: max(13px,var(--inset-top)) 32px; gap:9px; }
   .service-tabs { gap:5px; }
   .service-tabs button { min-height:44px; padding:0 10px; gap:5px; font-size:13px; }
   .service-tabs img { width:18px; height:18px; }
